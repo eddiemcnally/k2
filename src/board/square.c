@@ -4,14 +4,14 @@
 static void validate_square(const enum square sq);
 
 
-enum rank get_rank(enum square sq)
+enum rank get_rank(const enum square sq)
 {
 	validate_square(sq);
 
 	return (enum rank)(sq >> 3);
 }
 
-enum file get_file(enum square sq)
+enum file get_file(const enum square sq)
 {
 	validate_square(sq);
 

@@ -1,4 +1,5 @@
 
+#pragma once
 
 #define NUM_RANKS 	8
 #define NUM_FILES	8
@@ -41,6 +42,6 @@ enum file {
 
 
 
-enum rank get_rank(enum square sq);
-enum file get_file(enum square sq);
+enum rank get_rank(const enum square sq);
+enum file get_file(const enum square sq);
 

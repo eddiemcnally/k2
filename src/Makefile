@@ -46,10 +46,10 @@
 
 # define any directories containing header files other than /usr/include
 #
-	INCLUDES =	-I. -Iboard -Iutils
+	INCLUDES =	-I. -Iboard -Iutils -Iboard\bitboard
 
 # define the C source files
-	SRCS		=	main.c board/piece.c board/square.c
+	SRCS		=	main.c board/piece.c board/square.c board/bitboard/occupancy_mask.c board/bitboard/bitboard.c 
 
 
 # define the C object files
