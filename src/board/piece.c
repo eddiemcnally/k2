@@ -1,7 +1,6 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "piece.h"
-#include "utils.h"
 
 
 #define COLOUR_MASK 	0x01		// masks off the LSB, indicating colour
