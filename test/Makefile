@@ -3,7 +3,7 @@
 # 'make clean'  removes all .o and executable files
 
 # Unit unit test framework
-	UNITY	=	../thirdparty/Unity/src
+	SEATEST	=	../thirdparty/seatest/src
 	K2_SRC	=	../src
 
 
@@ -46,10 +46,14 @@
 
 # define any directories containing header files other than /usr/include
 #
-	INCLUDES =	-I. -I$(UNITY) -I$(K2_SRC)/board
+	INCLUDES =	-I. -I$(SEATEST) -I$(K2_SRC)/board
 
 # define the C source files
-	SRCS	=	$(K2_SRC)/board/piece.c $(UNITY)/unity.c test_piece.c
+
+	SRCS	=	$(SEATEST)/seatest.c \
+				$(K2_SRC)/board/piece.c \
+				test_launcher.c \
+				test_piece.c
 
 # define the C object files
 #
