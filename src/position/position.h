@@ -1,9 +1,14 @@
 #pragma once
 
-enum castle_perms {
-	None = 0,
-	WK = 0x01,
-	WQ = 0x02,
-	BK = 0x04,
-	BQ = 0x08
+enum castle_perm {
+	CAST_PERM_NONE 	= 0,
+	CAST_PERM_WK 	= 0x01,
+	CAST_PERM_WQ 	= 0x02,
+	CAST_PERM_BK 	= 0x04,
+	CAST_PERM_BQ 	= 0x08
 }
+
+typedef uint8_t	cast_perm_t;
+
+void set_cast_perm(cast_perm_t* cp, const enum castle_perm perm);
+void clear_cast_perm(cast_perm_t* cp, const enum castle_perm perm);

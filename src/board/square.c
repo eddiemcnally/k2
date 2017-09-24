@@ -18,6 +18,13 @@ enum file get_file(const enum square sq)
 	return (enum file)(sq % 8);
 }
 
+enum square get_square(const enum rank rank, const enum file file)
+{
+	return (enum square)((rank << 3) + file);
+}
+
+
+
 static inline void validate_square(const enum square sq)
 {
 #ifdef ENABLE_ASSERTS

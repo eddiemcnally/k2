@@ -6,6 +6,8 @@
 
 static void test_get_rank(void);
 static void test_get_file(void);
+static void test_get_square_from_rank_file(void);
+
 
 void test_fixture_square(void)
 {
@@ -13,6 +15,7 @@ void test_fixture_square(void)
 
 	run_test(test_get_file);
 	run_test(test_get_rank);
+	run_test(test_get_square_from_rank_file);
 
 	test_fixture_end();                 // ends a fixture
 }
@@ -168,4 +171,84 @@ static void test_get_file(void)
 	assert_true(get_file(g8) == FILE_G);
 	assert_true(get_file(h8) == FILE_H);
 }
+
+
+
+static void test_get_square_from_rank_file(void)
+{
+	assert_true(get_square(RANK_1, FILE_A) == a1);
+	assert_true(get_square(RANK_1, FILE_B) == b1);
+	assert_true(get_square(RANK_1, FILE_C) == c1);
+	assert_true(get_square(RANK_1, FILE_D) == d1);
+	assert_true(get_square(RANK_1, FILE_E) == e1);
+	assert_true(get_square(RANK_1, FILE_F) == f1);
+	assert_true(get_square(RANK_1, FILE_G) == g1);
+	assert_true(get_square(RANK_1, FILE_H) == h1);
+
+	assert_true(get_square(RANK_2, FILE_A) == a2);
+	assert_true(get_square(RANK_2, FILE_B) == b2);
+	assert_true(get_square(RANK_2, FILE_C) == c2);
+	assert_true(get_square(RANK_2, FILE_D) == d2);
+	assert_true(get_square(RANK_2, FILE_E) == e2);
+	assert_true(get_square(RANK_2, FILE_F) == f2);
+	assert_true(get_square(RANK_2, FILE_G) == g2);
+	assert_true(get_square(RANK_2, FILE_H) == h2);
+
+	assert_true(get_square(RANK_3, FILE_A) == a3);
+	assert_true(get_square(RANK_3, FILE_B) == b3);
+	assert_true(get_square(RANK_3, FILE_C) == c3);
+	assert_true(get_square(RANK_3, FILE_D) == d3);
+	assert_true(get_square(RANK_3, FILE_E) == e3);
+	assert_true(get_square(RANK_3, FILE_F) == f3);
+	assert_true(get_square(RANK_3, FILE_G) == g3);
+	assert_true(get_square(RANK_3, FILE_H) == h3);
+
+	assert_true(get_square(RANK_4, FILE_A) == a4);
+	assert_true(get_square(RANK_4, FILE_B) == b4);
+	assert_true(get_square(RANK_4, FILE_C) == c4);
+	assert_true(get_square(RANK_4, FILE_D) == d4);
+	assert_true(get_square(RANK_4, FILE_E) == e4);
+	assert_true(get_square(RANK_4, FILE_F) == f4);
+	assert_true(get_square(RANK_4, FILE_G) == g4);
+	assert_true(get_square(RANK_4, FILE_H) == h4);
+
+	assert_true(get_square(RANK_5, FILE_A) == a5);
+	assert_true(get_square(RANK_5, FILE_B) == b5);
+	assert_true(get_square(RANK_5, FILE_C) == c5);
+	assert_true(get_square(RANK_5, FILE_D) == d5);
+	assert_true(get_square(RANK_5, FILE_E) == e5);
+	assert_true(get_square(RANK_5, FILE_F) == f5);
+	assert_true(get_square(RANK_5, FILE_G) == g5);
+	assert_true(get_square(RANK_5, FILE_H) == h5);
+
+	assert_true(get_square(RANK_6, FILE_A) == a6);
+	assert_true(get_square(RANK_6, FILE_B) == b6);
+	assert_true(get_square(RANK_6, FILE_C) == c6);
+	assert_true(get_square(RANK_6, FILE_D) == d6);
+	assert_true(get_square(RANK_6, FILE_E) == e6);
+	assert_true(get_square(RANK_6, FILE_F) == f6);
+	assert_true(get_square(RANK_6, FILE_G) == g6);
+	assert_true(get_square(RANK_6, FILE_H) == h6);
+
+	assert_true(get_square(RANK_7, FILE_A) == a7);
+	assert_true(get_square(RANK_7, FILE_B) == b7);
+	assert_true(get_square(RANK_7, FILE_C) == c7);
+	assert_true(get_square(RANK_7, FILE_D) == d7);
+	assert_true(get_square(RANK_7, FILE_E) == e7);
+	assert_true(get_square(RANK_7, FILE_F) == f7);
+	assert_true(get_square(RANK_7, FILE_G) == g7);
+	assert_true(get_square(RANK_7, FILE_H) == h7);
+
+	assert_true(get_square(RANK_8, FILE_A) == a8);
+	assert_true(get_square(RANK_8, FILE_B) == b8);
+	assert_true(get_square(RANK_8, FILE_C) == c8);
+	assert_true(get_square(RANK_8, FILE_D) == d8);
+	assert_true(get_square(RANK_8, FILE_E) == e8);
+	assert_true(get_square(RANK_8, FILE_F) == f8);
+	assert_true(get_square(RANK_8, FILE_G) == g8);
+	assert_true(get_square(RANK_8, FILE_H) == h8);
+
+}
+
+
 
