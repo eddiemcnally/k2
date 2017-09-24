@@ -5,7 +5,6 @@
 
 
 // Definition of pieces.
-// White is even, Black is odd
 enum piece {
 	WPAWN 		= 0,
 	BPAWN 		= 1,

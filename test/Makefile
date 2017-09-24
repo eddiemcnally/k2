@@ -42,7 +42,7 @@
 
 
 # more lax compiler options
-	CFLAGS	=	-Wall -g -std=iso9899:2011 -lubsan
+	CFLAGS	=	-Wall -g -std=iso9899:2011
 
 # define any directories containing header files other than /usr/include
 #
@@ -52,8 +52,10 @@
 
 	SRCS	=	$(SEATEST)/seatest.c \
 				$(K2_SRC)/board/piece.c \
+				$(K2_SRC)/board/square.c \
 				test_launcher.c \
-				test_piece.c
+				test_piece.c \
+				test_square.c
 
 # define the C object files
 #

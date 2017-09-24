@@ -1,10 +1,12 @@
 #include "seatest.h"
 #include "test_piece.h"
+#include "test_square.h"
 
 
 void all_tests( void )
 {
 	test_fixture_piece();
+	test_fixture_square();
 }
 
 void k2_suite_setup( void )
