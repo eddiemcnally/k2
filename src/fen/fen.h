@@ -1,12 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdbool.h>
-#include "piece.h"
-#include "square.h"
-
-
-
 struct parsed_fen;
 
 struct parsed_fen* parse_fen(const char* fen);

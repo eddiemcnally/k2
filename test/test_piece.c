@@ -1,3 +1,5 @@
+#include <stdbool.h>
+#include <stdint.h>
 #include "seatest.h"
 #include "piece.h"
 #include "test_piece.h"

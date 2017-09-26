@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include "bitboard.h"
 #include "board.h"
 #include "piece.h"

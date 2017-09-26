@@ -10,5 +10,5 @@ enum castle_perm {
 
 typedef uint8_t	cast_perm_t;
 
-void set_cast_perm(cast_perm_t* cp, const enum castle_perm perm);
-void clear_cast_perm(cast_perm_t* cp, const enum castle_perm perm);
+void add_cast_perm(cast_perm_t* cp, const enum castle_perm perm);
+void remove_cast_perm(cast_perm_t* cp, const enum castle_perm perm);
