@@ -7,7 +7,7 @@
 	K2_SRC	=	../src
 
 
-	CC	=	gcc
+	CC	=	clang
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
@@ -46,13 +46,15 @@
 
 # define any directories containing header files other than /usr/include
 #
-	INCLUDES =	-I. -I$(SEATEST) -I$(K2_SRC)/board
+	INCLUDES =	-I. -I$(SEATEST) -I$(K2_SRC)/board -I$(K2_SRC)/fen -I$(K2_SRC)/position
 
 # define the C source files
 
 	SRCS	=	$(SEATEST)/seatest.c \
 				$(K2_SRC)/board/piece.c \
 				$(K2_SRC)/board/square.c \
+				$(K2_SRC)/fen/fen.c \
+				$(K2_SRC)/poition/position.c \
 				test_launcher.c \
 				test_piece.c \
 				test_square.c

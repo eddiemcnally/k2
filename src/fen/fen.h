@@ -4,7 +4,7 @@ struct parsed_fen;
 
 struct parsed_fen* parse_fen(const char* fen);
 bool try_get_piece_on_sq(const struct parsed_fen* pf, const enum square sq, enum piece *pce);
-bool try_get_castle_permissions(const struct parsed_fen* pf, enum castle_perms *cp);
+bool try_get_castle_permissions(const struct parsed_fen* pf, cast_perm_t *cp);
 bool try_get_en_pass_sq(const struct parsed_fen* pf, enum square *sq);
 enum colour get_side_to_move(const struct parsed_fen* pf);
 uint16_t get_half_move_cnt(const struct parsed_fen* pf);
