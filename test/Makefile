@@ -11,30 +11,26 @@
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-#	CFLAGS	=	-O3 -std=iso9899:2011 \
-#				-flto \
-#				-march=native \
-#				-mtune=native \
-#				-lmcheck \-static 
-#				-fsanitize=address \
-#				-fomit-frame-pointer \
-#				--param large-function-growth=20000 \
-#				--param max-inline-insns-single=90000 \
-#				-Wpedantic \
-#				-Wformat=2 \
-#				-Wall \
-#				-Wstrict-prototypes \
-#				-Wmissing-prototypes \
-#				-Werror \
-#				-Wlogical-op \
-#				-Wextra \
-#				-Wconversion \
-#				-Wsign-conversion \
-#				-Wshadow \
-#				-Wcast-qual \
-#				-Wcast-align \
-#				-Wmissing-include-dirs \
-#				-Wpointer-arith
+	CFLAGS	=	-O3 -std=iso9899:2011 \
+				-flto \
+				-march=native \
+				-mtune=native \
+				-fsanitize=address \
+				-fomit-frame-pointer \
+				-Wpedantic \
+				-Wformat=2 \
+				-Wall \
+				-Wstrict-prototypes \
+				-Wmissing-prototypes \
+				-Werror \
+				-Wextra \
+				-Wconversion \
+				-Wsign-conversion \
+				-Wshadow \
+				-Wcast-qual \
+				-Wcast-align \
+				-Wmissing-include-dirs \
+				-Wpointer-arith
 
 
 # flags for profiling code
@@ -42,7 +38,7 @@
 
 
 # more lax compiler options
-	CFLAGS	=	-Wall -g -std=iso9899:2011
+#	CFLAGS	=	-Wall -g -std=iso9899:2011
 
 # define any directories containing header files other than /usr/include
 #
@@ -54,9 +50,10 @@
 				$(K2_SRC)/board/piece.c \
 				$(K2_SRC)/board/square.c \
 				$(K2_SRC)/fen/fen.c \
-				$(K2_SRC)/poition/position.c \
+				$(K2_SRC)/position/position.c \
 				test_launcher.c \
 				test_piece.c \
+				test_fen.c \
 				test_square.c
 
 # define the C object files

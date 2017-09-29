@@ -10,22 +10,15 @@
 
 #define MAX_MOVE_DIGITS		4
 #define MAX_FEN 			255
-static const char space_delim[] 	= " ";
-static const char renk_delim[] 		= "/";
 
 static void init_parsed_fen(struct parsed_fen *pf);
-static void add_piece(struct parsed_fen *pf, const enum square sq, const enum piece pce);
-static void set_side_to_move(struct parsed_fen *pf, const enum colour side);
-static void set_castle_permission(struct parsed_fen *pf, const enum castle_perm cp);
 static void setup_piece_positions(struct parsed_fen *pf, const char *pieces);
 static void setup_side_to_move(struct parsed_fen *pf, const char *side);
 static void setup_castle_permissions(struct parsed_fen *pf, const char *perms);
 static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass);
 static void setup_half_move_count(struct parsed_fen *pf, const char * half_move_cnt);
-static void setup_half_move_count(struct parsed_fen *pf, const char * full_move_cnt);
-static uint16_t convert_move_count(char * str);
-
-
+static void setup_full_move_count(struct parsed_fen *pf, const char * full_move_cnt);
+static uint16_t convert_move_count(const char * str);
 
 
 struct piece_location {
@@ -83,7 +76,7 @@ struct parsed_fen* parse_fen(const char* fen_string)
 	setup_castle_permissions(retval, cast_perms);
 	setup_en_passant_sq(retval, en_pass);
 	setup_half_move_count(retval, half_move_cnt);
-	setup_half_move_count(retval, full_move_cnt);
+	setup_full_move_count(retval, full_move_cnt);
 
 	return retval;
 }
@@ -208,7 +201,7 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces)
 		case '6':
 		case '7':
 		case '8':
-			count = (*pieces) - '0';
+			count = (uint8_t)((*pieces) - '0');
 			piece_found = false;
 			break;
 
@@ -247,28 +240,28 @@ static void setup_side_to_move(struct parsed_fen *pf, const char *side)
 static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 {
 	if (*perms == '-') {
-		pf->castle_perm = CAST_PERM_NONE;
-	} else {
-		for (int i = 0; i < strlen(perms); i++) {
-			switch (*perms) {
-			case 'K':
-				add_
-				pf->castle_perm |= CAST_PERM_WK;
-				break;
-			case 'Q':
-				pf->castle_perm |= CAST_PERM_WK;
-				break;
-			case 'k':
-				pf->castle_perm |= CAST_PERM_BK;
-				break;
-			case 'q':
-				pf->castle_perm |= CAST_PERM_BQ;
-				break;
-			default:
-				break;
-			}
-			perms++;
+		add_cast_perm(&pf->castle_perm, CAST_PERM_NONE);
+		return;
+	}
+
+	for (int i = 0; i < (int)strlen(perms); i++) {
+		switch (*perms) {
+		case 'K':
+			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			break;
+		case 'Q':
+			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			break;
+		case 'k':
+			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			break;
+		case 'q':
+			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			break;
+		default:
+			break;
 		}
+		perms++;
 	}
 }
 
@@ -277,11 +270,11 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
 {
 	if (*en_pass != '-') {
 		// en passant square present
-		file = en_pass[0] - 'a';
-		rank = en_pass[1] - '1';
+		int file = en_pass[0] - 'a';
+		int rank = en_pass[1] - '1';
 
 		pf->is_en_pass_set = true;
-		pf->en_pass_sq = get_square((enum rank)rank, (enum file)file));
+		pf->en_pass_sq = get_square((enum rank)rank, (enum file)file);
 	} else {
 		pf->is_en_pass_set = false;
 	}
@@ -291,36 +284,20 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
 static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_cnt)
 {
 	uint16_t half_move = convert_move_count(half_move_cnt);
-	pf->half_move_cnt = half_move_cnt;
+	pf->half_move_cnt = half_move;
 }
 
 
-static void setup_half_move_count(struct parsed_fen *pf, const char *full_move_cnt)
+static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt)
 {
 	uint16_t full_move = convert_move_count(full_move_cnt);
 	pf->half_move_cnt = full_move;
 }
 
 
-
-
-static uint16_t convert_move_count(char * str)
+static uint16_t convert_move_count(const char * str)
 {
-	char *eptr;
-	long result;
-
-	result = strtol(str, &eptr, MAX_MOVE_DIGITS);
-
-	/* If the result is 0, test for an error */
-	if (result == 0) {
-		if (errno == EINVAL) {
-			printf("Conversion error occurred: %d\n", errno);
-			exit(0);
-		}
-
-		if (errno == ERANGE)
-			printf("The value provided was out of range\n");
-	}
+	int result = atoi(str);
 	return (uint16_t)result;
 }
 
