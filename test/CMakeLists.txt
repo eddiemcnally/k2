@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 
 include_directories(${ENGINE_INCL} ./)
 
-
 set(TEST_SRCS 
 	test_launcher.c 
 	test_fen.c

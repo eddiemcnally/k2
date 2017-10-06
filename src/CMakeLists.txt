@@ -13,12 +13,14 @@ set(ENGINE_SRCS
 	${BRD_DIR}/piece.c
 	${BRD_DIR}/square.c
 	${FEN_DIR}/fen.c
-	${POSN_DIR}/position.c)
+	${POSN_DIR}/position.c
+	PARENT_SCOPE)
 set(ENGINE_INCL  
 	${BB_DIR}
 	${BRD_DIR}
 	${FEN_DIR}
-	${POSN_DIR})
+	${POSN_DIR}
+	PARENT_SCOPE)
 
 include_directories(${ENGINE_INCL})
 add_executable(main_exe main.c ${ENGINE_SRCS})
