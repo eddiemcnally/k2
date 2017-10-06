@@ -16,10 +16,15 @@ enum piece {
 	BKING 		= 11,
 };
 
+#define NUM_PIECES		12
+
 enum colour {
 	WHITE = 0,
 	BLACK = 1
 };
+
+#define NUM_COLOURS		2
+
 
 
 bool is_white(const enum piece pce);

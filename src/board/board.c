@@ -1,12 +1,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "bitboard.h"
-#include "board.h"
 #include "piece.h"
+#include "square.h"
+#include "board.h"
 
-
-
-static struct board {
+struct board {
 	// bitboard entry for each piece, with a set
 	// bit representing an occupied square for that piece type
 	bitboard_t pieces[NUM_PIECES];
@@ -41,7 +40,7 @@ void remove_piece(struct board* brd, const enum piece pce, const enum square sq)
 
 }
 
-void move_piece(struct board* brd, const enum piece pce, const enum square from_sq, const enum square from_sq)
+void move_piece(struct board* brd, const enum piece pce, const enum square from_sq, const enum square to_sq)
 {
 
 }

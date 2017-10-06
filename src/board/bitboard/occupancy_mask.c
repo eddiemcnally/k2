@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include <assert.h>
 #include "square.h"
-#include "occupancy_mask.h"
 #include "bitboard.h"
+#include "occupancy_mask.h"
 
 
 static void validate_square(const enum square sq);

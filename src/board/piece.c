@@ -5,7 +5,7 @@
 
 
 #define COLOUR_MASK 	0x01		// masks off the LSB, indicating colour
-#define NUM_PIECES		12
+
 
 
 /**
