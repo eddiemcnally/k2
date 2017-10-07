@@ -1,5 +1,10 @@
 #pragma once
 
+#include <stdint.h>
+#include <stdbool.h>
+#include "piece.h"
+
+
 // Definition of pieces.
 enum piece {
 	WPAWN 		= 0,

@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 
+set(DEBUG_CC_FLAGS "-g -std=c11")
+
+SET(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
+
+
+# Reference the main Engine source files
 include_directories(${ENGINE_INCL} ./)
 
 set(TEST_SRCS 
@@ -10,4 +16,9 @@ set(TEST_SRCS
 	seatest.c)
 
 add_executable(k2_test ${TEST_SRCS} ${ENGINE_SRCS})
+
+
+
+#message("test ENGINE_SRCS='${ENGINE_SRCS}'")
+#message("test ENGINE_INCL='${ENGINE_INCL}'")
 

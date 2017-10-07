@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 enum castle_perm {
 	CAST_PERM_NONE 	= 0,
 	CAST_PERM_WK 	= 0x01,

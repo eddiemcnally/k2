@@ -1,5 +1,9 @@
 #pragma once
 
+#include <stdbool.h>
+#include "piece.h"
+#include "square.h"
+
 struct board;
 
 

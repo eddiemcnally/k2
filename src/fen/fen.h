@@ -1,5 +1,9 @@
 #pragma once
 
+#include <stdbool.h>
+#include "square.h"
+#include "position.h"
+
 struct parsed_fen;
 
 struct parsed_fen* parse_fen(const char* fen);
