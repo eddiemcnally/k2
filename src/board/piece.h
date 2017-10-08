@@ -38,4 +38,5 @@ enum colour swap_side(const enum colour side);
 enum colour get_colour(const enum piece pce);
 uint32_t get_piece_value(const enum piece pce);
 char get_label(const enum piece pce);
+enum piece get_piece_from_label(const char c);
 

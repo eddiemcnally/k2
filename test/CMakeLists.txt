@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 
 set(DEBUG_CC_FLAGS "-g -std=c11")
+set(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
 
-SET(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
 
 
 # Reference the main Engine source files

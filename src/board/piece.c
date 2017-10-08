@@ -34,6 +34,7 @@ static const char piece_labels[NUM_PIECES] = {'P', 'p', 'B', 'b', 'N', 'n', 'R',
 
 static void validate_piece(const enum piece pce);
 static void validate_colour(const enum colour col);
+static void validate_label(const char c);
 
 
 bool is_white(const enum piece pce)
@@ -88,6 +89,40 @@ char get_label(const enum piece pce)
 	return piece_labels[pce];
 }
 
+enum piece get_piece_from_label(const char c)
+{
+	validate_label(c);
+	switch (c) {
+	case 'p':
+		return WPAWN;
+	case 'r':
+		return WROOK;
+	case 'n':
+		return WKNIGHT;
+	case 'b':
+		return WBISHOP;
+	case 'q':
+		return WQUEEN;
+	case 'k':
+		return WKING;
+	case 'P':
+		return BPAWN;
+	case 'R':
+		return BROOK;
+	case 'N':
+		return BKNIGHT;
+	case 'B':
+		return BBISHOP;
+	case 'Q':
+		return BQUEEN;
+	case 'K':
+		return BKING;
+	default:
+		assert(false);
+	}
+}
+
+
 static inline void validate_piece(const enum piece pce)
 {
 #ifdef ENABLE_ASSERTS
@@ -103,5 +138,26 @@ static void validate_colour(const enum colour col)
 
 }
 
-
+static void validate_label(const char c)
+{
+#ifdef ENABLE_ASSERTS
+	switch (c) {
+	case 'p':
+	case 'r':
+	case 'n':
+	case 'b':
+	case 'q':
+	case 'k':
+	case 'P':
+	case 'R':
+	case 'N':
+	case 'B':
+	case 'Q':
+	case 'K':
+		assert(true);
+	default:
+		assert(false);
+	}
+#endif
+}
 

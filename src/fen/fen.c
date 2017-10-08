@@ -3,12 +3,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <assert.h>
+#include <ctype.h>
 #include "piece.h"
 #include "square.h"
 #include "position.h"
 #include "fen.h"
 
-#define MAX_MOVE_DIGITS		4
 #define MAX_FEN 			255
 
 static void init_parsed_fen(struct parsed_fen *pf);
@@ -19,7 +20,7 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass);
 static void setup_half_move_count(struct parsed_fen *pf, const char * half_move_cnt);
 static void setup_full_move_count(struct parsed_fen *pf, const char * full_move_cnt);
 static uint16_t convert_move_count(const char * str);
-
+static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces);
 
 struct piece_location {
 	enum piece piece;
@@ -49,18 +50,19 @@ static struct parsed_fen decomposed_fen;
 
 // rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 
+
 struct parsed_fen* parse_fen(const char* fen_string)
 {
-	const char space_delim[] = " ";
+	char space_delim[] = " ";
 
 	// copy for tokenising
-	char fen[MAX_FEN];
-	memcpy(fen, fen_string, strlen(fen));
+	char fen[MAX_FEN] = {0};
+
+	memcpy(fen, fen_string, strlen(fen_string));
 
 	// set up return value
-	struct parsed_fen* retval = &decomposed_fen;
+	struct parsed_fen *retval = &decomposed_fen;
 	init_parsed_fen(retval);
-
 
 	// split into main sections
 	char* pieces = strtok (fen, space_delim);
@@ -69,7 +71,6 @@ struct parsed_fen* parse_fen(const char* fen_string)
 	char* en_pass = strtok (NULL, space_delim);
 	char* half_move_cnt = strtok (NULL, space_delim);
 	char* full_move_cnt = strtok (NULL, space_delim);
-
 
 	setup_piece_positions(retval, pieces);
 	setup_side_to_move(retval, side);
@@ -85,6 +86,7 @@ bool try_get_piece_on_sq(const struct parsed_fen* pf, const enum square sq, enum
 {
 	if (pf->pieces[sq].is_occupied == true) {
 		*pce = pf->pieces[sq].piece;
+		printf("returning piece %d\n", *pce);
 		return true;
 	}
 	return false;
@@ -146,85 +148,56 @@ static void init_parsed_fen(struct parsed_fen *pf)
 
 static void setup_piece_positions(struct parsed_fen *pf, const char *pieces)
 {
-	uint8_t rank = RANK_8;
-	uint8_t file = FILE_A;
-	uint8_t count = 0;
+	char rank_delim[] = "/";
 
-	while ((rank >= RANK_1) && *pieces) {
+	// copy for tokenising
+	char tmp[MAX_FEN] = {0};
+
+	memcpy(tmp, pieces, strlen(pieces));
+
+	// split into ranks sections
+	char* rank8 = strtok (tmp, rank_delim);
+	handle_rank(pf, RANK_8, rank8);
+
+	for (int r = RANK_7; r >= RANK_1; r--) {
+		char* rank_str = strtok (NULL, rank_delim);
+		handle_rank(pf, (enum rank)r, rank_str);
+	}
+}
+
+
+static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces)
+{
+
+	enum file file = FILE_A;
+
+	while (*pieces) {
 		enum piece piece_to_add;
 		bool piece_found = true;
-		count = 1;
 
-		switch (*pieces) {
-		case 'p':
-			piece_to_add = BPAWN;
-			break;
-		case 'r':
-			piece_to_add = BROOK;
-			break;
-		case 'n':
-			piece_to_add = BKNIGHT;
-			break;
-		case 'b':
-			piece_to_add = BBISHOP;
-			break;
-		case 'q':
-			piece_to_add = BQUEEN;
-			break;
-		case 'k':
-			piece_to_add = BKING;
-			break;
-		case 'P':
-			piece_to_add = WPAWN;
-			break;
-		case 'R':
-			piece_to_add = WROOK;
-			break;
-		case 'N':
-			piece_to_add = WKNIGHT;
-			break;
-		case 'B':
-			piece_to_add = WBISHOP;
-			break;
-		case 'Q':
-			piece_to_add = WQUEEN;
-			break;
-		case 'K':
-			piece_to_add = WKING;
-			break;
+		char c = *pieces;
 
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-			count = (uint8_t)((*pieces) - '0');
+		if (isdigit(c)) {
+			printf("found number %c\n", c);
+			file += (uint8_t)((c) - '0');
 			piece_found = false;
-			break;
-
-		case '/':
-			rank--;
-			file = FILE_A;
-			pieces++;
-			piece_found = false;
-			continue;
-
-		default:
-			printf("FEN error \n");
-			return;
+		} else {
+			piece_to_add = get_piece_from_label(c);
 		}
 
 		if (piece_found == true) {
+			printf("found piece %c\n", c);
 			enum square sq = get_square((enum rank)rank, (enum file)file);
+			printf("adding piece %c to square %d\n", c, sq);
 			pf->pieces[sq].is_occupied = true;
 			pf->pieces[sq].piece = piece_to_add;
+			file++;
 		}
+
 		pieces++;
 	}
 }
+
 
 
 static void setup_side_to_move(struct parsed_fen *pf, const char *side)
@@ -250,15 +223,16 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
 			break;
 		case 'Q':
-			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			add_cast_perm(&pf->castle_perm, CAST_PERM_WQ);
 			break;
 		case 'k':
-			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			add_cast_perm(&pf->castle_perm, CAST_PERM_BK);
 			break;
 		case 'q':
-			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			add_cast_perm(&pf->castle_perm, CAST_PERM_BQ);
 			break;
 		default:
+			assert(true);
 			break;
 		}
 		perms++;

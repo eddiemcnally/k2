@@ -11,8 +11,8 @@ static void k2_suite_teardown(void);
 
 static void all_tests(void)
 {
-	test_fixture_piece();
-	test_fixture_square();
+	//test_fixture_piece();
+	//test_fixture_square();
 	test_fixture_fen();
 }
 

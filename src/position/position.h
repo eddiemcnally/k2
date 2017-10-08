@@ -12,5 +12,7 @@ enum castle_perm {
 
 typedef uint8_t	cast_perm_t;
 
+#define INITIAL_FEN 	"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
+
 void add_cast_perm(cast_perm_t* cp, const enum castle_perm perm);
 void remove_cast_perm(cast_perm_t* cp, const enum castle_perm perm);
