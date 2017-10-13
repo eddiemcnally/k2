@@ -1,6 +1,27 @@
 cmake_minimum_required(VERSION 3.0)
 
-set(DEBUG_CC_FLAGS "-g -std=c11")
+set(DEBUG_CC_FLAGS 
+		"-g \
+		-std=c11 \
+		-Wpedantic \
+		-Wall \
+		-Wextra \
+		-fsanitize=undefined \
+		-fno-omit-frame-pointer \
+		-Wstrict-prototypes \
+		-Wmissing-prototypes \
+		-Wswitch-default \
+		-Wunused-macros \
+		-Wextra \
+		-Wconversion \
+		-Wsign-conversion \
+		-Wshadow \
+		-Wcast-qual \
+		-Wcast-align \
+		-Wmissing-include-dirs \
+		-Wpointer-arith")
+
+# set(DEBUG_CC_FLAGS "-g -std=c11")
 set(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
 
 
