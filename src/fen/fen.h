@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "square.h"
 #include "position.h"
+#include "piece.h"
 
 struct parsed_fen;
 

@@ -12,6 +12,7 @@ static void test_get_colour_black_pieces(void);
 static void test_swap_side(void);
 static void test_get_piece_label(void);
 static void test_piece_values(void);
+static void test_get_piece_from_label(void);
 
 
 void test_fixture_piece(void)
@@ -29,6 +30,25 @@ void test_fixture_piece(void)
 	test_fixture_end();                 // ends a fixture
 }
 
+
+
+
+static void test_get_piece_from_label(void)
+{
+	assert_true(get_piece_from_label('P') == WPAWN);
+	assert_true(get_piece_from_label('B') == WBISHOP);
+	assert_true(get_piece_from_label('N') == WKNIGHT);
+	assert_true(get_piece_from_label('R') == WROOK);
+	assert_true(get_piece_from_label('Q') == WQUEEN);
+	assert_true(get_piece_from_label('K') == WKING);
+
+	assert_true(get_piece_from_label('p') == BPAWN);
+	assert_true(get_piece_from_label('b') == BBISHOP);
+	assert_true(get_piece_from_label('n') == BKNIGHT);
+	assert_true(get_piece_from_label('r') == BROOK);
+	assert_true(get_piece_from_label('q') == BQUEEN);
+	assert_true(get_piece_from_label('k') == BKING);
+}
 
 static void test_get_piece_label(void)
 {

@@ -6,7 +6,7 @@ void add_cast_perm(cast_perm_t* cp, const enum castle_perm perm)
 	if (perm == CAST_PERM_NONE) {
 		*cp = CAST_PERM_NONE;
 	} else {
-		*cp = *cp | perm;
+		*cp = *cp | (uint8_t)perm;
 	}
 }
 

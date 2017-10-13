@@ -1,32 +1,34 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
+#include "fen.h"
 #include <assert.h>
 #include <ctype.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "piece.h"
-#include "square.h"
 #include "position.h"
-#include "fen.h"
+#include "square.h"
 
-#define MAX_FEN 			255
+#define MAX_FEN 255
 
 static void init_parsed_fen(struct parsed_fen *pf);
 static void setup_piece_positions(struct parsed_fen *pf, const char *pieces);
 static void setup_side_to_move(struct parsed_fen *pf, const char *side);
 static void setup_castle_permissions(struct parsed_fen *pf, const char *perms);
 static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass);
-static void setup_half_move_count(struct parsed_fen *pf, const char * half_move_cnt);
-static void setup_full_move_count(struct parsed_fen *pf, const char * full_move_cnt);
-static uint16_t convert_move_count(const char * str);
-static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces);
+static void setup_half_move_count(struct parsed_fen *pf,
+                                  const char *half_move_cnt);
+static void setup_full_move_count(struct parsed_fen *pf,
+                                  const char *full_move_cnt);
+static uint16_t convert_move_count(const char *str);
+static void handle_rank(struct parsed_fen *pf, const enum rank rank,
+                        const char *pieces);
 
 struct piece_location {
 	enum piece piece;
 	bool is_occupied;
 };
-
 
 struct parsed_fen {
 	struct piece_location pieces[NUM_SQUARES];
@@ -46,12 +48,9 @@ struct parsed_fen {
 // there's only 1
 static struct parsed_fen decomposed_fen;
 
-
-
 // rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 
-
-struct parsed_fen* parse_fen(const char* fen_string)
+struct parsed_fen *parse_fen(const char *fen_string)
 {
 	char space_delim[] = " ";
 
@@ -65,12 +64,12 @@ struct parsed_fen* parse_fen(const char* fen_string)
 	init_parsed_fen(retval);
 
 	// split into main sections
-	char* pieces = strtok (fen, space_delim);
-	char* side = strtok (NULL, space_delim);
-	char* cast_perms = strtok (NULL, space_delim);
-	char* en_pass = strtok (NULL, space_delim);
-	char* half_move_cnt = strtok (NULL, space_delim);
-	char* full_move_cnt = strtok (NULL, space_delim);
+	char *pieces = strtok(fen, space_delim);
+	char *side = strtok(NULL, space_delim);
+	char *cast_perms = strtok(NULL, space_delim);
+	char *en_pass = strtok(NULL, space_delim);
+	char *half_move_cnt = strtok(NULL, space_delim);
+	char *full_move_cnt = strtok(NULL, space_delim);
 
 	setup_piece_positions(retval, pieces);
 	setup_side_to_move(retval, side);
@@ -82,17 +81,18 @@ struct parsed_fen* parse_fen(const char* fen_string)
 	return retval;
 }
 
-bool try_get_piece_on_sq(const struct parsed_fen* pf, const enum square sq, enum piece *pce)
+bool try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
+                         enum piece *pce)
 {
 	if (pf->pieces[sq].is_occupied == true) {
 		*pce = pf->pieces[sq].piece;
-		printf("returning piece %d\n", *pce);
+		//printf("returning piece %c\n", get_label(*pce));
 		return true;
 	}
 	return false;
 }
 
-bool try_get_castle_permissions(const struct parsed_fen* pf, cast_perm_t *cp)
+bool try_get_castle_permissions(const struct parsed_fen *pf, cast_perm_t *cp)
 {
 	if (pf->is_castle_perm_set == true) {
 		*cp = pf->castle_perm;
@@ -101,7 +101,7 @@ bool try_get_castle_permissions(const struct parsed_fen* pf, cast_perm_t *cp)
 	return false;
 }
 
-bool try_get_en_pass_sq(const struct parsed_fen* pf, enum square *sq)
+bool try_get_en_pass_sq(const struct parsed_fen *pf, enum square *sq)
 {
 	if (pf->is_en_pass_set == true) {
 		*sq = pf->en_pass_sq;
@@ -110,21 +110,19 @@ bool try_get_en_pass_sq(const struct parsed_fen* pf, enum square *sq)
 	return false;
 }
 
-
-enum colour get_side_to_move(const struct parsed_fen* pf)
+enum colour get_side_to_move(const struct parsed_fen *pf)
 {
 	return pf->side_to_move;
 }
 
-uint16_t get_half_move_cnt(const struct parsed_fen* pf)
+uint16_t get_half_move_cnt(const struct parsed_fen *pf)
 {
 	return pf->half_move_cnt;
 }
-uint16_t get_fill_move_cnt(const struct parsed_fen* pf)
+uint16_t get_fill_move_cnt(const struct parsed_fen *pf)
 {
 	return pf->full_move_cnt;
 }
-
 
 //---------------------------------------------------------
 // static functions below
@@ -144,8 +142,6 @@ static void init_parsed_fen(struct parsed_fen *pf)
 	pf->is_en_pass_set = false;
 }
 
-
-
 static void setup_piece_positions(struct parsed_fen *pf, const char *pieces)
 {
 	char rank_delim[] = "/";
@@ -156,19 +152,18 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces)
 	memcpy(tmp, pieces, strlen(pieces));
 
 	// split into ranks sections
-	char* rank8 = strtok (tmp, rank_delim);
+	char *rank8 = strtok(tmp, rank_delim);
 	handle_rank(pf, RANK_8, rank8);
 
 	for (int r = RANK_7; r >= RANK_1; r--) {
-		char* rank_str = strtok (NULL, rank_delim);
+		char *rank_str = strtok(NULL, rank_delim);
 		handle_rank(pf, (enum rank)r, rank_str);
 	}
 }
 
-
-static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces)
+static void handle_rank(struct parsed_fen *pf, const enum rank rank,
+                        const char *pieces)
 {
-
 	enum file file = FILE_A;
 
 	while (*pieces) {
@@ -178,7 +173,7 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char 
 		char c = *pieces;
 
 		if (isdigit(c)) {
-			printf("found number %c\n", c);
+			//printf("found number %c\n", c);
 			file += (uint8_t)((c) - '0');
 			piece_found = false;
 		} else {
@@ -188,7 +183,9 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char 
 		if (piece_found == true) {
 			printf("found piece %c\n", c);
 			enum square sq = get_square((enum rank)rank, (enum file)file);
-			printf("adding piece %c to square %d\n", c, sq);
+
+			//printf("adding piece %c to square %s\n", c, print_square(sq));
+
 			pf->pieces[sq].is_occupied = true;
 			pf->pieces[sq].piece = piece_to_add;
 			file++;
@@ -198,8 +195,6 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char 
 	}
 }
 
-
-
 static void setup_side_to_move(struct parsed_fen *pf, const char *side)
 {
 	if (*side == 'w') {
@@ -208,7 +203,6 @@ static void setup_side_to_move(struct parsed_fen *pf, const char *side)
 		pf->side_to_move = BLACK;
 	}
 }
-
 
 static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 {
@@ -239,7 +233,6 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 	}
 }
 
-
 static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
 {
 	if (*en_pass != '-') {
@@ -254,25 +247,22 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
 	}
 }
 
-
-static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_cnt)
+static void setup_half_move_count(struct parsed_fen *pf,
+                                  const char *half_move_cnt)
 {
 	uint16_t half_move = convert_move_count(half_move_cnt);
 	pf->half_move_cnt = half_move;
 }
 
-
-static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt)
+static void setup_full_move_count(struct parsed_fen *pf,
+                                  const char *full_move_cnt)
 {
 	uint16_t full_move = convert_move_count(full_move_cnt);
 	pf->half_move_cnt = full_move;
 }
 
-
-static uint16_t convert_move_count(const char * str)
+static uint16_t convert_move_count(const char *str)
 {
 	int result = atoi(str);
 	return (uint16_t)result;
 }
-
-

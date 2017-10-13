@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "bitboard.h"
 #include "piece.h"
 #include "square.h"

@@ -45,4 +45,5 @@ enum file {
 enum rank get_rank(const enum square sq);
 enum file get_file(const enum square sq);
 enum square get_square(const enum rank rank, const enum file file);
+char * print_square(const enum square sq);
 

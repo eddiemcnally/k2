@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <assert.h>
@@ -94,29 +95,29 @@ enum piece get_piece_from_label(const char c)
 	validate_label(c);
 	switch (c) {
 	case 'p':
-		return WPAWN;
-	case 'r':
-		return WROOK;
-	case 'n':
-		return WKNIGHT;
-	case 'b':
-		return WBISHOP;
-	case 'q':
-		return WQUEEN;
-	case 'k':
-		return WKING;
-	case 'P':
 		return BPAWN;
-	case 'R':
+	case 'r':
 		return BROOK;
-	case 'N':
+	case 'n':
 		return BKNIGHT;
-	case 'B':
+	case 'b':
 		return BBISHOP;
-	case 'Q':
+	case 'q':
 		return BQUEEN;
-	case 'K':
+	case 'k':
 		return BKING;
+	case 'P':
+		return WPAWN;
+	case 'R':
+		return WROOK;
+	case 'N':
+		return WKNIGHT;
+	case 'B':
+		return WBISHOP;
+	case 'Q':
+		return WQUEEN;
+	case 'K':
+		return WKING;
 	default:
 		assert(false);
 	}
@@ -155,7 +156,9 @@ static void validate_label(const char c)
 	case 'Q':
 	case 'K':
 		assert(true);
+		break;
 	default:
+		printf("Invalid label %c\n", c);
 		assert(false);
 	}
 #endif
