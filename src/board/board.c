@@ -1,3 +1,6 @@
+#pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>

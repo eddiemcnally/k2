@@ -2,6 +2,7 @@
 #include "test_piece.h"
 #include "test_square.h"
 #include "test_fen.h"
+#include "test_position.h"
 
 
 static void all_tests(void);
@@ -11,8 +12,9 @@ static void k2_suite_teardown(void);
 
 static void all_tests(void)
 {
-	//test_fixture_piece();
-	//test_fixture_square();
+	test_fixture_piece();
+	test_fixture_square();
+	test_fixture_position();
 	test_fixture_fen();
 }
 

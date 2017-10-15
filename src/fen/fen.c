@@ -35,7 +35,6 @@ struct parsed_fen {
 
 	enum colour side_to_move;
 
-	bool is_castle_perm_set;
 	cast_perm_t castle_perm;
 
 	bool is_en_pass_set;
@@ -48,8 +47,13 @@ struct parsed_fen {
 // there's only 1
 static struct parsed_fen decomposed_fen;
 
-// rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
-
+/**
+ * @brief Parses the given FEN
+ * @details takes a FEN string, parses it and returns a ptr to a struct with the parses data
+ *
+ * @param fen_string FEN-formatted string
+ * @return Pointer to struct parsed_fen
+ */
 struct parsed_fen *parse_fen(const char *fen_string)
 {
 	char space_delim[] = " ";
@@ -81,6 +85,15 @@ struct parsed_fen *parse_fen(const char *fen_string)
 	return retval;
 }
 
+/**
+ * @brief Returns the piece on the given square
+ * @details Tries to extract the piece on the given square using the parsed_fen struct
+ *
+ * @param parsed_fen The struct containing the parsed FEN
+ * @param square The square
+ * @param piece Pointer where returned piece will be saved
+ * @return true if piece found, false otherwise
+ */
 bool try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
                          enum piece *pce)
 {
@@ -92,13 +105,17 @@ bool try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
 	return false;
 }
 
-bool try_get_castle_permissions(const struct parsed_fen *pf, cast_perm_t *cp)
+/**
+ * @brief Gets the castle permissions
+ * @details Takes the passed in *struct and returns the castle permissions
+ *
+ * @param parsed_fen The ptr to a parsed_fen struct
+ *
+ * @return the castle permissions
+ */
+cast_perm_t get_castle_permissions(const struct parsed_fen *pf)
 {
-	if (pf->is_castle_perm_set == true) {
-		*cp = pf->castle_perm;
-		return true;
-	}
-	return false;
+	return pf->castle_perm;
 }
 
 bool try_get_en_pass_sq(const struct parsed_fen *pf, enum square *sq)
@@ -132,12 +149,13 @@ static void init_parsed_fen(struct parsed_fen *pf)
 {
 	memset(pf, 0, sizeof(struct parsed_fen));
 
+	struct piece_location *plocs = pf->pieces;
 	for (int i = 0; i < NUM_SQUARES; i++) {
-		pf->pieces[NUM_SQUARES].is_occupied = false;
+		plocs->is_occupied = false;
+		plocs++;
 	}
 
 	pf->side_to_move = WHITE;
-	pf->is_castle_perm_set = false;
 	pf->castle_perm = CAST_PERM_NONE;
 	pf->is_en_pass_set = false;
 }
@@ -181,7 +199,7 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank,
 		}
 
 		if (piece_found == true) {
-			printf("found piece %c\n", c);
+			//printf("found piece %c\n", c);
 			enum square sq = get_square((enum rank)rank, (enum file)file);
 
 			//printf("adding piece %c to square %s\n", c, print_square(sq));
@@ -211,6 +229,9 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 		return;
 	}
 
+	printf("perms length %d\n", (int)strlen(perms));
+	printf("perms %s\n", perms);
+
 	for (int i = 0; i < (int)strlen(perms); i++) {
 		switch (*perms) {
 		case 'K':
@@ -231,6 +252,8 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 		}
 		perms++;
 	}
+	printf("perms set %d\n", (int)pf->castle_perm);
+
 }
 
 static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
@@ -240,7 +263,6 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
 		int file = en_pass[0] - 'a';
 		int rank = en_pass[1] - '1';
 
-		pf->is_en_pass_set = true;
 		pf->en_pass_sq = get_square((enum rank)rank, (enum file)file);
 	} else {
 		pf->is_en_pass_set = false;

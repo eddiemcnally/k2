@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include "position.h"
 
 void add_cast_perm(cast_perm_t* cp, const enum castle_perm perm)
@@ -14,4 +15,9 @@ void add_cast_perm(cast_perm_t* cp, const enum castle_perm perm)
 void remove_cast_perm(cast_perm_t* cp, const enum castle_perm perm)
 {
 	*cp = *cp & (~perm);
+}
+
+bool has_cast_perm(const cast_perm_t cp, const enum castle_perm perm)
+{
+	return (cp & perm) != 0;
 }
