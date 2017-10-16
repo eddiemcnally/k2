@@ -22,7 +22,7 @@ void test_fixture_position(void)
 
 static void test_add_castle_perm(void)
 {
-	cast_perm_t perm = CAST_PERM_NONE;
+	uint8_t perm = CAST_PERM_NONE;
 
 	add_cast_perm(&perm, CAST_PERM_WK);
 	bool b = has_cast_perm(perm, CAST_PERM_WK);
@@ -60,7 +60,7 @@ static void test_add_castle_perm(void)
 
 static void test_remove_castle_perm(void)
 {
-	cast_perm_t perm = CAST_PERM_NONE;
+	uint8_t perm = CAST_PERM_NONE;
 
 	add_cast_perm(&perm, CAST_PERM_WK);
 	add_cast_perm(&perm, CAST_PERM_WQ);

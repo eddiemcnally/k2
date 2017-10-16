@@ -17,13 +17,10 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces);
 static void setup_side_to_move(struct parsed_fen *pf, const char *side);
 static void setup_castle_permissions(struct parsed_fen *pf, const char *perms);
 static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass);
-static void setup_half_move_count(struct parsed_fen *pf,
-                                  const char *half_move_cnt);
-static void setup_full_move_count(struct parsed_fen *pf,
-                                  const char *full_move_cnt);
+static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_cnt);
+static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt);
 static uint16_t convert_move_count(const char *str);
-static void handle_rank(struct parsed_fen *pf, const enum rank rank,
-                        const char *pieces);
+static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces);
 
 struct piece_location {
 	enum piece piece;
@@ -35,7 +32,7 @@ struct parsed_fen {
 
 	enum colour side_to_move;
 
-	cast_perm_t castle_perm;
+	uint8_t castle_perm;
 
 	bool is_en_pass_set;
 	enum square en_pass_sq;
@@ -113,7 +110,7 @@ bool try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
  *
  * @return the castle permissions
  */
-cast_perm_t get_castle_permissions(const struct parsed_fen *pf)
+uint8_t get_castle_permissions(const struct parsed_fen *pf)
 {
 	return pf->castle_perm;
 }
@@ -229,34 +226,36 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 		return;
 	}
 
-	printf("perms length %d\n", (int)strlen(perms));
-	printf("perms %s\n", perms);
+	uint8_t len = (uint8_t)strlen(perms);
 
-	for (int i = 0; i < (int)strlen(perms); i++) {
+	for (int i = 0; i < len; i++) {
+		uint8_t cp = CAST_PERM_NONE;
+
 		switch (*perms) {
 		case 'K':
-			add_cast_perm(&pf->castle_perm, CAST_PERM_WK);
+			cp = CAST_PERM_WK;
 			break;
 		case 'Q':
-			add_cast_perm(&pf->castle_perm, CAST_PERM_WQ);
+			cp = CAST_PERM_WQ;
 			break;
 		case 'k':
-			add_cast_perm(&pf->castle_perm, CAST_PERM_BK);
+			cp = CAST_PERM_BK;
 			break;
 		case 'q':
-			add_cast_perm(&pf->castle_perm, CAST_PERM_BQ);
+			cp = CAST_PERM_BQ;
 			break;
 		default:
 			assert(true);
+			printf("FEN.C : invalid Castle Permission character %c\n", *perms);
 			break;
 		}
+
+		add_cast_perm(&pf->castle_perm, cp);
 		perms++;
 	}
-	printf("perms set %d\n", (int)pf->castle_perm);
-
 }
 
-static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
+static void setup_en_passant_sq(struct parsed_fen * pf, const char *en_pass)
 {
 	if (*en_pass != '-') {
 		// en passant square present
@@ -269,14 +268,14 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass)
 	}
 }
 
-static void setup_half_move_count(struct parsed_fen *pf,
+static void setup_half_move_count(struct parsed_fen * pf,
                                   const char *half_move_cnt)
 {
 	uint16_t half_move = convert_move_count(half_move_cnt);
 	pf->half_move_cnt = half_move;
 }
 
-static void setup_full_move_count(struct parsed_fen *pf,
+static void setup_full_move_count(struct parsed_fen * pf,
                                   const char *full_move_cnt)
 {
 	uint16_t full_move = convert_move_count(full_move_cnt);
