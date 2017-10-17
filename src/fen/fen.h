@@ -14,4 +14,4 @@ uint8_t get_castle_permissions(const struct parsed_fen *pf);
 bool try_get_en_pass_sq(const struct parsed_fen* pf, enum square *sq);
 enum colour get_side_to_move(const struct parsed_fen* pf);
 uint16_t get_half_move_cnt(const struct parsed_fen* pf);
-uint16_t get_fill_move_cnt(const struct parsed_fen* pf);
+uint16_t get_full_move_cnt(const struct parsed_fen* pf);

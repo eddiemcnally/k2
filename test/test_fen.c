@@ -15,6 +15,7 @@ static void test_fen_castle_permissions_initial_fen(void);
 static void test_fen_castle_permissions_random_fen(void);
 static void test_fen_half_move_count(void);
 static void test_fen_full_move_count(void);
+static void test_en_passant(void);
 
 struct sq_pce {
     enum piece piece;
@@ -33,6 +34,7 @@ void test_fixture_fen(void)
     run_test(test_fen_castle_permissions_random_fen);
     run_test(test_fen_half_move_count);
     run_test(test_fen_full_move_count);
+    run_test(test_en_passant);
 
     test_fixture_end();                 // ends a fixture
 }
@@ -218,7 +220,6 @@ static void test_fen_pieces_random_position(void)
             assert_true(pce == d.piece);
         }
     }
-
 }
 
 static void test_fen_side_to_move(void)
@@ -314,14 +315,70 @@ static void test_fen_castle_permissions_random_fen(void)
 }
 
 
+static void test_en_passant(void)
+{
+    const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq f6 22 4\n";
+    const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq c6 11 3\n";
+    const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq b3 1 2\n";
+    const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - g3 0 3\n";
+    const char *RANDOM_FEN_5 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
+    enum square enp_sq;
+    struct parsed_fen* brd = parse_fen(RANDOM_FEN_1);
+    bool found = try_get_en_pass_sq(brd, &enp_sq);
+    assert_true(found);
+    assert_true(enp_sq == f6);
+
+    brd = parse_fen(RANDOM_FEN_2);
+    found = try_get_en_pass_sq(brd, &enp_sq);
+    assert_true(found);
+    assert_true(enp_sq == c6);
+
+    brd = parse_fen(RANDOM_FEN_3);
+    found = try_get_en_pass_sq(brd, &enp_sq);
+    assert_true(found);
+    assert_true(enp_sq == b3);
+
+    brd = parse_fen(RANDOM_FEN_4);
+    found = try_get_en_pass_sq(brd, &enp_sq);
+    assert_true(found);
+    assert_true(enp_sq == g3);
+
+    brd = parse_fen(RANDOM_FEN_5);
+    found = try_get_en_pass_sq(brd, &enp_sq);
+    assert_false(found);
+}
 
 static void test_fen_half_move_count(void)
 {
+    const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 22 4\n";
+    const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 11 3\n";
+    const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
+    const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
+    struct parsed_fen* brd = parse_fen(RANDOM_FEN_1);
+    assert_int_equal(get_half_move_cnt(brd), 22);
+    brd = parse_fen(RANDOM_FEN_2);
+    assert_int_equal(get_half_move_cnt(brd), 11);
+    brd = parse_fen(RANDOM_FEN_3);
+    assert_int_equal(get_half_move_cnt(brd), 1);
+    brd = parse_fen(RANDOM_FEN_4);
+    assert_int_equal(get_half_move_cnt(brd), 0);
 }
 
 static void test_fen_full_move_count(void)
 {
+    const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 22 4\n";
+    const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 11 3\n";
+    const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
+    const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 10\n";
 
+    struct parsed_fen* brd = parse_fen(RANDOM_FEN_1);
+    assert_int_equal(get_full_move_cnt(brd), 4);
+    brd = parse_fen(RANDOM_FEN_2);
+    assert_int_equal(get_full_move_cnt(brd), 3);
+    brd = parse_fen(RANDOM_FEN_3);
+    assert_int_equal(get_full_move_cnt(brd), 2);
+    brd = parse_fen(RANDOM_FEN_4);
+    assert_int_equal(get_full_move_cnt(brd), 10);
 }
