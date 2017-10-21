@@ -20,6 +20,7 @@ set (SOURCES
 	${BRD_DIR}/square.c
 	${FEN_DIR}/fen.c
 	${POSN_DIR}/position.c
+	${POSN_DIR}/move.c
 	)
 
 # Define the include directories.
