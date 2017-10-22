@@ -34,7 +34,8 @@ set(TEST_SRCS
 	test_fen.c
 	test_piece.c
 	test_square.c
-	test_position
+	test_position.c
+        test_move.c
 	seatest.c)
 
 add_executable(k2_test ${TEST_SRCS} ${ENGINE_SRCS})
