@@ -2,7 +2,6 @@
 #include <assert.h>
 #include "square.h"
 
-static void validate_square(const enum square sq);
 #define MAX_SQUARE_TEXT 4
 static char square_text[MAX_SQUARE_TEXT];
 
@@ -37,7 +36,7 @@ char * print_square(const enum square sq)
     return square_text;
 }
 
-static inline void validate_square(const enum square sq)
+void validate_square(const enum square sq)
 {
 #ifdef ENABLE_ASSERTS
     assert(sq >= a1 && sq <= h8);

@@ -92,7 +92,7 @@ struct parsed_fen *parse_fen(const char *fen_string)
  * @return true if piece found, false otherwise
  */
 bool try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
-                         enum piece *pce)
+        enum piece *pce)
 {
     if (pf->pieces[sq].is_occupied == true) {
         *pce = pf->pieces[sq].piece;
@@ -133,6 +133,7 @@ uint16_t get_half_move_cnt(const struct parsed_fen *pf)
 {
     return pf->half_move_cnt;
 }
+
 uint16_t get_full_move_cnt(const struct parsed_fen *pf)
 {
     return pf->full_move_cnt;
@@ -144,7 +145,7 @@ uint16_t get_full_move_cnt(const struct parsed_fen *pf)
 
 static void init_parsed_fen(struct parsed_fen *pf)
 {
-    memset(pf, 0, sizeof(struct parsed_fen));
+    memset(pf, 0, sizeof (struct parsed_fen));
 
     struct piece_location *plocs = pf->pieces;
     for (int i = 0; i < NUM_SQUARES; i++) {
@@ -177,7 +178,7 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces)
 }
 
 static void handle_rank(struct parsed_fen *pf, const enum rank rank,
-                        const char *pieces)
+        const char *pieces)
 {
     enum file file = FILE_A;
 
@@ -189,10 +190,10 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank,
 
         if (isdigit(c)) {
             //printf("found number %c\n", c);
-            file += (uint8_t)((c) - '0');
+            file += (uint8_t) ((c) - '0');
             piece_found = false;
         } else {
-            piece_to_add = get_piece_from_label(c);
+            piece_to_add = pce_get_from_label(c);
         }
 
         if (piece_found == true) {
@@ -226,7 +227,7 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
         return;
     }
 
-    uint8_t len = (uint8_t)strlen(perms);
+    uint8_t len = (uint8_t) strlen(perms);
 
     for (int i = 0; i < len; i++) {
         uint8_t cp = CAST_PERM_NONE;
@@ -270,14 +271,14 @@ static void setup_en_passant_sq(struct parsed_fen * pf, const char *en_pass)
 }
 
 static void setup_half_move_count(struct parsed_fen * pf,
-                                  const char *half_move_cnt)
+        const char *half_move_cnt)
 {
     uint16_t half_move = convert_move_count(half_move_cnt);
     pf->half_move_cnt = half_move;
 }
 
 static void setup_full_move_count(struct parsed_fen * pf,
-                                  const char *full_move_cnt)
+        const char *full_move_cnt)
 {
     uint16_t full_move = convert_move_count(full_move_cnt);
     pf->full_move_cnt = full_move;
@@ -286,5 +287,5 @@ static void setup_full_move_count(struct parsed_fen * pf,
 static uint16_t convert_move_count(const char *str)
 {
     int result = atoi(str);
-    return (uint16_t)result;
+    return (uint16_t) result;
 }

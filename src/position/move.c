@@ -4,21 +4,18 @@
 #include "square.h"
 #include "move.h"
 
-enum move_bits_masks
-{
-    MV_MASK_TO_SQ = 0x003f,
+enum move_bits_masks {
+    MV_MASK_TO_SQ = 0x003F,
     MV_MASK_FROM_SQ = 0x0FC0,
     MV_MASK_FLAGS = 0xF000,
 };
 
-enum move_bits_shifts
-{
+enum move_bits_shifts {
     MV_SHFT_TO_SQ = 0,
     MV_SHFT_FROM_SQ = 6,
 };
 
-enum move_flags
-{
+enum move_flags {
     MV_FLG_QUIET = 0x0000,
     MV_FLG_DOUBLE_PAWN = 0x1000,
     MV_FLG_KING_CASTLE = 0x2000,
@@ -35,8 +32,7 @@ enum move_flags
     MV_FLG_PROMOTE_QUEEN_CAPTURE = 0xF000,
 };
 
-enum move_flag_bits
-{
+enum move_flag_bits {
     MV_FLG_BIT_PROMOTE = 0x8000,
     MV_FLG_BIT_CAPTURE = 0x4000,
 };
@@ -53,21 +49,19 @@ struct move move_encode_promoted(const enum square from_sq, const enum square to
 {
     struct move mv = encode_to_from(from_sq, to_sq);
 
-    switch (promoted_piece) {
-    case WKNIGHT:
-    case BKNIGHT:
+    enum piece pce_type = pce_get_piece_type(promoted_piece);
+
+    switch (pce_type) {
+    case KNIGHT:
         set_flag(&mv, MV_FLG_PROMOTE_KNIGHT);
         break;
-    case WBISHOP:
-    case BBISHOP:
+    case BISHOP:
         set_flag(&mv, MV_FLG_PROMOTE_BISHOP);
         break;
-    case WROOK:
-    case BROOK:
+    case ROOK:
         set_flag(&mv, MV_FLG_PROMOTE_ROOK);
         break;
-    case WQUEEN:
-    case BQUEEN:
+    case QUEEN:
         set_flag(&mv, MV_FLG_PROMOTE_QUEEN);
         break;
     default:
