@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 
+set(TEST_BINARY_NAME "test_k2")
+message("Setting test binary to " ${TEST_BINARY_NAME})
+
 set(DEBUG_CC_FLAGS 
 		"-g \
 		-std=c11 \
@@ -38,9 +41,7 @@ set(TEST_SRCS
         test_move.c
 	seatest.c)
 
-add_executable(k2_test ${TEST_SRCS} ${ENGINE_SRCS})
-
-
+add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
 
 #message("test ENGINE_SRCS='${ENGINE_SRCS}'")
 #message("test ENGINE_INCL='${ENGINE_INCL}'")

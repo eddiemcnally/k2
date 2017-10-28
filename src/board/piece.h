@@ -12,7 +12,7 @@ enum colour {
     // colours
     WHITE = 0x01,
     BLACK = 0x02,
-    COLOUR_MASK = 0x03
+    NUM_COLOURS = 2
 };
 
 /*
@@ -23,7 +23,7 @@ enum colour {
  *  0001 0000   BISHOP
  *  0010 0000   ROOK
  *  0100 0000   QUEEN
- *  1000 000    KING
+ *  1000 0000   KING
  */
 enum piece {
     // piece type
@@ -49,11 +49,6 @@ enum piece {
     BKING = (KING | BLACK),
 };
 
-
-
-#define NUM_PIECES  12
-#define NUM_COLOURS  2
-
 bool pce_is_white(const enum piece pce);
 bool pce_is_black(const enum piece pce);
 enum colour swap_side(const enum colour side);
@@ -65,6 +60,3 @@ enum piece pce_get_from_label(const char c);
 void validate_piece(const enum piece pce);
 void validate_colour(const enum colour col);
 void validate_label(const char c);
-
-
-

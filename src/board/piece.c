@@ -16,6 +16,9 @@ enum piece_values {
     PCE_VAL_KING = 50000
 };
 
+#define     COLOUR_MASK     0x03
+
+
 bool pce_is_white(const enum piece pce)
 {
     validate_piece(pce);
@@ -152,18 +155,18 @@ void validate_piece(const enum piece pce)
 #ifdef ENABLE_ASSERTS
     switch (pce) {
     case WPAWN:
-    case BPAWN:
-    case WKNIGHT:
-    case BKNIGHT:
-    case WBISHOP:
-    case BBISHOP:
-    case WROOK:
-    case BROOK:
-    case WQUEEN:
-    case BQUEEN:
-    case WKING:
-    case BKING:
-        assert(true);
+        case BPAWN:
+            case WKNIGHT:
+                case BKNIGHT:
+                    case WBISHOP:
+                        case BBISHOP:
+                            case WROOK:
+                                case BROOK:
+                                    case WQUEEN:
+                                        case BQUEEN:
+                                            case WKING:
+                                                case BKING:
+                                                        assert(true);
         break;
     default:
         assert(false);
@@ -204,4 +207,3 @@ void validate_label(const char c)
     }
 #endif
 }
-
