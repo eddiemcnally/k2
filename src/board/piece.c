@@ -155,18 +155,18 @@ void validate_piece(const enum piece pce)
 #ifdef ENABLE_ASSERTS
     switch (pce) {
     case WPAWN:
-        case BPAWN:
-            case WKNIGHT:
-                case BKNIGHT:
-                    case WBISHOP:
-                        case BBISHOP:
-                            case WROOK:
-                                case BROOK:
-                                    case WQUEEN:
-                                        case BQUEEN:
-                                            case WKING:
-                                                case BKING:
-                                                        assert(true);
+    case BPAWN:
+    case WKNIGHT:
+    case BKNIGHT:
+    case WBISHOP:
+    case BBISHOP:
+    case WROOK:
+    case BROOK:
+    case WQUEEN:
+    case BQUEEN:
+    case WKING:
+    case BKING:
+        assert(true);
         break;
     default:
         assert(false);

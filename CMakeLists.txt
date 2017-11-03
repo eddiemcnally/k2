@@ -11,5 +11,7 @@ add_definitions(-DENABLE_ASSERTS)
 add_subdirectory(src)
 add_subdirectory(test)
 
+enable_testing()
+
 #message("top ENGINE_SRCS='${ENGINE_SRCS}'")
 #message("top ENGINE_INCL='${ENGINE_INCL}'")

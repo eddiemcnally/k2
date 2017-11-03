@@ -1,33 +1,19 @@
-#include "seatest.h"
-#include "test_piece.h"
-#include "test_square.h"
-#include "test_fen.h"
-#include "test_position.h"
-#include "test_move.h"
 
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
 
-static void all_tests(void);
-static void k2_suite_setup(void);
-static void k2_suite_teardown(void);
-
-static void all_tests(void)
+/* A test case that does nothing and succeeds. */
+static void null_test_success(void **state)
 {
-    test_fixture_piece();
-    test_fixture_square();
-    test_fixture_position();
-    test_fixture_fen();
-    test_fixture_move();
+	(void) state; /* unused */
+}
+int main(void)
+{
+	const UnitTest tests[] = {
+		unit_test(null_test_success),
+	};
+	return run_tests(tests);
 }
 
-static void k2_suite_setup(void)
-{
-}
-
-static void k2_suite_teardown(void)
-{
-}
-
-int main(int argc, char** argv)
-{
-    return seatest_testrunner(argc, argv, all_tests, k2_suite_setup, k2_suite_teardown);
-}

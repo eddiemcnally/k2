@@ -43,6 +43,9 @@ set(TEST_SRCS
 
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
 
+add_test(${TEST_BINARY_NAME} ${TEST_BINARY_NAME})
+target_link_libraries(${TEST_BINARY_NAME} cmocka)
+
 #message("test ENGINE_SRCS='${ENGINE_SRCS}'")
 #message("test ENGINE_INCL='${ENGINE_INCL}'")
 
