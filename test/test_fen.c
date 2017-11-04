@@ -1,6 +1,11 @@
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include <stdbool.h>
 #include <stdint.h>
-#include "seatest.h"
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include "piece.h"
 #include "position.h"
 #include "square.h"
@@ -8,42 +13,13 @@
 #include "test_fen.h"
 
 
-static void test_fen_pieces_init_position(void);
-static void test_fen_pieces_random_position(void);
-static void test_fen_side_to_move(void);
-static void test_fen_castle_permissions_initial_fen(void);
-static void test_fen_castle_permissions_random_fen(void);
-static void test_fen_half_move_count(void);
-static void test_fen_full_move_count(void);
-static void test_en_passant(void);
-
 struct sq_pce {
     enum piece piece;
     bool has_piece;
 };
 
 
-void test_fixture_fen(void)
-{
-    test_fixture_start();               // starts a fixture
-
-    run_test(test_fen_pieces_init_position);
-    run_test(test_fen_pieces_random_position);
-    run_test(test_fen_side_to_move);
-    run_test(test_fen_castle_permissions_initial_fen);
-    run_test(test_fen_castle_permissions_random_fen);
-    run_test(test_fen_half_move_count);
-    run_test(test_fen_full_move_count);
-    run_test(test_en_passant);
-
-    test_fixture_end();                 // ends a fixture
-}
-
-
-
-
-
-static void test_fen_pieces_init_position(void)
+void test_fen_pieces_init_position(void **state)
 {
     struct parsed_fen* brd = parse_fen(INITIAL_FEN);
 
@@ -119,7 +95,7 @@ static void test_fen_pieces_init_position(void)
 }
 
 
-static void test_fen_pieces_random_position(void)
+void test_fen_pieces_random_position(void **state)
 {
     char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 1 4\n";
     struct parsed_fen* brd = parse_fen(RANDOM_FEN_1);
@@ -222,7 +198,7 @@ static void test_fen_pieces_random_position(void)
     }
 }
 
-static void test_fen_side_to_move(void)
+void test_fen_side_to_move(void **state)
 {
     const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 1 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 0 3\n";
@@ -236,7 +212,7 @@ static void test_fen_side_to_move(void)
     assert_true(side == BLACK);
 }
 
-static void test_fen_castle_permissions_initial_fen(void)
+void test_fen_castle_permissions_initial_fen(void **state)
 {
     struct parsed_fen* brd = parse_fen(INITIAL_FEN);
 
@@ -256,7 +232,7 @@ static void test_fen_castle_permissions_initial_fen(void)
 }
 
 
-static void test_fen_castle_permissions_random_fen(void)
+void test_fen_castle_permissions_random_fen(void **state)
 {
     const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 1 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 0 3\n";
@@ -315,7 +291,7 @@ static void test_fen_castle_permissions_random_fen(void)
 }
 
 
-static void test_en_passant(void)
+void test_fen_en_passant(void **state)
 {
     const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq f6 22 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq c6 11 3\n";
@@ -349,7 +325,7 @@ static void test_en_passant(void)
     assert_false(found);
 }
 
-static void test_fen_half_move_count(void)
+void test_fen_half_move_count(void **state)
 {
     const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 22 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 11 3\n";
@@ -366,7 +342,7 @@ static void test_fen_half_move_count(void)
     assert_int_equal(get_half_move_cnt(brd), 0);
 }
 
-static void test_fen_full_move_count(void)
+void test_fen_full_move_count(void **state)
 {
     const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 22 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 11 3\n";

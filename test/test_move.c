@@ -1,23 +1,18 @@
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include <stdbool.h>
 #include <stdint.h>
-#include "seatest.h"
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include "square.h"
 #include "piece.h"
 #include "move.h"
 #include "test_move.h"
 
-static void test_quiet_move_encode_decode(void);
 
-void test_fixture_move(void)
-{
-    test_fixture_start(); // starts a fixture
-
-    run_test(test_quiet_move_encode_decode);
-
-    test_fixture_end(); // ends a fixture
-}
-
-static void test_quiet_move_encode_decode(void)
+void test_move_quiet_move_encode_decode(void **state)
 {
     for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
         for (enum square to_sq = a1; to_sq <= h8; to_sq++) {

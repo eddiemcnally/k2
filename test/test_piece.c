@@ -1,36 +1,16 @@
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include <stdbool.h>
 #include <stdint.h>
-#include "seatest.h"
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include "piece.h"
 #include "test_piece.h"
 
 
-static void test_is_white(void);
-static void test_is_black(void);
-static void test_get_colour_white_pieces(void);
-static void test_get_colour_black_pieces(void);
-static void test_swap_side(void);
-static void test_get_piece_label(void);
-static void test_piece_values(void);
-static void test_get_piece_from_label(void);
-
-void test_fixture_piece(void)
-{
-	test_fixture_start(); // starts a fixture
-
-	run_test(test_is_white);
-	run_test(test_is_black);
-	run_test(test_get_colour_white_pieces);
-	run_test(test_get_colour_black_pieces);
-	run_test(test_swap_side);
-	run_test(test_get_piece_label);
-	run_test(test_piece_values);
-	run_test(test_get_piece_from_label);
-
-	test_fixture_end(); // ends a fixture
-}
-
-static void test_get_piece_from_label(void)
+void test_piece_get_piece_from_label(void **state)
 {
 	assert_true(pce_get_from_label('P') == WPAWN);
 	assert_true(pce_get_from_label('B') == WBISHOP);
@@ -47,7 +27,7 @@ static void test_get_piece_from_label(void)
 	assert_true(pce_get_from_label('k') == BKING);
 }
 
-static void test_get_piece_label(void)
+void test_piece_get_piece_label(void **state)
 {
 	assert_true(pce_get_label(WPAWN) == 'P');
 	assert_true(pce_get_label(BPAWN) == 'p');
@@ -63,7 +43,7 @@ static void test_get_piece_label(void)
 	assert_true(pce_get_label(BKING) == 'k');
 }
 
-static void test_piece_values(void)
+void test_piece_values(void **state)
 {
 	assert_true(pce_get_value(WPAWN) == 100);
 	assert_true(pce_get_value(BPAWN) == 100);
@@ -90,7 +70,7 @@ static void test_piece_values(void)
 	assert_true(pce_get_value(WKING) == pce_get_value(BKING));
 }
 
-static void test_get_colour_white_pieces(void)
+void test_piece_get_colour_white_pieces(void **state)
 {
 	assert_true(pce_get_colour(WPAWN) == WHITE);
 	assert_true(pce_get_colour(WBISHOP) == WHITE);
@@ -100,7 +80,7 @@ static void test_get_colour_white_pieces(void)
 	assert_true(pce_get_colour(WKING) == WHITE);
 }
 
-static void test_get_colour_black_pieces(void)
+void test_piece_get_colour_black_pieces(void **state)
 {
 	assert_true(pce_get_colour(BPAWN) == BLACK);
 	assert_true(pce_get_colour(BBISHOP) == BLACK);
@@ -110,13 +90,13 @@ static void test_get_colour_black_pieces(void)
 	assert_true(pce_get_colour(BKING) == BLACK);
 }
 
-static void test_swap_side(void)
+void test_piece_swap_side(void **state)
 {
 	assert_true(swap_side(WHITE) == BLACK);
 	assert_true(swap_side(BLACK) == WHITE);
 }
 
-static void test_is_white(void)
+void test_piece_is_white(void **state)
 {
 	assert_true(pce_is_white(WPAWN));
 	assert_true(pce_is_white(WBISHOP));
@@ -126,7 +106,7 @@ static void test_is_white(void)
 	assert_true(pce_is_white(WKING));
 }
 
-static void test_is_black(void)
+void test_piece_is_black(void **state)
 {
 	assert_true(pce_is_black(BPAWN));
 	assert_true(pce_is_black(BBISHOP));
