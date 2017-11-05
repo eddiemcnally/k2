@@ -6,6 +6,8 @@
 #include "test_fen.h"
 #include "test_move.h"
 #include "test_piece.h"
+#include "test_position.h"
+#include "test_square.h"
 
 
 int main(void)
@@ -33,6 +35,13 @@ int main(void)
 		cmocka_unit_test(test_piece_get_piece_label),
 		cmocka_unit_test(test_piece_values),
 		cmocka_unit_test(test_piece_get_piece_from_label),
+
+		// Position
+		cmocka_unit_test(test_position_add_castle_perm),
+		cmocka_unit_test(test_position_remove_castle_perm),
+
+
+
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

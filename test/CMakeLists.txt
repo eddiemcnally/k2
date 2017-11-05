@@ -38,13 +38,24 @@ set(TEST_SRCS
 	test_piece.c
 	test_square.c
 	test_position.c
-        test_move.c
-	seatest.c)
+    test_move.c
+)
 
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
 
-add_test(${TEST_BINARY_NAME} ${TEST_BINARY_NAME})
+#add_test(${TEST_BINARY_NAME} ${TEST_BINARY_NAME})
 target_link_libraries(${TEST_BINARY_NAME} cmocka)
+
+set(UNIT_TEST ${TEST_BINARY_NAME})
+add_test(NAME ${UNIT_TEST} COMMAND ${UNIT_TEST})
+#add_custom_command(
+#     TARGET ${UNIT_TEST}
+#     COMMENT "Run tests"
+#     POST_BUILD 
+#     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+#     COMMAND ${CMAKE_CTEST_COMMAND} -C $<CONFIGURATION> -R "^${UNIT_TEST}$" --output-on-failures
+#)
+
 
 #message("test ENGINE_SRCS='${ENGINE_SRCS}'")
 #message("test ENGINE_INCL='${ENGINE_INCL}'")

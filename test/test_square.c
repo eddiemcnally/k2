@@ -1,27 +1,15 @@
-#include "seatest.h"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include "square.h"
 #include "test_square.h"
 
 
 
-static void test_get_rank(void);
-static void test_get_file(void);
-static void test_get_square_from_rank_file(void);
-
-
-void test_fixture_square(void)
-{
-	test_fixture_start();               // starts a fixture
-
-	run_test(test_get_file);
-	run_test(test_get_rank);
-	run_test(test_get_square_from_rank_file);
-
-	test_fixture_end();                 // ends a fixture
-}
-
-
-static void test_get_rank(void)
+void test_square_get_rank(void **state)
 {
 	assert_true(get_rank(a1) == RANK_1);
 	assert_true(get_rank(b1) == RANK_1);
@@ -97,7 +85,7 @@ static void test_get_rank(void)
 }
 
 
-static void test_get_file(void)
+void test_square_get_file(void **state)
 {
 	assert_true(get_file(a1) == FILE_A);
 	assert_true(get_file(b1) == FILE_B);
@@ -174,7 +162,7 @@ static void test_get_file(void)
 
 
 
-static void test_get_square_from_rank_file(void)
+void test_square_get_from_rank_file(void **state)
 {
 	assert_true(get_square(RANK_1, FILE_A) == a1);
 	assert_true(get_square(RANK_1, FILE_B) == b1);
