@@ -1,3 +1,23 @@
+// Copyright (c) 2017 Eddie McNally
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
 #include "fen.h"
 #include <assert.h>
 #include <ctype.h>
@@ -21,41 +41,67 @@ static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_c
 static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt);
 static uint16_t convert_move_count(const char *str);
 static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces);
+static void validate_struct_init(const struct parsed_fen *pf);
 
-struct piece_location {
+
+
+// ==================================================================
+//
+// Data structs
+//
+// ==================================================================
+
+
+struct piece_location
+{
     enum piece piece;
     bool is_occupied;
 };
 
-struct parsed_fen {
+
+// used to check struct is populated when passed into public functions
+#define STRUCT_INIT_KEY ((uint16_t)0xdeadbeef)
+
+// Public representation of a parsed FEN
+struct parsed_fen
+{
+    uint16_t    struct_init_key;
+    // state of each square
     struct piece_location pieces[NUM_SQUARES];
 
+    uint16_t    half_move_cnt;
+    uint16_t    full_move_cnt;
     enum colour side_to_move;
-
-    uint8_t castle_perm;
-
-    bool is_en_pass_set;
+    uint8_t     castle_perm;
+    bool        is_en_pass_set;
     enum square en_pass_sq;
 
-    uint16_t half_move_cnt;
-    uint16_t full_move_cnt;
 };
 
-// there's only 1
+// there's only 1 instance of this!!
 static struct parsed_fen decomposed_fen;
 
+
+// ==================================================================
+//
+// public functions
+//
+// ==================================================================
+
+
+
 /**
- * @brief Parses the given FEN
- * @details takes a FEN string, parses it and returns a ptr to a struct with the parses data
+ * @brief       Parses the given FEN
+ * @details     Takes a FEN string, parses it and returns a ptr to a struct with the parsed data
  *
- * @param fen_string FEN-formatted string
- * @return Pointer to struct parsed_fen
+ * @param       fen_string      FEN-formatted string
+ * @return      Pointer to struct parsed_fen
  */
-struct parsed_fen *parse_fen(const char *fen_string)
+struct parsed_fen *fen_parse(const char *fen_string)
 {
     char space_delim[] = " ";
 
-    // copy for tokenising
+    // local copy for tokenising
     char fen[MAX_FEN] = {0};
 
     memcpy(fen, fen_string, strlen(fen_string));
@@ -64,7 +110,7 @@ struct parsed_fen *parse_fen(const char *fen_string)
     struct parsed_fen *retval = &decomposed_fen;
     init_parsed_fen(retval);
 
-    // split into main sections
+    // split the FEN string into separate fragments
     char *pieces = strtok(fen, space_delim);
     char *side = strtok(NULL, space_delim);
     char *cast_perms = strtok(NULL, space_delim);
@@ -72,6 +118,7 @@ struct parsed_fen *parse_fen(const char *fen_string)
     char *half_move_cnt = strtok(NULL, space_delim);
     char *full_move_cnt = strtok(NULL, space_delim);
 
+    // parse the fragments and populate the struct
     setup_piece_positions(retval, pieces);
     setup_side_to_move(retval, side);
     setup_castle_permissions(retval, cast_perms);
@@ -83,18 +130,21 @@ struct parsed_fen *parse_fen(const char *fen_string)
 }
 
 /**
- * @brief Returns the piece on the given square
- * @details Tries to extract the piece on the given square using the parsed_fen struct
+ * @brief       Returns the piece on the given square
+ * @details     Tries to extract the piece on the given square using the parsed_fen struct
  *
- * @param parsed_fen The struct containing the parsed FEN
- * @param square The square
- * @param piece Pointer where returned piece will be saved
- * @return true if piece found, false otherwise
+ * @param       parsed_fen      The struct containing the parsed FEN
+ * @param       square          The square
+ * @param       piece           Pointer where returned piece will be saved
+ * @return      true            if piece found, false otherwise
  */
-bool try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
-        enum piece *pce)
+bool fen_try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
+                             enum piece *pce)
 {
-    if (pf->pieces[sq].is_occupied == true) {
+    validate_struct_init(pf);
+
+    if (pf->pieces[sq].is_occupied == true)
+    {
         *pce = pf->pieces[sq].piece;
         //printf("returning piece %c\n", get_label(*pce));
         return true;
@@ -103,52 +153,101 @@ bool try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
 }
 
 /**
- * @brief Gets the castle permissions
- * @details Takes the passed in *struct and returns the castle permissions
+ * @brief       Gets the castle permissions
+ * @details     Takes the passed in *struct and returns the castle permissions
  *
- * @param parsed_fen The ptr to a parsed_fen struct
- *
- * @return the castle permissions
+ * @param       parsed_fen      The ptr to a parsed_fen struct
+ * @return      the castle permissions
  */
-uint8_t get_castle_permissions(const struct parsed_fen *pf)
+uint8_t fen_get_castle_permissions(const struct parsed_fen *pf)
 {
+    validate_struct_init(pf);
+
     return pf->castle_perm;
 }
 
-bool try_get_en_pass_sq(const struct parsed_fen *pf, enum square *sq)
+
+/**
+ * @brief       Attempts to get the piece on the given square
+ * @details     Given the struct, attempts to get the piece on the given square
+ *
+ * @param       parsed_fen      The FEN struct
+ * @param       square          The square being tested
+ * @return      true if a piece was found, false otherwise
+ */
+bool fen_try_get_en_pass_sq(const struct parsed_fen *pf, enum square *sq)
 {
-    if (pf->is_en_pass_set == true) {
+    validate_struct_init(pf);
+
+    if (pf->is_en_pass_set == true)
+    {
         *sq = pf->en_pass_sq;
         return true;
     }
     return false;
 }
 
-enum colour get_side_to_move(const struct parsed_fen *pf)
+
+/**
+ * @brief       Returns the side to move
+ * @details     Examines the given struct and returns the side to move
+ *
+ * @param       parsed_fen      The struct to examine
+ * @return      The side to move
+ */
+enum colour fen_get_side_to_move(const struct parsed_fen *pf)
 {
+    validate_struct_init(pf);
+
     return pf->side_to_move;
 }
 
-uint16_t get_half_move_cnt(const struct parsed_fen *pf)
+/**
+ * @brief       Gets the half move count
+ * @details     Examines the given struct and returns the half move count
+ *
+ * @param       parsed_fen      The struct to examine
+ * @return      The half move count
+ */
+uint16_t fen_get_half_move_cnt(const struct parsed_fen *pf)
 {
+    validate_struct_init(pf);
+
     return pf->half_move_cnt;
 }
 
-uint16_t get_full_move_cnt(const struct parsed_fen *pf)
+/**
+ * @brief       Gets the full move count
+ * @details     Examines the given struct and returns the full move count
+ *
+ * @param       parsed_fen      The struct to examine
+ * @return      The full move count
+ */
+uint16_t fen_get_full_move_cnt(const struct parsed_fen *pf)
 {
+    validate_struct_init(pf);
+
     return pf->full_move_cnt;
 }
 
-//---------------------------------------------------------
-// static functions below
-//---------------------------------------------------------
+
+
+
+// ==================================================================
+//
+// private functions
+//
+// ==================================================================
+
 
 static void init_parsed_fen(struct parsed_fen *pf)
 {
     memset(pf, 0, sizeof (struct parsed_fen));
 
+    pf->struct_init_key = STRUCT_INIT_KEY;
     struct piece_location *plocs = pf->pieces;
-    for (int i = 0; i < NUM_SQUARES; i++) {
+    for (int i = 0; i < NUM_SQUARES; i++)
+    {
         plocs->is_occupied = false;
         plocs++;
     }
@@ -171,32 +270,37 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces)
     char *rank8 = strtok(tmp, rank_delim);
     handle_rank(pf, RANK_8, rank8);
 
-    for (int r = RANK_7; r >= RANK_1; r--) {
+    for (int r = RANK_7; r >= RANK_1; r--)
+    {
         char *rank_str = strtok(NULL, rank_delim);
         handle_rank(pf, (enum rank)r, rank_str);
     }
 }
 
-static void handle_rank(struct parsed_fen *pf, const enum rank rank,
-        const char *pieces)
+static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces)
 {
     enum file file = FILE_A;
 
-    while (*pieces) {
+    while (*pieces)
+    {
         enum piece piece_to_add;
         bool piece_found = true;
 
         char c = *pieces;
 
-        if (isdigit(c)) {
+        if (isdigit(c))
+        {
             //printf("found number %c\n", c);
             file += (uint8_t) ((c) - '0');
             piece_found = false;
-        } else {
+        }
+        else
+        {
             piece_to_add = pce_get_from_label(c);
         }
 
-        if (piece_found == true) {
+        if (piece_found == true)
+        {
             //printf("found piece %c\n", c);
             enum square sq = get_square((enum rank)rank, (enum file)file);
 
@@ -211,28 +315,35 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank,
     }
 }
 
+
 static void setup_side_to_move(struct parsed_fen *pf, const char *side)
 {
-    if (*side == 'w') {
+    if (*side == 'w')
+    {
         pf->side_to_move = WHITE;
-    } else {
+    }
+    else
+    {
         pf->side_to_move = BLACK;
     }
 }
 
 static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 {
-    if (*perms == '-') {
+    if (*perms == '-')
+    {
         add_cast_perm(&pf->castle_perm, CAST_PERM_NONE);
         return;
     }
 
     uint8_t len = (uint8_t) strlen(perms);
 
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++)
+    {
         uint8_t cp = CAST_PERM_NONE;
 
-        switch (*perms) {
+        switch (*perms)
+        {
         case 'K':
             cp = CAST_PERM_WK;
             break;
@@ -258,27 +369,30 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms)
 
 static void setup_en_passant_sq(struct parsed_fen * pf, const char *en_pass)
 {
-    if (*en_pass != '-') {
+    if (*en_pass != '-')
+    {
         // en passant square present
         int file = en_pass[0] - 'a';
         int rank = en_pass[1] - '1';
 
         pf->is_en_pass_set = true;
         pf->en_pass_sq = get_square((enum rank)rank, (enum file)file);
-    } else {
+    }
+    else
+    {
         pf->is_en_pass_set = false;
     }
 }
 
 static void setup_half_move_count(struct parsed_fen * pf,
-        const char *half_move_cnt)
+                                  const char *half_move_cnt)
 {
     uint16_t half_move = convert_move_count(half_move_cnt);
     pf->half_move_cnt = half_move;
 }
 
 static void setup_full_move_count(struct parsed_fen * pf,
-        const char *full_move_cnt)
+                                  const char *full_move_cnt)
 {
     uint16_t full_move = convert_move_count(full_move_cnt);
     pf->full_move_cnt = full_move;
@@ -289,3 +403,13 @@ static uint16_t convert_move_count(const char *str)
     int result = atoi(str);
     return (uint16_t) result;
 }
+
+static void validate_struct_init(const struct parsed_fen *pf)
+{
+    if (pf->struct_init_key != STRUCT_INIT_KEY)
+    {
+        assert(false);
+    }
+}
+
+

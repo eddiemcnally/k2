@@ -1,11 +1,31 @@
+// Copyright (c) 2017 Eddie McNally
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#define NUM_RANKS  8
-#define NUM_FILES 8
+#define NUM_RANKS   8
+#define NUM_FILES   8
 #define NUM_SQUARES 64
 
-enum square {
+enum square
+{
     a1 = 0, b1, c1, d1, e1, f1, g1, h1,
     a2, b2, c2, d2, e2, f2, g2, h2,
     a3, b3, c3, d3, e3, f3, g3, h3,
@@ -16,7 +36,8 @@ enum square {
     a8, b8, c8, d8, e8, f8, g8, h8
 };
 
-enum rank {
+enum rank
+{
     RANK_1 = 0,
     RANK_2,
     RANK_3,
@@ -27,7 +48,8 @@ enum rank {
     RANK_8
 };
 
-enum file {
+enum file
+{
     FILE_A = 0,
     FILE_B,
     FILE_C,
