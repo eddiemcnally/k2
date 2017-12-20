@@ -1,3 +1,23 @@
+// Copyright (c) 2017 Eddie McNally
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
 #include <stdint.h>
 #include <assert.h>
 #include "square.h"
@@ -7,10 +27,12 @@
 
 //
 //
-// NOTE : For these occupancy masks, element [0] is a1, and [63] is h8
+// NOTES :
+//		- For these occupancy masks, element [0] is a1, and [63] is h8
+//		- The bit mask represents the set of possible target squares for a piece on a given square
 //
-//
-static const bitboard_t knight_occupancy_masks[NUM_SQUARES] = {
+static const bitboard_t knight_occupancy_masks[NUM_SQUARES] =
+{
 	0x0000000000020400, 0x0000000000050800, 0x00000000000a1100, 0x0000000000142200, 0x0000000000284400, 0x0000000000508800, 0x0000000000a01000, 0x0000000000402000,
 	0x0000000002040004, 0x0000000005080008, 0x000000000a110011, 0x0000000014220022, 0x0000000028440044, 0x0000000050880088, 0x00000000a0100010, 0x0000000040200020,
 	0x0000000204000402, 0x0000000508000805, 0x0000000a1100110a, 0x0000001422002214, 0x0000002844004428, 0x0000005088008850, 0x000000a0100010a0, 0x0000004020002040,
@@ -21,7 +43,8 @@ static const bitboard_t knight_occupancy_masks[NUM_SQUARES] = {
 	0x0004020000000000, 0x0008050000000000, 0x00110a0000000000, 0x0022140000000000, 0x0044280000000000, 0x0088500000000000, 0x0010a00000000000, 0x0020400000000000
 };
 
-static const bitboard_t bishop_occupancy_masks[NUM_SQUARES] = {
+static const bitboard_t bishop_occupancy_masks[NUM_SQUARES] =
+{
 	0x8040201008040200, 0x0080402010080500, 0x0000804020110a00, 0x0000008041221400, 0x0000000182442800, 0x0000010204885000, 0x000102040810a000, 0x0102040810204000,
 	0x4020100804020002, 0x8040201008050005, 0x00804020110a000a, 0x0000804122140014, 0x0000018244280028, 0x0001020488500050, 0x0102040810a000a0, 0x0204081020400040,
 	0x2010080402000204, 0x4020100805000508, 0x804020110a000a11, 0x0080412214001422, 0x0001824428002844, 0x0102048850005088, 0x02040810a000a010, 0x0408102040004020,
@@ -32,7 +55,8 @@ static const bitboard_t bishop_occupancy_masks[NUM_SQUARES] = {
 	0x0002040810204080, 0x0005081020408000, 0x000a112040800000, 0x0014224180000000, 0x0028448201000000, 0x0050880402010000, 0x00a0100804020100, 0x0040201008040201
 };
 
-static const bitboard_t queen_occupancy_masks[NUM_SQUARES] = {
+static const bitboard_t queen_occupancy_masks[NUM_SQUARES] =
+{
 	0x81412111090503fe, 0x02824222120a07fd, 0x0404844424150efb, 0x08080888492a1cf7, 0x10101011925438ef, 0x2020212224a870df, 0x404142444850e0bf, 0x8182848890a0c07f,
 	0x412111090503fe03, 0x824222120a07fd07, 0x04844424150efb0e, 0x080888492a1cf71c, 0x101011925438ef38, 0x20212224a870df70, 0x4142444850e0bfe0, 0x82848890a0c07fc0,
 	0x2111090503fe0305, 0x4222120a07fd070a, 0x844424150efb0e15, 0x0888492a1cf71c2a, 0x1011925438ef3854, 0x212224a870df70a8, 0x42444850e0bfe050, 0x848890a0c07fc0a0,
@@ -43,7 +67,8 @@ static const bitboard_t queen_occupancy_masks[NUM_SQUARES] = {
 	0xfe03050911214181, 0xfd070a1222428202, 0xfb0e152444840404, 0xf71c2a4988080808, 0xef38549211101010, 0xdf70a82422212020, 0xbfe0504844424140, 0x7fc0a09088848281
 };
 
-static const bitboard_t king_occupancy_masks[NUM_SQUARES] = {
+static const bitboard_t king_occupancy_masks[NUM_SQUARES] =
+{
 	0x0000000000000302, 0x0000000000000705, 0x0000000000000e0a, 0x0000000000001c14, 0x0000000000003828, 0x0000000000007050, 0x000000000000e0a0, 0x000000000000c040,
 	0x0000000000030203, 0x0000000000070507, 0x00000000000e0a0e, 0x00000000001c141c, 0x0000000000382838, 0x0000000000705070, 0x0000000000e0a0e0, 0x0000000000c040c0,
 	0x0000000003020300, 0x0000000007050700, 0x000000000e0a0e00, 0x000000001c141c00, 0x0000000038283800, 0x0000000070507000, 0x00000000e0a0e000, 0x00000000c040c000,
@@ -54,7 +79,8 @@ static const bitboard_t king_occupancy_masks[NUM_SQUARES] = {
 	0x0203000000000000, 0x0507000000000000, 0x0a0e000000000000, 0x141c000000000000, 0x2838000000000000, 0x5070000000000000, 0xa0e0000000000000, 0x40c0000000000000
 };
 
-static const bitboard_t rook_occupancy_masks[NUM_SQUARES] = {
+static const bitboard_t rook_occupancy_masks[NUM_SQUARES] =
+{
 	0x01010101010101fe, 0x02020202020202fd, 0x04040404040404fb, 0x08080808080808f7, 0x10101010101010ef, 0x20202020202020df, 0x40404040404040bf, 0x808080808080807f,
 	0x010101010101fe01, 0x020202020202fd02, 0x040404040404fb04, 0x080808080808f708, 0x101010101010ef10, 0x202020202020df20, 0x404040404040bf40, 0x8080808080807f80,
 	0x0101010101fe0101, 0x0202020202fd0202, 0x0404040404fb0404, 0x0808080808f70808, 0x1010101010ef1010, 0x2020202020df2020, 0x4040404040bf4040, 0x80808080807f8080,
@@ -65,30 +91,66 @@ static const bitboard_t rook_occupancy_masks[NUM_SQUARES] = {
 	0xfe01010101010101, 0xfd02020202020202, 0xfb04040404040404, 0xf708080808080808, 0xef10101010101010, 0xdf20202020202020, 0xbf40404040404040, 0x7f80808080808080
 };
 
+
+/**
+ * @brief 		Get Knight occupancy mask
+ * @details 	Get the occupancy mask for the Knight on the given square
+ *
+ * @param square The square containing the knight
+ * @return A bitboard representing the occupancy mask
+ */
 bitboard_t get_knight_occ_mask(const enum square sq)
 {
 	validate_square(sq);
 	return knight_occupancy_masks[sq];
 }
 
+/**
+ * @brief 		Get Bishop occupancy mask
+ * @details 	Get the occupancy mask for the Bishop on the given square
+ *
+ * @param square The square containing the Bishop
+ * @return A bitboard representing the occupancy mask
+ */
 bitboard_t get_bishop_occ_mask(const enum square sq)
 {
 	validate_square(sq);
 	return bishop_occupancy_masks[sq];
 }
 
+/**
+ * @brief 		Get King occupancy mask
+ * @details 	Get the occupancy mask for the King on the given square
+ *
+ * @param square The square containing the King
+ * @return A bitboard representing the occupancy mask
+ */
 bitboard_t get_king_occ_mask(const enum square sq)
 {
 	validate_square(sq);
 	return king_occupancy_masks[sq];
 }
 
+/**
+ * @brief 		Get Queen occupancy mask
+ * @details 	Get the occupancy mask for the Queen on the given square
+ *
+ * @param square The square containing the Queen
+ * @return A bitboard representing the occupancy mask
+ */
 bitboard_t get_queen_occ_mask(const enum square sq)
 {
 	validate_square(sq);
 	return queen_occupancy_masks[sq];
 }
 
+/**
+ * @brief 		Get Rook occupancy mask
+ * @details 	Get the occupancy mask for the Rook on the given square
+ *
+ * @param square The square containing the Rook
+ * @return A bitboard representing the occupancy mask
+ */
 bitboard_t get_rook_occ_mask(const enum square sq)
 {
 	validate_square(sq);
