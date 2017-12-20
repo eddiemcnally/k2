@@ -18,17 +18,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#pragma once
 
-#include <stdbool.h>
 #include <stdint.h>
-#include "square.h"
+#include "bitboard.h"
+#include "utils.h"
 
+/**
+ * @brief 		Pops least-significant bit
+ * @details 	Pops the lowest set bit, and clears the bit in the bitboard.  Uses gcc built-in function
+ * (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+ *
+ * @param bb The bitboard
+ * @return The zero-based bit that was set
+ */
+uint8_t pop_1st_bit(bitboard_t * bb)
+{
+	uint8_t bit = (uint8_t) __builtin_ctzll(*bb);
 
-typedef uint64_t bitboard_t;
-
-void bb_set_square(bitboard_t* bb, const enum square sq);
-void bb_clear_square(bitboard_t* bb, const enum square sq);
-bool bb_is_set(const bitboard_t bb, const enum square sq);
-uint8_t bb_count_bits(const bitboard_t bb);
-
+	// clear the bit
+	*bb = *bb & (uint64_t) (~(0x01ull << bit));
+	return bit;
+}

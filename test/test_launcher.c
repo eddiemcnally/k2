@@ -8,11 +8,13 @@
 #include "test_piece.h"
 #include "test_position.h"
 #include "test_square.h"
+#include "test_utils.h"
 
 
 int main(void)
 {
-	const struct CMUnitTest tests[] = {
+	const struct CMUnitTest tests[] =
+	{
 		// FEN Testing
 		cmocka_unit_test(test_fen_pieces_init_position),
 		cmocka_unit_test(test_fen_pieces_random_position),
@@ -39,6 +41,10 @@ int main(void)
 		// Position
 		cmocka_unit_test(test_position_add_castle_perm),
 		cmocka_unit_test(test_position_remove_castle_perm),
+
+		// utils
+		cmocka_unit_test(test_utils_pop_first_bit_random_squares),
+		cmocka_unit_test(test_utils_pop_first_bit_all_squares),
 
 
 

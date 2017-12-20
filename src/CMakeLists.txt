@@ -21,6 +21,7 @@ set (SOURCES
 	${FEN_DIR}/fen.c
 	${POSN_DIR}/position.c
 	${POSN_DIR}/move.c
+	${UTILS_DIR}/utils.c
 	)
 
 # Define the include directories.
@@ -30,6 +31,7 @@ set(INCLUDES
 	${BRD_DIR}
 	${FEN_DIR}
 	${POSN_DIR}
+	${UTILS_DIR}
 	)
 
 #message("main SOURCES ='${SOURCES}'")

@@ -67,3 +67,15 @@ bool bb_is_set(const bitboard_t bb, const enum square sq)
 	return (bb & (BIT_0 << sq)) != 0;
 }
 
+
+/**
+ * @brief 		Count set bits in bitboard
+ * @details 	Counts the number of set bits in a bitboard. Uses a built-in GCC function
+ *
+ * @param bb The bitboard
+ * @return The number of set bits
+ */
+uint8_t bb_count_bits(const bitboard_t bb)
+{
+	return (uint8_t) __builtin_popcountll(bb);
+}

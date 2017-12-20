@@ -39,6 +39,7 @@ set(TEST_SRCS
 	test_square.c
 	test_position.c
     test_move.c
+    test_utils.c
 )
 
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
