@@ -18,6 +18,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -79,3 +80,19 @@ uint8_t bb_count_bits(const bitboard_t bb)
 {
 	return (uint8_t) __builtin_popcountll(bb);
 }
+
+/**
+ * @brief 		Pops least-significant bit
+ * @details 	Pops the lowest set bit, and clears the bit in the bitboard.  Uses gcc built-in function
+ * (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+ *
+ * @param bb The bitboard
+ * @return The zero-based bit that was set
+ */
+enum square bb_pop_1st_bit(bitboard_t * bb)
+{
+	enum square sq = (enum square) __builtin_ctzll(*bb);
+	bb_clear_square(bb, sq);
+	return sq;
+}
+

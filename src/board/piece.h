@@ -70,6 +70,10 @@ enum piece
     BKING   = (KING | BLACK),
 };
 
+#define     NUM_PIECES      12
+#define     NUM_PIECE_TYPES 6
+
+
 bool pce_is_white(const enum piece pce);
 bool pce_is_black(const enum piece pce);
 enum colour swap_side(const enum colour side);

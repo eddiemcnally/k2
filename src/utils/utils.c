@@ -18,24 +18,3 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-
-#include <stdint.h>
-#include "bitboard.h"
-#include "utils.h"
-
-/**
- * @brief 		Pops least-significant bit
- * @details 	Pops the lowest set bit, and clears the bit in the bitboard.  Uses gcc built-in function
- * (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
- *
- * @param bb The bitboard
- * @return The zero-based bit that was set
- */
-uint8_t pop_1st_bit(bitboard_t * bb)
-{
-	uint8_t bit = (uint8_t) __builtin_ctzll(*bb);
-
-	// clear the bit
-	*bb = *bb & (uint64_t) (~(0x01ull << bit));
-	return bit;
-}

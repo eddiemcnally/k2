@@ -18,10 +18,58 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#pragma once
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
-void test_square_get_rank(void **state);
-void test_square_get_file(void **state);
-void test_square_get_from_rank_file(void **state);
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
+
+#include "move_list.h"
+#include "test_move_list.h"
+
+
+void test_move_list_init(void **state)
+{
+	struct move_list* mvl = mvl_allocate();
+
+	uint16_t count = mvl_get_move_count(mvl);
+	assert_true(count == 0);
+
+	mvl_deallocate(mvl);
+}
+
+
+void test_move_list_bulk_add_moves(void **state)
+{
+	const uint16_t max_moves = MOVE_LIST_MAX_LEN - 1;
+	const uint16_t mv_offset = 1234;
+
+	struct move_list* mvl = mvl_allocate();
+
+	// add moves
+	for (int i = 0; i < max_moves; i++)
+	{
+		move_t mv = (move_t)(mv_offset + i);
+		mvl_add(mvl, mv);
+	}
+
+	uint16_t count = mvl_get_move_count(mvl);
+	assert_true(count == max_moves);
+
+	move_t *mvp = mvl_get_move_array(mvl);
+	for (int i = 0; i < max_moves; i++)
+	{
+		move_t mv = mvp[i];
+		assert_true(mv == (move_t)(mv_offset + i));
+	}
+
+	mvl_deallocate(mvl);
+}
+
+
+
 
 

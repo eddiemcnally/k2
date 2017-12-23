@@ -1,3 +1,23 @@
+// Copyright (c) 2017 Eddie McNally
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 #include <stdbool.h>
@@ -14,15 +34,17 @@
 
 void test_move_quiet_move_encode_decode(void **state)
 {
-    for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
-        for (enum square to_sq = a1; to_sq <= h8; to_sq++) {
-            struct move mv = move_encode_quiet(from_sq, to_sq);
+	for (enum square from_sq = a1; from_sq <= h8; from_sq++)
+	{
+		for (enum square to_sq = a1; to_sq <= h8; to_sq++)
+		{
+			move_t mv = move_encode_quiet(from_sq, to_sq);
 
-            enum square decoded_from = move_decode_from_sq(&mv);
-            enum square decoded_to = move_decode_to_sq(&mv);
+			enum square decoded_from = move_decode_from_sq(mv);
+			enum square decoded_to = move_decode_to_sq(mv);
 
-            assert_true(from_sq == decoded_from);
-            assert_true(to_sq == decoded_to);
-        }
-    }
+			assert_true(from_sq == decoded_from);
+			assert_true(to_sq == decoded_to);
+		}
+	}
 }

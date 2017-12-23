@@ -6,6 +6,7 @@ set(BRD_DIR 	${PROJECT_SOURCE_DIR}/src/board)
 set(BB_DIR 		${PROJECT_SOURCE_DIR}/src/board/bitboard)
 set(FEN_DIR 	${PROJECT_SOURCE_DIR}/src/fen)
 set(POSN_DIR 	${PROJECT_SOURCE_DIR}/src/position)
+set(MOVE_DIR 	${PROJECT_SOURCE_DIR}/src/move)
 set(UTILS_DIR 	${PROJECT_SOURCE_DIR}/src/utils)
 
 message("PROJECT_SOURCE_DIR='${PROJECT_SOURCE_DIR}'")
@@ -20,7 +21,8 @@ set (SOURCES
 	${BRD_DIR}/square.c
 	${FEN_DIR}/fen.c
 	${POSN_DIR}/position.c
-	${POSN_DIR}/move.c
+	${MOVE_DIR}/move.c
+	${MOVE_DIR}/move_list.c
 	${UTILS_DIR}/utils.c
 	)
 
@@ -31,6 +33,7 @@ set(INCLUDES
 	${BRD_DIR}
 	${FEN_DIR}
 	${POSN_DIR}
+	${MOVE_DIR}
 	${UTILS_DIR}
 	)
 

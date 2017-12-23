@@ -31,4 +31,5 @@ void bb_set_square(bitboard_t* bb, const enum square sq);
 void bb_clear_square(bitboard_t* bb, const enum square sq);
 bool bb_is_set(const bitboard_t bb, const enum square sq);
 uint8_t bb_count_bits(const bitboard_t bb);
+enum square bb_pop_1st_bit(bitboard_t * bb);
 

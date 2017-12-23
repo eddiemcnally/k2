@@ -30,9 +30,22 @@
 
 
 /**
+ * used for indexing into an array
+ */
+enum piece_offset
+{
+    Pawn    = 0,
+    Bishop  = 1,
+    Knight  = 2,
+    Rook    = 3,
+    Queen   = 4,
+    King    = 5
+};
+
+
+/**
  * @brief       The main Board struct
  * @details     Represents the state of the board (squares, pieces)
- *
  */
 struct board
 {
@@ -49,16 +62,20 @@ struct board
 
     // contains the piece on a given square
     enum piece  pce_square[NUM_SQUARES];
+
+    // bitboard for each piece
+    bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
 };
 
-#define     NO_PIECE    0
+#define     NO_PIECE    (NUM_PIECES + 1)
 
 // used to check struct is populated when passed into public functions
 #define STRUCT_INIT_KEY ((uint16_t)0xdeadbeef)
 
 static void setup_square(struct board *brd, const enum piece pce, const enum square sq, const enum colour col);
-static void clear_square(struct board *brd, const enum square sq, const enum colour col);
+static void clear_square(struct board *brd, const enum piece pce, const enum square sq, const enum colour col);
 static void validate_struct_init(const struct board *brd);
+static uint8_t get_pce_offset(const enum piece pce);
 
 // ==================================================================
 //
@@ -160,7 +177,7 @@ void brd_remove_piece(struct board* brd, const enum piece pce, const enum square
     validate_struct_init(brd);
 
     enum colour col = pce_get_colour(pce);
-    clear_square(brd, sq, col);
+    clear_square(brd, pce, sq, col);
 
     uint32_t material = pce_get_value(pce);
     brd->material[col] -= material;
@@ -181,8 +198,57 @@ void brd_move_piece(struct board* brd, const enum piece pce, const enum square f
 
     enum colour col = pce_get_colour(pce);
 
-    clear_square(brd, from_sq, col);
+    clear_square(brd, pce, from_sq, col);
     setup_square(brd, pce, to_sq, col);
+}
+
+
+/**
+ * @brief       Gets colour bitboard
+ * @details     Gets the bitboard representing all pieces of the given colour
+ *
+ * @param board     The board
+ * @param colour    The colour
+ *
+ * @return A bitboard with a bit set for each piece of the given colour
+ */
+bitboard_t brd_get_colour_bb(const struct board* brd, const enum colour colour)
+{
+    validate_colour(colour);
+    return brd->bb_colour[colour];
+}
+
+/**
+ * @brief       Gets the bitboard for the piece
+ * @details     Returns a bitboard for the given piece, representing the location of all pieces of the given type.
+ *
+ * @param board The board
+ * @param piece The piece
+ *
+ * @return A bitboard for that piece
+ */
+bitboard_t brd_get_piece_bb(const struct board* brd, const enum piece pce)
+{
+    validate_piece(pce);
+
+    enum colour col = pce_get_colour(pce);
+    uint8_t pce_off = get_pce_offset(pce);
+
+    return brd->piece_bb[col][pce_off];
+}
+
+
+/**
+ * @brief       Validates a board
+ * @details     Validates that the internal state representation of the board is consistent
+ *
+ * @param board The board to validate
+ */
+void brd_validate(const struct board* brd)
+{
+    assert(brd->struct_init_key == STRUCT_INIT_KEY);
+    // TODO - expand
+
 }
 
 
@@ -196,17 +262,48 @@ void brd_move_piece(struct board* brd, const enum piece pce, const enum square f
 
 static void setup_square(struct board *brd, const enum piece pce, const enum square sq, const enum colour col)
 {
+    uint8_t pce_off = get_pce_offset(pce);
+
+    bb_set_square(&brd->piece_bb[col][pce_off], sq);
     bb_set_square(&brd->bb_board, sq);
     bb_set_square(&brd->bb_colour[col], sq);
     brd->pce_square[sq] = pce;
 }
 
-static void clear_square(struct board *brd, const enum square sq, const enum colour col)
+static void clear_square(struct board *brd, const enum piece pce, const enum square sq, const enum colour col)
 {
+    uint8_t pce_off = get_pce_offset(pce);
+
+    bb_clear_square(&brd->piece_bb[col][pce_off], sq);
     bb_clear_square(&brd->bb_board, sq);
     bb_clear_square(&brd->bb_colour[col], sq);
     brd->pce_square[sq] = NO_PIECE;
 }
+
+static uint8_t get_pce_offset(const enum piece pce)
+{
+    enum piece pce_type = pce_get_piece_type(pce);
+    switch (pce_type)
+    {
+    case PAWN:
+        return Pawn;
+    case BISHOP:
+        return Bishop;
+    case KNIGHT:
+        return Knight;
+    case ROOK:
+        return Rook;
+    case QUEEN:
+        return Queen;
+    case KING:
+        return King;
+    default:
+        assert(false);
+    }
+}
+
+
+
 
 static void validate_struct_init(const struct board *brd)
 {
@@ -215,3 +312,7 @@ static void validate_struct_init(const struct board *brd)
         assert(false);
     }
 }
+
+
+
+

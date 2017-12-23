@@ -17,10 +17,3 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-
-#pragma once
-
-#include <stdint.h>
-#include "bitboard.h"
-
-uint8_t pop_1st_bit(bitboard_t * bb);

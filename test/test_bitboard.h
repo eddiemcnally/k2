@@ -17,11 +17,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-
 #pragma once
-
-void test_square_get_rank(void **state);
-void test_square_get_file(void **state);
-void test_square_get_from_rank_file(void **state);
-
-
+void test_bitboard_pop_first_bit_all_squares(void **state);
+void test_bitboard_pop_first_bit_random_squares(void **state);
+void test_bitboard_count_bits(void **state);
+void test_bitboard_set_test_clear_bit(void **state);
