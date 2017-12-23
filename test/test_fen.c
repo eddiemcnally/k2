@@ -114,7 +114,7 @@ void test_fen_pieces_init_position(void **state)
     {
         for (int f = FILE_A; f <= FILE_H; f++)
         {
-            enum square sq = get_square((enum rank)r, (enum file)f);
+            enum square sq = sq_gen_from_rank_file((enum rank)r, (enum file)f);
 
             found = fen_try_get_piece_on_sq(brd, sq, &pce);
             assert_false(found);

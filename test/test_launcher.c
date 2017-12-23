@@ -27,6 +27,7 @@
 #include "test_piece.h"
 #include "test_position.h"
 #include "test_square.h"
+#include "test_board.h"
 #include "test_bitboard.h"
 #include "test_move_list.h"
 
@@ -68,10 +69,20 @@ int main(void)
 		cmocka_unit_test(test_bitboard_count_bits),
 		cmocka_unit_test(test_bitboard_set_test_clear_bit),
 
+		// board
+		cmocka_unit_test(test_board_brd_allocate_deallocate),
+		cmocka_unit_test(test_board_brd_bulk_add_remove_piece),
+		//cmocka_unit_test(test_board_brd_validate),
+
+
 		// move list
 		cmocka_unit_test(test_move_list_init),
 		cmocka_unit_test(test_move_list_bulk_add_moves),
 
+		// square
+		cmocka_unit_test(test_square_sq_get_rank),
+		cmocka_unit_test(test_square_sq_get_file),
+		cmocka_unit_test(test_square_gen_from_rank_file),
 
 
 	};

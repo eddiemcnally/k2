@@ -302,7 +302,7 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char 
         if (piece_found == true)
         {
             //printf("found piece %c\n", c);
-            enum square sq = get_square((enum rank)rank, (enum file)file);
+            enum square sq = sq_gen_from_rank_file((enum rank)rank, (enum file)file);
 
             //printf("adding piece %c to square %s\n", c, print_square(sq));
 
@@ -376,7 +376,7 @@ static void setup_en_passant_sq(struct parsed_fen * pf, const char *en_pass)
         int rank = en_pass[1] - '1';
 
         pf->is_en_pass_set = true;
-        pf->en_pass_sq = get_square((enum rank)rank, (enum file)file);
+        pf->en_pass_sq = sq_gen_from_rank_file((enum rank)rank, (enum file)file);
     }
     else
     {

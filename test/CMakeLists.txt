@@ -33,14 +33,15 @@ set(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
 include_directories(${ENGINE_INCL} ./)
 
 set(TEST_SRCS 
-	test_launcher.c 
+	test_launcher.c
 	test_fen.c
 	test_piece.c
-	test_square.c
 	test_position.c
     test_move.c
 	test_move_list.c
     test_bitboard.c
+    test_board.c
+    test_square.c
 )
 
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})

@@ -17,22 +17,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
+#pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "board.h"
-#include "square.h"
-#include "piece.h"
+void test_board_brd_allocate_deallocate(void **state);
+void test_board_brd_bulk_add_remove_piece(void **state);
 
 
-//#define VERSION_MAJOR	0
-//#define VERSION_MINOR	1
-
-int main(void)
-{
-
-	printf("%d\n", sq_get_rank(a1));
-
-}

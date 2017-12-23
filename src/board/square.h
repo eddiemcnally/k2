@@ -62,9 +62,9 @@ enum file
 
 
 
-enum rank get_rank(const enum square sq);
-enum file get_file(const enum square sq);
-enum square get_square(const enum rank rank, const enum file file);
+enum rank sq_get_rank(const enum square sq);
+enum file sq_get_file(const enum square sq);
+enum square sq_gen_from_rank_file(const enum rank rank, const enum file file);
 char * print_square(const enum square sq);
 void validate_square(const enum square sq);
 

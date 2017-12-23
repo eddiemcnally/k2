@@ -27,29 +27,29 @@
 static char square_text[MAX_SQUARE_TEXT];
 
 
-enum rank get_rank(const enum square sq)
+enum rank sq_get_rank(const enum square sq)
 {
     validate_square(sq);
 
     return (enum rank)(sq >> 3);
 }
 
-enum file get_file(const enum square sq)
+enum file sq_get_file(const enum square sq)
 {
     validate_square(sq);
 
     return (enum file)(sq % 8);
 }
 
-enum square get_square(const enum rank rank, const enum file file)
+enum square sq_gen_from_rank_file(const enum rank rank, const enum file file)
 {
     return (enum square)((rank << 3) + file);
 }
 
 char * print_square(const enum square sq)
 {
-    int file = get_file(sq);
-    int rank = get_rank(sq);
+    int file = sq_get_file(sq);
+    int rank = sq_get_rank(sq);
 
     sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
 
