@@ -72,8 +72,10 @@ int main(void)
 		// board
 		cmocka_unit_test(test_board_brd_allocate_deallocate),
 		cmocka_unit_test(test_board_brd_bulk_add_remove_piece),
-		//cmocka_unit_test(test_board_brd_validate),
-
+		cmocka_unit_test(test_board_brd_move_piece),
+		cmocka_unit_test(test_board_brd_get_piece_bb),
+		cmocka_unit_test(test_board_brd_get_colour_bb_black),
+		cmocka_unit_test(test_board_brd_get_colour_bb_white),
 
 		// move list
 		cmocka_unit_test(test_move_list_init),
