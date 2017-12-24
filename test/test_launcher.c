@@ -48,6 +48,14 @@ int main(void)
 
 		// Moves
 		cmocka_unit_test(test_move_quiet_move_encode_decode),
+		cmocka_unit_test(test_move_promoted_capture_move_encode_decode),
+		cmocka_unit_test(test_move_promoted_non_capture_move_encode_decode),
+		cmocka_unit_test(test_move_en_passant_move_encode_decode),
+
+
+		// move list
+		cmocka_unit_test(test_move_list_init),
+		cmocka_unit_test(test_move_list_bulk_add_moves),
 
 		// Pieces
 		cmocka_unit_test(test_piece_is_white),
@@ -76,10 +84,6 @@ int main(void)
 		cmocka_unit_test(test_board_brd_get_piece_bb),
 		cmocka_unit_test(test_board_brd_get_colour_bb_black),
 		cmocka_unit_test(test_board_brd_get_colour_bb_white),
-
-		// move list
-		cmocka_unit_test(test_move_list_init),
-		cmocka_unit_test(test_move_list_bulk_add_moves),
 
 		// square
 		cmocka_unit_test(test_square_sq_get_rank),

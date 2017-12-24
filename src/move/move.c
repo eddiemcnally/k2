@@ -24,7 +24,27 @@
 #include "square.h"
 #include "move.h"
 
-
+/**
+ * bitmap for move
+ * See http://chessprogramming.wikispaces.com/Encoding+Moves
+ *
+ * ---- ---- --11 1111      To Square
+ * ---- 1111 11-- ----      From Square
+ * 0000 ---- ---- ----      Quiet move
+ * 0001 ---- ---- ----      Double Pawn push
+ * 0010 ---- ---- ----      King Castle
+ * 0011 ---- ---- ----      Queen Castle
+ * 0100 ---- ---- ----      Capture
+ * 0101 ---- ---- ----      En Passant Capture
+ * 1000 ---- ---- ----      Promotion Knight
+ * 1001 ---- ---- ----      Promotion Bishop
+ * 1010 ---- ---- ----      Promotion Rook
+ * 1011 ---- ---- ----      Promotion Queen
+ * 1100 ---- ---- ----      Promotion Knight Capture
+ * 1101 ---- ---- ----      Promotion Bishop Capture
+ * 1110 ---- ---- ----      Promotion Rook Capture
+ * 1111 ---- ---- ----      Promotion Queen Capture
+ */
 
 enum move_bits_masks
 {
@@ -189,6 +209,56 @@ enum square move_decode_to_sq(const move_t mv)
 {
     return (enum square)((mv & MV_MASK_TO_SQ) >> MV_SHFT_TO_SQ);
 }
+
+/**
+ * @brief       Tests if move is Quiet
+ * @details     Tests the given move_t, returns true if Quiet, false otherwise
+ *
+ * @param mv The move to test
+ * @return true if quiet, false otherwise
+ */
+bool move_is_quiet(move_t mv)
+{
+    move_t m = ((move_t)mv) & MV_MASK_FLAGS;
+    return m == MV_FLG_QUIET;
+}
+
+/**
+ * @brief       Tests if move is Capture
+ * @details     Tests the given move_t, returns true if a Capture move, false otherwise
+ *
+ * @param mv The move to test
+ * @return true if Capture, false otherwise
+ */
+bool move_is_capture(move_t mv)
+{
+    return (mv & MV_FLG_BIT_CAPTURE) != 0;
+}
+
+/**
+ * @brief       Tests if move is a Promotion
+ * @details     Tests the given move_t, returns true if a Promotion move, false otherwise
+ *
+ * @param mv The move to test
+ * @return true if a promotion, false otherwise
+ */
+bool move_is_promotion(move_t mv)
+{
+    return (mv & MV_FLG_BIT_PROMOTE) != 0;
+}
+
+/**
+ * @brief       Tests if move is a En Passant
+ * @details     Tests the given move_t, returns true if an En Passant move, false otherwise
+ *
+ * @param mv The move to test
+ * @return true if an En Passant move, false otherwise
+ */
+bool move_is_en_passant(move_t mv)
+{
+    return (mv & MV_FLG_EN_PASS) != 0;
+}
+
 
 
 
