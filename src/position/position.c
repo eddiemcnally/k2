@@ -20,7 +20,53 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include "position.h"
+#include "board.h"
+
+
+
+
+#define STRUCT_INIT_KEY     ((uint64_t)0xdeadbeef)
+
+struct position
+{
+    uint64_t struct_init_key;
+
+    // current board representation
+    struct board *brd;
+
+    // the next side to move
+    enum colour side_to_move;
+
+    // a hash of the current board
+    uint64_t board_hash;
+
+    // the square where en passent is active
+    enum square en_passant;
+
+    uint8_t fifty_move_counter;
+
+    // keeping track of ply
+    uint8_t ply;
+    uint8_t history_ply;
+
+    // castling permissions
+    uint8_t castle_perm;
+};
+
+
+
+
+struct position * pos_create(const char * fen)
+{
+    return NULL;
+}
+
+void pos_destroy(struct position *pos)
+{
+
+}
 
 void add_cast_perm(uint8_t* cp, const enum castle_perm perm)
 {

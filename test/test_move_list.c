@@ -69,7 +69,24 @@ void test_move_list_bulk_add_moves(void **state)
 	mvl_deallocate(mvl);
 }
 
+void test_move_list_reset_list(void **state)
+{
+	const uint16_t num_moves = 30;
+	struct move_list* mvl = mvl_allocate();
 
+	// add moves
+	for (int i = 0; i < num_moves; i++)
+	{
+		move_t mv = (move_t)i;
+		mvl_add(mvl, mv);
+	}
+
+	assert_true(num_moves == mvl_get_move_count(mvl));
+
+	mvl_reset(mvl);
+
+	assert_true(0 == mvl_get_move_count(mvl));
+}
 
 
 

@@ -56,6 +56,7 @@ int main(void)
 		// move list
 		cmocka_unit_test(test_move_list_init),
 		cmocka_unit_test(test_move_list_bulk_add_moves),
+		cmocka_unit_test(test_move_list_reset_list),
 
 		// Pieces
 		cmocka_unit_test(test_piece_is_white),

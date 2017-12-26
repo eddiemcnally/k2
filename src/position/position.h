@@ -22,6 +22,8 @@
 
 #include <stdint.h>
 
+struct position;
+
 enum castle_perm
 {
 	CAST_PERM_NONE  = 0,
@@ -37,3 +39,7 @@ enum castle_perm
 void add_cast_perm(uint8_t* cp, const enum castle_perm perm);
 void remove_cast_perm(uint8_t* cp, const enum castle_perm perm);
 bool has_cast_perm(const uint8_t cp, const enum castle_perm perm);
+
+struct position * pos_create(const char * fen);
+void pos_destroy(struct position *pos);
+

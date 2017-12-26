@@ -119,7 +119,19 @@ void mvl_add(struct move_list *mvl, move_t mv)
 	mvl->move_count++;
 }
 
+/**
+ * @brief Resets move list to init state
+ * @details Resets the move list to the initial empty state
+ *
+ * @param move_list Pointer to the move list
+ */
+void mvl_reset(struct move_list *mvl)
+{
+	validate_move_list(mvl);
+	validate_move_list_size(mvl);
 
+	mvl->move_count = 0;
+}
 
 // ==================================================================
 //

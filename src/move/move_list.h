@@ -33,4 +33,6 @@ void mvl_deallocate(struct move_list *mvl);
 uint16_t mvl_get_move_count(const struct move_list *mvl);
 move_t* mvl_get_move_array(struct move_list *mvl);
 void mvl_add(struct move_list *mvl, move_t mv);
+void mvl_reset(struct move_list *mvl);
+
 
