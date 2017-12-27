@@ -1,22 +1,26 @@
-// Copyright (c) 2017 Eddie McNally
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-// DEALINGS IN THE SOFTWARE.
+/*  MIT License
+ *
+ *  Copyright (c) 2017 Eddie McNally
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -92,8 +96,9 @@ struct position * pos_create()
 void pos_initialise(const char * fen, struct position *pos)
 {
     validate_position(pos);
+    struct parsed_fen *parsed_fen = fen_parse(fen);
 
-    struct parsed_fen *pf = fen_parse(fen);
+    populate_pos_from_fen(pos, parsed_fen);
 }
 
 
@@ -111,6 +116,20 @@ void pos_destroy(struct position *pos)
     memset(pos, 0, sizeof (struct position));
     free(pos);
 }
+
+/**
+ * @brief       Returns the board
+ * @details     Returns the board managed by this position
+ *
+ * @param position The Position
+ * @return      The board
+ */
+struct board * pos_get_board(const struct position *pos)
+{
+    validate_position(pos);
+    return pos->brd;
+}
+
 
 
 void add_cast_perm(uint8_t* cp, const enum castle_perm perm)
@@ -156,7 +175,6 @@ static void validate_position(const struct position *pos)
 
 static void populate_pos_from_fen(struct position *pos, const struct parsed_fen *fen)
 {
-
     pos->side_to_move = fen_get_side_to_move(fen);
     enum square en_pass;
     bool found_en_pass = fen_try_get_en_pass_sq(fen, &en_pass);
