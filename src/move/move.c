@@ -129,6 +129,8 @@ move_t move_encode_promoted(const enum square from_sq, const enum square to_sq, 
 
     enum piece pce_type = pce_get_piece_type(promoted_piece);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
     switch (pce_type)
     {
     case KNIGHT:
@@ -147,6 +149,7 @@ move_t move_encode_promoted(const enum square from_sq, const enum square to_sq, 
         assert(false);
         break;
     }
+#pragma GCC diagnostic pop
 
     if (is_capture)
     {

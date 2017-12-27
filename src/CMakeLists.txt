@@ -57,15 +57,23 @@ set(DEBUG_CC_FLAGS
 		-Wstrict-prototypes \
 		-Wmissing-prototypes \
 		-Wswitch-default \
+		-Wswitch-enum \
 		-Wunused-macros \
-		-Wextra \
+		-Wundef \
+		-Wuninitialized \
+		-Winit-self \
 		-Wconversion \
 		-Wsign-conversion \
 		-Wshadow \
 		-Wcast-qual \
 		-Wcast-align \
 		-Wmissing-include-dirs \
-		-Wpointer-arith")
+		-Wpointer-arith \
+		-Wwrite-strings \
+		-Waggregate-return \
+		-Wunreachable-code \
+		-Wredundant-decls \
+		")
 
 SET(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
 

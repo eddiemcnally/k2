@@ -42,4 +42,5 @@ bool has_cast_perm(const uint8_t cp, const enum castle_perm perm);
 
 struct position * pos_create(const char * fen);
 void pos_destroy(struct position *pos);
+void pos_initialise(const char * fen, struct position *pos);
 

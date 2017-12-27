@@ -105,6 +105,11 @@ struct board* brd_allocate(void)
     memset(retval, 0, sizeof(struct board));
     retval->struct_init_key = STRUCT_INIT_KEY;
 
+    for (enum square sq = a1; sq <= h8; sq++)
+    {
+        retval->pce_square[sq] = NO_PIECE;
+    }
+
     return retval;
 }
 
@@ -314,6 +319,10 @@ static void clear_square(struct board *brd, const enum piece pce, const enum squ
 static uint8_t map_piece_to_offset(const enum piece pce)
 {
     enum piece pce_type = pce_get_piece_type(pce);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+
     switch (pce_type)
     {
     case PAWN:
@@ -331,6 +340,8 @@ static uint8_t map_piece_to_offset(const enum piece pce)
     default:
         assert(false);
     }
+#pragma GCC diagnostic pop
+
 }
 
 static uint8_t map_colour_to_offset(const enum colour col)

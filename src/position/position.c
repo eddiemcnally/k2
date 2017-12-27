@@ -21,10 +21,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 #include "position.h"
+#include "fen.h"
 #include "board.h"
 
-
+static void init_pos_struct(struct position *pos);
+static void validate_position(const struct position *pos);
+static void populate_pos_from_fen(struct position *pos, const struct parsed_fen *fen);
 
 
 #define STRUCT_INIT_KEY     ((uint64_t)0xdeadbeef)
@@ -44,29 +50,68 @@ struct position
 
     // the square where en passent is active
     enum square en_passant;
-
-    uint8_t fifty_move_counter;
+    bool en_passant_set;
 
     // keeping track of ply
-    uint8_t ply;
-    uint8_t history_ply;
+    uint16_t ply;
+    uint16_t history_ply;
 
     // castling permissions
     uint8_t castle_perm;
+
+    uint8_t fifty_move_counter;
 };
 
 
 
-
-struct position * pos_create(const char * fen)
+/**
+ * @brief       Create instance of Position
+ * @details     Create and initialise an empty instance of the Position struct
+ *
+ * @return      An initialised Position struct
+ */
+struct position * pos_create()
 {
-    return NULL;
+    struct position *retval = (struct position *)malloc(sizeof(struct position));
+    init_pos_struct(retval);
+
+    struct board *brd = brd_allocate();
+    retval->brd = brd;
+
+    return retval;
 }
 
+
+/**
+ * @brief       Initialise the position with the given FEN
+ * @details     Sets up the position using the goven FEN
+ *
+ * @param fen   The FEN string
+ * @param position The position struct
+ */
+void pos_initialise(const char * fen, struct position *pos)
+{
+    validate_position(pos);
+
+    struct parsed_fen *pf = fen_parse(fen);
+}
+
+
+/**
+ * @brief       Destroys the position struct
+ * @details     Cleans up the Porition and frees up any memory
+ *
+ * @param position The position to destroy
+ */
 void pos_destroy(struct position *pos)
 {
+    validate_position(pos);
+    brd_deallocate(pos->brd);
 
+    memset(pos, 0, sizeof (struct position));
+    free(pos);
 }
+
 
 void add_cast_perm(uint8_t* cp, const enum castle_perm perm)
 {
@@ -93,3 +138,51 @@ bool has_cast_perm(const uint8_t cp, const enum castle_perm perm)
     }
     return (cp & perm) != 0;
 }
+
+
+
+
+static void init_pos_struct(struct position *pos)
+{
+    memset(pos, 0, sizeof(struct position));
+    pos->struct_init_key = STRUCT_INIT_KEY;
+}
+
+static void validate_position(const struct position *pos)
+{
+    assert(pos->struct_init_key == STRUCT_INIT_KEY);
+}
+
+
+static void populate_pos_from_fen(struct position *pos, const struct parsed_fen *fen)
+{
+
+    pos->side_to_move = fen_get_side_to_move(fen);
+    enum square en_pass;
+    bool found_en_pass = fen_try_get_en_pass_sq(fen, &en_pass);
+    if (found_en_pass)
+    {
+        pos->en_passant_set = true;
+        pos->en_passant = en_pass;
+    }
+    else
+    {
+        pos->en_passant_set = false;
+    }
+
+    pos->fifty_move_counter = 0;
+    pos->ply = fen_get_half_move_cnt(fen);
+    pos->history_ply = fen_get_full_move_cnt(fen);
+    pos->castle_perm = fen_get_castle_permissions(fen);
+
+    for (enum square sq = a1; sq <= h8; sq++)
+    {
+        enum piece pce;
+        bool found_pce = brd_try_get_piece_on_square(pos->brd, sq, &pce);
+        if (found_pce)
+        {
+            brd_add_piece(pos->brd, pce, sq);
+        }
+    }
+}
+

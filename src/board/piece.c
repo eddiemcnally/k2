@@ -115,6 +115,9 @@ uint32_t pce_get_value(const enum piece pce)
 
     enum piece p = pce_get_piece_type(pce);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+
     switch (p)
     {
     case PAWN:
@@ -133,6 +136,8 @@ uint32_t pce_get_value(const enum piece pce)
         assert(false);
         break;
     }
+#pragma GCC diagnostic pop
+
 }
 
 /**
@@ -145,6 +150,10 @@ uint32_t pce_get_value(const enum piece pce)
 char pce_get_label(const enum piece pce)
 {
     validate_piece(pce);
+
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
 
     switch (pce)
     {
@@ -176,6 +185,8 @@ char pce_get_label(const enum piece pce)
         assert(false);
         return '-';
     }
+#pragma GCC diagnostic pop
+
 }
 
 /**
@@ -188,6 +199,10 @@ char pce_get_label(const enum piece pce)
 enum piece pce_get_from_label(const char c)
 {
     validate_label(c);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+
     switch (c)
     {
     case 'p':
@@ -217,6 +232,8 @@ enum piece pce_get_from_label(const char c)
     default:
         assert(false);
     }
+#pragma GCC diagnostic pop
+
 }
 
 /**
@@ -240,6 +257,10 @@ enum piece pce_get_piece_type(const enum piece piece)
 void validate_piece(const enum piece pce)
 {
 #ifdef ENABLE_ASSERTS
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+
     switch (pce)
     {
     case WPAWN:
@@ -260,6 +281,7 @@ void validate_piece(const enum piece pce)
         assert(false);
         break;
     }
+#pragma GCC diagnostic pop
 #endif
 }
 
