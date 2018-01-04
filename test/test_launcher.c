@@ -36,68 +36,68 @@
 #include "test_move_list.h"
 
 
-int main(void)
+int main ( void )
 {
-	const struct CMUnitTest tests[] =
-	{
-		// FEN Testing
-		cmocka_unit_test(test_fen_pieces_init_position),
-		cmocka_unit_test(test_fen_pieces_random_position),
-		cmocka_unit_test(test_fen_side_to_move),
-		cmocka_unit_test(test_fen_castle_permissions_initial_fen),
-		cmocka_unit_test(test_fen_castle_permissions_random_fen),
-		cmocka_unit_test(test_fen_half_move_count),
-		cmocka_unit_test(test_fen_full_move_count),
-		cmocka_unit_test(test_fen_en_passant),
+        const struct CMUnitTest tests[] = {
+                // FEN Testing
+                cmocka_unit_test ( test_fen_pieces_init_position ),
+                cmocka_unit_test ( test_fen_pieces_random_position ),
+                cmocka_unit_test ( test_fen_side_to_move ),
+                cmocka_unit_test ( test_fen_castle_permissions_initial_fen ),
+                cmocka_unit_test ( test_fen_castle_permissions_random_fen ),
+                cmocka_unit_test ( test_fen_half_move_count ),
+                cmocka_unit_test ( test_fen_full_move_count ),
+                cmocka_unit_test ( test_fen_en_passant ),
 
-		// Moves
-		cmocka_unit_test(test_move_quiet_move_encode_decode),
-		cmocka_unit_test(test_move_promoted_capture_move_encode_decode),
-		cmocka_unit_test(test_move_promoted_non_capture_move_encode_decode),
-		cmocka_unit_test(test_move_en_passant_move_encode_decode),
-
-
-		// move list
-		cmocka_unit_test(test_move_list_init),
-		cmocka_unit_test(test_move_list_bulk_add_moves),
-		cmocka_unit_test(test_move_list_reset_list),
-
-		// Pieces
-		cmocka_unit_test(test_piece_is_white),
-		cmocka_unit_test(test_piece_is_black),
-		cmocka_unit_test(test_piece_get_colour_white_pieces),
-		cmocka_unit_test(test_piece_get_colour_black_pieces),
-		cmocka_unit_test(test_piece_swap_side),
-		cmocka_unit_test(test_piece_get_piece_label),
-		cmocka_unit_test(test_piece_values),
-		cmocka_unit_test(test_piece_get_piece_from_label),
-
-		// Position
-		cmocka_unit_test(test_position_add_castle_perm),
-		cmocka_unit_test(test_position_remove_castle_perm),
-
-		// bitboard
-		cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),
-		cmocka_unit_test(test_bitboard_pop_first_bit_all_squares),
-		cmocka_unit_test(test_bitboard_count_bits),
-		cmocka_unit_test(test_bitboard_set_test_clear_bit),
-
-		// board
-		cmocka_unit_test(test_board_brd_allocate_deallocate),
-		cmocka_unit_test(test_board_brd_bulk_add_remove_piece),
-		cmocka_unit_test(test_board_brd_move_piece),
-		cmocka_unit_test(test_board_brd_get_piece_bb),
-		cmocka_unit_test(test_board_brd_get_colour_bb_black),
-		cmocka_unit_test(test_board_brd_get_colour_bb_white),
-
-		// square
-		cmocka_unit_test(test_square_sq_get_rank),
-		cmocka_unit_test(test_square_sq_get_file),
-		cmocka_unit_test(test_square_gen_from_rank_file),
+                // Moves
+                cmocka_unit_test ( test_move_quiet_move_encode_decode ),
+                cmocka_unit_test ( test_move_promoted_capture_move_encode_decode ),
+                cmocka_unit_test ( test_move_promoted_non_capture_move_encode_decode ),
+                cmocka_unit_test ( test_move_en_passant_move_encode_decode ),
 
 
-	};
+                // move list
+                cmocka_unit_test ( test_move_list_init ),
+                cmocka_unit_test ( test_move_list_bulk_add_moves ),
+                cmocka_unit_test ( test_move_list_reset_list ),
+                cmocka_unit_test ( test_move_list_contains_move ),
 
-	return cmocka_run_group_tests(tests, NULL, NULL);
+                // Pieces
+                cmocka_unit_test ( test_piece_is_white ),
+                cmocka_unit_test ( test_piece_is_black ),
+                cmocka_unit_test ( test_piece_get_colour_white_pieces ),
+                cmocka_unit_test ( test_piece_get_colour_black_pieces ),
+                cmocka_unit_test ( test_piece_swap_side ),
+                cmocka_unit_test ( test_piece_get_piece_label ),
+                cmocka_unit_test ( test_piece_values ),
+                cmocka_unit_test ( test_piece_get_piece_from_label ),
+
+                // Position
+                cmocka_unit_test ( test_position_add_castle_perm ),
+                cmocka_unit_test ( test_position_remove_castle_perm ),
+
+                // bitboard
+                cmocka_unit_test ( test_bitboard_pop_first_bit_random_squares ),
+                cmocka_unit_test ( test_bitboard_pop_first_bit_all_squares ),
+                cmocka_unit_test ( test_bitboard_count_bits ),
+                cmocka_unit_test ( test_bitboard_set_test_clear_bit ),
+
+                // board
+                cmocka_unit_test ( test_board_brd_allocate_deallocate ),
+                cmocka_unit_test ( test_board_brd_bulk_add_remove_piece ),
+                cmocka_unit_test ( test_board_brd_move_piece ),
+                cmocka_unit_test ( test_board_brd_get_piece_bb ),
+                cmocka_unit_test ( test_board_brd_get_colour_bb_black ),
+                cmocka_unit_test ( test_board_brd_get_colour_bb_white ),
+
+                // square
+                cmocka_unit_test ( test_square_sq_get_rank ),
+                cmocka_unit_test ( test_square_sq_get_file ),
+                cmocka_unit_test ( test_square_gen_from_rank_file ),
+
+
+        };
+
+        return cmocka_run_group_tests ( tests, NULL, NULL );
 }
 

@@ -35,62 +35,82 @@
 #include "test_move_list.h"
 
 
-void test_move_list_init(void **state)
+void test_move_list_init ( void **state )
 {
-	struct move_list* mvl = mvl_allocate();
+        struct move_list* mvl = mvl_allocate();
 
-	uint16_t count = mvl_get_move_count(mvl);
-	assert_true(count == 0);
+        uint16_t count = mvl_get_move_count ( mvl );
+        assert_true ( count == 0 );
 
-	mvl_deallocate(mvl);
+        mvl_deallocate ( mvl );
 }
 
 
-void test_move_list_bulk_add_moves(void **state)
+void test_move_list_bulk_add_moves ( void **state )
 {
-	const uint16_t max_moves = MOVE_LIST_MAX_LEN - 1;
-	const uint16_t mv_offset = 1234;
+        const uint16_t max_moves = MOVE_LIST_MAX_LEN - 1;
+        const uint16_t mv_offset = 1234;
 
-	struct move_list* mvl = mvl_allocate();
+        struct move_list* mvl = mvl_allocate();
 
-	// add moves
-	for (int i = 0; i < max_moves; i++)
-	{
-		move_t mv = (move_t)(mv_offset + i);
-		mvl_add(mvl, mv);
-	}
+        // add moves
+        for ( int i = 0; i < max_moves; i++ ) {
+                move_t mv = ( move_t ) ( mv_offset + i );
+                mvl_add ( mvl, mv );
+        }
 
-	uint16_t count = mvl_get_move_count(mvl);
-	assert_true(count == max_moves);
+        uint16_t count = mvl_get_move_count ( mvl );
+        assert_true ( count == max_moves );
 
-	move_t *mvp = mvl_get_move_array(mvl);
-	for (int i = 0; i < max_moves; i++)
-	{
-		move_t mv = mvp[i];
-		assert_true(mv == (move_t)(mv_offset + i));
-	}
+        move_t *mvp = mvl_get_move_array ( mvl );
+        for ( int i = 0; i < max_moves; i++ ) {
+                move_t mv = mvp[i];
+                assert_true ( mv == ( move_t ) ( mv_offset + i ) );
+        }
 
-	mvl_deallocate(mvl);
+        mvl_deallocate ( mvl );
 }
 
-void test_move_list_reset_list(void **state)
+void test_move_list_contains_move ( void **state )
 {
-	const uint16_t num_moves = 30;
-	struct move_list* mvl = mvl_allocate();
+        const uint16_t num_moves = 250;
+        struct move_list* mvl = mvl_allocate();
 
-	// add moves
-	for (int i = 0; i < num_moves; i++)
-	{
-		move_t mv = (move_t)i;
-		mvl_add(mvl, mv);
-	}
+        // add moves
+        for ( int i = 0; i < num_moves; i++ ) {
+                move_t mv = ( move_t ) i;
+                mvl_add ( mvl, mv );
+        }
 
-	assert_true(num_moves == mvl_get_move_count(mvl));
+        // verify all are present
+        for ( int i = 0; i < num_moves; i++ ) {
+                move_t mv = ( move_t ) i;
+                assert_true ( mvl_contains_move ( mvl, mv ) );
+        }
 
-	mvl_reset(mvl);
+        // verify a non-existant move is not in the list
+        move_t other_mv = ( move_t ) ( num_moves + 100 );
+        assert_false ( mvl_contains_move ( mvl, other_mv ) );
 
-	assert_true(0 == mvl_get_move_count(mvl));
+        mvl_deallocate ( mvl );
 }
 
 
+void test_move_list_reset_list ( void **state )
+{
+        const uint16_t num_moves = 30;
+        struct move_list* mvl = mvl_allocate();
 
+        // add moves
+        for ( int i = 0; i < num_moves; i++ ) {
+                move_t mv = ( move_t ) i;
+                mvl_add ( mvl, mv );
+        }
+
+        assert_true ( num_moves == mvl_get_move_count ( mvl ) );
+
+        mvl_reset ( mvl );
+        assert_true ( 0 == mvl_get_move_count ( mvl ) );
+
+        mvl_deallocate ( mvl );
+}

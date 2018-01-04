@@ -32,175 +32,173 @@
 #include "fen.h"
 #include "board.h"
 
-static void init_pos_struct(struct position *pos);
-static void validate_position(const struct position *pos);
-static void populate_pos_from_fen(struct position *pos, const struct parsed_fen *fen);
+static void init_pos_struct ( struct position *pos );
+static void validate_position ( const struct position *pos );
+static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
 
 
 #define STRUCT_INIT_KEY     ((uint64_t)0xdeadbeef)
 
-struct position
-{
-    uint64_t struct_init_key;
+struct position {
+        uint64_t struct_init_key;
 
-    // current board representation
-    struct board *brd;
+        // current board representation
+        struct board *brd;
 
-    // the next side to move
-    enum colour side_to_move;
+        // the next side to move
+        enum colour side_to_move;
 
-    // a hash of the current board
-    uint64_t board_hash;
+        // a hash of the current board
+        uint64_t board_hash;
 
-    // the square where en passent is active
-    enum square en_passant;
-    bool en_passant_set;
+        // the square where en passent is active
+        enum square en_passant;
+        bool en_passant_set;
 
-    // keeping track of ply
-    uint16_t ply;
-    uint16_t history_ply;
+        // keeping track of ply
+        uint16_t ply;
+        uint16_t history_ply;
 
-    // castling permissions
-    uint8_t castle_perm;
+        // castling permissions
+        uint8_t castle_perm;
 
-    uint8_t fifty_move_counter;
+        uint8_t fifty_move_counter;
 };
 
 
 
 /**
- * @brief       Create instance of Position
- * @details     Create and initialise an empty instance of the Position struct
+ * @brief       Create and initialise an empty instance of the Position struct
  *
  * @return      An initialised Position struct
  */
 struct position * pos_create()
 {
-    struct position *retval = (struct position *)malloc(sizeof(struct position));
-    init_pos_struct(retval);
+        struct position *retval = ( struct position * ) malloc ( sizeof ( struct position ) );
+        init_pos_struct ( retval );
 
-    struct board *brd = brd_allocate();
-    retval->brd = brd;
+        struct board *brd = brd_allocate();
+        retval->brd = brd;
 
-    return retval;
+        return retval;
 }
 
 
 /**
- * @brief       Initialise the position with the given FEN
- * @details     Sets up the position using the goven FEN
+ * @brief       Sets up the position using the goven FEN
  *
  * @param fen   The FEN string
- * @param position The position struct
+ * @param pos   The position struct
  */
-void pos_initialise(const char * fen, struct position *pos)
+void pos_initialise ( const char * fen, struct position *pos )
 {
-    validate_position(pos);
-    struct parsed_fen *parsed_fen = fen_parse(fen);
+        validate_position ( pos );
+        struct parsed_fen *parsed_fen = fen_parse ( fen );
 
-    populate_pos_from_fen(pos, parsed_fen);
+        populate_position_from_fen ( pos, parsed_fen );
 }
 
 
 /**
- * @brief       Destroys the position struct
- * @details     Cleans up the Porition and frees up any memory
+ * @brief       Cleans up the Position and frees up any memory
  *
- * @param position The position to destroy
+ * @param pos   The position to destroy
  */
-void pos_destroy(struct position *pos)
+void pos_destroy ( struct position *pos )
 {
-    validate_position(pos);
-    brd_deallocate(pos->brd);
+        validate_position ( pos );
+        brd_deallocate ( pos->brd );
 
-    memset(pos, 0, sizeof (struct position));
-    free(pos);
+        memset ( pos, 0, sizeof ( struct position ) );
+        free ( pos );
 }
 
 /**
- * @brief       Returns the board
- * @details     Returns the board managed by this position
+ * @brief       Returns the board managed by this position
  *
- * @param position The Position
+ * @param pos   The Position
  * @return      The board
  */
-struct board * pos_get_board(const struct position *pos)
+struct board * pos_get_board ( const struct position *pos )
 {
-    validate_position(pos);
-    return pos->brd;
+        validate_position ( pos );
+        return pos->brd;
+}
+
+/**
+ * @brief       Gets the side to move from the position struct
+ *
+ * @param pos   The position
+ * @return Side to move
+ */
+enum colour pos_get_side_to_move ( const struct position *pos )
+{
+        validate_position ( pos );
+        return pos->side_to_move;
 }
 
 
-
-void add_cast_perm(uint8_t* cp, const enum castle_perm perm)
+void add_cast_perm ( uint8_t* cp, const enum castle_perm perm )
 {
-    if (perm == CAST_PERM_NONE)
-    {
-        *cp = CAST_PERM_NONE;
-    }
-    else
-    {
-        *cp = *cp | (uint8_t) perm;
-    }
-}
-
-void remove_cast_perm(uint8_t* cp, const enum castle_perm perm)
-{
-    *cp = *cp & (~perm);
-}
-
-bool has_cast_perm(const uint8_t cp, const enum castle_perm perm)
-{
-    if (perm == CAST_PERM_NONE)
-    {
-        return (cp == 0);
-    }
-    return (cp & perm) != 0;
-}
-
-
-
-
-static void init_pos_struct(struct position *pos)
-{
-    memset(pos, 0, sizeof(struct position));
-    pos->struct_init_key = STRUCT_INIT_KEY;
-}
-
-static void validate_position(const struct position *pos)
-{
-    assert(pos->struct_init_key == STRUCT_INIT_KEY);
-}
-
-
-static void populate_pos_from_fen(struct position *pos, const struct parsed_fen *fen)
-{
-    pos->side_to_move = fen_get_side_to_move(fen);
-    enum square en_pass;
-    bool found_en_pass = fen_try_get_en_pass_sq(fen, &en_pass);
-    if (found_en_pass)
-    {
-        pos->en_passant_set = true;
-        pos->en_passant = en_pass;
-    }
-    else
-    {
-        pos->en_passant_set = false;
-    }
-
-    pos->fifty_move_counter = 0;
-    pos->ply = fen_get_half_move_cnt(fen);
-    pos->history_ply = fen_get_full_move_cnt(fen);
-    pos->castle_perm = fen_get_castle_permissions(fen);
-
-    for (enum square sq = a1; sq <= h8; sq++)
-    {
-        enum piece pce;
-        bool found_pce = brd_try_get_piece_on_square(pos->brd, sq, &pce);
-        if (found_pce)
-        {
-            brd_add_piece(pos->brd, pce, sq);
+        if ( perm == CAST_PERM_NONE ) {
+                *cp = CAST_PERM_NONE;
+        } else {
+                *cp = *cp | ( uint8_t ) perm;
         }
-    }
+}
+
+void remove_cast_perm ( uint8_t* cp, const enum castle_perm perm )
+{
+        *cp = *cp & ( ~perm );
+}
+
+bool has_cast_perm ( const uint8_t cp, const enum castle_perm perm )
+{
+        if ( perm == CAST_PERM_NONE ) {
+                return ( cp == 0 );
+        }
+        return ( cp & perm ) != 0;
+}
+
+
+
+
+static void init_pos_struct ( struct position *pos )
+{
+        memset ( pos, 0, sizeof ( struct position ) );
+        pos->struct_init_key = STRUCT_INIT_KEY;
+}
+
+static void validate_position ( const struct position *pos )
+{
+        assert ( pos->struct_init_key == STRUCT_INIT_KEY );
+}
+
+
+static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen )
+{
+        pos->side_to_move = fen_get_side_to_move ( fen );
+
+        enum square en_pass;
+        bool found_en_pass = fen_try_get_en_pass_sq ( fen, &en_pass );
+        if ( found_en_pass ) {
+                pos->en_passant_set = true;
+                pos->en_passant = en_pass;
+        } else {
+                pos->en_passant_set = false;
+        }
+
+        pos->fifty_move_counter = 0;
+        pos->ply = fen_get_half_move_cnt ( fen );
+        pos->history_ply = fen_get_full_move_cnt ( fen );
+        pos->castle_perm = fen_get_castle_permissions ( fen );
+
+        for ( enum square sq = a1; sq <= h8; sq++ ) {
+                enum piece pce;
+                bool found_pce = brd_try_get_piece_on_square ( pos->brd, sq, &pce );
+                if ( found_pce ) {
+                        brd_add_piece ( pos->brd, pce, sq );
+                }
+        }
 }
 

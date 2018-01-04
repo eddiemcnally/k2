@@ -23,8 +23,8 @@
 
 
 #pragma once
-void test_move_quiet_move_encode_decode(void **state);
-void test_move_promoted_capture_move_encode_decode(void **state);
-void test_move_promoted_non_capture_move_encode_decode(void **state);
-void test_move_en_passant_move_encode_decode(void **state);
+void test_move_quiet_move_encode_decode ( void **state );
+void test_move_promoted_capture_move_encode_decode ( void **state );
+void test_move_promoted_non_capture_move_encode_decode ( void **state );
+void test_move_en_passant_move_encode_decode ( void **state );
 

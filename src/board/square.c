@@ -31,38 +31,38 @@
 static char square_text[MAX_SQUARE_TEXT];
 
 
-enum rank sq_get_rank(const enum square sq)
+enum rank sq_get_rank ( const enum square sq )
 {
-    validate_square(sq);
+        validate_square ( sq );
 
-    return (enum rank)(sq >> 3);
+        return ( enum rank ) ( sq >> 3 );
 }
 
-enum file sq_get_file(const enum square sq)
+enum file sq_get_file ( const enum square sq )
 {
-    validate_square(sq);
+        validate_square ( sq );
 
-    return (enum file)(sq % 8);
+        return ( enum file ) ( sq % 8 );
 }
 
-enum square sq_gen_from_rank_file(const enum rank rank, const enum file file)
+enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
 {
-    return (enum square)((rank << 3) + file);
+        return ( enum square ) ( ( rank << 3 ) + file );
 }
 
-char * print_square(const enum square sq)
+char * print_square ( const enum square sq )
 {
-    int file = sq_get_file(sq);
-    int rank = sq_get_rank(sq);
+        int file = sq_get_file ( sq );
+        int rank = sq_get_rank ( sq );
 
-    sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
+        sprintf ( square_text, "%c%c", ( 'a' + file ), ( '1' + rank ) );
 
-    return square_text;
+        return square_text;
 }
 
-void validate_square(const enum square sq)
+void validate_square ( const enum square sq )
 {
 #ifdef ENABLE_ASSERTS
-    assert(sq >= a1 && sq <= h8);
+        assert ( sq >= a1 && sq <= h8 );
 #endif
 }

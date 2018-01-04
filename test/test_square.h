@@ -24,8 +24,8 @@
 
 #pragma once
 
-void test_square_sq_get_rank(void **state);
-void test_square_sq_get_file(void **state);
-void test_square_gen_from_rank_file(void **state);
+void test_square_sq_get_rank ( void **state );
+void test_square_sq_get_file ( void **state );
+void test_square_gen_from_rank_file ( void **state );
 
 

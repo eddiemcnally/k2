@@ -24,8 +24,9 @@
 
 #pragma once
 
-void test_move_list_init(void **state);
-void test_move_list_bulk_add_moves(void **state);
-void test_move_list_reset_list(void **state);
+void test_move_list_init ( void **state );
+void test_move_list_bulk_add_moves ( void **state );
+void test_move_list_reset_list ( void **state );
+void test_move_list_contains_move ( void **state );
 
 

@@ -23,6 +23,7 @@ set (SOURCES
 	${POSN_DIR}/position.c
 	${MOVE_DIR}/move.c
 	${MOVE_DIR}/move_list.c
+	${MOVE_DIR}/move_gen.c
 	${UTILS_DIR}/utils.c
 	)
 

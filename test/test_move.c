@@ -37,108 +37,96 @@
 
 
 
-void test_move_quiet_move_encode_decode(void **state)
+void test_move_quiet_move_encode_decode ( void **state )
 {
-	for (enum square from_sq = a1; from_sq <= h8; from_sq++)
-	{
-		for (enum square to_sq = a1; to_sq <= h8; to_sq++)
-		{
-			if (from_sq == to_sq)
-			{
-				continue;
-			}
+        for ( enum square from_sq = a1; from_sq <= h8; from_sq++ ) {
+                for ( enum square to_sq = a1; to_sq <= h8; to_sq++ ) {
+                        if ( from_sq == to_sq ) {
+                                continue;
+                        }
 
-			move_t mv = move_encode_quiet(from_sq, to_sq);
+                        move_t mv = move_encode_quiet ( from_sq, to_sq );
 
-			enum square decoded_from = move_decode_from_sq(mv);
-			enum square decoded_to = move_decode_to_sq(mv);
+                        enum square decoded_from = move_decode_from_sq ( mv );
+                        enum square decoded_to = move_decode_to_sq ( mv );
 
-			assert_true(from_sq == decoded_from);
-			assert_true(to_sq == decoded_to);
+                        assert_true ( from_sq == decoded_from );
+                        assert_true ( to_sq == decoded_to );
 
-			bool is_quiet = move_is_quiet(mv);
-			assert_true(is_quiet);
-		}
-	}
+                        bool is_quiet = move_is_quiet ( mv );
+                        assert_true ( is_quiet );
+                }
+        }
 }
 
 
 
-void test_move_promoted_capture_move_encode_decode(void **state)
+void test_move_promoted_capture_move_encode_decode ( void **state )
 {
-	for (enum square from_sq = a1; from_sq <= h8; from_sq++)
-	{
-		for (enum square to_sq = a1; to_sq <= h8; to_sq++)
-		{
-			if (from_sq == to_sq)
-			{
-				continue;
-			}
+        for ( enum square from_sq = a1; from_sq <= h8; from_sq++ ) {
+                for ( enum square to_sq = a1; to_sq <= h8; to_sq++ ) {
+                        if ( from_sq == to_sq ) {
+                                continue;
+                        }
 
-			move_t mv = move_encode_promoted(from_sq, to_sq, WQUEEN, true);
+                        move_t mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, true );
 
-			enum square decoded_from = move_decode_from_sq(mv);
-			enum square decoded_to = move_decode_to_sq(mv);
+                        enum square decoded_from = move_decode_from_sq ( mv );
+                        enum square decoded_to = move_decode_to_sq ( mv );
 
-			assert_true(from_sq == decoded_from);
-			assert_true(to_sq == decoded_to);
+                        assert_true ( from_sq == decoded_from );
+                        assert_true ( to_sq == decoded_to );
 
-			bool is_capture = move_is_capture(mv);
-			assert_true(is_capture);
-		}
-	}
+                        bool is_capture = move_is_capture ( mv );
+                        assert_true ( is_capture );
+                }
+        }
 }
 
-void test_move_promoted_non_capture_move_encode_decode(void **state)
+void test_move_promoted_non_capture_move_encode_decode ( void **state )
 {
-	for (enum square from_sq = a1; from_sq <= h8; from_sq++)
-	{
-		for (enum square to_sq = a1; to_sq <= h8; to_sq++)
-		{
-			if (from_sq == to_sq)
-			{
-				continue;
-			}
+        for ( enum square from_sq = a1; from_sq <= h8; from_sq++ ) {
+                for ( enum square to_sq = a1; to_sq <= h8; to_sq++ ) {
+                        if ( from_sq == to_sq ) {
+                                continue;
+                        }
 
-			move_t mv = move_encode_promoted(from_sq, to_sq, WQUEEN, false);
+                        move_t mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, false );
 
-			enum square decoded_from = move_decode_from_sq(mv);
-			enum square decoded_to = move_decode_to_sq(mv);
+                        enum square decoded_from = move_decode_from_sq ( mv );
+                        enum square decoded_to = move_decode_to_sq ( mv );
 
-			assert_true(from_sq == decoded_from);
-			assert_true(to_sq == decoded_to);
+                        assert_true ( from_sq == decoded_from );
+                        assert_true ( to_sq == decoded_to );
 
-			bool is_capture = move_is_capture(mv);
-			assert_false(is_capture);
-		}
-	}
+                        bool is_capture = move_is_capture ( mv );
+                        assert_false ( is_capture );
+                }
+        }
 }
 
 
-void test_move_en_passant_move_encode_decode(void **state)
+void test_move_en_passant_move_encode_decode ( void **state )
 {
-	for (enum square from_sq = a1; from_sq <= h8; from_sq++)
-	{
-		for (enum square to_sq = a1; to_sq <= h8; to_sq++)
-		{
-			if (from_sq == to_sq)
-			{
-				continue;
-			}
+        for ( enum square from_sq = a1; from_sq <= h8; from_sq++ ) {
+                for ( enum square to_sq = a1; to_sq <= h8; to_sq++ ) {
+                        if ( from_sq == to_sq ) {
+                                continue;
+                        }
 
-			move_t mv = move_encode_enpassant(from_sq, to_sq);
+                        move_t mv = move_encode_enpassant ( from_sq, to_sq );
 
-			enum square decoded_from = move_decode_from_sq(mv);
-			enum square decoded_to = move_decode_to_sq(mv);
+                        enum square decoded_from = move_decode_from_sq ( mv );
+                        enum square decoded_to = move_decode_to_sq ( mv );
 
-			assert_true(from_sq == decoded_from);
-			assert_true(to_sq == decoded_to);
+                        assert_true ( from_sq == decoded_from );
+                        assert_true ( to_sq == decoded_to );
 
-			bool is_capture = move_is_capture(mv);
-			assert_true(is_capture);
+                        bool is_capture = move_is_capture ( mv );
+                        assert_true ( is_capture );
 
-			bool is_enpassant = move_is_en_passant(mv);
-			assert_true(is_enpassant);
-		}
-	}
+                        bool is_enpassant = move_is_en_passant ( mv );
+                        assert_true ( is_enpassant );
+                }
+        }
 }

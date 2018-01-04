@@ -33,15 +33,14 @@
 
 
 
-struct move_list
-{
-	uint16_t 	struct_init_key;
-	uint16_t 	move_count;
-	move_t 		move_list[MOVE_LIST_MAX_LEN];
+struct move_list {
+        uint16_t 	struct_init_key;
+        uint16_t 	move_count;
+        move_t 		move_list[MOVE_LIST_MAX_LEN];
 };
 
-static void validate_move_list(const struct move_list *mvl);
-static void validate_move_list_size(const struct move_list *mvl);
+static void validate_move_list ( const struct move_list *mvl );
+static void validate_move_list_size ( const struct move_list *mvl );
 
 
 
@@ -54,88 +53,103 @@ static void validate_move_list_size(const struct move_list *mvl);
 
 
 /**
- * @brief Allocate a new move_list
- * @details Allocates and initialises a new move list
+ * @brief       Allocates and initialises a new move list
  *
  * @return A ptr to a new move_list instance
  */
-struct move_list* mvl_allocate(void)
+struct move_list* mvl_allocate ( void )
 {
-	struct move_list *retval = (struct move_list *)malloc(sizeof(struct move_list));
-	memset(retval, 0, sizeof(struct move_list));
-	retval->struct_init_key = MOVE_LIST_INIT_KEY;
+        struct move_list *retval = ( struct move_list * ) malloc ( sizeof ( struct move_list ) );
+        memset ( retval, 0, sizeof ( struct move_list ) );
+        retval->struct_init_key = MOVE_LIST_INIT_KEY;
 
-	return retval;
+        return retval;
 }
 
 /**
- * @brief Deallocate a move_list instance
- * @details Deallocates a move_list and returns resources
+ * @brief       Deallocates a move_list and returns resources
  *
- * @param move_list A ptr to the move_list to free up.
+ * @param mvl   A ptr to the move_list to free up.
  */
-void mvl_deallocate(struct move_list *mvl)
+void mvl_deallocate ( struct move_list *mvl )
 {
-	validate_move_list(mvl);
-	memset(mvl, 0, sizeof (struct move_list));
-	free(mvl);
+        validate_move_list ( mvl );
+        memset ( mvl, 0, sizeof ( struct move_list ) );
+        free ( mvl );
 }
 
 /**
  * @brief       Extract move count from move list
- * @details
  *
- * @param move_list Pointer to move_list
+ * @param mvl Pointer to move_list
  * @return Number of moves in the move list
  */
-uint16_t mvl_get_move_count(const struct move_list *mvl)
+uint16_t mvl_get_move_count ( const struct move_list *mvl )
 {
-	validate_move_list(mvl);
-	return mvl->move_count;
+        validate_move_list ( mvl );
+        return mvl->move_count;
 }
 
 /**
- * @brief 		Extract the move array
- * @details 	Extracts the move array from the move_list
+ * @brief 		Extracts the move array from the move_list
  *
- * @param move_list The move list
+ * @param mvl The move list
  * @return A pointer to an array of move_t types
  */
-move_t* mvl_get_move_array(struct move_list *mvl)
+move_t* mvl_get_move_array ( struct move_list *mvl )
 {
-	validate_move_list(mvl);
-	return mvl->move_list;
+        validate_move_list ( mvl );
+        return mvl->move_list;
 }
 
 /**
- * @brief 		Append a move
- * @details 	Appends a move to the end of the current move_list
+ * @brief 		Appends a move to the end of the current move_list
  *
- * @param move_list The move_list instance
+ * @param mvl The move_list instance
  * @param mv The move to add
  */
-void mvl_add(struct move_list *mvl, move_t mv)
+void mvl_add ( struct move_list *mvl, move_t mv )
 {
-	validate_move_list(mvl);
-	validate_move_list_size(mvl);
+        validate_move_list ( mvl );
+        validate_move_list_size ( mvl );
 
-	mvl->move_list[mvl->move_count] = mv;
-	mvl->move_count++;
+        mvl->move_list[mvl->move_count] = mv;
+        mvl->move_count++;
 }
 
 /**
- * @brief Resets move list to init state
- * @details Resets the move list to the initial empty state
+ * @brief       Resets the move list to the initial empty state
  *
- * @param move_list Pointer to the move list
+ * @param mvl Pointer to the move list
  */
-void mvl_reset(struct move_list *mvl)
+void mvl_reset ( struct move_list *mvl )
 {
-	validate_move_list(mvl);
-	validate_move_list_size(mvl);
+        validate_move_list ( mvl );
+        validate_move_list_size ( mvl );
 
-	mvl->move_count = 0;
+        mvl->move_count = 0;
 }
+
+/**
+ * @brief       Tests to see if a move is contained within the move list
+ *
+ * @param mvl   Pointer to the move list
+ * @param mv    The move to search for
+ * @return true if move is in list, false otherwise
+ */
+bool mvl_contains_move ( const struct move_list *mvl, const move_t mv )
+{
+        validate_move_list ( mvl );
+        validate_move_list_size ( mvl );
+
+        for ( int i = 0; i < mvl->move_count; i++ ) {
+                if ( mvl->move_list[i] == mv ) {
+                        return true;
+                }
+        }
+        return false;
+}
+
 
 // ==================================================================
 //
@@ -146,12 +160,12 @@ void mvl_reset(struct move_list *mvl)
 
 
 
-static void validate_move_list(const struct move_list *mvl)
+static void validate_move_list ( const struct move_list *mvl )
 {
-	assert(mvl->struct_init_key == MOVE_LIST_INIT_KEY);
+        assert ( mvl->struct_init_key == MOVE_LIST_INIT_KEY );
 }
 
-static void validate_move_list_size(const struct move_list *mvl)
+static void validate_move_list_size ( const struct move_list *mvl )
 {
-	assert(mvl->move_count < MOVE_LIST_MAX_LEN - 1);
+        assert ( mvl->move_count < MOVE_LIST_MAX_LEN - 1 );
 }

@@ -36,45 +36,41 @@
 /**
  * used for indexing into an array
  */
-enum piece_offset
-{
-    Pawn    = 0,
-    Bishop  = 1,
-    Knight  = 2,
-    Rook    = 3,
-    Queen   = 4,
-    King    = 5
+enum piece_offset {
+        Pawn    = 0,
+        Bishop  = 1,
+        Knight  = 2,
+        Rook    = 3,
+        Queen   = 4,
+        King    = 5
 };
 
-enum colour_offset
-{
-    White,
-    Black
+enum colour_offset {
+        White,
+        Black
 };
 
 
 /**
- * @brief       The main Board struct
- * @details     Represents the state of the board (squares, pieces)
+ * @brief       Represents the state of the board (squares, pieces)
  */
-struct board
-{
-    uint16_t    struct_init_key;
+struct board {
+        uint16_t    struct_init_key;
 
-    // a set bit represents an occupied square
-    bitboard_t  bb_board;
+        // a set bit represents an occupied square
+        bitboard_t  bb_board;
 
-    // a bitboard per colour, a set bit means that colour occupies that square
-    bitboard_t  bb_colour[NUM_COLOURS];
+        // a bitboard per colour, a set bit means that colour occupies that square
+        bitboard_t  bb_colour[NUM_COLOURS];
 
-    // total material value for each colour
-    uint32_t    material[NUM_COLOURS];
+        // total material value for each colour
+        uint32_t    material[NUM_COLOURS];
 
-    // contains the piece on a given square
-    enum piece  pce_square[NUM_SQUARES];
+        // contains the piece on a given square
+        enum piece  pce_square[NUM_SQUARES];
 
-    // bitboard for each piece
-    bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
+        // bitboard for each piece
+        bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
 };
 
 #define     NO_PIECE    (NUM_PIECES + 1)
@@ -82,14 +78,14 @@ struct board
 // used to check struct is populated when passed into public functions
 #define STRUCT_INIT_KEY ((uint16_t)0xdeadbeef)
 
-static void setup_square(struct board *brd, const enum piece pce, const enum square sq);
-static void clear_square(struct board *brd, const enum piece pce, const enum square sq);
-static void validate_struct_init(const struct board *brd);
-static uint8_t map_piece_to_offset(const enum piece pce);
-static uint8_t map_colour_to_offset(const enum colour col);
-static void add_material(struct board *brd, enum piece pce);
-static void remove_material(struct board *brd, enum piece pce);
-static uint8_t get_colour_offset(enum piece pce);
+static void setup_square ( struct board *brd, const enum piece pce, const enum square sq );
+static void clear_square ( struct board *brd, const enum piece pce, const enum square sq );
+static void validate_struct_init ( const struct board *brd );
+static uint8_t map_piece_to_offset ( const enum piece pce );
+static uint8_t map_colour_to_offset ( const enum colour col );
+static void add_material ( struct board *brd, enum piece pce );
+static void remove_material ( struct board *brd, enum piece pce );
+static uint8_t get_colour_offset ( enum piece pce );
 
 // ==================================================================
 //
@@ -102,36 +98,46 @@ static uint8_t get_colour_offset(enum piece pce);
  * @brief       Allocates and initialises a board struct
  * @return      ptr to struct board
  */
-struct board* brd_allocate(void)
+struct board* brd_allocate ( void )
 {
-    struct board *retval = (struct board *)malloc(sizeof(struct board));
+        struct board *retval = ( struct board * ) malloc ( sizeof ( struct board ) );
 
-    memset(retval, 0, sizeof(struct board));
-    retval->struct_init_key = STRUCT_INIT_KEY;
+        memset ( retval, 0, sizeof ( struct board ) );
+        retval->struct_init_key = STRUCT_INIT_KEY;
 
-    for (enum square sq = a1; sq <= h8; sq++)
-    {
-        retval->pce_square[sq] = NO_PIECE;
-    }
+        for ( enum square sq = a1; sq <= h8; sq++ ) {
+                retval->pce_square[sq] = NO_PIECE;
+        }
 
-    return retval;
+        return retval;
 }
 
 /**
- * @brief       Deallocates the memory associated with a board
- * @details     Clears memory prior to deallocating
+ * @brief       Clears and Deallocates the memory associated with a board
  *
- * @param board Pointer to the struct memory
+ * @param brd   Pointer to the struct memory
  */
-void brd_deallocate(struct board* brd)
+void brd_deallocate ( struct board* brd )
 {
-    validate_struct_init(brd);
+        validate_struct_init ( brd );
 
-    memset(brd, 0, sizeof (struct board));
-    free(brd);
+        memset ( brd, 0, sizeof ( struct board ) );
+        free ( brd );
 }
 
 
+
+/**
+ * @brief       Gets a bitboard for the entire board
+ *
+ * @param brd The board
+ * @return A bitboard with a bit set for each occupier square
+ */
+bitboard_t brd_get_board_bb ( const struct board* brd )
+{
+        validate_struct_init ( brd );
+        return brd->bb_board;
+}
 
 /**
  * @brief        Tests if given square is set on board
@@ -139,11 +145,11 @@ void brd_deallocate(struct board* brd)
  * @param   sq   the square to test
  * @return  true if square occupied, false otherwise
  */
-bool brd_is_sq_occupied(const struct board* brd, const enum square sq)
+bool brd_is_sq_occupied ( const struct board* brd, const enum square sq )
 {
-    validate_struct_init(brd);
+        validate_struct_init ( brd );
 
-    return bb_is_set(brd->bb_board, sq);
+        return bb_is_set ( brd->bb_board, sq );
 }
 
 
@@ -155,114 +161,108 @@ bool brd_is_sq_occupied(const struct board* brd, const enum square sq)
  * @param pce   the returned piece (if true)
  * @return true is piece found, false otherwise
  */
-bool brd_try_get_piece_on_square(const struct board* brd, const enum square sq, enum piece *pce)
+bool brd_try_get_piece_on_square ( const struct board* brd, const enum square sq, enum piece *pce )
 {
-    validate_struct_init(brd);
+        validate_struct_init ( brd );
 
-    *pce = brd->pce_square[sq];
-    return *pce != NO_PIECE;
+        *pce = brd->pce_square[sq];
+        return *pce != NO_PIECE;
 }
 
 
 /**
- * @brief       Add piece to board
- * @details     Add a piece to the board on the specified square
+ * @brief       Add a piece to the board on the specified square
  *
- * @param board     The board
- * @param piece     The piece to add
- * @param square    The square
+ * @param brd   The board
+ * @param pce   The piece to add
+ * @param sq    The square
  */
-void brd_add_piece(struct board* brd, const enum piece pce, const enum square sq)
+void brd_add_piece ( struct board* brd, const enum piece pce, const enum square sq )
 {
-    validate_struct_init(brd);
+        validate_struct_init ( brd );
 
-    setup_square(brd, pce, sq);
-    add_material(brd, pce);
+        setup_square ( brd, pce, sq );
+        add_material ( brd, pce );
 }
 
 /**
- * @brief       Remove a piece from the board
- * @details     Removes a piece from the specified square
+ * @brief       Removes a piece from the specified square
  *
- * @param board     The board
- * @param piece     The piece
- * @param square    The square
+ * @param brd   The board
+ * @param pce   The piece
+ * @param sq    The square
  */
-void brd_remove_piece(struct board* brd, const enum piece pce, const enum square sq)
+void brd_remove_piece ( struct board* brd, const enum piece pce, const enum square sq )
 {
-    validate_struct_init(brd);
+        validate_struct_init ( brd );
 
-    clear_square(brd, pce, sq);
-    remove_material(brd, pce);
+        clear_square ( brd, pce, sq );
+        remove_material ( brd, pce );
 }
 
 /**
- * @brief       Move a piece
- * @details     Move a piece from the "From" square to the "To" square
+ * @brief       Move a piece from the "From" square to the "To" square
  *
- * @param board     The board
- * @param piece     The piece to move
- * @param square    The From square
- * @param square    The To square
+ * @param brd   The board
+ * @param pce   The piece to move
+ * @param from_sq The From square
+ * @param to_sq The To square
  */
-void brd_move_piece(struct board* brd, const enum piece pce, const enum square from_sq, const enum square to_sq)
+void brd_move_piece ( struct board* brd, const enum piece pce, const enum square from_sq, const enum square to_sq )
 {
-    validate_struct_init(brd);
+        validate_struct_init ( brd );
 
-    clear_square(brd, pce, from_sq);
-    setup_square(brd, pce, to_sq);
+        clear_square ( brd, pce, from_sq );
+        setup_square ( brd, pce, to_sq );
 }
 
 
 /**
- * @brief       Gets colour bitboard
- * @details     Gets the bitboard representing all pieces of the given colour
+ * @brief       Gets the bitboard representing all pieces of the given colour
  *
- * @param board     The board
- * @param colour    The colour
+ * @param brd   The board
+ * @param colour The colour
  *
  * @return A bitboard with a bit set for each piece of the given colour
  */
-bitboard_t brd_get_colour_bb(const struct board* brd, const enum colour colour)
+bitboard_t brd_get_colour_bb ( const struct board* brd, const enum colour colour )
 {
-    validate_colour(colour);
+        validate_colour ( colour );
 
-    uint8_t offset = map_colour_to_offset(colour);
-    return brd->bb_colour[offset];
+        uint8_t offset = map_colour_to_offset ( colour );
+        return brd->bb_colour[offset];
 
 }
 
 /**
- * @brief       Gets the bitboard for the piece
- * @details     Returns a bitboard for the given piece, representing the location of all pieces of the given type.
+ * @brief       Returns a bitboard for the given piece, representing the location of all pieces of the given type.
  *
- * @param board The board
- * @param piece The piece
+ * @param brd The board
+ * @param pce The piece
  *
  * @return A bitboard for that piece
  */
-bitboard_t brd_get_piece_bb(const struct board* brd, const enum piece pce)
+bitboard_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
 {
-    validate_piece(pce);
+        validate_piece ( pce );
 
-    enum colour col = pce_get_colour(pce);
-    uint8_t col_off = map_colour_to_offset(col);
-    uint8_t pce_off = map_piece_to_offset(pce);
+        enum colour col = pce_get_colour ( pce );
+        uint8_t col_off = map_colour_to_offset ( col );
+        uint8_t pce_off = map_piece_to_offset ( pce );
 
-    return brd->piece_bb[col_off][pce_off];
+        return brd->piece_bb[col_off][pce_off];
 }
 
 
 /**
- * @brief       Validates a board
- * @details     Validates that the internal state representation of the board is consistent
+ * @brief       Validates that the internal state representation of the board is consistent
  *
- * @param board The board to validate
+ * @param brd The board to validate
  */
-void brd_validate(const struct board* brd)
+void brd_validate ( const struct board* brd )
 {
-    assert(brd->struct_init_key == STRUCT_INIT_KEY);
-    // TODO - expand
+        assert ( brd->struct_init_key == STRUCT_INIT_KEY );
+        // TODO - expand
 
 }
 
@@ -275,100 +275,97 @@ void brd_validate(const struct board* brd)
 // ==================================================================
 
 
-static void add_material(struct board *brd, enum piece pce)
+static void add_material ( struct board *brd, enum piece pce )
 {
-    uint32_t material = pce_get_value(pce);
-    uint8_t offset = get_colour_offset(pce);
-    brd->material[offset] += material;
+        uint32_t material = pce_get_value ( pce );
+        uint8_t offset = get_colour_offset ( pce );
+        brd->material[offset] += material;
 }
 
-static void remove_material(struct board *brd, enum piece pce)
+static void remove_material ( struct board *brd, enum piece pce )
 {
-    uint32_t material = pce_get_value(pce);
-    uint8_t offset = get_colour_offset(pce);
-    brd->material[offset] -= material;
+        uint32_t material = pce_get_value ( pce );
+        uint8_t offset = get_colour_offset ( pce );
+        brd->material[offset] -= material;
 }
 
-static uint8_t get_colour_offset(enum piece pce)
+static uint8_t get_colour_offset ( enum piece pce )
 {
-    enum colour col = pce_get_colour(pce);
-    return map_colour_to_offset(col);
+        enum colour col = pce_get_colour ( pce );
+        return map_colour_to_offset ( col );
 }
 
 
-static void setup_square(struct board *brd, const enum piece pce, const enum square sq)
+static void setup_square ( struct board *brd, const enum piece pce, const enum square sq )
 {
-    enum colour col = pce_get_colour(pce);
-    uint8_t pce_off = map_piece_to_offset(pce);
-    uint8_t col_off = map_colour_to_offset(col);
+        enum colour col = pce_get_colour ( pce );
+        uint8_t pce_off = map_piece_to_offset ( pce );
+        uint8_t col_off = map_colour_to_offset ( col );
 
-    bb_set_square(&brd->piece_bb[col_off][pce_off], sq);
-    bb_set_square(&brd->bb_board, sq);
-    bb_set_square(&brd->bb_colour[col_off], sq);
-    brd->pce_square[sq] = pce;
+        bb_set_square ( &brd->piece_bb[col_off][pce_off], sq );
+        bb_set_square ( &brd->bb_board, sq );
+        bb_set_square ( &brd->bb_colour[col_off], sq );
+        brd->pce_square[sq] = pce;
 }
 
-static void clear_square(struct board *brd, const enum piece pce, const enum square sq)
+static void clear_square ( struct board *brd, const enum piece pce, const enum square sq )
 {
-    enum colour col = pce_get_colour(pce);
-    uint8_t pce_off = map_piece_to_offset(pce);
-    uint8_t col_off = map_colour_to_offset(col);
+        enum colour col = pce_get_colour ( pce );
+        uint8_t pce_off = map_piece_to_offset ( pce );
+        uint8_t col_off = map_colour_to_offset ( col );
 
-    bb_clear_square(&brd->piece_bb[col_off][pce_off], sq);
-    bb_clear_square(&brd->bb_board, sq);
-    bb_clear_square(&brd->bb_colour[col_off], sq);
-    brd->pce_square[sq] = NO_PIECE;
+        bb_clear_square ( &brd->piece_bb[col_off][pce_off], sq );
+        bb_clear_square ( &brd->bb_board, sq );
+        bb_clear_square ( &brd->bb_colour[col_off], sq );
+        brd->pce_square[sq] = NO_PIECE;
 }
 
-static uint8_t map_piece_to_offset(const enum piece pce)
+static uint8_t map_piece_to_offset ( const enum piece pce )
 {
-    enum piece pce_type = pce_get_piece_type(pce);
+        enum piece pce_type = pce_get_piece_type ( pce );
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
-    switch (pce_type)
-    {
-    case PAWN:
-        return Pawn;
-    case BISHOP:
-        return Bishop;
-    case KNIGHT:
-        return Knight;
-    case ROOK:
-        return Rook;
-    case QUEEN:
-        return Queen;
-    case KING:
-        return King;
-    default:
-        assert(false);
-    }
+        switch ( pce_type ) {
+        case PAWN:
+                return Pawn;
+        case BISHOP:
+                return Bishop;
+        case KNIGHT:
+                return Knight;
+        case ROOK:
+                return Rook;
+        case QUEEN:
+                return Queen;
+        case KING:
+                return King;
+        default:
+                assert ( false );
+        }
 #pragma GCC diagnostic pop
 
 }
 
-static uint8_t map_colour_to_offset(const enum colour col)
+static uint8_t map_colour_to_offset ( const enum colour col )
 {
-    switch (col)
-    {
-    case WHITE:
-        return White;
-    case BLACK:
-        return Black;
-    default:
-        assert(false);
-    }
+        switch ( col ) {
+        case WHITE:
+                return White;
+        case BLACK:
+                return Black;
+        default:
+                assert ( false );
+        }
 }
 
 
 
-static void validate_struct_init(const struct board *brd)
+static void validate_struct_init ( const struct board *brd )
 {
-    if (brd->struct_init_key != STRUCT_INIT_KEY)
-    {
-        assert(false);
-    }
+        if ( brd->struct_init_key != STRUCT_INIT_KEY ) {
+                assert ( false );
+        }
 }
 
 
