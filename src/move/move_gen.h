@@ -26,5 +26,5 @@
 #include "move_list.h"
 
 
-void mv_generate_all_moves ( const struct position *pos, struct move_list *mvl );
-void generate_knight_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl );
+void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl );
+void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl );

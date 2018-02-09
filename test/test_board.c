@@ -48,7 +48,7 @@ static bool is_sq_in_list ( const enum square * sqlist, const int list_size, con
 void test_board_brd_allocate_deallocate ( void **state )
 {
         struct board *brd = brd_allocate();
-        brd_validate ( brd );
+        validate_board ( brd );
         brd_deallocate ( brd );
 }
 

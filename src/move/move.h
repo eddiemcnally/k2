@@ -43,3 +43,5 @@ bool move_is_capture ( move_t mv );
 bool move_is_promotion ( move_t mv );
 bool move_is_en_passant ( move_t mv );
 
+char *move_print ( move_t mv );
+

@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include "move.h"
 
-#define     MOVE_LIST_MAX_LEN	2048
+#define     MOVE_LIST_MAX_LEN	2000
 
 struct move_list;
 
@@ -35,7 +35,7 @@ struct move_list;
 struct move_list* mvl_allocate ( void );
 void mvl_deallocate ( struct move_list *mvl );
 uint16_t mvl_get_move_count ( const struct move_list *mvl );
-move_t* mvl_get_move_array ( struct move_list *mvl );
+move_t* mvl_get_move_array (const struct move_list *mvl );
 void mvl_add ( struct move_list *mvl, move_t mv );
 void mvl_reset ( struct move_list *mvl );
 
@@ -43,5 +43,5 @@ void mvl_reset ( struct move_list *mvl );
 // functions for testing
 bool mvl_contains_move ( const struct move_list *mvl, const move_t mv );
 
-
+void validate_move_list ( const struct move_list *mvl );
 

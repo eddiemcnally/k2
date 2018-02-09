@@ -39,6 +39,7 @@ set(TEST_SRCS
 	test_position.c
     test_move.c
 	test_move_list.c
+    test_move_gen.c
     test_bitboard.c
     test_board.c
     test_square.c

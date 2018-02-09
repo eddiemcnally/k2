@@ -21,11 +21,12 @@
  *  SOFTWARE.
  */
 
+#include <assert.h>
+#include <stdint.h>
+#include <stdio.h>
 #include "move.h"
 #include "piece.h"
 #include "square.h"
-#include <assert.h>
-#include <stdint.h>
 
 /**
  * bitmap for move
@@ -253,6 +254,36 @@ bool move_is_en_passant ( move_t mv )
 {
         return ( mv & MV_FLG_EN_PASS ) != 0;
 }
+
+
+
+/**
+ * @brief       Prints a move
+ *
+ * @param mv The move print
+ * @return The move in test
+ */
+char *move_print ( move_t mv )
+{
+        static char move_string[6];
+
+        enum square from_sq = move_decode_from_sq ( mv );
+        enum square to_sq = move_decode_to_sq ( mv );
+
+        enum rank from_rank = sq_get_rank ( from_sq );
+        enum file from_file = sq_get_file ( from_sq );
+
+        enum rank to_rank = sq_get_rank ( to_sq );
+        enum file to_file = sq_get_file ( to_sq );
+
+        sprintf ( move_string, "%c%c%c%c", ( 'a' + from_file ),
+                  ( '1' + from_rank ), ( 'a' + to_file ), ( '1' + to_rank ) );
+
+        return move_string;
+}
+
+
+
 
 // ==================================================================
 //

@@ -1,4 +1,5 @@
 *.o
 k2_test
 _build
-nbproject
+.kdev4
+k2.kdev4

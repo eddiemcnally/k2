@@ -35,12 +35,12 @@
  * @param pos   The position
  * @param mvl   The move list
  */
-void mv_generate_all_moves ( const struct position *pos, struct move_list *mvl )
+void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl )
 {
         struct board *brd = pos_get_board ( pos );
         enum colour side_to_move = pos_get_side_to_move ( pos );
 
-        generate_knight_moves ( brd, side_to_move, mvl );
+        mv_gen_knight_moves ( brd, side_to_move, mvl );
 }
 
 /**
@@ -52,8 +52,11 @@ void mv_generate_all_moves ( const struct position *pos, struct move_list *mvl )
  * @param mvl   the move list to append new moves to
  */
 
-void generate_knight_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl )
+void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl )
 {
+        validate_board (brd);
+
+        
         enum piece knight = WKNIGHT;
         if ( side_to_move == BLACK ) {
                 knight = BKNIGHT;

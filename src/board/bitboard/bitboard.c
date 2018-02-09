@@ -48,7 +48,6 @@ void bb_set_square ( bitboard_t* bb, const enum square sq )
  * @param bb The bitboard
  * @param sq The square
  */
-
 void bb_clear_square ( bitboard_t* bb, const enum square sq )
 {
         validate_square ( sq );

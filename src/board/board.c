@@ -259,7 +259,7 @@ bitboard_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
  *
  * @param brd The board to validate
  */
-void brd_validate ( const struct board* brd )
+void validate_board ( const struct board* brd )
 {
         assert ( brd->struct_init_key == STRUCT_INIT_KEY );
         // TODO - expand

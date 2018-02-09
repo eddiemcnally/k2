@@ -39,7 +39,6 @@ struct move_list {
         move_t 		move_list[MOVE_LIST_MAX_LEN];
 };
 
-static void validate_move_list ( const struct move_list *mvl );
 static void validate_move_list_size ( const struct move_list *mvl );
 
 
@@ -96,10 +95,10 @@ uint16_t mvl_get_move_count ( const struct move_list *mvl )
  * @param mvl The move list
  * @return A pointer to an array of move_t types
  */
-move_t* mvl_get_move_array ( struct move_list *mvl )
+move_t* mvl_get_move_array ( const struct move_list *mvl )
 {
         validate_move_list ( mvl );
-        return mvl->move_list;
+        return &mvl->move_list;
 }
 
 /**
@@ -151,6 +150,32 @@ bool mvl_contains_move ( const struct move_list *mvl, const move_t mv )
 }
 
 
+/**
+ * @brief       Prints out the moves in a move list
+ *
+ * @param mvl   Pointer to the move list
+ */
+void mvl_print ( const struct move_list *mvl )
+{
+        uint16_t move_count = mvl_get_move_count ( mvl );
+
+        move_t * move_list = mvl_get_move_array ( mvl );
+
+        for ( uint16_t i = 0; i < move_count; i++ ) {
+                printf ( "%s\n", move_print ( move_list ) );
+                move_list++;
+        }
+}
+
+
+
+
+void validate_move_list ( const struct move_list *mvl )
+{
+        assert ( mvl->struct_init_key == MOVE_LIST_INIT_KEY );
+        validate_move_list_size(mvl);
+}
+
 // ==================================================================
 //
 // private functions
@@ -159,11 +184,6 @@ bool mvl_contains_move ( const struct move_list *mvl, const move_t mv )
 
 
 
-
-static void validate_move_list ( const struct move_list *mvl )
-{
-        assert ( mvl->struct_init_key == MOVE_LIST_INIT_KEY );
-}
 
 static void validate_move_list_size ( const struct move_list *mvl )
 {
