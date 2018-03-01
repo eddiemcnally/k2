@@ -30,6 +30,19 @@
 
 #define BIT_0 (0x01ull)
 
+
+#define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
+#define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
+#define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
+
+static const unsigned char BitReverseTable256[256] = {
+        R6 ( 0 ), R6 ( 2 ), R6 ( 1 ), R6 ( 3 )
+};
+
+
+
+
+
 /**
  * @brief 		Set bit in bitboard representing the given square
  *
@@ -94,3 +107,28 @@ enum square bb_pop_1st_bit ( bitboard_t * bb )
         return sq;
 }
 
+
+/**
+ * @brief 	Reverses the bits in the given bitboard
+ *
+ * @param bb    The bitboard
+ * @return The reversed bitboard
+ */
+bitboard_t bb_reverse ( bitboard_t bb )
+{
+        bitboard_t retval = 0;
+
+        uint8_t *p_in = ( uint8_t * ) & bb;
+        uint8_t *p_out = ( uint8_t * ) & retval;
+        // reverse the bits in each byte
+        for ( int i = 0; i < 8; i++ ) {
+                *p_out = ( uint8_t ) BitReverseTable256[*p_in];
+                p_out++;
+                p_in++;
+        }
+
+        // now reverse the bytes
+        return __builtin_bswap64 ( retval );
+}
+
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

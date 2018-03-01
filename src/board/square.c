@@ -66,3 +66,4 @@ void validate_square ( const enum square sq )
         assert ( sq >= a1 && sq <= h8 );
 #endif
 }
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

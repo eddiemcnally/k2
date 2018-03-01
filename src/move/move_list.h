@@ -35,13 +35,12 @@ struct move_list;
 struct move_list* mvl_allocate ( void );
 void mvl_deallocate ( struct move_list *mvl );
 uint16_t mvl_get_move_count ( const struct move_list *mvl );
-move_t* mvl_get_move_array (const struct move_list *mvl );
+move_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset );
 void mvl_add ( struct move_list *mvl, move_t mv );
 void mvl_reset ( struct move_list *mvl );
-
-
-// functions for testing
 bool mvl_contains_move ( const struct move_list *mvl, const move_t mv );
 
 void validate_move_list ( const struct move_list *mvl );
+void mvl_print ( const struct move_list *mvl );
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

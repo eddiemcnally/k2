@@ -90,15 +90,18 @@ uint16_t mvl_get_move_count ( const struct move_list *mvl )
 }
 
 /**
- * @brief 		Extracts the move array from the move_list
+ * @brief 	Returns the move at the given place in the move list
  *
  * @param mvl The move list
- * @return A pointer to an array of move_t types
+ * @param offset The move offset in the move list
+ * @return The move at the move list offset
  */
-move_t* mvl_get_move_array ( const struct move_list *mvl )
+move_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset )
 {
         validate_move_list ( mvl );
-        return &mvl->move_list;
+        assert ( offset < MOVE_LIST_MAX_LEN );
+
+        return mvl->move_list[offset];
 }
 
 /**
@@ -159,11 +162,9 @@ void mvl_print ( const struct move_list *mvl )
 {
         uint16_t move_count = mvl_get_move_count ( mvl );
 
-        move_t * move_list = mvl_get_move_array ( mvl );
-
         for ( uint16_t i = 0; i < move_count; i++ ) {
-                printf ( "%s\n", move_print ( move_list ) );
-                move_list++;
+                move_t m =  mvl_get_move_at_offset ( mvl, i );
+                printf ( "%s\n", move_print ( m ) );
         }
 }
 
@@ -173,7 +174,7 @@ void mvl_print ( const struct move_list *mvl )
 void validate_move_list ( const struct move_list *mvl )
 {
         assert ( mvl->struct_init_key == MOVE_LIST_INIT_KEY );
-        validate_move_list_size(mvl);
+        validate_move_list_size ( mvl );
 }
 
 // ==================================================================
@@ -187,5 +188,6 @@ void validate_move_list ( const struct move_list *mvl )
 
 static void validate_move_list_size ( const struct move_list *mvl )
 {
-        assert ( mvl->move_count < MOVE_LIST_MAX_LEN - 1 );
+        assert ( mvl->move_count <= MOVE_LIST_MAX_LEN);
 }
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

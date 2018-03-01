@@ -62,9 +62,8 @@ void test_move_list_bulk_add_moves ( void **state )
         uint16_t count = mvl_get_move_count ( mvl );
         assert_true ( count == max_moves );
 
-        move_t *mvp = mvl_get_move_array ( mvl );
         for ( int i = 0; i < max_moves; i++ ) {
-                move_t mv = mvp[i];
+                move_t mv = mvl_get_move_at_offset(mvl, i);
                 assert_true ( mv == ( move_t ) ( mv_offset + i ) );
         }
 

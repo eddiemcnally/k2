@@ -87,3 +87,4 @@ enum piece pce_get_from_label ( const char c );
 void validate_piece ( const enum piece pce );
 void validate_colour ( const enum colour col );
 void validate_label ( const char c );
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

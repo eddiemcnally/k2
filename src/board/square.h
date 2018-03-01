@@ -69,3 +69,4 @@ enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
 char * print_square ( const enum square sq );
 void validate_square ( const enum square sq );
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

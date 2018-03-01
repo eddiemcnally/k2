@@ -315,3 +315,4 @@ void validate_label ( const char c )
         }
 #endif
 }
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

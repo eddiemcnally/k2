@@ -34,7 +34,7 @@
 #include "test_board.h"
 #include "test_bitboard.h"
 #include "test_move_list.h"
-#include "test_move_gen.h"
+
 
 
 int main ( void )
@@ -97,7 +97,7 @@ int main ( void )
                 cmocka_unit_test ( test_square_gen_from_rank_file ),
 
                 // move generation
-                cmocka_unit_test(test_move_gen_knight_moves_white_random_board_1)
+                //cmocka_unit_test(test_move_gen_knight_moves_white_random_board_1)
                 
 
         };

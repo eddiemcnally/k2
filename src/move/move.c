@@ -308,3 +308,4 @@ static void set_flag ( move_t *mv, const uint16_t flag_bit )
 {
         *mv |= flag_bit;
 }
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

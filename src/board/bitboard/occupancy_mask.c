@@ -157,3 +157,4 @@ bitboard_t get_rook_occ_mask ( const enum square sq )
 }
 
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

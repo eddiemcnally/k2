@@ -371,3 +371,4 @@ static void validate_struct_init ( const struct board *brd )
 
 
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
