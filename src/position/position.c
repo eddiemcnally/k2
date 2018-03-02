@@ -181,7 +181,7 @@ static void populate_position_from_fen ( struct position *pos, const struct pars
 
         for ( enum square sq = a1; sq <= h8; sq++ ) {
                 enum piece pce;
-                bool found_pce = brd_try_get_piece_on_square ( pos->brd, sq, &pce );
+                bool found_pce = fen_try_get_piece_on_sq(fen, sq, &pce );
                 if ( found_pce ) {
                         brd_add_piece ( pos->brd, pce, sq );
                 }

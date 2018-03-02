@@ -25,5 +25,6 @@
 #pragma once
 
 void test_position_get_set_castle_permissions ( void **state );
+void test_position_brd_is_sq_occupied ( void **state );
 
-
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

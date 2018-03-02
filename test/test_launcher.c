@@ -33,8 +33,9 @@
 #include "test_square.h"
 #include "test_board.h"
 #include "test_bitboard.h"
+#include "test_castle_permissions.h"
 #include "test_move_list.h"
-
+#include "test_move_gen.h"
 
 
 int main ( void )
@@ -76,6 +77,7 @@ int main ( void )
                 // Position
                 cmocka_unit_test ( test_position_get_set_castle_permissions ),
 
+
                 // bitboard
                 cmocka_unit_test ( test_bitboard_pop_first_bit_random_squares ),
                 cmocka_unit_test ( test_bitboard_pop_first_bit_all_squares ),
@@ -89,18 +91,25 @@ int main ( void )
                 cmocka_unit_test ( test_board_brd_get_piece_bb ),
                 cmocka_unit_test ( test_board_brd_get_colour_bb_black ),
                 cmocka_unit_test ( test_board_brd_get_colour_bb_white ),
-
+                cmocka_unit_test ( test_board_brd_is_sq_occupied ),
+                cmocka_unit_test ( test_board_brd_try_get_piece_on_square ),
+                
                 // square
                 cmocka_unit_test ( test_square_sq_get_rank ),
                 cmocka_unit_test ( test_square_sq_get_file ),
                 cmocka_unit_test ( test_square_gen_from_rank_file ),
 
                 // move generation
-                //cmocka_unit_test(test_move_gen_knight_moves_white_random_board_1)
-                
+                cmocka_unit_test(test_knight_move_gen),
+
+                // castle permissions
+                cmocka_unit_test ( test_castle_permissions_get_set ),
+                cmocka_unit_test ( test_castle_permissions_no_perms_get_set ),
+
 
         };
 
         return cmocka_run_group_tests ( tests, NULL, NULL );
 }
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
