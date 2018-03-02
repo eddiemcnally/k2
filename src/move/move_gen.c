@@ -146,6 +146,7 @@ void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl )
 
         mv_gen_knight_moves ( brd, side_to_move, mvl );
         mv_gen_diagonal_sliding_moves ( brd, side_to_move, mvl );
+        mv_gen_sliding_horizontal_vertical_moves ( brd, side_to_move, mvl );
 }
 
 /**
@@ -221,7 +222,7 @@ void mv_gen_diagonal_sliding_moves ( const struct board *brd, const enum colour 
                 pce_bishop = WBISHOP;
                 pce_queen = WQUEEN;
 
-        }       else {
+        } else {
                 pce_bishop = BBISHOP;
                 pce_queen = BQUEEN;
         }
@@ -250,7 +251,7 @@ void mv_gen_diagonal_sliding_moves ( const struct board *brd, const enum colour 
 
                 diag1 = ( occupied & negmask ) - ( 2 * bb_slider );
                 diag2 = bb_reverse ( bb_reverse ( occupied & negmask ) -
-                                          ( 2 * bb_reverse ( bb_slider ) ) );
+                                     ( 2 * bb_reverse ( bb_slider ) ) );
                 bitboard_t diagneg = diag1 ^ diag2;
 
                 bitboard_t all_moves = ( diagpos & posmask ) | ( diagneg & negmask );
@@ -296,7 +297,7 @@ void mv_gen_sliding_horizontal_vertical_moves ( const struct board *brd, const e
                 pce_rook = WROOK;
                 pce_queen = WQUEEN;
 
-        }       else {
+        } else {
                 pce_rook = BROOK;
                 pce_queen = BQUEEN;
         }
@@ -320,13 +321,13 @@ void mv_gen_sliding_horizontal_vertical_moves ( const struct board *brd, const e
                 uint64_t horiz1 = occupied - ( 2 * bb_slider );
                 uint64_t horiz2 =
                         bb_reverse ( bb_reverse ( occupied ) -
-                                          2 * bb_reverse ( bb_slider ) );
+                                     2 * bb_reverse ( bb_slider ) );
                 uint64_t horizontal = horiz1 ^ horiz2;
 
                 uint64_t vert1 = ( occupied & vmask ) - ( 2 * bb_slider );
                 uint64_t vert2 =
                         bb_reverse ( bb_reverse ( occupied & vmask ) -
-                                          2 * bb_reverse ( bb_slider ) );
+                                     2 * bb_reverse ( bb_slider ) );
                 uint64_t vertical = vert1 ^ vert2;
 
                 uint64_t all_moves = ( horizontal & hmask ) | ( vertical & vmask );
@@ -351,6 +352,45 @@ void mv_gen_sliding_horizontal_vertical_moves ( const struct board *brd, const e
 }
 
 
+void mv_gen_generate_king_moves (  const struct position *pos, const enum colour side_to_move, struct move_list *mvl )
+{
+        struct board *brd = pos_get_board(pos);
+        
+        enum piece pce_to_move;
+        enum colour opposite_side;
+        if ( side_to_move == WHITE ) {
+                pce_to_move = WKING;
+                opposite_side = BLACK;
+        } else {
+                pce_to_move = BKING;
+                opposite_side = WHITE;
+        }
+
+        bitboard_t king_bb = brd_get_piece_bb ( brd, pce_to_move );
+        enum square from_sq = bb_pop_1st_bit ( &king_bb );
+
+        // get occupancy mask for this piece and square
+        bitboard_t mask = get_king_occ_mask ( from_sq );
+
+        // AND'ing with opposite colour pieces, will give all
+        // pieces that can be captured
+        bitboard_t opp_pieces_bb = brd_get_colour_bb ( brd, opposite_side );
+        bitboard_t capture_squares = mask & opp_pieces_bb;
+
+        while ( capture_squares != 0 ) {
+                // loop creating capture moves
+                enum square to_sq = bb_pop_1st_bit ( &capture_squares );
+                enum piece capt_pce;
+                move_t mv;
+                bool found = brd_try_get_piece_on_square ( brd, to_sq, &capt_pce );
+                if ( found ) {
+                        mv = move_encode_capture ( from_sq, to_sq );
+                } else {
+                        mv = move_encode_quiet ( from_sq, to_sq );
+                }
+        }
+
+}
 
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

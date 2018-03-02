@@ -21,6 +21,7 @@ set (SOURCES
 	${BRD_DIR}/square.c
 	${FEN_DIR}/fen.c
 	${POSN_DIR}/position.c
+	${POSN_DIR}/castle_perms.c
 	${MOVE_DIR}/move.c
 	${MOVE_DIR}/move_list.c
 	${MOVE_DIR}/move_gen.c

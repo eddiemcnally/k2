@@ -44,7 +44,7 @@ static const unsigned char BitReverseTable256[256] = {
 
 
 /**
- * @brief 		Set bit in bitboard representing the given square
+ * @brief 	Set bit in bitboard representing the given square
  *
  * @param bb The bitboard
  * @param sq The square

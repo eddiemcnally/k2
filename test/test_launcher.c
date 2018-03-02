@@ -74,8 +74,7 @@ int main ( void )
                 cmocka_unit_test ( test_piece_get_piece_from_label ),
 
                 // Position
-                cmocka_unit_test ( test_position_add_castle_perm ),
-                cmocka_unit_test ( test_position_remove_castle_perm ),
+                cmocka_unit_test ( test_position_get_set_castle_permissions ),
 
                 // bitboard
                 cmocka_unit_test ( test_bitboard_pop_first_bit_random_squares ),

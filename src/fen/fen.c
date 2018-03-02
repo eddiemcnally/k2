@@ -65,20 +65,28 @@ struct piece_location {
 // used to check struct is populated when passed into public functions
 #define STRUCT_INIT_KEY ((uint16_t)0xdeadbeef)
 
-// Public representation of a parsed FEN
+
+struct castle_perms {
+        bool        has_wq_cast_perm;
+        bool        has_wk_cast_perm;
+        bool        has_bq_cast_perm;
+        bool        has_bk_cast_perm;
+};
+
 struct parsed_fen {
         uint16_t    struct_init_key;
         // state of each square
         struct piece_location pieces[NUM_SQUARES];
-
         uint16_t    half_move_cnt;
         uint16_t    full_move_cnt;
         enum colour side_to_move;
-        uint8_t     castle_perm;
+        struct castle_perms castle_permissions;
         bool        is_en_pass_set;
         enum square en_pass_sq;
 
 };
+
+
 
 // there's only 1 instance of this!!
 static struct parsed_fen decomposed_fen;
@@ -151,17 +159,22 @@ bool fen_try_get_piece_on_sq ( const struct parsed_fen *pf, const enum square sq
         return false;
 }
 
-/**
- * @brief       Takes the passed in *struct and returns the castle permissions
- *
- * @param       pf   The ptr to a parsed_fen struct
- * @return      the castle permissions
- */
-uint8_t fen_get_castle_permissions ( const struct parsed_fen *pf )
-{
-        validate_struct_init ( pf );
 
-        return pf->castle_perm;
+bool fen_has_wk_castle_perms ( const struct parsed_fen *pf )
+{
+        return pf->castle_permissions.has_wk_cast_perm;
+}
+bool fen_has_wq_castle_perms ( const struct parsed_fen *pf )
+{
+        return pf->castle_permissions.has_wq_cast_perm;
+}
+bool fen_has_bk_castle_perms ( const struct parsed_fen *pf )
+{
+        return pf->castle_permissions.has_bk_cast_perm;
+}
+bool fen_has_bq_castle_perms ( const struct parsed_fen *pf )
+{
+        return pf->castle_permissions.has_bq_cast_perm;
 }
 
 
@@ -245,7 +258,6 @@ static void init_parsed_fen ( struct parsed_fen *pf )
         }
 
         pf->side_to_move = WHITE;
-        pf->castle_perm = CAST_PERM_NONE;
         pf->is_en_pass_set = false;
 }
 
@@ -313,36 +325,38 @@ static void setup_side_to_move ( struct parsed_fen *pf, const char *side )
 
 static void setup_castle_permissions ( struct parsed_fen *pf, const char *perms )
 {
+        // default to none
+        pf->castle_permissions.has_wk_cast_perm = false;
+        pf->castle_permissions.has_wq_cast_perm = false;
+        pf->castle_permissions.has_bk_cast_perm = false;
+        pf->castle_permissions.has_bq_cast_perm = false;
+
+
         if ( *perms == '-' ) {
-                add_cast_perm ( &pf->castle_perm, CAST_PERM_NONE );
                 return;
         }
 
         uint8_t len = ( uint8_t ) strlen ( perms );
 
         for ( int i = 0; i < len; i++ ) {
-                uint8_t cp = CAST_PERM_NONE;
-
                 switch ( *perms ) {
                 case 'K':
-                        cp = CAST_PERM_WK;
+                        pf->castle_permissions.has_wk_cast_perm = true;
                         break;
                 case 'Q':
-                        cp = CAST_PERM_WQ;
+                        pf->castle_permissions.has_wq_cast_perm = true;
                         break;
                 case 'k':
-                        cp = CAST_PERM_BK;
+                        pf->castle_permissions.has_bk_cast_perm = true;
                         break;
                 case 'q':
-                        cp = CAST_PERM_BQ;
+                        pf->castle_permissions.has_bq_cast_perm = true;
                         break;
                 default:
                         assert ( true );
                         printf ( "FEN.C : invalid Castle Permission character %c\n", *perms );
                         break;
                 }
-
-                add_cast_perm ( &pf->castle_perm, cp );
                 perms++;
         }
 }

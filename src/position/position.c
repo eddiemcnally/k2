@@ -31,13 +31,15 @@
 #include "position.h"
 #include "fen.h"
 #include "board.h"
+#include "castle_perms.h"
 
 static void init_pos_struct ( struct position *pos );
 static void validate_position ( const struct position *pos );
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
-
+static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
 
 #define STRUCT_INIT_KEY     ((uint64_t)0xdeadbeef)
+
 
 struct position {
         uint64_t struct_init_key;
@@ -60,7 +62,7 @@ struct position {
         uint16_t history_ply;
 
         // castling permissions
-        uint8_t castle_perm;
+        cast_perm_t castle_perm;
 
         uint8_t fifty_move_counter;
 };
@@ -137,31 +139,16 @@ enum colour pos_get_side_to_move ( const struct position *pos )
         return pos->side_to_move;
 }
 
-
-void add_cast_perm ( uint8_t* cp, const enum castle_perm perm )
+cast_perm_t pos_get_cast_perm ( const struct position *pos )
 {
-        if ( perm == CAST_PERM_NONE ) {
-                *cp = CAST_PERM_NONE;
-        } else {
-                *cp = *cp | ( uint8_t ) perm;
-        }
-}
-
-void remove_cast_perm ( uint8_t* cp, const enum castle_perm perm )
-{
-        *cp = *cp & ( ~perm );
-}
-
-bool has_cast_perm ( const uint8_t cp, const enum castle_perm perm )
-{
-        if ( perm == CAST_PERM_NONE ) {
-                return ( cp == 0 );
-        }
-        return ( cp & perm ) != 0;
+        return pos->castle_perm;
 }
 
 
-
+void pos_set_cast_perm ( struct position *pos, const cast_perm_t perms )
+{
+        pos->castle_perm = perms;
+}
 
 static void init_pos_struct ( struct position *pos )
 {
@@ -173,7 +160,6 @@ static void validate_position ( const struct position *pos )
 {
         assert ( pos->struct_init_key == STRUCT_INIT_KEY );
 }
-
 
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen )
 {
@@ -191,7 +177,7 @@ static void populate_position_from_fen ( struct position *pos, const struct pars
         pos->fifty_move_counter = 0;
         pos->ply = fen_get_half_move_cnt ( fen );
         pos->history_ply = fen_get_full_move_cnt ( fen );
-        pos->castle_perm = fen_get_castle_permissions ( fen );
+        set_up_castle_permissions(pos, fen);
 
         for ( enum square sq = a1; sq <= h8; sq++ ) {
                 enum piece pce;
@@ -202,3 +188,29 @@ static void populate_position_from_fen ( struct position *pos, const struct pars
         }
 }
 
+
+static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen )
+{
+        cast_perm_t cp;
+        // default to no castle permissions
+        cast_perm_set_no_perms ( &cp );
+
+        if ( fen_has_wk_castle_perms ( fen ) ) {
+                cast_perm_set_WK ( &cp, true );
+        }
+        if ( fen_has_wq_castle_perms ( fen ) ) {
+                cast_perm_set_WQ ( &cp, true );
+        }
+        if ( fen_has_bk_castle_perms ( fen ) ) {
+                cast_perm_set_BK ( &cp, true );
+        }
+        if ( fen_has_bq_castle_perms ( fen ) ) {
+                cast_perm_set_BQ ( &cp, true );
+        }
+
+        pos_set_cast_perm ( pos, cp );
+
+}
+
+
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

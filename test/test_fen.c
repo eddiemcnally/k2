@@ -238,21 +238,13 @@ void test_fen_side_to_move ( void **state )
 
 void test_fen_castle_permissions_initial_fen ( void **state )
 {
-        struct parsed_fen* brd = fen_parse ( INITIAL_FEN );
+        struct parsed_fen* fen = fen_parse ( INITIAL_FEN );
 
-        uint8_t cp = fen_get_castle_permissions ( brd );
+        assert_true ( fen_has_wk_castle_perms( fen ) );
+        assert_true ( fen_has_wq_castle_perms( fen ) );
+        assert_true ( fen_has_bk_castle_perms( fen ) );
+        assert_true ( fen_has_bq_castle_perms( fen ) );
 
-        bool b = has_cast_perm ( cp, CAST_PERM_WK );
-        assert_true ( b );
-
-        b = has_cast_perm ( cp, CAST_PERM_WQ );
-        assert_true ( b );
-
-        b = has_cast_perm ( cp, CAST_PERM_BQ );
-        assert_true ( b );
-
-        b = has_cast_perm ( cp, CAST_PERM_BK );
-        assert_true ( b );
 }
 
 
@@ -263,54 +255,31 @@ void test_fen_castle_permissions_random_fen ( void **state )
         const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
         const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
-        struct parsed_fen* brd = fen_parse ( RANDOM_FEN_1 );
+        struct parsed_fen* fen = fen_parse ( RANDOM_FEN_1 );
 
-        uint8_t cp = fen_get_castle_permissions ( brd );
+        assert_false ( fen_has_wk_castle_perms( fen ) );
+        assert_true ( fen_has_wq_castle_perms( fen ) );
+        assert_true ( fen_has_bk_castle_perms( fen ) );
+        assert_true ( fen_has_wq_castle_perms( fen ) );
 
-        bool b = has_cast_perm ( cp, CAST_PERM_WK );
-        assert_false ( b );
-        b = has_cast_perm ( cp, CAST_PERM_WQ );
-        assert_true ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BQ );
-        assert_true ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BK );
-        assert_true ( b );
+        fen = fen_parse ( RANDOM_FEN_2 );
+        assert_true ( fen_has_wk_castle_perms( fen ) );
+        assert_true ( fen_has_wq_castle_perms( fen ) );
+        assert_true ( fen_has_bk_castle_perms( fen ) );
+        assert_true ( fen_has_wq_castle_perms( fen ) );
 
-        brd = fen_parse ( RANDOM_FEN_2 );
-        cp = fen_get_castle_permissions ( brd );
-        b = has_cast_perm ( cp, CAST_PERM_WK );
-        assert_true ( b );
-        b = has_cast_perm ( cp, CAST_PERM_WQ );
-        assert_true ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BQ );
-        assert_true ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BK );
-        assert_true ( b );
+        fen = fen_parse ( RANDOM_FEN_3 );
+        assert_true ( fen_has_wk_castle_perms( fen ) );
+        assert_false ( fen_has_wq_castle_perms( fen ) );
+        assert_false ( fen_has_bk_castle_perms( fen ) );
+        assert_true ( fen_has_bq_castle_perms( fen ) );
 
-        brd = fen_parse ( RANDOM_FEN_3 );
-        cp = fen_get_castle_permissions ( brd );
-        b = has_cast_perm ( cp, CAST_PERM_WK );
-        assert_true ( b );
-        b = has_cast_perm ( cp, CAST_PERM_WQ );
-        assert_false ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BQ );
-        assert_true ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BK );
-        assert_false ( b );
+        fen = fen_parse ( RANDOM_FEN_4 );
+        assert_false ( fen_has_wk_castle_perms( fen ) );
+        assert_false ( fen_has_wq_castle_perms( fen ) );
+        assert_false ( fen_has_bk_castle_perms( fen ) );
+        assert_false ( fen_has_bq_castle_perms( fen ) );
 
-        brd = fen_parse ( RANDOM_FEN_4 );
-        cp = fen_get_castle_permissions ( brd );
-        b = has_cast_perm ( cp, CAST_PERM_WK );
-        assert_false ( b );
-        b = has_cast_perm ( cp, CAST_PERM_WQ );
-        assert_false ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BQ );
-        assert_false ( b );
-        b = has_cast_perm ( cp, CAST_PERM_BK );
-        assert_false ( b );
-
-        b = has_cast_perm ( cp, CAST_PERM_NONE );
-        assert_true ( b );
 
 }
 

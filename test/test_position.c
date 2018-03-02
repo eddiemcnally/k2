@@ -35,79 +35,31 @@
 
 
 
-void test_position_add_castle_perm ( void **state )
+void test_position_get_set_castle_permissions ( void **state )
 {
-        uint8_t perm = CAST_PERM_NONE;
+        cast_perm_t cp;
+        cast_perm_set_WK ( &cp, true );
+        struct position *pos = pos_create();
 
-        add_cast_perm ( &perm, CAST_PERM_WK );
-        bool b = has_cast_perm ( perm, CAST_PERM_WK );
-        assert_true ( b );
+        pos_set_cast_perm ( pos, cp );
+        cast_perm_t retrieved_cp = pos_get_cast_perm ( pos );
+        assert_true ( cp == retrieved_cp );
 
-        b = has_cast_perm ( perm, CAST_PERM_WQ );
-        assert_false ( b );
-        b = has_cast_perm ( perm, CAST_PERM_BK );
-        assert_false ( b );
-        b = has_cast_perm ( perm, CAST_PERM_BK );
-        assert_false ( b );
+        cast_perm_set_WQ ( &cp, true );
+        pos_set_cast_perm ( pos, cp );
+        retrieved_cp = pos_get_cast_perm ( pos );
+        assert_true ( cp == retrieved_cp );
 
-        add_cast_perm ( &perm, CAST_PERM_WQ );
-        b = has_cast_perm ( perm, CAST_PERM_WQ );
-        assert_true ( b );
+        cast_perm_set_BK ( &cp, true );
+        pos_set_cast_perm ( pos, cp );
+        retrieved_cp = pos_get_cast_perm ( pos );
+        assert_true ( cp == retrieved_cp );
 
-        add_cast_perm ( &perm, CAST_PERM_BQ );
-        b = has_cast_perm ( perm, CAST_PERM_BQ );
-        assert_true ( b );
-
-        add_cast_perm ( &perm, CAST_PERM_BK );
-        b = has_cast_perm ( perm, CAST_PERM_BK );
-        assert_true ( b );
-
-        // now check all
-        b = has_cast_perm ( perm, CAST_PERM_WK );
-        assert_true ( b );
-        b = has_cast_perm ( perm, CAST_PERM_WQ );
-        assert_true ( b );
-        b = has_cast_perm ( perm, CAST_PERM_BK );
-        assert_true ( b );
-        b = has_cast_perm ( perm, CAST_PERM_BQ );
-        assert_true ( b );
-}
-
-void test_position_remove_castle_perm ( void **state )
-{
-        uint8_t perm = CAST_PERM_NONE;
-
-        add_cast_perm ( &perm, CAST_PERM_WK );
-        add_cast_perm ( &perm, CAST_PERM_WQ );
-        add_cast_perm ( &perm, CAST_PERM_BK );
-        add_cast_perm ( &perm, CAST_PERM_BQ );
-
-        // check all as expected
-        bool b = has_cast_perm ( perm, CAST_PERM_WK );
-        assert_true ( b );
-        b = has_cast_perm ( perm, CAST_PERM_WQ );
-        assert_true ( b );
-        b = has_cast_perm ( perm, CAST_PERM_BK );
-        assert_true ( b );
-        b = has_cast_perm ( perm, CAST_PERM_BQ );
-        assert_true ( b );
-
-
-        remove_cast_perm ( &perm, CAST_PERM_WK );
-        b = has_cast_perm ( perm, CAST_PERM_WK );
-        assert_false ( b );
-
-        remove_cast_perm ( &perm, CAST_PERM_WQ );
-        b = has_cast_perm ( perm, CAST_PERM_WQ );
-        assert_false ( b );
-
-        remove_cast_perm ( &perm, CAST_PERM_BQ );
-        b = has_cast_perm ( perm, CAST_PERM_BQ );
-        assert_false ( b );
-
-        remove_cast_perm ( &perm, CAST_PERM_BK );
-        b = has_cast_perm ( perm, CAST_PERM_BK );
-        assert_false ( b );
+        cast_perm_set_BQ ( &cp, true );
+        pos_set_cast_perm ( pos, cp );
+        retrieved_cp = pos_get_cast_perm ( pos );
+        assert_true ( cp == retrieved_cp );
 }
 
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
