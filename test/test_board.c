@@ -249,6 +249,90 @@ void test_board_brd_get_colour_bb_white ( void **state )
         brd_deallocate ( brd );
 }
 
+void test_board_brd_get_board_bb ( void **state )
+{
+        const char * FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( FEN, pos );
+
+        bitboard_t bb = brd_get_board_bb ( pos_get_board ( pos ) );
+
+        assert_false ( bb_is_set ( bb, a1 ) );
+        assert_false ( bb_is_set ( bb, a2 ) );
+        assert_false ( bb_is_set ( bb, a3 ) );
+        assert_true ( bb_is_set ( bb, a4 ) );
+        assert_false ( bb_is_set ( bb, a5 ) );
+        assert_false ( bb_is_set ( bb, a6 ) );
+        assert_true ( bb_is_set ( bb, a7 ) );
+        assert_false ( bb_is_set ( bb, a8 ) );
+
+        assert_true ( bb_is_set ( bb, b1 ) );
+        assert_true ( bb_is_set ( bb, b2 ) );
+        assert_false ( bb_is_set ( bb, b3 ) );
+        assert_true ( bb_is_set ( bb, b4 ) );
+        assert_false ( bb_is_set ( bb, b5 ) );
+        assert_true ( bb_is_set ( bb, b6 ) );
+        assert_true ( bb_is_set ( bb, b7 ) );
+        assert_true ( bb_is_set ( bb, b8 ) );
+
+        assert_true ( bb_is_set ( bb, c1 ) );
+        assert_false ( bb_is_set ( bb, c2 ) );
+        assert_true ( bb_is_set ( bb, c3 ) );
+        assert_true ( bb_is_set ( bb, c4 ) );
+        assert_false ( bb_is_set ( bb, c5 ) );
+        assert_false ( bb_is_set ( bb, c6 ) );
+        assert_false ( bb_is_set ( bb, c7 ) );
+        assert_false ( bb_is_set ( bb, c8 ) );
+
+        assert_true ( bb_is_set ( bb, d1 ) );
+        assert_false ( bb_is_set ( bb, d2 ) );
+        assert_true ( bb_is_set ( bb, d3 ) );
+        assert_false ( bb_is_set ( bb, d4 ) );
+        assert_true ( bb_is_set ( bb, d5 ) );
+        assert_false ( bb_is_set ( bb, d6 ) );
+        assert_false ( bb_is_set ( bb, d7 ) );
+        assert_true ( bb_is_set ( bb, d8 ) );
+
+        assert_true ( bb_is_set ( bb, e1 ) );
+        assert_true ( bb_is_set ( bb, e2 ) );
+        assert_false ( bb_is_set ( bb, e3 ) );
+        assert_true ( bb_is_set ( bb, e4 ) );
+        assert_false ( bb_is_set ( bb, e5 ) );
+        assert_false ( bb_is_set ( bb, e6 ) );
+        assert_false ( bb_is_set ( bb, e7 ) );
+        assert_true ( bb_is_set ( bb, e8 ) );
+
+        assert_true ( bb_is_set ( bb, f1 ) );
+        assert_false ( bb_is_set ( bb, f2 ) );
+        assert_true ( bb_is_set ( bb, f3 ) );
+        assert_true ( bb_is_set ( bb, f4 ) );
+        assert_true ( bb_is_set ( bb, f5 ) );
+        assert_true ( bb_is_set ( bb, f6 ) );
+        assert_false ( bb_is_set ( bb, f7 ) );
+        assert_true ( bb_is_set ( bb, f8 ) );
+
+        assert_false ( bb_is_set ( bb, g1 ) );
+        assert_true ( bb_is_set ( bb, g2 ) );
+        assert_true ( bb_is_set ( bb, g3 ) );
+        assert_true ( bb_is_set ( bb, g4 ) );
+        assert_true ( bb_is_set ( bb, g5 ) );
+        assert_false ( bb_is_set ( bb, g6 ) );
+        assert_false ( bb_is_set ( bb, g7 ) );
+        assert_false ( bb_is_set ( bb, g8 ) );
+
+        assert_false ( bb_is_set ( bb, h1 ) );
+        assert_true ( bb_is_set ( bb, h2 ) );
+        assert_true ( bb_is_set ( bb, h3 ) );
+        assert_false ( bb_is_set ( bb, h4 ) );
+        assert_false ( bb_is_set ( bb, h5 ) );
+        assert_true ( bb_is_set ( bb, h6 ) );
+        assert_false ( bb_is_set ( bb, h7 ) );
+        assert_false ( bb_is_set ( bb, h8 ) );
+
+
+
+}
 
 void test_board_brd_is_sq_occupied ( void **state )
 {

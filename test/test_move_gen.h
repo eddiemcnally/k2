@@ -23,5 +23,7 @@
 
 #pragma once
 
-void test_knight_move_gen ( void **state );
-
+void test_move_gen_knight_white ( void **state );
+void test_move_gen_knight_black ( void **state );
+void test_move_gen_sliding_diagonal_black ( void **state );
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

@@ -51,6 +51,9 @@ add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
 #add_test(${TEST_BINARY_NAME} ${TEST_BINARY_NAME})
 target_link_libraries(${TEST_BINARY_NAME} cmocka)
 
+# redirect cmocka's output (defaults to STDERR)
+set(CMOCKA_MESSAGE_OUTPUT STDOUT)
+
 set(UNIT_TEST ${TEST_BINARY_NAME})
 add_test(NAME ${UNIT_TEST} COMMAND ${UNIT_TEST})
 #add_custom_command(

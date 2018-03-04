@@ -113,6 +113,31 @@ void test_bitboard_count_bits ( void **state )
 }
 
 
+void test_bitboard_reverse_bits ( void **state )
+{
+        uint64_t test_word = 0xFA340A7314DA;
+        uint64_t reversed = bb_reverse ( test_word );
+        assert_true ( reversed == 0x5B28CE502C5F0000 );
+
+        test_word = 0x6F43DA3E2;
+        reversed = bb_reverse ( test_word );
+        assert_true ( reversed == 0x47C5BC2F60000000 );
+
+        // swap the above to confirm
+        test_word = 0x47C5BC2F60000000;
+        reversed = bb_reverse ( test_word );
+        assert_true ( reversed == 0x6F43DA3E2 );
+
+        test_word = 0x3AD1FDE008934A;
+        reversed = bb_reverse ( test_word );
+        assert_true ( reversed == 0x52C91007BF8B5C00 );
+
+        test_word = 0x00000000000000AA;
+        reversed = bb_reverse ( test_word );
+        assert_true ( reversed == 0x5500000000000000 );
+
+}
+
 
 void test_bitboard_set_test_clear_bit ( void **state )
 {
@@ -145,3 +170,4 @@ void test_bitboard_set_test_clear_bit ( void **state )
         }
 }
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
