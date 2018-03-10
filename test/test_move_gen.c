@@ -133,7 +133,7 @@ void test_move_gen_sliding_diagonal_black ( void **state )
         struct board *brd = pos_get_board ( pos );
         struct move_list* mvl = mvl_allocate();
 
-        mv_gen_knight_moves ( brd, BLACK, mvl );
+        mv_gen_diagonal_sliding_moves( brd, BLACK, mvl );
 
         
         printf("***** %d\n", mvl_get_move_count ( mvl ));

@@ -26,6 +26,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <ctype.h>
+#include "board.h"
+#include "bitboard.h"
 #include "piece.h"
 #include "square.h"
 
@@ -488,7 +490,7 @@ void generate_bishop_occupancy_masks(uint64_t * occ_mask_array)
 void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t * bb)
 {
     if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
-        enum square dest_sq = get_square(rank, file);
+        enum square dest_sq = sq_gen_from_rank_file(rank, file);
         set_bit(bb, (enum square)dest_sq);
         //printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
     } else {
@@ -509,33 +511,33 @@ void print_occupancy_masks(enum piece pce)
     uint64_t masks[NUM_SQUARES] = { 0 };
 
     switch (pce) {
-    case W_KNIGHT:
-    case B_KNIGHT:
+    case WKNIGHT:
+    case BKNIGHT:
         generate_knight_occupancy_masks(masks);
         break;
-    case W_BISHOP:
-    case B_BISHOP:
+    case WBISHOP:
+    case BBISHOP:
         generate_bishop_occupancy_masks(masks);
         break;
-    case W_QUEEN:
-    case B_QUEEN:
+    case WQUEEN:
+    case BQUEEN:
         generate_queen_occupancy_masks(masks);
         break;
 
-    case W_ROOK:
-    case B_ROOK:
+    case WROOK:
+    case BROOK:
         generate_rook_occupancy_masks(masks);
         break;
 
-    case W_KING:
-    case B_KING:
+    case WKING:
+    case BKING:
         generate_king_occupancy_masks(masks);
         break;
 
-    case W_PAWN:
+    case WPAWN:
         generate_white_pawn_occupancy_masks(masks);
         break;
-    case B_PAWN:
+    case BPAWN:
         generate_black_pawn_occupancy_masks(masks);
         break;
 
@@ -557,13 +559,13 @@ void generate_diagonal_occupancy_masks(void)
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
-        uint8_t rank = get_rank(sq);
-        uint8_t file = get_file(sq);
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
 
         //printf("rank/file : %d/%d\n", rank, file);
 
-        uint8_t dest_rank = 0;
-        uint8_t dest_file = 0;
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
         uint64_t b = 0;
 
         // move SW
@@ -654,8 +656,8 @@ void print_mask_as_board(const uint64_t * mask)
     for (uint8_t rank = RANK_8; rank >= RANK_1; rank--) {
         printf("%d  ", rank + 1);	// enum is zero-based
         for (uint8_t file = FILE_A; file <= FILE_H; file++) {
-            enum square sq = get_square(rank, file);
-            if (is_square_occupied(m, sq)) {
+            enum square sq = sq_gen_from_rank_file(rank, file);
+            if (bb_is_set(m, sq)) {
                 // attack square
                 printf("  X");
             } else {

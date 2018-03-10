@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 # set up some base directories 
 set(BRD_DIR 	${PROJECT_SOURCE_DIR}/src/board)
 set(BB_DIR 		${PROJECT_SOURCE_DIR}/src/board/bitboard)
+set(OCC_GEN_DIR	${PROJECT_SOURCE_DIR}/src/board/bitboard/occ_mask_gen)
 set(FEN_DIR 	${PROJECT_SOURCE_DIR}/src/fen)
 set(POSN_DIR 	${PROJECT_SOURCE_DIR}/src/position)
 set(MOVE_DIR 	${PROJECT_SOURCE_DIR}/src/move)
@@ -15,7 +16,8 @@ message("PROJECT_SOURCE_DIR='${PROJECT_SOURCE_DIR}'")
 # These are shared with the test launcher.
 set (SOURCES 
 	${BB_DIR}/bitboard.c 
-	${BB_DIR}/occupancy_mask.c 
+	${BB_DIR}/occupancy_mask.c
+	${OCC_GEN_DIR}/occ_mask_gen.c	
 	${BRD_DIR}/board.c 
 	${BRD_DIR}/piece.c
 	${BRD_DIR}/square.c

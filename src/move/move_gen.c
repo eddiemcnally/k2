@@ -133,6 +133,17 @@ static const uint64_t negative_diagonal_masks[] = {
 #define GET_HORIZONTAL_MASK(sq)		(horizontal_move_mask[sq])
 
 
+// Bitboards representing commonly used ranks and files
+#define RANK_1_BB       0x00000000000000FF      
+#define RANK_2_BB       0x000000000000FF00      
+#define RANK_7_BB       0x00FF000000000000      
+#define RANK_8_BB       0xFF00000000000000      
+#define FILE_1_BB       0x0101010101010101
+#define FILE_8_BB       0x8080808080808080     
+
+
+
+
 /**
  * @brief       Generates all valid moves for the given position
  * @details     Appends all new moves to the given move list
@@ -200,6 +211,32 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
                 }
         }
 }
+
+
+void mv_gen_white_pawn_moves ( const struct position *pos, struct move_list *mvl ){
+        
+        // to do:
+        //      pawn start
+        //      en passant
+        //      general pawns
+        //      promotion
+        const struct board *brd = pos_get_board(pos);
+                
+        bitboard_t all_occ_bb = brd_get_board_bb(brd);
+        bitboard_t free_squares = ~all_occ_bb;
+        bitboard_t opp_colours_bb = brd_get_colour_bb(brd, BLACK);
+        
+        
+        
+        
+        
+        
+        
+}
+
+
+
+
 
 /**
  * @brief       Generates diagonal sliding moves (Queen and Bishop moves)
