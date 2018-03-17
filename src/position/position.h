@@ -43,5 +43,6 @@ struct position * pos_create ( void );
 void pos_destroy ( struct position *pos );
 void pos_initialise ( const char * fen, struct position *pos );
 enum colour pos_get_side_to_move ( const struct position *pos );
+bool validate_position ( const struct position *pos );
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

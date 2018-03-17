@@ -100,7 +100,7 @@ static const bitboard_t rook_occupancy_masks[NUM_SQUARES] = {
  */
 bitboard_t get_knight_occ_mask ( const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
         return knight_occupancy_masks[sq];
 }
 
@@ -113,7 +113,7 @@ bitboard_t get_knight_occ_mask ( const enum square sq )
  */
 bitboard_t get_bishop_occ_mask ( const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
         return bishop_occupancy_masks[sq];
 }
 
@@ -126,7 +126,7 @@ bitboard_t get_bishop_occ_mask ( const enum square sq )
  */
 bitboard_t get_king_occ_mask ( const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
         return king_occupancy_masks[sq];
 }
 
@@ -139,7 +139,7 @@ bitboard_t get_king_occ_mask ( const enum square sq )
  */
 bitboard_t get_queen_occ_mask ( const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
         return queen_occupancy_masks[sq];
 }
 
@@ -152,7 +152,7 @@ bitboard_t get_queen_occ_mask ( const enum square sq )
  */
 bitboard_t get_rook_occ_mask ( const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
         return rook_occupancy_masks[sq];
 }
 

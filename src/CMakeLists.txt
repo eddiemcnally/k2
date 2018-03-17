@@ -1,87 +1,73 @@
+#
+#                               K2 Chess Engine
+#
+#       CMAKE script for building the K2 Chess Engine build environment
+#
+#
+#
 cmake_minimum_required(VERSION 3.0)
 
+message("*** Setting up K2 Chess Engine Binary build environment ***'")
+
+set(K2_PROJECT_SOURCE_DIR 	${PROJECT_SOURCE_DIR}/src)
+
+message("Setting K2 Engine root directory to '${K2_PROJECT_SOURCE_DIR}'")
 
 # set up some base directories 
-set(BRD_DIR 	${PROJECT_SOURCE_DIR}/src/board)
-set(BB_DIR 		${PROJECT_SOURCE_DIR}/src/board/bitboard)
-set(OCC_GEN_DIR	${PROJECT_SOURCE_DIR}/src/board/bitboard/occ_mask_gen)
-set(FEN_DIR 	${PROJECT_SOURCE_DIR}/src/fen)
-set(POSN_DIR 	${PROJECT_SOURCE_DIR}/src/position)
-set(MOVE_DIR 	${PROJECT_SOURCE_DIR}/src/move)
-set(UTILS_DIR 	${PROJECT_SOURCE_DIR}/src/utils)
+set(BRD_DIR             ${K2_PROJECT_SOURCE_DIR}/board)
+set(BB_DIR              ${K2_PROJECT_SOURCE_DIR}/board/bitboard)
+set(OCC_GEN_DIR         ${K2_PROJECT_SOURCE_DIR}/board/bitboard/occ_mask_gen)
+set(FEN_DIR             ${K2_PROJECT_SOURCE_DIR}/fen)
+set(POSN_DIR            ${K2_PROJECT_SOURCE_DIR}/position)
+set(MOVE_DIR            ${K2_PROJECT_SOURCE_DIR}/move)
+set(UTILS_DIR           ${K2_PROJECT_SOURCE_DIR}/utils)
 
-message("PROJECT_SOURCE_DIR='${PROJECT_SOURCE_DIR}'")
+message("Setting up K2 Engine source files...")
 
-# define all source files, except the main()
-# These are shared with the test launcher.
 set (SOURCES 
-	${BB_DIR}/bitboard.c 
-	${BB_DIR}/occupancy_mask.c
-	${OCC_GEN_DIR}/occ_mask_gen.c	
-	${BRD_DIR}/board.c 
-	${BRD_DIR}/piece.c
-	${BRD_DIR}/square.c
-	${FEN_DIR}/fen.c
-	${POSN_DIR}/position.c
-	${POSN_DIR}/castle_perms.c
-	${MOVE_DIR}/move.c
-	${MOVE_DIR}/move_list.c
-	${MOVE_DIR}/move_gen.c
-	${UTILS_DIR}/utils.c
-	)
+        ${BB_DIR}/bitboard.c 
+        ${BB_DIR}/occupancy_mask.c
+        ${OCC_GEN_DIR}/occ_mask_gen.c	
+        ${BRD_DIR}/board.c 
+        ${BRD_DIR}/piece.c
+        ${BRD_DIR}/square.c
+        ${FEN_DIR}/fen.c
+        ${POSN_DIR}/position.c
+        ${POSN_DIR}/castle_perms.c
+        ${MOVE_DIR}/move.c
+        ${MOVE_DIR}/move_list.c
+        ${MOVE_DIR}/move_gen.c
+        ${UTILS_DIR}/utils.c
+        )
 
-# Define the include directories.
-# Variable is shared with the test launcher
+message("Setting up K2 Engine include files...")
+
 set(INCLUDES 
-	${BB_DIR}
-	${BRD_DIR}
-	${FEN_DIR}
-	${POSN_DIR}
-	${MOVE_DIR}
-	${UTILS_DIR}
-	)
-
-#message("main SOURCES ='${SOURCES}'")
-#message("main INCLUDES ='${INCLUDES}'")
-
+        ${BB_DIR}
+        ${BRD_DIR}
+        ${OCC_GEN_DIR}
+        ${FEN_DIR}
+        ${POSN_DIR}
+        ${MOVE_DIR}
+        ${UTILS_DIR}
+        )
 
 # Global variables to allow the test binary to access the main source files 
 set(ENGINE_INCL ${INCLUDES} PARENT_SCOPE)
 set(ENGINE_SRCS ${SOURCES} PARENT_SCOPE)
 
+message("Setting up K2 Engine build target compiler flags...")
 
-set(DEBUG_CC_FLAGS 
-		"-g \
-		-std=c11 \
-		-Wpedantic \
-		-Wall \
-		-Wextra \
-		-fsanitize=undefined \
-		-fno-omit-frame-pointer \
-		-Wstrict-prototypes \
-		-Wmissing-prototypes \
-		-Wswitch-default \
-		-Wswitch-enum \
-		-Wunused-macros \
-		-Wundef \
-		-Wuninitialized \
-		-Winit-self \
-		-Wconversion \
-		-Wsign-conversion \
-		-Wshadow \
-		-Wcast-qual \
-		-Wcast-align \
-		-Wmissing-include-dirs \
-		-Wpointer-arith \
-		-Wwrite-strings \
-		-Waggregate-return \
-		-Wunreachable-code \
-		-Wredundant-decls \
-		")
 
-SET(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
+# set up build target compiler flags
+# set up build target compiler flags
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${ENGINE_COMPILER_WARNS}")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${ENGINE_COMPILER_WARNS}") 
+
 
 include_directories(${INCLUDES})
 # note: include main.c here
 add_executable(k2 main.c ${SOURCES})
+
+message("*** K2 Chess Engine Binary build environment - DONE ***'")
 

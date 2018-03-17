@@ -1,70 +1,89 @@
+#
+#                               K2 Chess Engine
+#
+#       CMAKE script for building the Test Runner binary build environment
+#
+#
+#
 cmake_minimum_required(VERSION 3.0)
 
-set(TEST_BINARY_NAME "test_k2")
-message("Setting test binary to " ${TEST_BINARY_NAME})
+message("*** Setting up Test Runner Binary build environment ***'")
 
-set(DEBUG_CC_FLAGS 
-		"-g \
-		-std=c11 \
-		-Wpedantic \
-		-Wall \
-		-Wextra \
-		-fsanitize=undefined \
-		-fno-omit-frame-pointer \
-		-Wstrict-prototypes \
-		-Wmissing-prototypes \
-		-Wswitch-default \
-		-Wunused-macros \
-		-Wextra \
-		-Wconversion \
-		-Wsign-conversion \
-		-Wshadow \
-		-Wcast-qual \
-		-Wcast-align \
-		-Wmissing-include-dirs \
-		-Wpointer-arith")
 
-# set(DEBUG_CC_FLAGS "-g -std=c11")
-set(CMAKE_C_FLAGS ${DEBUG_CC_FLAGS})
+set(TEST_BINARY_NAME "k2_test_runner")
+message("Setting Test Runner binary to '${TEST_BINARY_NAME}'")
 
+
+
+
+set(TEST_PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/test)
+message("Setting Test Runner root directory to '${TEST_PROJECT_SOURCE_DIR}'")
+
+# set up some base directories 
+set(TEST_BRD_DIR        ${TEST_PROJECT_SOURCE_DIR}/board)
+set(TEST_BB_DIR         ${TEST_PROJECT_SOURCE_DIR}/board/bitboard)
+set(TEST_OCC_GEN_DIR    ${TEST_PROJECT_SOURCE_DIR}/board/bitboard/occ_mask_gen)
+set(TEST_FEN_DIR        ${TEST_PROJECT_SOURCE_DIR}/fen)
+set(TEST_POSN_DIR       ${TEST_PROJECT_SOURCE_DIR}/position)
+set(TEST_MOVE_DIR       ${TEST_PROJECT_SOURCE_DIR}/move)
+set(TEST_UTILS_DIR      ${TEST_PROJECT_SOURCE_DIR}/utils)
+
+message("Setting up Test Runner build target compiler flags...")
+
+# set up build target compiler flags
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${ENGINE_COMPILER_WARNS}")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${ENGINE_COMPILER_WARNS}") 
+
+
+# Define the include directories.
+# Variable is shared with the test launcher
+set(TEST_INCLUDES 
+        ${TEST_BB_DIR}
+        ${TEST_BRD_DIR}
+        ${TEST_OCC_GEN_DIR}
+        ${TEST_FEN_DIR}
+        ${TEST_POSN_DIR}
+        ${TEST_MOVE_DIR}
+        ${TEST_UTILS_DIR}
+        )
 
 
 # Reference the main Engine source files
-include_directories(${ENGINE_INCL} ./)
+message("Setting up to reference K2 Engine include files...")
+include_directories(${ENGINE_INCL} ${TEST_INCLUDES} ./)
 
+message("Setting up to Test Runner source files...")
+# setup the test runner source files
 set(TEST_SRCS 
-	test_launcher.c
-	test_fen.c
-	test_piece.c
-	test_position.c
-	test_castle_permissions.c
-    test_move.c
-	test_move_list.c
-	test_move_gen.c
-    test_bitboard.c
-    test_board.c
-    test_square.c
-)
+        ${TEST_PROJECT_SOURCE_DIR}/test_launcher.c
+        ${TEST_BB_DIR}/test_bitboard.c 
+        ${TEST_BRD_DIR}/test_board.c 
+        ${TEST_BRD_DIR}/test_piece.c
+        ${TEST_BRD_DIR}/test_square.c
+        ${TEST_FEN_DIR}/test_fen.c
+        ${TEST_POSN_DIR}/test_position.c
+        ${TEST_POSN_DIR}/test_castle_permissions.c
+        ${TEST_MOVE_DIR}/test_move.c
+        ${TEST_MOVE_DIR}/test_move_list.c
+        ${TEST_MOVE_DIR}/test_move_gen.c
+        )
 
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
 
-#add_test(${TEST_BINARY_NAME} ${TEST_BINARY_NAME})
+message("Setting up lib reference for cmocka...")
 target_link_libraries(${TEST_BINARY_NAME} cmocka)
 
-# redirect cmocka's output (defaults to STDERR)
+# defaults to STDERR, so redirect for convenience
+message("Redirecting cmocka output to STDOUT...")
 set(CMOCKA_MESSAGE_OUTPUT STDOUT)
 
+message("Enabling cmake test support...")
+enable_testing()
+
+message("Setting up ctest test runner...${TEST_BINARY_NAME}")
 set(UNIT_TEST ${TEST_BINARY_NAME})
-add_test(NAME ${UNIT_TEST} COMMAND ${UNIT_TEST})
-#add_custom_command(
-#     TARGET ${UNIT_TEST}
-#     COMMENT "Run tests"
-#     POST_BUILD 
-#     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-#     COMMAND ${CMAKE_CTEST_COMMAND} -C $<CONFIGURATION> -R "^${UNIT_TEST}$" --output-on-failures
-#)
+add_test(TestRunner ${UNIT_TEST})
 
 
-#message("test ENGINE_SRCS='${ENGINE_SRCS}'")
-#message("test ENGINE_INCL='${ENGINE_INCL}'")
 
+message("*** Test Runner Binary build environment - DONE ***")

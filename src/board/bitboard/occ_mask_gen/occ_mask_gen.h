@@ -1,3 +1,4 @@
+
 /*  MIT License
  *
  *  Copyright (c) 2017 Eddie McNally
@@ -20,29 +21,27 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-
-
-#pragma once
-
-#include "square.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <ctype.h>
+#include "board.h"
+#include "bitboard.h"
 #include "piece.h"
+#include "square.h"
 
-
-typedef uint16_t move_t;
-
-
-move_t move_encode_quiet ( const enum square from_sq, const enum square to_sq );
-move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq, const enum piece promoted_piece, const bool is_capture );
-move_t move_encode_capture ( const enum square from_sq, const enum square to_sq );
-move_t move_encode_enpassant ( const enum square from_sq, const enum square to_sq );
-enum square move_decode_from_sq ( const move_t mv );
-enum square move_decode_to_sq ( const move_t mv );
-
-bool move_is_quiet ( move_t mv );
-bool move_is_capture ( move_t mv );
-bool move_is_promotion ( move_t mv );
-bool move_is_en_passant ( move_t mv );
-
-char *move_print ( move_t mv );
-
-bool validate_move(const move_t mv);
+void occ_mask_gen_ranks_files ( void );
+void occ_mask_gen_king ( uint64_t * occ_mask_array );
+void occ_mask_gen_knight ( uint64_t * occ_mask_array );
+void occ_mask_gen_rook ( uint64_t * occ_mask_array );
+void occ_mask_gen_bishop ( uint64_t * occ_mask_array );
+void occ_mask_gen_queen ( uint64_t * occ_mask_array );
+void occ_mask_gen_white_pawn_quiet_non_first_move ( uint64_t * occ_mask_array );
+void occ_mask_gen_white_pawn_capture_non_first_move ( uint64_t * occ_mask_array );
+void occ_mask_gen_black_pawn_quiet_non_first_move ( uint64_t * occ_mask_array );
+void occ_mask_gen_black_pawn_capture_non_first_move ( uint64_t * occ_mask_array );
+void occ_mask_gen_print_as_board ( const uint64_t mask );
+void occ_mask_gen_print_all_as_hex ( const uint64_t masks[], const uint8_t size );
+void occ_mask_gen_print_as_hex ( const uint64_t mask );
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

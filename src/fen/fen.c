@@ -45,7 +45,7 @@ static void setup_half_move_count ( struct parsed_fen *pf, const char *half_move
 static void setup_full_move_count ( struct parsed_fen *pf, const char *full_move_cnt );
 static uint16_t convert_move_count ( const char *str );
 static void handle_rank ( struct parsed_fen *pf, const enum rank rank, const char *pieces );
-static void validate_struct_init ( const struct parsed_fen *pf );
+static bool validate_struct_init ( const struct parsed_fen *pf );
 
 
 
@@ -149,7 +149,7 @@ struct parsed_fen *fen_parse ( const char *fen_string )
 bool fen_try_get_piece_on_sq ( const struct parsed_fen *pf, const enum square sq,
                                enum piece *pce )
 {
-        validate_struct_init ( pf );
+        assert(validate_struct_init ( pf ));
 
         if ( pf->pieces[sq].is_occupied == true ) {
                 *pce = pf->pieces[sq].piece;
@@ -187,7 +187,7 @@ bool fen_has_bq_castle_perms ( const struct parsed_fen *pf )
  */
 bool fen_try_get_en_pass_sq ( const struct parsed_fen *pf, enum square *sq )
 {
-        validate_struct_init ( pf );
+        assert(validate_struct_init ( pf ));
 
         if ( pf->is_en_pass_set == true ) {
                 *sq = pf->en_pass_sq;
@@ -205,7 +205,7 @@ bool fen_try_get_en_pass_sq ( const struct parsed_fen *pf, enum square *sq )
  */
 enum colour fen_get_side_to_move ( const struct parsed_fen *pf )
 {
-        validate_struct_init ( pf );
+        assert(validate_struct_init ( pf ));
 
         return pf->side_to_move;
 }
@@ -218,7 +218,7 @@ enum colour fen_get_side_to_move ( const struct parsed_fen *pf )
  */
 uint16_t fen_get_half_move_cnt ( const struct parsed_fen *pf )
 {
-        validate_struct_init ( pf );
+        assert(validate_struct_init ( pf ));
 
         return pf->half_move_cnt;
 }
@@ -231,7 +231,7 @@ uint16_t fen_get_half_move_cnt ( const struct parsed_fen *pf )
  */
 uint16_t fen_get_full_move_cnt ( const struct parsed_fen *pf )
 {
-        validate_struct_init ( pf );
+        assert(validate_struct_init ( pf ));
 
         return pf->full_move_cnt;
 }
@@ -395,11 +395,12 @@ static uint16_t convert_move_count ( const char *str )
         return ( uint16_t ) result;
 }
 
-static void validate_struct_init ( const struct parsed_fen *pf )
+static bool validate_struct_init ( const struct parsed_fen *pf )
 {
         if ( pf->struct_init_key != STRUCT_INIT_KEY ) {
-                assert ( false );
+                return false;
         }
+        return true;
 }
 
 

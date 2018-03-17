@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "move.h"
 #include "piece.h"
 #include "square.h"
@@ -102,6 +103,9 @@ static move_t encode_to_from ( const enum square from_sq,
  */
 move_t move_encode_quiet ( const enum square from_sq, const enum square to_sq )
 {
+        assert ( validate_square ( from_sq ) );
+        assert ( validate_square ( to_sq ) );
+
         return encode_to_from ( from_sq, to_sq );
 }
 
@@ -118,6 +122,9 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
                               const enum piece promoted_piece,
                               const bool is_capture )
 {
+        assert ( validate_square ( from_sq ) );
+        assert ( validate_square ( to_sq ) );
+
         move_t mv = encode_to_from ( from_sq, to_sq );
 
         enum piece pce_type = pce_get_piece_type ( promoted_piece );
@@ -165,6 +172,9 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
  */
 move_t move_encode_capture ( const enum square from_sq, const enum square to_sq )
 {
+        assert ( validate_square ( from_sq ) );
+        assert ( validate_square ( to_sq ) );
+
         move_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_CAPTURE );
         return mv;
@@ -180,6 +190,9 @@ move_t move_encode_capture ( const enum square from_sq, const enum square to_sq 
 move_t move_encode_enpassant ( const enum square from_sq,
                                const enum square to_sq )
 {
+        assert ( validate_square ( from_sq ) );
+        assert ( validate_square ( to_sq ) );
+
         move_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_EN_PASS );
         return mv;
@@ -215,6 +228,8 @@ enum square move_decode_to_sq ( const move_t mv )
  */
 bool move_is_quiet ( move_t mv )
 {
+        assert ( validate_move ( mv ) );
+
         move_t m = ( ( move_t ) mv ) & MV_MASK_FLAGS;
         return m == MV_FLG_QUIET;
 }
@@ -228,6 +243,8 @@ bool move_is_quiet ( move_t mv )
  */
 bool move_is_capture ( move_t mv )
 {
+        assert ( validate_move ( mv ) );
+
         return ( mv & MV_FLG_BIT_CAPTURE ) != 0;
 }
 
@@ -240,6 +257,8 @@ bool move_is_capture ( move_t mv )
  */
 bool move_is_promotion ( move_t mv )
 {
+        assert ( validate_move ( mv ) );
+
         return ( mv & MV_FLG_BIT_PROMOTE ) != 0;
 }
 
@@ -252,6 +271,8 @@ bool move_is_promotion ( move_t mv )
  */
 bool move_is_en_passant ( move_t mv )
 {
+        assert ( validate_move ( mv ) );
+
         return ( mv & MV_FLG_EN_PASS ) != 0;
 }
 
@@ -265,6 +286,8 @@ bool move_is_en_passant ( move_t mv )
  */
 char *move_print ( move_t mv )
 {
+        assert ( validate_move ( mv ) );
+
         static char move_string[6];
 
         enum square from_sq = move_decode_from_sq ( mv );
@@ -283,7 +306,14 @@ char *move_print ( move_t mv )
 }
 
 
-
+bool validate_move ( const move_t mv )
+{
+        enum square from = move_decode_from_sq ( mv );
+        enum square to = move_decode_to_sq ( mv );
+        bool from_ok = validate_square ( from );
+        bool to_ok = validate_square ( to );
+        return ( from_ok && to_ok );
+}
 
 // ==================================================================
 //

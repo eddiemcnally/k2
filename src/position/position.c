@@ -34,7 +34,6 @@
 #include "castle_perms.h"
 
 static void init_pos_struct ( struct position *pos );
-static void validate_position ( const struct position *pos );
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
 static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
 
@@ -94,7 +93,7 @@ struct position * pos_create()
  */
 void pos_initialise ( const char * fen, struct position *pos )
 {
-        validate_position ( pos );
+        assert ( validate_position ( pos ) );
         struct parsed_fen *parsed_fen = fen_parse ( fen );
 
         populate_position_from_fen ( pos, parsed_fen );
@@ -108,7 +107,7 @@ void pos_initialise ( const char * fen, struct position *pos )
  */
 void pos_destroy ( struct position *pos )
 {
-        validate_position ( pos );
+        assert ( validate_position ( pos ) );
         brd_deallocate ( pos->brd );
 
         memset ( pos, 0, sizeof ( struct position ) );
@@ -123,7 +122,7 @@ void pos_destroy ( struct position *pos )
  */
 struct board * pos_get_board ( const struct position *pos )
 {
-        validate_position ( pos );
+        assert ( validate_position ( pos ) );
         return pos->brd;
 }
 
@@ -135,7 +134,7 @@ struct board * pos_get_board ( const struct position *pos )
  */
 enum colour pos_get_side_to_move ( const struct position *pos )
 {
-        validate_position ( pos );
+        assert ( validate_position ( pos ) );
         return pos->side_to_move;
 }
 
@@ -150,16 +149,28 @@ void pos_set_cast_perm ( struct position *pos, const cast_perm_t perms )
         pos->castle_perm = perms;
 }
 
+
+bool validate_position ( const struct position *pos )
+{
+        if ( pos->struct_init_key != STRUCT_INIT_KEY ) {
+                return false;
+        }
+
+        struct board *brd = pos_get_board ( pos );
+
+        assert ( validate_board ( brd ) );
+        assert ( validate_colour ( pos_get_side_to_move ( pos ) ) );
+        
+        return false;
+}
+
+
 static void init_pos_struct ( struct position *pos )
 {
         memset ( pos, 0, sizeof ( struct position ) );
         pos->struct_init_key = STRUCT_INIT_KEY;
 }
 
-static void validate_position ( const struct position *pos )
-{
-        assert ( pos->struct_init_key == STRUCT_INIT_KEY );
-}
 
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen )
 {
@@ -177,11 +188,11 @@ static void populate_position_from_fen ( struct position *pos, const struct pars
         pos->fifty_move_counter = 0;
         pos->ply = fen_get_half_move_cnt ( fen );
         pos->history_ply = fen_get_full_move_cnt ( fen );
-        set_up_castle_permissions(pos, fen);
+        set_up_castle_permissions ( pos, fen );
 
         for ( enum square sq = a1; sq <= h8; sq++ ) {
                 enum piece pce;
-                bool found_pce = fen_try_get_piece_on_sq(fen, sq, &pce );
+                bool found_pce = fen_try_get_piece_on_sq ( fen, sq, &pce );
                 if ( found_pce ) {
                         brd_add_piece ( pos->brd, pce, sq );
                 }

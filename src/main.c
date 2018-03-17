@@ -29,14 +29,19 @@
 #include "board.h"
 #include "square.h"
 #include "piece.h"
+#include "occ_mask_gen.h"
 
 
 //#define VERSION_MAJOR	0
 //#define VERSION_MINOR	1
 
-int main(void)
+int main ( void )
 {
+        uint64_t mask[NUM_SQUARES]  = {0};
+        
+        occ_mask_gen_white_pawn_quiet_non_first_move(mask);
 
-	printf("%d\n", sq_get_rank(a1));
+        occ_mask_gen_print_all_as_hex(mask, NUM_SQUARES);
 
 }
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

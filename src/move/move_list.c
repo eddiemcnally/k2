@@ -29,8 +29,8 @@
 #include "move.h"
 
 
-#define     MOVE_LIST_INIT_KEY      ((uint16_t)0xc0c0babe)
-
+#define     MOVE_LIST_INIT_KEY          ((uint16_t)0xc0c0babe)
+#define     MOVE_LIST_MAX_LEN           2000
 
 
 struct move_list {
@@ -38,9 +38,6 @@ struct move_list {
         uint16_t 	move_count;
         move_t 		move_list[MOVE_LIST_MAX_LEN];
 };
-
-static void validate_move_list_size ( const struct move_list *mvl );
-
 
 
 // ==================================================================
@@ -72,7 +69,7 @@ struct move_list* mvl_allocate ( void )
  */
 void mvl_deallocate ( struct move_list *mvl )
 {
-        validate_move_list ( mvl );
+        assert ( validate_move_list ( mvl ) );
         memset ( mvl, 0, sizeof ( struct move_list ) );
         free ( mvl );
 }
@@ -85,7 +82,7 @@ void mvl_deallocate ( struct move_list *mvl )
  */
 uint16_t mvl_get_move_count ( const struct move_list *mvl )
 {
-        validate_move_list ( mvl );
+        assert ( validate_move_list ( mvl ) );
         return mvl->move_count;
 }
 
@@ -98,8 +95,7 @@ uint16_t mvl_get_move_count ( const struct move_list *mvl )
  */
 move_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset )
 {
-        validate_move_list ( mvl );
-        assert ( offset < MOVE_LIST_MAX_LEN );
+        assert ( validate_move_list ( mvl ) );
 
         return mvl->move_list[offset];
 }
@@ -112,8 +108,7 @@ move_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset )
  */
 void mvl_add ( struct move_list *mvl, move_t mv )
 {
-        validate_move_list ( mvl );
-        validate_move_list_size ( mvl );
+        assert ( validate_move_list ( mvl ) );
 
         mvl->move_list[mvl->move_count] = mv;
         mvl->move_count++;
@@ -126,8 +121,7 @@ void mvl_add ( struct move_list *mvl, move_t mv )
  */
 void mvl_reset ( struct move_list *mvl )
 {
-        validate_move_list ( mvl );
-        validate_move_list_size ( mvl );
+        assert ( validate_move_list ( mvl ) );
 
         mvl->move_count = 0;
 }
@@ -141,8 +135,7 @@ void mvl_reset ( struct move_list *mvl )
  */
 bool mvl_contains_move ( const struct move_list *mvl, const move_t mv )
 {
-        validate_move_list ( mvl );
-        validate_move_list_size ( mvl );
+        assert ( validate_move_list ( mvl ) );
 
         for ( int i = 0; i < mvl->move_count; i++ ) {
                 if ( mvl->move_list[i] == mv ) {
@@ -160,6 +153,8 @@ bool mvl_contains_move ( const struct move_list *mvl, const move_t mv )
  */
 void mvl_print ( const struct move_list *mvl )
 {
+        assert ( validate_move_list ( mvl ) );
+
         uint16_t move_count = mvl_get_move_count ( mvl );
 
         for ( uint16_t i = 0; i < move_count; i++ ) {
@@ -171,11 +166,25 @@ void mvl_print ( const struct move_list *mvl )
 
 
 
-void validate_move_list ( const struct move_list *mvl )
+bool validate_move_list ( const struct move_list *mvl )
 {
-        assert ( mvl->struct_init_key == MOVE_LIST_INIT_KEY );
-        validate_move_list_size ( mvl );
+        if ( mvl->struct_init_key != MOVE_LIST_INIT_KEY ) {
+                return false;
+        }
+
+        if ( mvl->move_count > MOVE_LIST_MAX_LEN ) {
+                return false;
+        }
+
+        return true;
 }
+
+uint16_t mvl_get_mvl_max_size ( void )
+{
+        return MOVE_LIST_MAX_LEN;
+
+}
+
 
 // ==================================================================
 //
@@ -183,11 +192,4 @@ void validate_move_list ( const struct move_list *mvl )
 //
 // ==================================================================
 
-
-
-
-static void validate_move_list_size ( const struct move_list *mvl )
-{
-        assert ( mvl->move_count <= MOVE_LIST_MAX_LEN);
-}
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

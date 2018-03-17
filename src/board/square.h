@@ -20,7 +20,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-
+#include <stdbool.h>
 
 #pragma once
 
@@ -67,6 +67,9 @@ enum rank sq_get_rank ( const enum square sq );
 enum file sq_get_file ( const enum square sq );
 enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file );
 char * print_square ( const enum square sq );
-void validate_square ( const enum square sq );
+bool validate_square ( const enum square sq );
+bool validate_rank ( const enum rank rank );
+bool validate_file ( const enum file file );
+
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

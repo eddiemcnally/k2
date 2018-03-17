@@ -51,7 +51,7 @@ enum piece_values {
  */
 bool pce_is_white ( const enum piece pce )
 {
-        validate_piece ( pce );
+        assert ( validate_piece ( pce ) );
         return ( ( pce & WHITE ) != 0 );
 }
 
@@ -63,7 +63,7 @@ bool pce_is_white ( const enum piece pce )
  */
 bool pce_is_black ( const enum piece pce )
 {
-        validate_piece ( pce );
+        assert ( validate_piece ( pce ) );
         return ( ( pce & BLACK ) != 0 );
 }
 
@@ -75,7 +75,7 @@ bool pce_is_black ( const enum piece pce )
  */
 enum colour swap_side ( const enum colour col )
 {
-        validate_colour ( col );
+        assert ( validate_colour ( col ) );
 
         if ( col == WHITE ) {
                 return BLACK;
@@ -91,7 +91,7 @@ enum colour swap_side ( const enum colour col )
  */
 enum colour pce_get_colour ( const enum piece pce )
 {
-        validate_piece ( pce );
+        assert ( validate_piece ( pce ) );
 
         if ( pce_is_white ( pce ) ) {
                 return WHITE;
@@ -107,7 +107,7 @@ enum colour pce_get_colour ( const enum piece pce )
  */
 uint32_t pce_get_value ( const enum piece pce )
 {
-        validate_piece ( pce );
+        assert ( validate_piece ( pce ) );
 
         enum piece p = pce_get_piece_type ( pce );
 
@@ -143,7 +143,7 @@ uint32_t pce_get_value ( const enum piece pce )
  */
 char pce_get_label ( const enum piece pce )
 {
-        validate_piece ( pce );
+        assert ( validate_piece ( pce ) );
 
 
 #pragma GCC diagnostic push
@@ -190,7 +190,7 @@ char pce_get_label ( const enum piece pce )
  */
 enum piece pce_get_from_label ( const char c )
 {
-        validate_label ( c );
+        assert ( validate_label ( c ) );
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
@@ -243,10 +243,8 @@ enum piece pce_get_piece_type ( const enum piece piece )
  *
  * @param pce The piece
  */
-void validate_piece ( const enum piece pce )
+bool validate_piece ( const enum piece pce )
 {
-#ifdef ENABLE_ASSERTS
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
@@ -263,14 +261,11 @@ void validate_piece ( const enum piece pce )
         case BQUEEN:
         case WKING:
         case BKING:
-                assert ( true );
-                break;
+                return true;
         default:
-                assert ( false );
-                break;
+                return false;
         }
 #pragma GCC diagnostic pop
-#endif
 }
 
 /**
@@ -278,12 +273,12 @@ void validate_piece ( const enum piece pce )
  *
  * @param col The colour
  */
-void validate_colour ( const enum colour col )
+bool validate_colour ( const enum colour col )
 {
-#ifdef ENABLE_ASSERTS
-        assert ( col == WHITE || col == BLACK );
-#endif
-
+        if ( col == WHITE || col == BLACK ) {
+                return true;
+        }
+        return false;
 }
 
 /**
@@ -291,9 +286,8 @@ void validate_colour ( const enum colour col )
  *
  * @param c The piece label
  */
-void validate_label ( const char c )
+bool validate_label ( const char c )
 {
-#ifdef ENABLE_ASSERTS
         switch ( c ) {
         case 'p':
         case 'r':
@@ -307,12 +301,10 @@ void validate_label ( const char c )
         case 'B':
         case 'Q':
         case 'K':
-                assert ( true );
-                break;
+                return true;
         default:
                 printf ( "Invalid label %c\n", c );
-                assert ( false );
+                return false;
         }
-#endif
 }
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

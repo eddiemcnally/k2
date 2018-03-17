@@ -23,6 +23,7 @@
 
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <assert.h>
 #include "square.h"
 
@@ -33,25 +34,30 @@ static char square_text[MAX_SQUARE_TEXT];
 
 enum rank sq_get_rank ( const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
 
         return ( enum rank ) ( sq >> 3 );
 }
 
 enum file sq_get_file ( const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
 
         return ( enum file ) ( sq % 8 );
 }
 
 enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
 {
+        assert(validate_rank(rank));
+        assert(validate_file(file));
+        
         return ( enum square ) ( ( rank << 3 ) + file );
 }
 
 char * print_square ( const enum square sq )
 {
+        assert(validate_square(sq));
+        
         int file = sq_get_file ( sq );
         int rank = sq_get_rank ( sq );
 
@@ -60,10 +66,28 @@ char * print_square ( const enum square sq )
         return square_text;
 }
 
-void validate_square ( const enum square sq )
+bool validate_square ( const enum square sq )
 {
-#ifdef ENABLE_ASSERTS
-        assert ( sq >= a1 && sq <= h8 );
-#endif
+        if ( sq >= a1 && sq <= h8 ) {
+                return true;
+        }
+        return false;
 }
+
+bool validate_rank ( const enum rank rank )
+{
+        if ( rank >= RANK_1 && rank <= RANK_8 ) {
+                return true;
+        }
+        return false;
+}
+
+bool validate_file ( const enum file file )
+{
+        if ( file  >= FILE_A && file <= FILE_H ) {
+                return true;
+        }
+        return false;
+}
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

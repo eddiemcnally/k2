@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include "move.h"
 
-#define     MOVE_LIST_MAX_LEN	2000
+
 
 struct move_list;
 
@@ -40,7 +40,8 @@ void mvl_add ( struct move_list *mvl, move_t mv );
 void mvl_reset ( struct move_list *mvl );
 bool mvl_contains_move ( const struct move_list *mvl, const move_t mv );
 
-void validate_move_list ( const struct move_list *mvl );
+uint16_t mvl_get_mvl_max_size ( void );
+bool validate_move_list ( const struct move_list *mvl );
 void mvl_print ( const struct move_list *mvl );
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

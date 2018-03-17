@@ -134,12 +134,12 @@ static const uint64_t negative_diagonal_masks[] = {
 
 
 // Bitboards representing commonly used ranks and files
-#define RANK_1_BB       0x00000000000000FF      
-#define RANK_2_BB       0x000000000000FF00      
-#define RANK_7_BB       0x00FF000000000000      
-#define RANK_8_BB       0xFF00000000000000      
-#define FILE_1_BB       0x0101010101010101
-#define FILE_8_BB       0x8080808080808080     
+const bitboard_t RANK_1_BB = 0x00000000000000FF;
+const bitboard_t RANK_2_BB = 0x000000000000FF00;
+const bitboard_t RANK_7_BB = 0x00FF000000000000;
+const bitboard_t RANK_8_BB = 0xFF00000000000000;
+const bitboard_t FILE_1_BB = 0x0101010101010101;
+const bitboard_t FILE_8_BB = 0x8080808080808080;
 
 
 
@@ -152,6 +152,9 @@ static const uint64_t negative_diagonal_masks[] = {
  */
 void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl )
 {
+        assert ( validate_position ( pos ) );
+        assert ( validate_move_list ( mvl ) );
+
         struct board *brd = pos_get_board ( pos );
         enum colour side_to_move = pos_get_side_to_move ( pos );
 
@@ -170,7 +173,10 @@ void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl )
  */
 void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl )
 {
-        validate_board ( brd );
+        assert ( validate_board ( brd ) );
+        assert ( validate_colour ( side_to_move ) );
+        assert ( validate_move_list ( mvl ) );
+
 
         enum piece knight = WKNIGHT;
         if ( side_to_move == BLACK ) {
@@ -213,25 +219,28 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
 }
 
 
-void mv_gen_white_pawn_moves ( const struct position *pos, struct move_list *mvl ){
-        
+void mv_gen_white_pawn_moves ( const struct position *pos, struct move_list *mvl )
+{
+
         // to do:
         //      pawn start
         //      en passant
         //      general pawns
         //      promotion
-        const struct board *brd = pos_get_board(pos);
-                
-        bitboard_t all_occ_bb = brd_get_board_bb(brd);
+        const struct board *brd = pos_get_board ( pos );
+
+        bitboard_t all_occ_bb = brd_get_board_bb ( brd );
         bitboard_t free_squares = ~all_occ_bb;
-        bitboard_t opp_colours_bb = brd_get_colour_bb(brd, BLACK);
-        
-        
-        
-        
-        
-        
-        
+        bitboard_t opp_colours_bb = brd_get_colour_bb ( brd, BLACK );
+        bitboard_t bb_wpawns = brd_get_piece_bb ( brd, WPAWN );
+
+        // unmoved white pawns
+        bitboard_t bb_first_pawn = bb_wpawns & RANK_2_BB;
+
+
+
+
+
 }
 
 
@@ -250,7 +259,9 @@ void mv_gen_white_pawn_moves ( const struct position *pos, struct move_list *mvl
  */
 void mv_gen_diagonal_sliding_moves ( const struct board *brd, const enum colour side_to_move, struct move_list *mvl )
 {
-        validate_board ( brd );
+        assert ( validate_board ( brd ) );
+        assert ( validate_move_list ( mvl ) );
+        assert ( validate_colour ( side_to_move ) );
 
         enum piece pce_bishop;
         enum piece pce_queen;
@@ -389,10 +400,10 @@ void mv_gen_sliding_horizontal_vertical_moves ( const struct board *brd, const e
 }
 
 
-void mv_gen_generate_king_moves (  const struct position *pos, const enum colour side_to_move, struct move_list *mvl )
+void mv_gen_generate_king_moves ( const struct position *pos, const enum colour side_to_move, struct move_list *mvl )
 {
-        struct board *brd = pos_get_board(pos);
-        
+        struct board *brd = pos_get_board ( pos );
+
         enum piece pce_to_move;
         enum colour opposite_side;
         if ( side_to_move == WHITE ) {

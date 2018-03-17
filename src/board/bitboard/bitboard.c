@@ -51,7 +51,8 @@ static const unsigned char BitReverseTable256[256] = {
  */
 void bb_set_square ( bitboard_t* bb, const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
+
         *bb = *bb | ( BIT_0 << sq );
 }
 
@@ -63,7 +64,8 @@ void bb_set_square ( bitboard_t* bb, const enum square sq )
  */
 void bb_clear_square ( bitboard_t* bb, const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
+
         *bb = *bb & ( ~ ( BIT_0 << sq ) );
 }
 
@@ -77,7 +79,8 @@ void bb_clear_square ( bitboard_t* bb, const enum square sq )
  */
 bool bb_is_set ( const bitboard_t bb, const enum square sq )
 {
-        validate_square ( sq );
+        assert ( validate_square ( sq ) );
+
         return ( bb & ( BIT_0 << sq ) ) != 0;
 }
 

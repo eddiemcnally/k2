@@ -48,7 +48,7 @@ void test_move_list_init ( void **state )
 
 void test_move_list_bulk_add_moves ( void **state )
 {
-        const uint16_t max_moves = MOVE_LIST_MAX_LEN - 1;
+        const uint16_t max_moves = mvl_get_mvl_max_size() - 1;
         const uint16_t mv_offset = 1234;
 
         struct move_list* mvl = mvl_allocate();

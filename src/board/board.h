@@ -34,7 +34,7 @@ struct board;
 
 struct board* brd_allocate ( void );
 void brd_deallocate ( struct board *brd );
-void validate_board ( const struct board *brd );
+bool validate_board ( const struct board *brd );
 
 bool brd_is_sq_occupied ( const struct board* brd, const enum square sq );
 bool brd_try_get_piece_on_square ( const struct board* brd, const enum square sq, enum piece *pce );
