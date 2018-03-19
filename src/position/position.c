@@ -93,7 +93,6 @@ struct position * pos_create()
  */
 void pos_initialise ( const char * fen, struct position *pos )
 {
-        assert ( validate_position ( pos ) );
         struct parsed_fen *parsed_fen = fen_parse ( fen );
 
         populate_position_from_fen ( pos, parsed_fen );
@@ -156,12 +155,11 @@ bool validate_position ( const struct position *pos )
                 return false;
         }
 
-        struct board *brd = pos_get_board ( pos );
-
-        assert ( validate_board ( brd ) );
-        assert ( validate_colour ( pos_get_side_to_move ( pos ) ) );
+        assert ( validate_board ( pos->brd ) );
+        assert ( validate_colour ( pos->side_to_move) );
         
-        return false;
+        return true;
+        
 }
 
 

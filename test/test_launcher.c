@@ -104,9 +104,13 @@ int main ( void )
                 cmocka_unit_test ( test_square_gen_from_rank_file ),
 
                 // move generation
-                cmocka_unit_test ( test_move_gen_knight_white ),
-                cmocka_unit_test ( test_move_gen_knight_black ),
-                cmocka_unit_test ( test_move_gen_sliding_diagonal_black ),
+                cmocka_unit_test ( test_move_gen_knight_white_1 ),
+                cmocka_unit_test ( test_move_gen_knight_white_2 ),
+                cmocka_unit_test ( test_move_gen_knight_white_3 ),
+                cmocka_unit_test ( test_move_gen_knight_black_1 ),
+                cmocka_unit_test ( test_move_gen_knight_black_2 ),
+                cmocka_unit_test ( test_move_gen_knight_black_3 ),
+                //cmocka_unit_test ( test_move_gen_sliding_diagonal_black ),
 
                 // castle permissions
                 cmocka_unit_test ( test_castle_permissions_get_set ),

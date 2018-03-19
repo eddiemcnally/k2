@@ -74,16 +74,14 @@ message("Setting up lib reference for cmocka...")
 target_link_libraries(${TEST_BINARY_NAME} cmocka)
 
 # defaults to STDERR, so redirect for convenience
-message("Redirecting cmocka output to STDOUT...")
-set(CMOCKA_MESSAGE_OUTPUT STDOUT)
+#message("Redirecting cmocka output to STDOUT...")
+#set(CMOCKA_MESSAGE_OUTPUT STDOUT)
 
 message("Enabling cmake test support...")
 enable_testing()
 
 message("Setting up ctest test runner...${TEST_BINARY_NAME}")
-set(UNIT_TEST ${TEST_BINARY_NAME})
-add_test(TestRunner ${UNIT_TEST})
-
+add_test(TestRunner ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_BINARY_NAME})
 
 
 message("*** Test Runner Binary build environment - DONE ***")

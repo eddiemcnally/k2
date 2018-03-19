@@ -149,8 +149,6 @@ struct parsed_fen *fen_parse ( const char *fen_string )
 bool fen_try_get_piece_on_sq ( const struct parsed_fen *pf, const enum square sq,
                                enum piece *pce )
 {
-        assert(validate_struct_init ( pf ));
-
         if ( pf->pieces[sq].is_occupied == true ) {
                 *pce = pf->pieces[sq].piece;
                 //printf("returning piece %c\n", get_label(*pce));
@@ -397,10 +395,11 @@ static uint16_t convert_move_count ( const char *str )
 
 static bool validate_struct_init ( const struct parsed_fen *pf )
 {
-        if ( pf->struct_init_key != STRUCT_INIT_KEY ) {
-                return false;
-        }
         return true;
+        //if ( pf->struct_init_key != STRUCT_INIT_KEY ) {
+        //        return false;
+       // }
+        //return true;
 }
 
 
