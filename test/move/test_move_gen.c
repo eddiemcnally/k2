@@ -384,8 +384,6 @@ void test_move_gen_king_white_no_castling_3 ( void **state )
 
 
 
-
-
 void test_move_gen_king_black_no_castling_1 ( void **state )
 {
         const char *RANDOM_FEN_1 = "5Q2/1p3pp1/3P1Pn1/6k1/2K5/Pr3p2/p2R1P2/7B w - - 0 1\n";
@@ -413,7 +411,7 @@ void test_move_gen_king_black_no_castling_1 ( void **state )
         assert_true ( mvl_contains_move ( mvl, mv ) );
         mv = move_encode_quiet ( g5, f5 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
-        
+
         // check capture moves
         mv = move_encode_capture ( g5, f6 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
@@ -441,9 +439,9 @@ void test_move_gen_king_black_no_castling_2 ( void **state )
         assert_true ( mvl_contains_move ( mvl, mv ) );
         mv = move_encode_quiet ( f1, f2 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
- mv = move_encode_quiet ( f1, e2 );
+        mv = move_encode_quiet ( f1, e2 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
- mv = move_encode_quiet ( f1, e1 );
+        mv = move_encode_quiet ( f1, e1 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 
 }

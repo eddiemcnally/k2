@@ -153,8 +153,8 @@ static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square fr
 static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move,  struct move_list *mvl );
 static void mv_gen_black_castle_moves ( const struct position *pos, struct move_list *mvl );
 static void mv_gen_white_castle_moves ( const struct position *pos, struct move_list *mvl );
-static void add_kingside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum square from_sq, const enum square to_sq, struct move_list *mvl );
-static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum square from_sq, const enum square to_sq, struct move_list *mvl );
+static void add_kingside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum colour side_to_move, struct move_list *mvl );
+static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum colour side_to_move, struct move_list *mvl );
 
 
 
@@ -302,7 +302,6 @@ static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square fr
         }
 }
 
-
 static void mv_gen_white_castle_moves ( const struct position *pos, struct move_list *mvl )
 {
         cast_perm_t cp = pos_get_cast_perm ( pos );
@@ -310,10 +309,10 @@ static void mv_gen_white_castle_moves ( const struct position *pos, struct move_
         bitboard_t occupied_bb = brd_get_board_bb ( brd );
 
         if ( cast_perm_has_WK ( cp ) ) {
-                add_kingside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_WK, e1, g1, mvl );
+                add_kingside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_WK, WHITE, mvl );
         }
         if ( cast_perm_has_WQ ( cp ) ) {
-                add_queenside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_WQ, e1, c1, mvl );
+                add_queenside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_WQ, WHITE, mvl );
         }
 }
 
@@ -325,30 +324,44 @@ static void mv_gen_black_castle_moves ( const struct position *pos, struct move_
         bitboard_t occupied_bb = brd_get_board_bb ( brd );
 
         if ( cast_perm_has_BK ( cp ) ) {
-                add_kingside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_BK, e8, g8, mvl );
+                add_kingside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_BK, BLACK, mvl );
         }
         if ( cast_perm_has_BQ ( cp ) ) {
-                add_queenside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_BQ, e8, c8, mvl );
+                add_queenside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_BQ, BLACK, mvl );
 
         }
 }
 
-static void add_kingside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum square from_sq, const enum square to_sq, struct move_list *mvl )
+static void add_kingside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum colour side_to_move, struct move_list *mvl )
 {
         if ( ( brd_bb & blocking_pce_mask ) == 0 ) {
+                move_t mv;
                 // no pieces blocking a castle
-                move_t mv = move_encode_castle_kingside ( from_sq, to_sq );
-                mvl_add ( mvl, mv );
+                if ( side_to_move == WHITE ) {
+                        mv = move_encode_castle_kingside_white();
+                        mvl_add ( mvl, mv );
+                } else {
+                        // no pieces blocking a castle
+                        mv = move_encode_castle_kingside_black();
+                        mvl_add ( mvl, mv );
+                }
         }
 }
 
 
-static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum square from_sq, const enum square to_sq, struct move_list *mvl )
+static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum colour side_to_move, struct move_list *mvl )
 {
         if ( ( brd_bb & blocking_pce_mask ) == 0 ) {
+                move_t mv;
                 // no pieces blocking a castle
-                move_t mv = move_encode_castle_queenside ( from_sq, to_sq );
-                mvl_add ( mvl, mv );
+                if ( side_to_move == WHITE ) {
+                        mv = move_encode_castle_queenside_white();
+                        mvl_add ( mvl, mv );
+                } else {
+                        // no pieces blocking a castle
+                        mv = move_encode_castle_queenside_black();
+                        mvl_add ( mvl, mv );
+                }
         }
 }
 

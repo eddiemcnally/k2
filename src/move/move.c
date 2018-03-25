@@ -180,22 +180,30 @@ move_t move_encode_capture ( const enum square from_sq, const enum square to_sq 
         return mv;
 }
 
-move_t move_encode_castle_kingside ( const enum square from_sq, const enum square to_sq )
+move_t move_encode_castle_kingside_white ()
 {
-        assert ( validate_square ( from_sq ) );
-        assert ( validate_square ( to_sq ) );
-
-        move_t mv = encode_to_from ( from_sq, to_sq );
+        move_t mv = encode_to_from ( e1, g1 );
         set_flag ( &mv, MV_FLG_KING_CASTLE );
         return mv;
 }
 
-move_t move_encode_castle_queenside ( const enum square from_sq, const enum square to_sq )
+move_t move_encode_castle_kingside_black ()
 {
-        assert ( validate_square ( from_sq ) );
-        assert ( validate_square ( to_sq ) );
+        move_t mv = encode_to_from ( e8, g8 );
+        set_flag ( &mv, MV_FLG_KING_CASTLE );
+        return mv;
+}
 
-        move_t mv = encode_to_from ( from_sq, to_sq );
+move_t move_encode_castle_queenside_white ()
+{
+        move_t mv = encode_to_from ( e1, c1 );
+        set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
+        return mv;
+}
+
+move_t move_encode_castle_queenside_black ()
+{
+        move_t mv = encode_to_from ( e8, c8 );
         set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
         return mv;
 }
