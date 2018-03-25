@@ -26,6 +26,7 @@
 #include "bitboard.h"
 #include "board.h"
 #include "move.h"
+#include "castle_perms.h"
 #include "move_list.h"
 #include "occupancy_mask.h"
 #include "piece.h"
@@ -141,9 +142,18 @@ const bitboard_t RANK_8_BB = 0xFF00000000000000;
 const bitboard_t FILE_1_BB = 0x0101010101010101;
 const bitboard_t FILE_8_BB = 0x8080808080808080;
 
+// bitboards for squares between castle squares
+const bitboard_t CASTLE_MASK_WK = 0x0000000000000060;
+const bitboard_t CASTLE_MASK_WQ = 0x000000000000000E;
+const bitboard_t CASTLE_MASK_BK = 0x6000000000000000;
+const bitboard_t CASTLE_MASK_BQ = 0x0E00000000000000;
 
 static void mv_gen_encode_multiple_quiet ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
 static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
+static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move,  struct move_list *mvl );
+static void mv_gen_black_castle_moves ( const struct position *pos, struct move_list *mvl );
+static void mv_gen_white_castle_moves ( const struct position *pos, struct move_list *mvl );
+
 
 /**
  * @brief       Generates all valid moves for the given position
@@ -160,8 +170,7 @@ void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl )
         enum colour side_to_move = pos_get_side_to_move ( pos );
 
         mv_gen_knight_moves ( brd, side_to_move, mvl );
-        mv_gen_diagonal_sliding_moves ( brd, side_to_move, mvl );
-        mv_gen_sliding_horizontal_vertical_moves ( brd, side_to_move, mvl );
+
 }
 
 /**
@@ -178,60 +187,79 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
         assert ( validate_colour ( side_to_move ) );
         assert ( validate_move_list ( mvl ) );
 
-
         enum piece knight = WKNIGHT;
         if ( side_to_move == BLACK ) {
                 knight = BKNIGHT;
         }
 
-        // bitboard representing squares containing all Knights for the given colour
-        bitboard_t knight_bb = brd_get_piece_bb ( brd, knight );
+        mv_gen_king_knight_moves ( brd, knight, side_to_move, mvl );
 
-        while ( knight_bb != 0 ) {
-                enum square knight_sq = bb_pop_1st_bit ( &knight_bb );
+}
 
-                bitboard_t occ_mask = get_knight_occ_mask ( knight_sq );
+
+/**
+ * @brief       Generates King moves
+ * @param pos   The Position
+ * @param side_to_move The side to move
+ * @param mvl   the move list to append new moves to
+ */
+void mv_gen_king_moves ( const struct position *pos, const enum colour side_to_move, struct move_list *mvl )
+{
+        assert ( validate_position ( pos ) );
+        assert ( validate_colour ( side_to_move ) );
+        assert ( validate_move_list ( mvl ) );
+
+        struct board *brd = pos_get_board ( pos );
+        enum piece pce_to_move;
+        if ( side_to_move == WHITE ) {
+                pce_to_move = WKING;
+                mv_gen_white_castle_moves ( pos, mvl );
+        } else {
+                pce_to_move = BKING;
+                mv_gen_black_castle_moves ( pos, mvl );
+        }
+
+        mv_gen_king_knight_moves ( brd, pce_to_move, side_to_move, mvl );
+}
+
+
+
+/**
+ * @brief Generates moves for King and Knight Iie, non-sliding pieces)
+ *
+ * @param brd The board
+ * @param pce_to_move The piece to move
+ * @param side_to_move The side to move
+ * @param mvl A pointer to the move List, to which the moves are appended.
+ */
+static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece pce_to_move,
+                                       const enum colour side_to_move,  struct move_list *mvl )
+{
+
+        // bitboard representing squares containing all pieces for the given colour
+        bitboard_t bb = brd_get_piece_bb ( brd, pce_to_move );
+
+        while ( bb != 0 ) {
+                enum square from_sq = bb_pop_1st_bit ( &bb );
+
+                bitboard_t occ_mask = get_occ_mask ( pce_to_move, from_sq );
 
                 // generate capture moves
                 // ----------------------
                 // AND'ing with opposite colour pieces with the occupancy mask, will
-                // give all pieces that can be captured by the knight on this square
+                // give all pieces that can be captured by the piece on this square
                 enum colour opp_side = swap_side ( side_to_move );
                 bitboard_t opp_colours_bb = brd_get_colour_bb ( brd, opp_side );
                 bitboard_t captures_bb = occ_mask & opp_colours_bb;
-                mv_gen_encode_multiple_capture ( captures_bb, knight_sq, mvl );
+                mv_gen_encode_multiple_capture ( captures_bb, from_sq, mvl );
 
                 // generate quiet moves
                 // --------------------
                 bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
                 bitboard_t free_squares = ~all_occupied_squares_bb;
-                bitboard_t quiet_move_squares = free_squares & occ_mask;
-                mv_gen_encode_multiple_quiet ( quiet_move_squares, knight_sq, mvl );
+                bitboard_t quiet_bb = free_squares & occ_mask;
+                mv_gen_encode_multiple_quiet ( quiet_bb, from_sq, mvl );
         }
-}
-
-
-void mv_gen_white_pawn_moves ( const struct position *pos, struct move_list *mvl )
-{
-
-        // to do:
-        //      pawn start
-        //      en passant
-        //      general pawns
-        //      promotion
-        const struct board *brd = pos_get_board ( pos );
-
-        bitboard_t all_occ_bb = brd_get_board_bb ( brd );
-        bitboard_t free_squares = ~all_occ_bb;
-        bitboard_t opp_colours_bb = brd_get_colour_bb ( brd, BLACK );
-        bitboard_t bb_wpawns = brd_get_piece_bb ( brd, WPAWN );
-
-        // unmoved white pawns
-        bitboard_t bb_first_pawn = bb_wpawns & RANK_2_BB;
-
-
-
-
 
 }
 
@@ -240,198 +268,12 @@ void mv_gen_white_pawn_moves ( const struct position *pos, struct move_list *mvl
 
 
 /**
- * @brief       Generates diagonal sliding moves (Queen and Bishop moves)
- * @details     Generates all valid diagonal moves for Bishop and Queen of the
- * given colour. New moves are appended to the given move list.
- * Based on the code on page:
- * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
- * @param brd   The board
- * @param side_to_move The side to move
- * @param mvl   the move list to append new moves to
+ * @brief Generates quiet moves using the given bitboard and source square.
+ *
+ * @param bb A bitboard repesenting all possible non-occupied squares.
+ * @param from_sq The source ("from") square
+ * @param mvl Pointer to a move list. All generated moves are appended to this list.
  */
-void mv_gen_diagonal_sliding_moves ( const struct board *brd, const enum colour side_to_move, struct move_list *mvl )
-{
-        assert ( validate_board ( brd ) );
-        assert ( validate_move_list ( mvl ) );
-        assert ( validate_colour ( side_to_move ) );
-
-        enum piece pce_bishop;
-        enum piece pce_queen;
-
-        if ( side_to_move == WHITE ) {
-                pce_bishop = WBISHOP;
-                pce_queen = WQUEEN;
-
-        } else {
-                pce_bishop = BBISHOP;
-                pce_queen = BQUEEN;
-        }
-
-        // bitboard representing squares containing all Bishops and Queens
-        bitboard_t combined_bb = brd_get_piece_bb ( brd, pce_bishop ) | brd_get_piece_bb ( brd, pce_queen );
-
-        while ( combined_bb != 0 ) {
-                enum square from_sq = bb_pop_1st_bit ( &combined_bb );
-
-                bitboard_t posmask = GET_DIAGONAL_MASK ( from_sq );
-                bitboard_t negmask = GET_ANTI_DIAGONAL_MASK ( from_sq );
-
-                // create slider bb for this square
-                bitboard_t bb_slider;
-                bb_set_square ( &bb_slider, from_sq );
-
-                // all occupied squares (both colours)
-                bitboard_t occupied = brd_get_board_bb ( brd );
-
-                bitboard_t diag1 = ( occupied & posmask ) - ( 2 * bb_slider );
-                bitboard_t diag2 = bb_reverse (
-                                           bb_reverse ( occupied & posmask ) -
-                                           ( 2 * bb_reverse ( bb_slider ) ) );
-                bitboard_t diagpos = diag1 ^ diag2;
-
-                diag1 = ( occupied & negmask ) - ( 2 * bb_slider );
-                diag2 = bb_reverse ( bb_reverse ( occupied & negmask ) -
-                                     ( 2 * bb_reverse ( bb_slider ) ) );
-                bitboard_t diagneg = diag1 ^ diag2;
-
-                bitboard_t all_moves = ( diagpos & posmask ) | ( diagneg & negmask );
-
-                // get all same colour as piece being considered
-                bitboard_t col_occupied = brd_get_colour_bb ( brd, side_to_move );
-                bitboard_t excl_same_col = all_moves & ~col_occupied;
-
-                while ( excl_same_col != 0 ) {
-                        enum square to_sq = bb_pop_1st_bit ( &excl_same_col );
-                        move_t mv;
-                        bool found = brd_is_sq_occupied ( brd, to_sq );
-                        if ( found ) {
-                                mv = move_encode_capture ( from_sq, to_sq );
-                        } else {
-                                mv = move_encode_quiet ( from_sq, to_sq );
-                        }
-                        mvl_add ( mvl, mv );
-                }
-        }
-}
-
-
-
-/**
- * @brief       Generates horizontal and vertical sliding moves (Queen and Rook moves)
- * @details     Generates all valid vertical and horizontal moves for Rook and Queen of the
- * given colour. New moves are appended to the given move list.
- * Based on the code on page:
- * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
- * @param brd   The board
- * @param side_to_move The side to move
- * @param mvl   the move list to append new moves to
- */
-void mv_gen_sliding_horizontal_vertical_moves ( const struct board *brd, const enum colour side_to_move, struct move_list *mvl )
-{
-        validate_board ( brd );
-
-        enum piece pce_rook;
-        enum piece pce_queen;
-
-        if ( side_to_move == WHITE ) {
-                pce_rook = WROOK;
-                pce_queen = WQUEEN;
-
-        } else {
-                pce_rook = BROOK;
-                pce_queen = BQUEEN;
-        }
-
-        // bitboard representing squares containing all Rooks and Queens
-        bitboard_t combined_bb = brd_get_piece_bb ( brd, pce_rook ) | brd_get_piece_bb ( brd, pce_queen );
-
-        while ( combined_bb != 0 ) {
-
-                enum square from_sq = bb_pop_1st_bit ( &combined_bb );
-
-                bitboard_t hmask = GET_HORIZONTAL_MASK ( from_sq );
-                bitboard_t vmask = GET_VERTICAL_MASK ( from_sq );
-
-                bitboard_t bb_slider;
-                bb_set_square ( &bb_slider, from_sq );
-
-                // all occupied squares (both colours)
-                bitboard_t occupied = brd_get_board_bb ( brd );
-
-                uint64_t horiz1 = occupied - ( 2 * bb_slider );
-                uint64_t horiz2 =
-                        bb_reverse ( bb_reverse ( occupied ) -
-                                     2 * bb_reverse ( bb_slider ) );
-                uint64_t horizontal = horiz1 ^ horiz2;
-
-                uint64_t vert1 = ( occupied & vmask ) - ( 2 * bb_slider );
-                uint64_t vert2 =
-                        bb_reverse ( bb_reverse ( occupied & vmask ) -
-                                     2 * bb_reverse ( bb_slider ) );
-                uint64_t vertical = vert1 ^ vert2;
-
-                uint64_t all_moves = ( horizontal & hmask ) | ( vertical & vmask );
-
-                // get all same colour as piece being considered so
-                // they can be excluded (since they block a move)
-                uint64_t col_occupied = brd_get_colour_bb ( brd, side_to_move );
-                uint64_t excl_same_col = all_moves & ~col_occupied;
-
-                while ( excl_same_col != 0 ) {
-                        enum square to_sq = bb_pop_1st_bit ( &excl_same_col );
-                        bool found = brd_is_sq_occupied ( brd, to_sq );
-                        move_t mv;
-                        if ( found ) {
-                                mv = move_encode_capture ( from_sq, to_sq );
-                        } else {
-                                mv = move_encode_quiet ( from_sq, to_sq );
-                        }
-                        mvl_add ( mvl, mv );
-                }
-        }
-}
-
-
-void mv_gen_generate_king_moves ( const struct position *pos, const enum colour side_to_move, struct move_list *mvl )
-{
-        struct board *brd = pos_get_board ( pos );
-
-        enum piece pce_to_move;
-        enum colour opposite_side;
-        if ( side_to_move == WHITE ) {
-                pce_to_move = WKING;
-                opposite_side = BLACK;
-        } else {
-                pce_to_move = BKING;
-                opposite_side = WHITE;
-        }
-
-        bitboard_t king_bb = brd_get_piece_bb ( brd, pce_to_move );
-        enum square from_sq = bb_pop_1st_bit ( &king_bb );
-
-        // get occupancy mask for this piece and square
-        bitboard_t mask = get_king_occ_mask ( from_sq );
-
-        // AND'ing with opposite colour pieces, will give all
-        // pieces that can be captured
-        bitboard_t opp_pieces_bb = brd_get_colour_bb ( brd, opposite_side );
-        bitboard_t capture_squares = mask & opp_pieces_bb;
-
-        while ( capture_squares != 0 ) {
-                // loop creating capture moves
-                enum square to_sq = bb_pop_1st_bit ( &capture_squares );
-                enum piece capt_pce;
-                move_t mv;
-                bool found = brd_try_get_piece_on_square ( brd, to_sq, &capt_pce );
-                if ( found ) {
-                        mv = move_encode_capture ( from_sq, to_sq );
-                } else {
-                        mv = move_encode_quiet ( from_sq, to_sq );
-                }
-        }
-
-}
-
 static void mv_gen_encode_multiple_quiet ( bitboard_t bb, const enum square from_sq, struct move_list *mvl )
 {
         while ( bb != 0 ) {
@@ -441,6 +283,13 @@ static void mv_gen_encode_multiple_quiet ( bitboard_t bb, const enum square from
         }
 }
 
+/**
+ * @brief Generates capture moves using the given bitboard and source square.
+ *
+ * @param bb A bitboard repesenting all possible capture squares.
+ * @param from_sq The source ("from") square
+ * @param mvl Pointer to a move list. All generated moves are appended to this list.
+ */
 static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square from_sq, struct move_list *mvl )
 {
         while ( bb != 0 ) {
@@ -449,4 +298,67 @@ static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square fr
                 mvl_add ( mvl, cap_move );
         }
 }
+
+
+static void mv_gen_white_castle_moves ( const struct position *pos, struct move_list *mvl )
+{
+        cast_perm_t cp = pos_get_cast_perm ( pos );
+
+        if ( cast_perm_has_perms ( cp ) == false ) {
+                return;
+        }
+
+        struct board *brd = pos_get_board ( pos );
+        bitboard_t occupied_bb = brd_get_board_bb ( brd );
+        move_t mv;
+
+        if ( cast_perm_has_WK ( cp ) ) {
+                if ( ( occupied_bb & CASTLE_MASK_WK ) == 0 ) {
+                        // no pieces blocking a WK castle
+                        mv = move_encode_castle_kingside ( e1, g1 );
+                        mvl_add ( mvl, mv );
+                }
+        }
+        if ( cast_perm_has_WQ ( cp ) ) {
+                if ( ( occupied_bb & CASTLE_MASK_WQ ) == 0 ) {
+                        // no pieces blocking a WQ castle
+                        mv = move_encode_castle_queenside ( e1, c1 );
+                        mvl_add ( mvl, mv );
+                }
+        }
+}
+
+
+static void mv_gen_black_castle_moves ( const struct position *pos, struct move_list *mvl )
+{
+        cast_perm_t cp = pos_get_cast_perm ( pos );
+
+        if ( cast_perm_has_perms ( cp ) == false ) {
+                return;
+        }
+
+
+        struct board *brd = pos_get_board ( pos );
+        bitboard_t occupied_bb = brd_get_board_bb ( brd );
+        move_t mv;
+
+        if ( cast_perm_has_BK ( cp ) ) {
+                if ( ( occupied_bb & CASTLE_MASK_BK ) == 0 ) {
+                        // no pieces blocking a WK castle
+                        mv = move_encode_castle_kingside ( e1, g1 );
+                        mvl_add ( mvl, mv );
+                }
+        }
+        if ( cast_perm_has_BQ ( cp ) ) {
+                if ( ( occupied_bb & CASTLE_MASK_BQ ) == 0 ) {
+                        // no pieces blocking a BQ castle
+                        mv = move_encode_castle_queenside ( e1, c1 );
+                        mvl_add ( mvl, mv );
+                }
+        }
+}
+
+
+
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

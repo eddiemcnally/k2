@@ -79,11 +79,6 @@ enum colour swap_side ( const enum colour col )
 
         enum colour inverted = ~col;
         return ( enum colour ) ( inverted & COLOUR_MASK );
-
-//        if ( col == WHITE ) {
-//                return BLACK;
-//        }
-//        return WHITE;
 }
 
 /**
@@ -235,6 +230,9 @@ enum piece pce_get_piece_type ( const enum piece piece )
 {
         return ( enum piece ) ( piece & ( uint8_t ) ( ~COLOUR_MASK ) );
 }
+
+
+
 
 /**
  * @brief       Validates a piece is within expected range of values

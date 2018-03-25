@@ -287,61 +287,6 @@ void test_move_gen_knight_black_3 ( void **state )
 
 
 
-void test_move_gen_sliding_diagonal_black ( void **state )
-{
-        const char *RANDOM_FEN_1 = "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 w - - 0 1\n";
-        const uint16_t NUM_EXPECTED_MOVES = 14;
-
-        struct position *pos = pos_create();
-        pos_initialise ( RANDOM_FEN_1, pos );
-        struct board *brd = pos_get_board ( pos );
-        struct move_list* mvl = mvl_allocate();
-
-        mv_gen_diagonal_sliding_moves ( brd, BLACK, mvl );
-
-
-        printf ( "***** %d\n", mvl_get_move_count ( mvl ) );
-        mvl_print ( mvl );
-        assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
-
-        // quiet moves
-        move_t mv = move_encode_quiet ( f8, e7 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( f8, d6 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( f8, c5 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( f8, b4 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( f8, c3 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( f8, g7 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( f8, h6 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( c2, d3 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-
-        mv = move_encode_quiet ( c2, e4 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( c2, f5 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( c2, g6 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( c2, h7 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_quiet ( c2, d1 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-
-        // capture move
-        mv = move_encode_capture ( c2, b3 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
-
-}
-
-
-
-
 
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

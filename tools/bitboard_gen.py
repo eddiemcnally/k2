@@ -70,7 +70,7 @@ class Bitboard(enum.Enum):
 
 
 def gen_bb(squares):
-    print('Generating bitboard for squares : ' + str(squares))
+    #print('Generating bitboard for squares : ' + str(squares))
     bb = 0x0
     for sq in squares:
         bb = bb | (1 << sq.value)
@@ -97,20 +97,6 @@ cast_wq = [Bitboard.b1, Bitboard.c1, Bitboard.d1]
 cast_bk = [Bitboard.f8, Bitboard.g8]
 cast_bq = [Bitboard.b8, Bitboard.c8, Bitboard.d8]
 
-
-
-print('Rank 7\n')
-gen_bb(rank7)
-print('Rank 2\n')
-gen_bb(rank2)
-print('Rank 1\n')
-gen_bb(rank1)
-
-
-print('File 1\n')
-gen_bb(file1)
-print('File 8\n')
-gen_bb(file8)
 
 print('cast wk\n')
 gen_bb(cast_wk)

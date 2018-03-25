@@ -158,29 +158,30 @@ bitboard_t get_rook_occ_mask ( const enum square sq )
 }
 
 
-bitboard_t get_occ_mask(const enum piece pce, const enum square sq){
-        switch(pce){
-                case WPAWN:
-                case BPAWN:
-                        assert(false);
-                case WBISHOP:
-                case BBISHOP:
-                        return get_bishop_occ_mask(sq);
-                case WKNIGHT:
-                case BKNIGHT:
-                        return get_knight_occ_mask(sq);
-                case WROOK:
-                case BROOK:
-                        return get_rook_occ_mask(sq);
-                case WQUEEN:
-                case BQUEEN:
-                        return get_queen_occ_mask(sq);
-                case WKING:
-                case BKING:
-                        return get_king_occ_mask(sq);
-                default:
-                        assert(false);
-                        
+bitboard_t get_occ_mask ( const enum piece pce, const enum square sq )
+{
+        switch ( pce ) {
+        case WPAWN:
+        case BPAWN:
+                assert ( false );
+        case WBISHOP:
+        case BBISHOP:
+                return get_bishop_occ_mask ( sq );
+        case WKNIGHT:
+        case BKNIGHT:
+                return get_knight_occ_mask ( sq );
+        case WROOK:
+        case BROOK:
+                return get_rook_occ_mask ( sq );
+        case WQUEEN:
+        case BQUEEN:
+                return get_queen_occ_mask ( sq );
+        case WKING:
+        case BKING:
+                return get_king_occ_mask ( sq );
+        default:
+                assert ( false );
+
         }
 }
 
