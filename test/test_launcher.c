@@ -110,8 +110,12 @@ int main ( void )
                 cmocka_unit_test ( test_move_gen_knight_black_1 ),
                 cmocka_unit_test ( test_move_gen_knight_black_2 ),
                 cmocka_unit_test ( test_move_gen_knight_black_3 ),
-                //cmocka_unit_test ( test_move_gen_sliding_diagonal_black ),
-
+                cmocka_unit_test ( test_move_gen_king_white_no_castling_1 ),
+                cmocka_unit_test ( test_move_gen_king_white_no_castling_2 ),
+                cmocka_unit_test ( test_move_gen_king_white_no_castling_3 ),
+                cmocka_unit_test ( test_move_gen_king_black_no_castling_1 ),
+                cmocka_unit_test ( test_move_gen_king_black_no_castling_2 ),
+                cmocka_unit_test ( test_move_gen_king_black_no_castling_3 ),
                 // castle permissions
                 cmocka_unit_test ( test_castle_permissions_get_set ),
                 cmocka_unit_test ( test_castle_permissions_no_perms_get_set ),

@@ -52,31 +52,31 @@
  */
 
 enum move_bits_masks {
-        MV_MASK_TO_SQ = 0x003F,
+        MV_MASK_TO_SQ   = 0x003F,
         MV_MASK_FROM_SQ = 0x0FC0,
-        MV_MASK_FLAGS = 0xF000,
+        MV_MASK_FLAGS   = 0xF000,
 };
 
 enum move_bits_shifts {
-        MV_SHFT_TO_SQ = 0,
+        MV_SHFT_TO_SQ   = 0,
         MV_SHFT_FROM_SQ = 6,
 };
 
 enum move_flags {
-        MV_FLG_QUIET = 0x0000,
-        MV_FLG_DOUBLE_PAWN = 0x1000,
-        MV_FLG_KING_CASTLE = 0x2000,
-        MV_FLG_QUEEN_CASTLE = 0x3000,
-        MV_FLG_CAPTURE = 0x4000,
-        MV_FLG_EN_PASS = 0x5000,
-        MV_FLG_PROMOTE_KNIGHT = 0x8000,
-        MV_FLG_PROMOTE_BISHOP = 0x9000,
-        MV_FLG_PROMOTE_ROOK = 0xA000,
-        MV_FLG_PROMOTE_QUEEN = 0xB000,
-        MV_FLG_PROMOTE_KNIGHT_CAPTURE = 0xC000,
-        MV_FLG_PROMOTE_BISHOP_CAPTURE = 0xD000,
-        MV_FLG_PROMOTE_ROOK_CAPTURE = 0xE000,
-        MV_FLG_PROMOTE_QUEEN_CAPTURE = 0xF000,
+        MV_FLG_QUIET                    = 0x0000,
+        MV_FLG_DOUBLE_PAWN              = 0x1000,
+        MV_FLG_KING_CASTLE              = 0x2000,
+        MV_FLG_QUEEN_CASTLE             = 0x3000,
+        MV_FLG_CAPTURE                  = 0x4000,
+        MV_FLG_EN_PASS                  = 0x5000,
+        MV_FLG_PROMOTE_KNIGHT           = 0x8000,
+        MV_FLG_PROMOTE_BISHOP           = 0x9000,
+        MV_FLG_PROMOTE_ROOK             = 0xA000,
+        MV_FLG_PROMOTE_QUEEN            = 0xB000,
+        MV_FLG_PROMOTE_KNIGHT_CAPTURE   = 0xC000,
+        MV_FLG_PROMOTE_BISHOP_CAPTURE   = 0xD000,
+        MV_FLG_PROMOTE_ROOK_CAPTURE     = 0xE000,
+        MV_FLG_PROMOTE_QUEEN_CAPTURE    = 0xF000,
 };
 
 enum move_flag_bits {
@@ -184,7 +184,7 @@ move_t move_encode_castle_kingside ( const enum square from_sq, const enum squar
 {
         assert ( validate_square ( from_sq ) );
         assert ( validate_square ( to_sq ) );
-        
+
         move_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_KING_CASTLE );
         return mv;
@@ -194,7 +194,7 @@ move_t move_encode_castle_queenside ( const enum square from_sq, const enum squa
 {
         assert ( validate_square ( from_sq ) );
         assert ( validate_square ( to_sq ) );
-        
+
         move_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
         return mv;

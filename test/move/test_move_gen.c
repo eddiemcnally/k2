@@ -289,4 +289,196 @@ void test_move_gen_knight_black_3 ( void **state )
 
 
 
+void test_move_gen_king_white_no_castling_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "5Q2/1p3pp1/3P1Pn1/6k1/2K5/Pr3p2/p2R1P2/7B w - - 0 1\n";
+        const uint16_t NUM_EXPECTED_MOVES = 8;
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
+
+
+        // check quiet moves
+        move_t mv = move_encode_quiet ( c4, c3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( c4, d3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( c4, d4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( c4, d5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( c4, c5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( c4, b5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( c4, b4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        // check capture moves
+        mv = move_encode_capture ( c4, b3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+void test_move_gen_king_white_no_castling_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "8/3Q2pN/1b5P/3Pp2K/2n3p1/P2RP3/Pp6/5k2 w - - 0 1\n";
+        const uint16_t NUM_EXPECTED_MOVES = 4;
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
+
+
+        // check quiet moves
+        move_t mv = move_encode_quiet ( h5, g6 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( h5, g5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( h5, h4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        // check capture moves
+        mv = move_encode_capture ( h5, g4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+
+void test_move_gen_king_white_no_castling_3 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "n7/4p2p/PP1p1pp1/1n4k1/6q1/6N1/K3p3/2N3r1 w - - 0 1\n";
+        const uint16_t NUM_EXPECTED_MOVES = 5;
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
+
+
+        // check quiet moves
+        move_t mv = move_encode_quiet ( a2, a3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( a2, b3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( a2, b2 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( a2, b1 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( a2, a1 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+}
+
+
+
+
+
+void test_move_gen_king_black_no_castling_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "5Q2/1p3pp1/3P1Pn1/6k1/2K5/Pr3p2/p2R1P2/7B w - - 0 1\n";
+        const uint16_t NUM_EXPECTED_MOVES = 7;
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
+
+
+        // check quiet moves
+        move_t mv = move_encode_quiet ( g5, h6 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, h5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, h4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, g4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, f4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, f5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        
+        // check capture moves
+        mv = move_encode_capture ( g5, f6 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+void test_move_gen_king_black_no_castling_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "8/3Q2pN/1b5P/3Pp2K/2n3p1/P2RP3/Pp6/5k2 w - - 0 1\n";
+        const uint16_t NUM_EXPECTED_MOVES = 5;
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
+
+
+        // check quiet moves
+        move_t mv = move_encode_quiet ( f1, g1 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( f1, g2 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( f1, f2 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+ mv = move_encode_quiet ( f1, e2 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+ mv = move_encode_quiet ( f1, e1 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+}
+
+
+
+void test_move_gen_king_black_no_castling_3 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "n7/4p2p/PP1p1pp1/1n4k1/6q1/6N1/K3p3/2N3r1 w - - 0 1\n";
+        const uint16_t NUM_EXPECTED_MOVES = 5;
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
+
+
+        // check quiet moves
+        move_t mv = move_encode_quiet ( g5, h6 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, h5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, h4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, f4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+        mv = move_encode_quiet ( g5, f5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+}
+
+
+
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

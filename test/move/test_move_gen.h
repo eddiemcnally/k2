@@ -29,5 +29,11 @@ void test_move_gen_knight_white_3 ( void **state );
 void test_move_gen_knight_black_1 ( void **state );
 void test_move_gen_knight_black_2 ( void **state );
 void test_move_gen_knight_black_3 ( void **state );
+void test_move_gen_king_white_no_castling_1 ( void **state );
+void test_move_gen_king_white_no_castling_2 ( void **state );
+void test_move_gen_king_white_no_castling_3 ( void **state );
+void test_move_gen_king_black_no_castling_1 ( void **state );
+void test_move_gen_king_black_no_castling_2 ( void **state );
+void test_move_gen_king_black_no_castling_3 ( void **state );
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
