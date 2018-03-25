@@ -48,16 +48,16 @@ enum file sq_get_file ( const enum square sq )
 
 enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
 {
-        assert(validate_rank(rank));
-        assert(validate_file(file));
-        
+        assert ( validate_rank ( rank ) );
+        assert ( validate_file ( file ) );
+
         return ( enum square ) ( ( rank << 3 ) + file );
 }
 
 char * print_square ( const enum square sq )
 {
-        assert(validate_square(sq));
-        
+        assert ( validate_square ( sq ) );
+
         int file = sq_get_file ( sq );
         int rank = sq_get_rank ( sq );
 

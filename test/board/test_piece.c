@@ -141,3 +141,4 @@ void test_piece_is_black ( void **state )
 }
 
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

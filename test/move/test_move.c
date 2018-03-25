@@ -130,3 +130,4 @@ void test_move_en_passant_move_encode_decode ( void **state )
                 }
         }
 }
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

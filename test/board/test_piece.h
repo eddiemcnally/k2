@@ -33,3 +33,4 @@ void test_piece_get_piece_label ( void **state );
 void test_piece_values ( void **state );
 void test_piece_get_piece_from_label ( void **state );
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

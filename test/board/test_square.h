@@ -29,3 +29,4 @@ void test_square_sq_get_file ( void **state );
 void test_square_gen_from_rank_file ( void **state );
 
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

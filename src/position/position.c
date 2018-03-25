@@ -156,10 +156,10 @@ bool validate_position ( const struct position *pos )
         }
 
         assert ( validate_board ( pos->brd ) );
-        assert ( validate_colour ( pos->side_to_move) );
-        
+        assert ( validate_colour ( pos->side_to_move ) );
+
         return true;
-        
+
 }
 
 

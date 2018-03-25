@@ -32,3 +32,4 @@ void test_fen_castle_permissions_random_fen ( void **state );
 void test_fen_half_move_count ( void **state );
 void test_fen_full_move_count ( void **state );
 void test_fen_en_passant ( void **state );
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

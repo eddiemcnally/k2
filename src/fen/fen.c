@@ -185,7 +185,7 @@ bool fen_has_bq_castle_perms ( const struct parsed_fen *pf )
  */
 bool fen_try_get_en_pass_sq ( const struct parsed_fen *pf, enum square *sq )
 {
-        assert(validate_struct_init ( pf ));
+        assert ( validate_struct_init ( pf ) );
 
         if ( pf->is_en_pass_set == true ) {
                 *sq = pf->en_pass_sq;
@@ -203,7 +203,7 @@ bool fen_try_get_en_pass_sq ( const struct parsed_fen *pf, enum square *sq )
  */
 enum colour fen_get_side_to_move ( const struct parsed_fen *pf )
 {
-        assert(validate_struct_init ( pf ));
+        assert ( validate_struct_init ( pf ) );
 
         return pf->side_to_move;
 }
@@ -216,7 +216,7 @@ enum colour fen_get_side_to_move ( const struct parsed_fen *pf )
  */
 uint16_t fen_get_half_move_cnt ( const struct parsed_fen *pf )
 {
-        assert(validate_struct_init ( pf ));
+        assert ( validate_struct_init ( pf ) );
 
         return pf->half_move_cnt;
 }
@@ -229,7 +229,7 @@ uint16_t fen_get_half_move_cnt ( const struct parsed_fen *pf )
  */
 uint16_t fen_get_full_move_cnt ( const struct parsed_fen *pf )
 {
-        assert(validate_struct_init ( pf ));
+        assert ( validate_struct_init ( pf ) );
 
         return pf->full_move_cnt;
 }
@@ -398,7 +398,7 @@ static bool validate_struct_init ( const struct parsed_fen *pf )
         return true;
         //if ( pf->struct_init_key != STRUCT_INIT_KEY ) {
         //        return false;
-       // }
+        // }
         //return true;
 }
 

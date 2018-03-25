@@ -30,3 +30,4 @@ void test_move_list_reset_list ( void **state );
 void test_move_list_contains_move ( void **state );
 
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

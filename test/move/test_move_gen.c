@@ -108,7 +108,7 @@ void test_move_gen_knight_white_2 ( void **state )
         mv = move_encode_quiet ( e3, g4 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
         mv = move_encode_quiet ( e3, f5 );
-        
+
         // no capture moves
 }
 
@@ -145,14 +145,14 @@ void test_move_gen_knight_white_3 ( void **state )
         assert_true ( mvl_contains_move ( mvl, mv ) );
         mv = move_encode_quiet ( e6, f8 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
-        
-        
+
+
         // capture moves
-        mv = move_encode_capture( f2, d1 );
+        mv = move_encode_capture ( f2, d1 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
-        mv = move_encode_capture( f2, h1 );
+        mv = move_encode_capture ( f2, h1 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
-        
+
 }
 
 
@@ -227,7 +227,7 @@ void test_move_gen_knight_black_2 ( void **state )
         assert_true ( mvl_contains_move ( mvl, mv ) );
         mv = move_encode_quiet ( f3, e5 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
-        
+
         // check capture moves
         mv = move_encode_capture ( c4, e3 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
@@ -273,7 +273,7 @@ void test_move_gen_knight_black_3 ( void **state )
         assert_true ( mvl_contains_move ( mvl, mv ) );
         mv = move_encode_quiet ( d2, e4 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
-        
+
         // check capture moves
         mv = move_encode_capture ( b2, c4 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
@@ -281,8 +281,10 @@ void test_move_gen_knight_black_3 ( void **state )
         assert_true ( mvl_contains_move ( mvl, mv ) );
         mv = move_encode_capture ( d2, b1 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
- 
+
 }
+
+
 
 
 void test_move_gen_sliding_diagonal_black ( void **state )
@@ -295,11 +297,11 @@ void test_move_gen_sliding_diagonal_black ( void **state )
         struct board *brd = pos_get_board ( pos );
         struct move_list* mvl = mvl_allocate();
 
-        mv_gen_diagonal_sliding_moves( brd, BLACK, mvl );
+        mv_gen_diagonal_sliding_moves ( brd, BLACK, mvl );
 
-        
-        printf("***** %d\n", mvl_get_move_count ( mvl ));
-        mvl_print(mvl);
+
+        printf ( "***** %d\n", mvl_get_move_count ( mvl ) );
+        mvl_print ( mvl );
         assert_true ( mvl_get_move_count ( mvl ) == NUM_EXPECTED_MOVES );
 
         // quiet moves

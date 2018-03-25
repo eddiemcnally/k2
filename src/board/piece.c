@@ -77,10 +77,13 @@ enum colour swap_side ( const enum colour col )
 {
         assert ( validate_colour ( col ) );
 
-        if ( col == WHITE ) {
-                return BLACK;
-        }
-        return WHITE;
+        enum colour inverted = ~col;
+        return ( enum colour ) ( inverted & COLOUR_MASK );
+
+//        if ( col == WHITE ) {
+//                return BLACK;
+//        }
+//        return WHITE;
 }
 
 /**
@@ -92,11 +95,7 @@ enum colour swap_side ( const enum colour col )
 enum colour pce_get_colour ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
-
-        if ( pce_is_white ( pce ) ) {
-                return WHITE;
-        }
-        return BLACK;
+        return ( enum colour ) ( pce & COLOUR_MASK );
 }
 
 /**
@@ -108,7 +107,6 @@ enum colour pce_get_colour ( const enum piece pce )
 uint32_t pce_get_value ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
-
         enum piece p = pce_get_piece_type ( pce );
 
 #pragma GCC diagnostic push

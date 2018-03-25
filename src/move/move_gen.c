@@ -142,7 +142,8 @@ const bitboard_t FILE_1_BB = 0x0101010101010101;
 const bitboard_t FILE_8_BB = 0x8080808080808080;
 
 
-
+static void mv_gen_encode_multiple_quiet ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
+static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
 
 /**
  * @brief       Generates all valid moves for the given position
@@ -198,23 +199,14 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
                 enum colour opp_side = swap_side ( side_to_move );
                 bitboard_t opp_colours_bb = brd_get_colour_bb ( brd, opp_side );
                 bitboard_t captures_bb = occ_mask & opp_colours_bb;
-
-                while ( captures_bb != 0 ) {
-                        enum square cap_sq = bb_pop_1st_bit ( &captures_bb );
-                        move_t cap_move = move_encode_capture ( knight_sq, cap_sq );
-                        mvl_add ( mvl, cap_move );
-                }
+                mv_gen_encode_multiple_capture ( captures_bb, knight_sq, mvl );
 
                 // generate quiet moves
                 // --------------------
                 bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
                 bitboard_t free_squares = ~all_occupied_squares_bb;
                 bitboard_t quiet_move_squares = free_squares & occ_mask;
-                while ( quiet_move_squares != 0 ) {
-                        enum square empty_sq = bb_pop_1st_bit ( &quiet_move_squares );
-                        move_t quiet_move = move_encode_quiet ( knight_sq, empty_sq );
-                        mvl_add ( mvl, quiet_move );
-                }
+                mv_gen_encode_multiple_quiet ( quiet_move_squares, knight_sq, mvl );
         }
 }
 
@@ -440,5 +432,21 @@ void mv_gen_generate_king_moves ( const struct position *pos, const enum colour 
 
 }
 
+static void mv_gen_encode_multiple_quiet ( bitboard_t bb, const enum square from_sq, struct move_list *mvl )
+{
+        while ( bb != 0 ) {
+                enum square empty_sq = bb_pop_1st_bit ( &bb );
+                move_t quiet_move = move_encode_quiet ( from_sq, empty_sq );
+                mvl_add ( mvl, quiet_move );
+        }
+}
 
+static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square from_sq, struct move_list *mvl )
+{
+        while ( bb != 0 ) {
+                enum square cap_sq = bb_pop_1st_bit ( &bb );
+                move_t cap_move = move_encode_capture ( from_sq, cap_sq );
+                mvl_add ( mvl, cap_move );
+        }
+}
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

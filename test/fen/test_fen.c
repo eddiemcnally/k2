@@ -240,10 +240,10 @@ void test_fen_castle_permissions_initial_fen ( void **state )
 {
         struct parsed_fen* fen = fen_parse ( INITIAL_FEN );
 
-        assert_true ( fen_has_wk_castle_perms( fen ) );
-        assert_true ( fen_has_wq_castle_perms( fen ) );
-        assert_true ( fen_has_bk_castle_perms( fen ) );
-        assert_true ( fen_has_bq_castle_perms( fen ) );
+        assert_true ( fen_has_wk_castle_perms ( fen ) );
+        assert_true ( fen_has_wq_castle_perms ( fen ) );
+        assert_true ( fen_has_bk_castle_perms ( fen ) );
+        assert_true ( fen_has_bq_castle_perms ( fen ) );
 
 }
 
@@ -257,28 +257,28 @@ void test_fen_castle_permissions_random_fen ( void **state )
 
         struct parsed_fen* fen = fen_parse ( RANDOM_FEN_1 );
 
-        assert_false ( fen_has_wk_castle_perms( fen ) );
-        assert_true ( fen_has_wq_castle_perms( fen ) );
-        assert_true ( fen_has_bk_castle_perms( fen ) );
-        assert_true ( fen_has_wq_castle_perms( fen ) );
+        assert_false ( fen_has_wk_castle_perms ( fen ) );
+        assert_true ( fen_has_wq_castle_perms ( fen ) );
+        assert_true ( fen_has_bk_castle_perms ( fen ) );
+        assert_true ( fen_has_wq_castle_perms ( fen ) );
 
         fen = fen_parse ( RANDOM_FEN_2 );
-        assert_true ( fen_has_wk_castle_perms( fen ) );
-        assert_true ( fen_has_wq_castle_perms( fen ) );
-        assert_true ( fen_has_bk_castle_perms( fen ) );
-        assert_true ( fen_has_wq_castle_perms( fen ) );
+        assert_true ( fen_has_wk_castle_perms ( fen ) );
+        assert_true ( fen_has_wq_castle_perms ( fen ) );
+        assert_true ( fen_has_bk_castle_perms ( fen ) );
+        assert_true ( fen_has_wq_castle_perms ( fen ) );
 
         fen = fen_parse ( RANDOM_FEN_3 );
-        assert_true ( fen_has_wk_castle_perms( fen ) );
-        assert_false ( fen_has_wq_castle_perms( fen ) );
-        assert_false ( fen_has_bk_castle_perms( fen ) );
-        assert_true ( fen_has_bq_castle_perms( fen ) );
+        assert_true ( fen_has_wk_castle_perms ( fen ) );
+        assert_false ( fen_has_wq_castle_perms ( fen ) );
+        assert_false ( fen_has_bk_castle_perms ( fen ) );
+        assert_true ( fen_has_bq_castle_perms ( fen ) );
 
         fen = fen_parse ( RANDOM_FEN_4 );
-        assert_false ( fen_has_wk_castle_perms( fen ) );
-        assert_false ( fen_has_wq_castle_perms( fen ) );
-        assert_false ( fen_has_bk_castle_perms( fen ) );
-        assert_false ( fen_has_bq_castle_perms( fen ) );
+        assert_false ( fen_has_wk_castle_perms ( fen ) );
+        assert_false ( fen_has_wq_castle_perms ( fen ) );
+        assert_false ( fen_has_bk_castle_perms ( fen ) );
+        assert_false ( fen_has_bq_castle_perms ( fen ) );
 
 
 }
@@ -351,3 +351,4 @@ void test_fen_full_move_count ( void **state )
         brd = fen_parse ( RANDOM_FEN_4 );
         assert_int_equal ( fen_get_full_move_cnt ( brd ), 10 );
 }
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

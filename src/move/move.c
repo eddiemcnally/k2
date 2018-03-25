@@ -180,6 +180,20 @@ move_t move_encode_capture ( const enum square from_sq, const enum square to_sq 
         return mv;
 }
 
+move_t move_encode_castle_kingside(const enum square from_sq, const enum square to_sq){
+        move_t mv = encode_to_from ( from_sq, to_sq );
+        set_flag ( &mv, MV_FLG_KING_CASTLE );
+        return mv;        
+}
+
+move_t move_encode_castle_queenside(const enum square from_sq, const enum square to_sq){
+        move_t mv = encode_to_from ( from_sq, to_sq );
+        set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
+        return mv;        
+}
+
+
+
 /**
  * @brief       Encodes an En Passant move using the given squares
  *

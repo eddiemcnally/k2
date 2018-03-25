@@ -30,18 +30,19 @@
 
 typedef uint8_t cast_perm_t;
 
-bool cast_perm_has_WK(const cast_perm_t cp);
-bool cast_perm_has_WQ(const cast_perm_t cp);
-bool cast_perm_has_BK(const cast_perm_t cp);
-bool cast_perm_has_BQ(const cast_perm_t cp);
-bool cast_perm_has_perms(const cast_perm_t cp);
+bool cast_perm_has_WK ( const cast_perm_t cp );
+bool cast_perm_has_WQ ( const cast_perm_t cp );
+bool cast_perm_has_BK ( const cast_perm_t cp );
+bool cast_perm_has_BQ ( const cast_perm_t cp );
+bool cast_perm_has_perms ( const cast_perm_t cp );
 
 
-void cast_perm_set_WK(cast_perm_t* cp, const bool enabled);
-void cast_perm_set_WQ(cast_perm_t* cp, const bool enabled);
-void cast_perm_set_BK(cast_perm_t* cp, const bool enabled);
-void cast_perm_set_BQ(cast_perm_t* cp, const bool enabled);
-void cast_perm_set_no_perms(cast_perm_t* cp);
+void cast_perm_set_WK ( cast_perm_t* cp, const bool enabled );
+void cast_perm_set_WQ ( cast_perm_t* cp, const bool enabled );
+void cast_perm_set_BK ( cast_perm_t* cp, const bool enabled );
+void cast_perm_set_BQ ( cast_perm_t* cp, const bool enabled );
+void cast_perm_set_no_perms ( cast_perm_t* cp );
 
 
 
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
