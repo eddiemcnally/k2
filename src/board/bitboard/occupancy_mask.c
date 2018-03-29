@@ -91,6 +91,55 @@ static const bitboard_t rook_occupancy_masks[NUM_SQUARES] = {
         0xfe01010101010101, 0xfd02020202020202, 0xfb04040404040404, 0xf708080808080808, 0xef10101010101010, 0xdf20202020202020, 0xbf40404040404040, 0x7f80808080808080
 };
 
+static const bitboard_t white_pawn_quiet_non_first_move[NUM_SQUARES] = {
+        0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+        0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+        0x0000000001000000, 0x0000000002000000, 0x0000000004000000, 0x0000000008000000, 0x0000000010000000, 0x0000000020000000, 0x0000000040000000, 0x0000000080000000,
+        0x0000000100000000, 0x0000000200000000, 0x0000000400000000, 0x0000000800000000, 0x0000001000000000, 0x0000002000000000, 0x0000004000000000, 0x0000008000000000,
+        0x0000010000000000, 0x0000020000000000, 0x0000040000000000, 0x0000080000000000, 0x0000100000000000, 0x0000200000000000, 0x0000400000000000, 0x0000800000000000,
+        0x0001000000000000, 0x0002000000000000, 0x0004000000000000, 0x0008000000000000, 0x0010000000000000, 0x0020000000000000, 0x0040000000000000, 0x0080000000000000,
+        0x0100000000000000, 0x0200000000000000, 0x0400000000000000, 0x0800000000000000, 0x1000000000000000, 0x2000000000000000, 0x4000000000000000, 0x8000000000000000,
+        0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+};
+
+static const bitboard_t white_pawn_capture_non_first_move[NUM_SQUARES] = {
+        0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+        0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+        0x0000000002000000, 0x0000000005000000, 0x000000000a000000, 0x0000000014000000, 0x0000000028000000, 0x0000000050000000, 0x00000000a0000000, 0x0000000040000000,
+        0x0000000200000000, 0x0000000500000000, 0x0000000a00000000, 0x0000001400000000, 0x0000002800000000, 0x0000005000000000, 0x000000a000000000, 0x0000004000000000,
+        0x0000020000000000, 0x0000050000000000, 0x00000a0000000000, 0x0000140000000000, 0x0000280000000000, 0x0000500000000000, 0x0000a00000000000, 0x0000400000000000,
+        0x0002000000000000, 0x0005000000000000, 0x000a000000000000, 0x0014000000000000, 0x0028000000000000, 0x0050000000000000, 0x00a0000000000000, 0x0040000000000000,
+        0x0200000000000000, 0x0500000000000000, 0x0a00000000000000, 0x1400000000000000, 0x2800000000000000, 0x5000000000000000, 0xa000000000000000, 0x4000000000000000,
+        0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
+};
+
+
+
+/**
+ * @brief 		Get white pawn quiet non-first move occupancy mask
+ *
+ * @param sq    The square containing the pawn
+ * @return A bitboard representing the occupancy mask
+ */
+bitboard_t occ_mask_get_white_pawn_quiet_non_first_move ( const enum square sq )
+{
+        assert ( validate_square ( sq ) );
+        return white_pawn_quiet_non_first_move[sq];
+}
+
+/**
+ * @brief 		Get white pawn capture non-first move occupancy mask
+ *
+ * @param sq    The square containing the pawn
+ * @return A bitboard representing the occupancy mask
+ */
+bitboard_t occ_mask_get_white_pawn_capture_non_first_move ( const enum square sq )
+{
+        assert ( validate_square ( sq ) );
+        return white_pawn_capture_non_first_move[sq];
+}
+
+
 
 /**
  * @brief 		Get Knight occupancy mask
@@ -99,7 +148,7 @@ static const bitboard_t rook_occupancy_masks[NUM_SQUARES] = {
  * @param sq    The square containing the knight
  * @return A bitboard representing the occupancy mask
  */
-bitboard_t get_knight_occ_mask ( const enum square sq )
+bitboard_t occ_mask_get_knight ( const enum square sq )
 {
         assert ( validate_square ( sq ) );
         return knight_occupancy_masks[sq];
@@ -112,7 +161,7 @@ bitboard_t get_knight_occ_mask ( const enum square sq )
  * @param sq    The square containing the Bishop
  * @return A bitboard representing the occupancy mask
  */
-bitboard_t get_bishop_occ_mask ( const enum square sq )
+bitboard_t occ_mask_get_bishop ( const enum square sq )
 {
         assert ( validate_square ( sq ) );
         return bishop_occupancy_masks[sq];
@@ -125,7 +174,7 @@ bitboard_t get_bishop_occ_mask ( const enum square sq )
  * @param sq    The square containing the King
  * @return A bitboard representing the occupancy mask
  */
-bitboard_t get_king_occ_mask ( const enum square sq )
+bitboard_t occ_mask_get_king ( const enum square sq )
 {
         assert ( validate_square ( sq ) );
         return king_occupancy_masks[sq];
@@ -138,7 +187,7 @@ bitboard_t get_king_occ_mask ( const enum square sq )
  * @param sq    The square containing the Queen
  * @return A bitboard representing the occupancy mask
  */
-bitboard_t get_queen_occ_mask ( const enum square sq )
+bitboard_t occ_mask_get_queen ( const enum square sq )
 {
         assert ( validate_square ( sq ) );
         return queen_occupancy_masks[sq];
@@ -151,14 +200,14 @@ bitboard_t get_queen_occ_mask ( const enum square sq )
  * @param sq    The square containing the Rook
  * @return A bitboard representing the occupancy mask
  */
-bitboard_t get_rook_occ_mask ( const enum square sq )
+bitboard_t occ_mask_get_rook ( const enum square sq )
 {
         assert ( validate_square ( sq ) );
         return rook_occupancy_masks[sq];
 }
 
 
-bitboard_t get_occ_mask ( const enum piece pce, const enum square sq )
+bitboard_t occ_mask_get_piece_square ( const enum piece pce, const enum square sq )
 {
         switch ( pce ) {
         case WPAWN:
@@ -166,19 +215,19 @@ bitboard_t get_occ_mask ( const enum piece pce, const enum square sq )
                 assert ( false );
         case WBISHOP:
         case BBISHOP:
-                return get_bishop_occ_mask ( sq );
+                return occ_mask_get_bishop ( sq );
         case WKNIGHT:
         case BKNIGHT:
-                return get_knight_occ_mask ( sq );
+                return occ_mask_get_knight ( sq );
         case WROOK:
         case BROOK:
-                return get_rook_occ_mask ( sq );
+                return occ_mask_get_rook ( sq );
         case WQUEEN:
         case BQUEEN:
-                return get_queen_occ_mask ( sq );
+                return occ_mask_get_queen ( sq );
         case WKING:
         case BKING:
-                return get_king_occ_mask ( sq );
+                return occ_mask_get_king ( sq );
         default:
                 assert ( false );
 

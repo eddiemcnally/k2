@@ -382,6 +382,60 @@ void test_move_gen_king_white_no_castling_3 ( void **state )
 
 }
 
+void test_move_white_castling_WK_WQ ( void **state )
+{
+        const char *RANDOM_FEN_1 = "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQPN2/PP1BBPPP/R3K2R w KQkq - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, WHITE, mvl );
+
+        move_t wk_cast = move_encode_castle_kingside_white();
+        assert_true ( mvl_contains_move ( mvl, wk_cast ) );
+
+        move_t wq_cast = move_encode_castle_queenside_white();
+        assert_true ( mvl_contains_move ( mvl, wq_cast ) );
+}
+
+
+
+void test_move_white_castling_WK_only ( void **state )
+{
+        const char *RANDOM_FEN_1 = "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQPN2/PP2BPPP/R1B1K2R w K - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, WHITE, mvl );
+
+        move_t wk_cast = move_encode_castle_kingside_white();
+        assert_true ( mvl_contains_move ( mvl, wk_cast ) );
+
+        move_t wq_cast = move_encode_castle_queenside_white();
+        assert_false ( mvl_contains_move ( mvl, wq_cast ) );
+}
+
+
+void test_move_white_castling_WQ_only ( void **state )
+{
+        const char *RANDOM_FEN_1 = "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR w Q - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, WHITE, mvl );
+
+        move_t wk_cast = move_encode_castle_kingside_white();
+        assert_false ( mvl_contains_move ( mvl, wk_cast ) );
+
+        move_t wq_cast = move_encode_castle_queenside_white();
+        assert_true ( mvl_contains_move ( mvl, wq_cast ) );
+}
+
 
 
 void test_move_gen_king_black_no_castling_1 ( void **state )
@@ -474,6 +528,62 @@ void test_move_gen_king_black_no_castling_3 ( void **state )
         mv = move_encode_quiet ( g5, f5 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 
+}
+
+
+void test_move_black_castling_BK_BQ ( void **state )
+{
+        const char *RANDOM_FEN_1 = "r3k2r/pppqbppp/2n1bn2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR b Qkq - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, BLACK, mvl );
+
+        move_t bk_cast = move_encode_castle_kingside_black();
+        assert_true ( mvl_contains_move ( mvl, bk_cast ) );
+
+        move_t bq_cast = move_encode_castle_queenside_black();
+        assert_true ( mvl_contains_move ( mvl, bq_cast ) );
+}
+
+
+
+
+void test_move_black_castling_BK_only ( void **state )
+{
+        const char *RANDOM_FEN_1 = "rn2k2r/pppqbppp/4bn2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR w Qk - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, BLACK, mvl );
+
+        move_t bk_cast = move_encode_castle_kingside_black();
+        assert_true ( mvl_contains_move ( mvl, bk_cast ) );
+
+        move_t bq_cast = move_encode_castle_queenside_black();
+        assert_false ( mvl_contains_move ( mvl, bq_cast ) );
+}
+
+
+void test_move_black_castling_BQ_only ( void **state )
+{
+        const char *RANDOM_FEN_1 = "r3k1nr/pppqbppp/2n1b3/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR w Qq - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_king_moves ( pos, BLACK, mvl );
+
+        move_t bk_cast = move_encode_castle_kingside_black();
+        assert_false ( mvl_contains_move ( mvl, bk_cast ) );
+
+        move_t bq_cast = move_encode_castle_queenside_black();
+        assert_true ( mvl_contains_move ( mvl, bq_cast ) );
 }
 
 

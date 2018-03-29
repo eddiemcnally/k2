@@ -116,6 +116,14 @@ int main ( void )
                 cmocka_unit_test ( test_move_gen_king_black_no_castling_1 ),
                 cmocka_unit_test ( test_move_gen_king_black_no_castling_2 ),
                 cmocka_unit_test ( test_move_gen_king_black_no_castling_3 ),
+                cmocka_unit_test ( test_move_white_castling_WK_WQ ),
+                cmocka_unit_test ( test_move_white_castling_WK_only ),
+                cmocka_unit_test ( test_move_white_castling_WQ_only ),
+                cmocka_unit_test ( test_move_black_castling_BK_BQ ),
+                cmocka_unit_test ( test_move_black_castling_BK_only ),
+                cmocka_unit_test ( test_move_black_castling_BQ_only ),
+
+                
                 // castle permissions
                 cmocka_unit_test ( test_castle_permissions_get_set ),
                 cmocka_unit_test ( test_castle_permissions_no_perms_get_set ),

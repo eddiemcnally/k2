@@ -24,12 +24,14 @@
 
 #pragma once
 
-bitboard_t get_knight_occ_mask ( const enum square sq );
-bitboard_t get_bishop_occ_mask ( const enum square sq );
-bitboard_t get_king_occ_mask ( const enum square sq );
-bitboard_t get_queen_occ_mask ( const enum square sq );
-bitboard_t get_rook_occ_mask ( const enum square sq );
-bitboard_t get_occ_mask ( const enum piece pce, const enum square sq );
+bitboard_t occ_mask_get_white_pawn_quiet_non_first_move ( const enum square sq );
+bitboard_t occ_mask_get_white_pawn_capture_non_first_move ( const enum square sq );
+bitboard_t occ_mask_get_knight ( const enum square sq );
+bitboard_t occ_mask_get_bishop ( const enum square sq );
+bitboard_t occ_mask_get_king ( const enum square sq );
+bitboard_t occ_mask_get_queen ( const enum square sq );
+bitboard_t occ_mask_get_rook ( const enum square sq );
+bitboard_t occ_mask_get_piece_square ( const enum piece pce, const enum square sq );
 
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

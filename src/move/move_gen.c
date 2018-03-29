@@ -135,18 +135,27 @@ static const uint64_t negative_diagonal_masks[] = {
 
 
 // Bitboards representing commonly used ranks and files
-const bitboard_t RANK_1_BB = 0x00000000000000FF;
-const bitboard_t RANK_2_BB = 0x000000000000FF00;
-const bitboard_t RANK_7_BB = 0x00FF000000000000;
-const bitboard_t RANK_8_BB = 0xFF00000000000000;
-const bitboard_t FILE_1_BB = 0x0101010101010101;
-const bitboard_t FILE_8_BB = 0x8080808080808080;
+const bitboard_t RANK_1_BB      = 0x00000000000000FF;
+const bitboard_t RANK_2_BB      = 0x000000000000FF00;
+const bitboard_t RANK_7_BB      = 0x00FF000000000000;
+const bitboard_t RANK_8_BB      = 0xFF00000000000000;
+const bitboard_t FILE_1_BB      = 0x0101010101010101;
+const bitboard_t FILE_8_BB      = 0x8080808080808080;
 
 // bitboards for squares between castle squares
 const bitboard_t CASTLE_MASK_WK = 0x0000000000000060;
 const bitboard_t CASTLE_MASK_WQ = 0x000000000000000E;
 const bitboard_t CASTLE_MASK_BK = 0x6000000000000000;
 const bitboard_t CASTLE_MASK_BQ = 0x0E00000000000000;
+
+// target promotion pieces
+#define         NUM_PROMOTION_PIECES    4
+const enum piece WHITE_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {BKNIGHT, BBISHOP, BROOK, BQUEEN};
+const enum piece BLACK_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {WKNIGHT, WBISHOP, WROOK, WQUEEN};
+
+
+
+
 
 static void mv_gen_encode_multiple_quiet ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
 static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
@@ -155,6 +164,9 @@ static void mv_gen_black_castle_moves ( const struct position *pos, struct move_
 static void mv_gen_white_castle_moves ( const struct position *pos, struct move_list *mvl );
 static void add_kingside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum colour side_to_move, struct move_list *mvl );
 static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const bitboard_t blocking_pce_mask, const enum colour side_to_move, struct move_list *mvl );
+static void gen_quiet_promotions ( const enum square from_sq, const enum square to_sq,
+                                   const enum colour side_to_move, struct move_list *mvl );
+static void gen_white_pawn_quiet_moves_excl_first_move ( const struct board *brd, struct move_list *mvl );
 
 
 
@@ -199,6 +211,90 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
 
 }
 
+/**
+ * @brief       Generates White Pawn moves
+ * @param brd   The board
+ * @param mvl   the move list to append new moves to
+ */
+void mv_gen_white_pawn_moves ( const struct board *brd, struct move_list *mvl )
+{
+        // ---------------
+        // all quiet moves
+        // ---------------
+        gen_white_pawn_quiet_moves_excl_first_move(brd, mvl );
+
+
+}
+
+static void gen_white_pawn_quiet_moves_excl_first_move ( const struct board *brd, struct move_list *mvl )
+{
+
+        bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
+
+        // mask out all pawns on rank 2
+        bitboard_t pawns_non_first_bb = all_pawns_bb & ( ~RANK_2_BB );
+
+
+        // all quiet moves, excl first move and excl source sq on rank 7
+        // -------------------------------------------------------------
+        // mask out all pawns on rank 7
+        bitboard_t pawns_excl_rank7_bb = pawns_non_first_bb & ( ~RANK_7_BB );
+        bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
+        bitboard_t free_squares = ~all_occupied_squares_bb;
+
+        while ( pawns_excl_rank7_bb != 0 ) {
+                enum square from_sq = bb_pop_1st_bit ( &pawns_excl_rank7_bb );
+                enum square to_sq = ( enum square ) ( from_sq + 8 );
+                if ( bb_is_set ( free_squares, to_sq ) == false ) {
+                        move_t quiet_move = move_encode_quiet ( from_sq, from_sq + 8 );
+                        mvl_add ( mvl, quiet_move );
+                }
+        }
+
+        // now check for quiet promotion
+        bitboard_t pawns_on_rank7_bb = pawns_non_first_bb & RANK_7_BB;
+        while ( pawns_on_rank7_bb != 0 ) {
+                enum square from_sq = bb_pop_1st_bit ( &pawns_excl_rank7_bb );
+                enum square to_sq = ( enum square ) ( from_sq + 8 );
+                if ( bb_is_set ( free_squares, to_sq ) == false ) {
+                        gen_quiet_promotions ( from_sq, to_sq, WHITE, mvl );
+                }
+        }
+        
+        
+        
+        
+
+}
+
+static void gen_quiet_promotions ( const enum square from_sq, const enum square to_sq,
+                                   const enum colour side_to_move, struct move_list *mvl )
+{
+        move_t quiet_move;
+        enum piece dest_pce;
+
+        switch ( side_to_move ) {
+        case WHITE:
+                        for ( int i = 0; i < NUM_PROMOTION_PIECES; i++ ) {
+                                dest_pce = WHITE_PROMOTION_PIECES[i];
+                                quiet_move = move_encode_promoted ( from_sq, to_sq, dest_pce, false );
+                                mvl_add ( mvl, quiet_move );
+                        }
+                break;
+        case BLACK:
+                for ( int i = 0; i < NUM_PROMOTION_PIECES; i++ ) {
+                        dest_pce = WHITE_PROMOTION_PIECES[i];
+                        quiet_move = move_encode_promoted ( from_sq, to_sq, dest_pce, false );
+                        mvl_add ( mvl, quiet_move );
+                }
+                break;
+        default:
+                assert ( false );
+                break;
+        }
+}
+
+
 
 /**
  * @brief       Generates King moves
@@ -227,8 +323,15 @@ void mv_gen_king_moves ( const struct position *pos, const enum colour side_to_m
 
 
 
+
+
+
+
+
+
+
 /**
- * @brief Generates moves for King and Knight Iie, non-sliding pieces)
+ * @brief Generates moves for King and Knight (ie, non-sliding pieces)
  *
  * @param brd The board
  * @param pce_to_move The piece to move
@@ -245,7 +348,7 @@ static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece
         while ( bb != 0 ) {
                 enum square from_sq = bb_pop_1st_bit ( &bb );
 
-                bitboard_t occ_mask = get_occ_mask ( pce_to_move, from_sq );
+                bitboard_t occ_mask = occ_mask_get_piece_square ( pce_to_move, from_sq );
 
                 // generate capture moves
                 // ----------------------
@@ -336,15 +439,12 @@ static void add_kingside_move_if_no_blockers ( const bitboard_t brd_bb, const bi
 {
         if ( ( brd_bb & blocking_pce_mask ) == 0 ) {
                 move_t mv;
-                // no pieces blocking a castle
                 if ( side_to_move == WHITE ) {
                         mv = move_encode_castle_kingside_white();
-                        mvl_add ( mvl, mv );
                 } else {
-                        // no pieces blocking a castle
                         mv = move_encode_castle_kingside_black();
-                        mvl_add ( mvl, mv );
                 }
+                mvl_add ( mvl, mv );
         }
 }
 
@@ -353,15 +453,12 @@ static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const b
 {
         if ( ( brd_bb & blocking_pce_mask ) == 0 ) {
                 move_t mv;
-                // no pieces blocking a castle
                 if ( side_to_move == WHITE ) {
                         mv = move_encode_castle_queenside_white();
-                        mvl_add ( mvl, mv );
                 } else {
-                        // no pieces blocking a castle
                         mv = move_encode_castle_queenside_black();
-                        mvl_add ( mvl, mv );
                 }
+                mvl_add ( mvl, mv );
         }
 }
 

@@ -39,7 +39,7 @@ int main ( void )
 {
         uint64_t mask[NUM_SQUARES]  = {0};
         
-        occ_mask_gen_white_pawn_quiet_non_first_move(mask);
+        occ_mask_gen_white_pawn_capture_non_first_move(mask);
 
         occ_mask_gen_print_all_as_hex(mask, NUM_SQUARES);
 
