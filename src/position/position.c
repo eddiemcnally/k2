@@ -143,6 +143,22 @@ cast_perm_t pos_get_cast_perm ( const struct position *pos )
 }
 
 
+bool pos_try_get_en_pass_sq ( const struct position *pos, enum square *en_pass_sq )
+{
+        if ( pos->en_passant_set ) {
+                *en_pass_sq = pos->en_passant;
+                return true;
+        }
+        return false;
+}
+
+void pos_clear_en_pass_sq ( struct position *pos )
+{
+        pos->en_passant_set = false;
+}
+
+
+
 void pos_set_cast_perm ( struct position *pos, const cast_perm_t perms )
 {
         pos->castle_perm = perms;

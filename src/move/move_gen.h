@@ -29,6 +29,5 @@
 void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl );
 void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl );
 void mv_gen_king_moves ( const struct position *pos, const enum colour side_to_move, struct move_list *mvl );
-void mv_gen_white_pawn_moves( const struct board *brd, struct move_list *mvl);
-
+void mv_gen_white_pawn_moves ( const struct position *pos, const struct board *brd, struct move_list *mvl );
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

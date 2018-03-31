@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "piece.h"
+#include "square.h"
 #include "castle_perms.h"
 
 struct position;
@@ -36,9 +37,8 @@ struct position;
 
 cast_perm_t pos_get_cast_perm ( const struct position *pos );
 void pos_set_cast_perm ( struct position *pos, const cast_perm_t perms );
-
 struct board * pos_get_board ( const struct position *pos );
-
+bool pos_try_get_en_pass_sq ( const struct position *pos, enum square *en_pass_sq );
 struct position * pos_create ( void );
 void pos_destroy ( struct position *pos );
 void pos_initialise ( const char * fen, struct position *pos );

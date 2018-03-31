@@ -258,7 +258,8 @@ void occ_mask_gen_knight ( uint64_t * occ_mask_array )
         }
 }
 
-void occ_mask_gen_white_pawn_quiet_non_first_move ( uint64_t * occ_mask_array )
+
+void occ_mask_gen_white_pawn_capture_non_first_double_move ( uint64_t * occ_mask_array )
 {
 
 //              56 57 58 59 60 61 62 63
@@ -273,39 +274,7 @@ void occ_mask_gen_white_pawn_quiet_non_first_move ( uint64_t * occ_mask_array )
         // ignore rank 8
         for ( enum square sq = a1; sq <= h8; sq++ ) {
                 uint64_t b = 0;
-                if ( sq >= a3 && sq <= h7 ) {
-                        int dest_rank = 0;
-                        int dest_file = 0;
-
-                        int rank = sq_get_rank ( sq );
-                        int file = sq_get_file ( sq );
-
-                        // up
-                        dest_rank = rank + 1;
-                        dest_file = file;
-                        set_dest_sq_if_valid ( dest_rank, dest_file, &b );
-                }
-                occ_mask_array[sq] = b;
-        }
-}
-
-
-void occ_mask_gen_white_pawn_capture_non_first_move ( uint64_t * occ_mask_array )
-{
-
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 40 05 06 07
-
-        // ignore rank 8
-        for ( enum square sq = a1; sq <= h8; sq++ ) {
-                uint64_t b = 0;
-                if ( sq >= a3 && sq <= h7 ) {
+                if ( sq >= a2 && sq <= h7 ) {
                         int dest_rank = 0;
                         int dest_file = 0;
 
@@ -332,47 +301,6 @@ void occ_mask_gen_white_pawn_capture_non_first_move ( uint64_t * occ_mask_array 
 
 
 
-
-/*
- * Generates the destination bit masks for a pawn for each square
- * for quiet moves, non first move
- * name: generate_pawn_occupancy_masks
- * @param	pointer to 64-elem array of bitboards
- * @return	filled out array.
- *
- */
-void occ_mask_gen_black_pawn_quiet_non_first_move ( uint64_t * occ_mask_array )
-{
-
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 40 05 06 07
-
-        // ignore rank 8
-        for ( enum square sq = h7; sq <= a2; sq-- ) {
-
-                uint8_t dest_rank = 0;
-                uint8_t dest_file = 0;
-
-                uint8_t rank = sq_get_rank ( sq );
-                uint8_t file = sq_get_file ( sq );
-
-                uint64_t b = 0;
-
-                // up down rank
-                dest_rank = rank - 1;
-                dest_file = file;
-                set_dest_sq_if_valid ( dest_rank, dest_file, &b );
-
-                occ_mask_array[sq] = b;
-        }
-}
-
 /*
  * Generates the destination bit masks for a pawn for each square
  * for capture moves, non first move
@@ -381,7 +309,7 @@ void occ_mask_gen_black_pawn_quiet_non_first_move ( uint64_t * occ_mask_array )
  * @return	filled out array.
  *
  */
-void occ_mask_gen_black_pawn_capture_non_first_move ( uint64_t * occ_mask_array )
+void occ_mask_gen_black_pawn_capture_non_first_double_move ( uint64_t * occ_mask_array )
 {
 
 //              56 57 58 59 60 61 62 63
