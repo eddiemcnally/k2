@@ -10,14 +10,21 @@ With that understanding, K2 is a fresh start, with a better understanding of wha
 Uses Cmocka (https://cmocka.org/) as a unit test framework.
 
 To install on openSUSE:
-- zypper install libcmocka0 libcmocka-devel libcmocka-devel-static
+- sudo zypper install libcmocka0 libcmocka-devel libcmocka-devel-static
 
 ## CMake and CTest
+k2 uses CMake and CTest.
+
 To build using Cmake:
 - cd ./k2
 - mkdir _build
 - cd _build
 - cmake .. -G "Unix Makefiles"
+
+You can now build and run unit tests: 
 - make && ctest -VV
 
-
+## Build notes:
+- k2 is currently set up to use clang as a compiler.
+- However, there is use of various GCC built-in functions
+- The build process outputs 2 binaries: "k2" and "k2_test_runner". These can be found in the _build/bin directory.
