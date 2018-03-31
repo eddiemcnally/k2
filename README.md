@@ -6,9 +6,18 @@ Kestrel Rev 1 was a learning experience. There was a lot of code written that be
 With that understanding, K2 is a fresh start, with a better understanding of what's needed.
 
 
-CMocka:
+## CMocka:
 Uses Cmocka (https://cmocka.org/) as a unit test framework.
 
 To install on openSUSE:
-        - zypper install libcmocka0 libcmocka-devel libcmocka-devel-static
-        
+- zypper install libcmocka0 libcmocka-devel libcmocka-devel-static
+
+## CMake and CTest
+To build using Cmake:
+- cd ./k2
+- mkdir _build
+- cd _build
+- cmake .. -G "Unix Makefiles"
+- make && ctest -VV
+
+
