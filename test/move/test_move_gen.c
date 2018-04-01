@@ -38,6 +38,9 @@
 #include "piece.h"
 #include "test_move_gen.h"
 
+static bool contains_all_4_promotion_moves ( const enum square from_sq, const enum square to_sq, struct move_list *mvl, const bool is_capture );
+
+
 void test_move_gen_knight_white_1 ( void **state )
 {
         const char *RANDOM_FEN_1 = "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 w - - 0 1\n";
@@ -584,6 +587,69 @@ void test_move_black_castling_BQ_only ( void **state )
 
         move_t bq_cast = move_encode_castle_queenside_black();
         assert_true ( mvl_contains_move ( mvl, bq_cast ) );
+}
+
+
+
+void test_move_white_pawns_promotion_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "2r1N3/pPp1QpnP/Np1B2p1/1pP1R1PP/r2p2b1/3P2RB/P1Kp1k1P/bn5q w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_white_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( contains_all_4_promotion_moves ( b7, b8, mvl, false ) );
+        assert_true ( contains_all_4_promotion_moves ( b7, c8, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( h7, h8, mvl, false ) );
+}
+
+
+static bool contains_all_4_promotion_moves ( const enum square from_sq, const enum square to_sq, struct move_list *mvl, const bool is_capture )
+{
+        move_t mv = move_encode_promoted ( from_sq, to_sq, WKNIGHT, is_capture );
+        if ( mvl_contains_move ( mvl, mv ) == false ) {
+                return false;
+        }
+        mv = move_encode_promoted ( from_sq, to_sq, WBISHOP, is_capture );
+        if ( mvl_contains_move ( mvl, mv ) == false ) {
+                return false;
+        }
+        mv = move_encode_promoted ( from_sq, to_sq, WROOK, is_capture );
+        if ( mvl_contains_move ( mvl, mv ) == false ) {
+                return false;
+        }
+        mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, is_capture );
+        if ( mvl_contains_move ( mvl, mv ) ==false ) {
+                return false;
+        }
+        return true;
+}
+
+
+
+void test_move_white_pawns_promotion_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "bbr1n1B1/1P1PNPpP/1pN1Pkn1/P1r3p1/pBR2P1Q/pq1p3p/1R1P3p/7K w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_white_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( contains_all_4_promotion_moves ( b7, a8, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( b7, c8, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( d7, c8, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( d7, d8, mvl, false ) );
+        assert_true ( contains_all_4_promotion_moves ( d7, e8, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( f7, e8, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( f7, f8, mvl, false ) );
+        assert_true ( contains_all_4_promotion_moves ( h7, h8, mvl, false ) );
 }
 
 

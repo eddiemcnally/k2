@@ -28,6 +28,9 @@
 #include <stdbool.h>
 #include "board.h"
 #include "square.h"
+#include "position.h"
+#include "move_gen.h"
+#include "move_list.h"
 #include "piece.h"
 #include "occ_mask_gen.h"
 
@@ -37,11 +40,16 @@
 
 int main ( void )
 {
-        uint64_t mask[NUM_SQUARES]  = {0};
-        
-        occ_mask_gen_white_pawn_capture_non_first_double_move(mask);
 
-        occ_mask_gen_print_all_as_hex(mask, NUM_SQUARES);
+        const char *RANDOM_FEN_1 = "2r1N3/pPp1QpnP/Np1B2p1/1pP1R1PP/r2p2b1/3P2RB/P1Kp1k1P/bn5q w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board(pos);
+        mv_gen_white_pawn_moves(pos, brd, mvl );
+
 
 }
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

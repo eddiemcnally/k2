@@ -155,8 +155,6 @@ const enum piece BLACK_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {WKNIGHT, WBISH
 
 
 
-
-
 static void mv_gen_encode_multiple_quiet ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
 static void mv_gen_encode_multiple_capture ( bitboard_t bb, const enum square from_sq, struct move_list *mvl );
 static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move,  struct move_list *mvl );
@@ -185,7 +183,14 @@ void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl )
         struct board *brd = pos_get_board ( pos );
         enum colour side_to_move = pos_get_side_to_move ( pos );
 
+
+
+
         mv_gen_knight_moves ( brd, side_to_move, mvl );
+
+        if ( side_to_move == WHITE ) {
+                mv_gen_white_pawn_moves ( pos, brd, mvl );
+        }
 
 }
 
@@ -226,8 +231,7 @@ void mv_gen_white_pawn_moves ( const struct position *pos, const struct board *b
 
 static void gen_white_pawn_double_first_move ( const struct position *pos, const struct board *brd, struct move_list *mvl )
 {
-
-        bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
+        const bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
 
         // mask out all pawns other than on rank 2
         bitboard_t pawns_on_rank_2 = all_pawns_bb & RANK_2_BB;
@@ -257,17 +261,18 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
         enum square from_sq;
         enum square en_pass_sq;
 
-        bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
-        bitboard_t black_bb = brd_get_colour_bb ( brd, BLACK );
-        bitboard_t pawns_excl_rank7_bb = all_pawns_bb & ( ~RANK_7_BB );
-        bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
-        bitboard_t free_squares_bb = ~all_occupied_squares_bb;
+        const bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
+        const bitboard_t black_bb = brd_get_colour_bb ( brd, BLACK );
+        const bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
+        const bitboard_t free_squares_bb = ~all_occupied_squares_bb;
+        const bool is_en_pass_active = pos_try_get_en_pass_sq ( pos, &en_pass_sq );
 
-        bool is_en_pass_active = pos_try_get_en_pass_sq ( pos, &en_pass_sq );
+        bitboard_t pawns_excl_rank7_bb = all_pawns_bb & ( ~RANK_7_BB );
         bitboard_t en_pass_bb;
         if ( is_en_pass_active ) {
                 bb_set_square ( &en_pass_bb, en_pass_sq );
         }
+
 
         while ( pawns_excl_rank7_bb != 0 ) {
                 // quiet moves
@@ -282,10 +287,10 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
                 }
 
                 // capture moves
-                bitboard_t occ_mask = occ_mask_get_white_pawn_capture_non_first_double_move ( from_sq );
+                const bitboard_t occ_mask = occ_mask_get_white_pawn_capture_non_first_double_move ( from_sq );
                 bitboard_t capt_bb = black_bb & occ_mask;
                 while ( capt_bb != 0 ) {
-                        to_sq = bb_pop_1st_bit ( &pawns_excl_rank7_bb );
+                        to_sq = bb_pop_1st_bit ( &capt_bb );
                         move_t capt_move = move_encode_capture ( from_sq, to_sq );
                         mvl_add ( mvl, capt_move );
                 }
@@ -304,19 +309,19 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
         bitboard_t pawns_on_rank7_bb = all_pawns_bb & RANK_7_BB;
         while ( pawns_on_rank7_bb != 0 ) {
                 // quiet promotion
-                from_sq = bb_pop_1st_bit ( &pawns_excl_rank7_bb );
+                from_sq = bb_pop_1st_bit ( &pawns_on_rank7_bb );
                 file = sq_get_file ( from_sq );
                 rank = sq_get_rank ( from_sq );
                 to_sq = sq_gen_from_rank_file ( rank + 1, file );
-                if ( bb_is_set ( free_squares_bb, to_sq ) == false ) {
+                if ( bb_is_set ( all_occupied_squares_bb, to_sq ) == false ) {
                         gen_promotions ( from_sq, to_sq, WHITE, mvl, false );
                 }
 
                 // capture promotion
-                bitboard_t occ_mask = occ_mask_get_white_pawn_capture_non_first_double_move ( from_sq );
+                const bitboard_t occ_mask = occ_mask_get_white_pawn_capture_non_first_double_move ( from_sq );
                 bitboard_t capt_bb = black_bb & occ_mask;
                 while ( capt_bb != 0 ) {
-                        to_sq = bb_pop_1st_bit ( &pawns_excl_rank7_bb );
+                        to_sq = bb_pop_1st_bit ( &capt_bb );
                         gen_promotions ( from_sq, to_sq, WHITE, mvl, true );
                 }
         }
@@ -365,7 +370,7 @@ void mv_gen_king_moves ( const struct position *pos, const enum colour side_to_m
         assert ( validate_colour ( side_to_move ) );
         assert ( validate_move_list ( mvl ) );
 
-        struct board *brd = pos_get_board ( pos );
+        const struct board *brd = pos_get_board ( pos );
         enum piece pce_to_move;
         if ( side_to_move == WHITE ) {
                 pce_to_move = WKING;
@@ -398,32 +403,30 @@ void mv_gen_king_moves ( const struct position *pos, const enum colour side_to_m
 static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece pce_to_move,
                                        const enum colour side_to_move,  struct move_list *mvl )
 {
-
         // bitboard representing squares containing all pieces for the given colour
         bitboard_t bb = brd_get_piece_bb ( brd, pce_to_move );
 
         while ( bb != 0 ) {
-                enum square from_sq = bb_pop_1st_bit ( &bb );
+                const enum square from_sq = bb_pop_1st_bit ( &bb );
 
-                bitboard_t occ_mask = occ_mask_get_piece_square ( pce_to_move, from_sq );
+                const bitboard_t occ_mask = occ_mask_get_piece_square ( pce_to_move, from_sq );
 
                 // generate capture moves
                 // ----------------------
                 // AND'ing with opposite colour pieces with the occupancy mask, will
                 // give all pieces that can be captured by the piece on this square
-                enum colour opp_side = swap_side ( side_to_move );
-                bitboard_t opp_colours_bb = brd_get_colour_bb ( brd, opp_side );
-                bitboard_t captures_bb = occ_mask & opp_colours_bb;
+                const enum colour opp_side = swap_side ( side_to_move );
+                const bitboard_t opp_colours_bb = brd_get_colour_bb ( brd, opp_side );
+                const bitboard_t captures_bb = occ_mask & opp_colours_bb;
                 mv_gen_encode_multiple_capture ( captures_bb, from_sq, mvl );
 
                 // generate quiet moves
                 // --------------------
-                bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
-                bitboard_t free_squares = ~all_occupied_squares_bb;
-                bitboard_t quiet_bb = free_squares & occ_mask;
+                const bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
+                const bitboard_t free_squares = ~all_occupied_squares_bb;
+                const bitboard_t quiet_bb = free_squares & occ_mask;
                 mv_gen_encode_multiple_quiet ( quiet_bb, from_sq, mvl );
         }
-
 }
 
 
