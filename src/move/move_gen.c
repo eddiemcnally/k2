@@ -20,7 +20,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-
+#include <stdio.h>
 #include <assert.h>
 #include "move_gen.h"
 #include "bitboard.h"
@@ -261,11 +261,14 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
         enum square from_sq;
         enum square en_pass_sq;
 
-        const bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
-        const bitboard_t black_bb = brd_get_colour_bb ( brd, BLACK );
-        const bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
-        const bitboard_t free_squares_bb = ~all_occupied_squares_bb;
-        const bool is_en_pass_active = pos_try_get_en_pass_sq ( pos, &en_pass_sq );
+        bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
+        bitboard_t black_bb = brd_get_colour_bb ( brd, BLACK );
+        bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
+        bool is_en_pass_active = pos_try_get_en_pass_sq ( pos, &en_pass_sq );
+
+        //printf("All WHITE pawns\n");
+        //bb_print_as_board(all_pawns_bb);
+
 
         bitboard_t pawns_excl_rank7_bb = all_pawns_bb & ( ~RANK_7_BB );
         bitboard_t en_pass_bb;
@@ -281,7 +284,7 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
                 file = sq_get_file ( from_sq );
                 rank = sq_get_rank ( from_sq );
                 to_sq = sq_gen_from_rank_file ( rank + 1, file );
-                if ( bb_is_set ( free_squares_bb, to_sq ) == false ) {
+                if ( bb_is_set ( all_occupied_squares_bb, to_sq ) == false ) {
                         move_t quiet_move = move_encode_quiet ( from_sq, to_sq );
                         mvl_add ( mvl, quiet_move );
                 }

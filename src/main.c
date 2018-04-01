@@ -41,7 +41,7 @@
 int main ( void )
 {
 
-        const char *RANDOM_FEN_1 = "2r1N3/pPp1QpnP/Np1B2p1/1pP1R1PP/r2p2b1/3P2RB/P1Kp1k1P/bn5q w - - 0 1\n";
+        const char *RANDOM_FEN_1 = "1Nr1n3/P2pkp2/pp1bb1pK/Q1pq3P/NP4pp/P3PR1P/B3P1P1/2B2nRr w - - 0 1\n";
 
         struct position *pos = pos_create();
         pos_initialise ( RANDOM_FEN_1, pos );

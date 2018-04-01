@@ -139,7 +139,7 @@ void test_board_brd_get_piece_bb ( void **state )
 {
 #define NUM_TEST_SQ 10
 
-        enum square sq_list[NUM_TEST_SQ] = {a1, b3, c1, h8, d4, h8, a8, h1, g7, f2};
+        const enum square sq_list[NUM_TEST_SQ] = {a1, b3, c1, h8, d4, h8, a8, h1, g7, f2};
         struct board *brd = brd_allocate();
 
         for ( int i = 0; i < NUM_PIECES; i++ ) {

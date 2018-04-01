@@ -653,6 +653,78 @@ void test_move_white_pawns_promotion_2 ( void **state )
 }
 
 
+void test_move_white_pawns_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "1qN5/pR1B4/2Pp1Pbb/Bp1Pr1pP/k1P3pp/NrP1P1nP/K1p2n1p/2R4Q w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_white_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 7 );
+
+        move_t mv = move_encode_quiet ( c6, c7 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( c4, b5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( c4, c5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( e3, e4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( f6, f7 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( h5, g6 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( h3, g4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+
+void test_move_white_pawns_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "1Nr1n3/P2pkp2/pp1bb1pK/Q1pq3P/NP4pp/P3PR1P/B3P1P1/2B2nRr w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_white_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 10 );
+
+        assert_true ( contains_all_4_promotion_moves ( a7, a8, mvl, false ) );
+
+        move_t mv = move_encode_quiet ( b4, b5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( b4, c5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( e3, e4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( g2, g3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( h3, g4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( h5, g6 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+}
+
 
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
