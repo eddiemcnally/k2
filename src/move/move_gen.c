@@ -135,23 +135,23 @@ static const uint64_t negative_diagonal_masks[] = {
 
 
 // Bitboards representing commonly used ranks and files
-const bitboard_t RANK_1_BB      = 0x00000000000000FF;
-const bitboard_t RANK_2_BB      = 0x000000000000FF00;
-const bitboard_t RANK_7_BB      = 0x00FF000000000000;
-const bitboard_t RANK_8_BB      = 0xFF00000000000000;
-const bitboard_t FILE_1_BB      = 0x0101010101010101;
-const bitboard_t FILE_8_BB      = 0x8080808080808080;
+static const bitboard_t RANK_1_BB      = 0x00000000000000FF;
+static const bitboard_t RANK_2_BB      = 0x000000000000FF00;
+static const bitboard_t RANK_7_BB      = 0x00FF000000000000;
+static const bitboard_t RANK_8_BB      = 0xFF00000000000000;
+static const bitboard_t FILE_1_BB      = 0x0101010101010101;
+static const bitboard_t FILE_8_BB      = 0x8080808080808080;
 
 // bitboards for squares between castle squares
-const bitboard_t CASTLE_MASK_WK = 0x0000000000000060;
-const bitboard_t CASTLE_MASK_WQ = 0x000000000000000E;
-const bitboard_t CASTLE_MASK_BK = 0x6000000000000000;
-const bitboard_t CASTLE_MASK_BQ = 0x0E00000000000000;
+static const bitboard_t CASTLE_MASK_WK = 0x0000000000000060;
+static const bitboard_t CASTLE_MASK_WQ = 0x000000000000000E;
+static const bitboard_t CASTLE_MASK_BK = 0x6000000000000000;
+static const bitboard_t CASTLE_MASK_BQ = 0x0E00000000000000;
 
 // target promotion pieces
 #define         NUM_PROMOTION_PIECES    4
-const enum piece WHITE_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {BKNIGHT, BBISHOP, BROOK, BQUEEN};
-const enum piece BLACK_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {WKNIGHT, WBISHOP, WROOK, WQUEEN};
+static enum piece WHITE_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {BKNIGHT, BBISHOP, BROOK, BQUEEN};
+static enum piece BLACK_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {WKNIGHT, WBISHOP, WROOK, WQUEEN};
 
 
 
@@ -165,7 +165,7 @@ static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const b
 static void gen_promotions ( const enum square from_sq, const enum square to_sq,
                              const enum colour side_to_move, struct move_list *mvl, const bool is_capture );
 static void gen_white_pawn_moves_excl_first_double_move ( const struct position *pos, const struct board *brd, struct move_list *mvl );
-static void gen_white_pawn_double_first_move ( const struct position *pos, const struct board *brd, struct move_list *mvl );
+static void gen_white_pawn_double_first_move ( const struct board *brd, struct move_list *mvl );
 
 
 
@@ -182,9 +182,6 @@ void mv_gen_all_moves ( const struct position *pos, struct move_list *mvl )
 
         struct board *brd = pos_get_board ( pos );
         enum colour side_to_move = pos_get_side_to_move ( pos );
-
-
-
 
         mv_gen_knight_moves ( brd, side_to_move, mvl );
 
@@ -208,13 +205,9 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
         assert ( validate_colour ( side_to_move ) );
         assert ( validate_move_list ( mvl ) );
 
-        enum piece knight = WKNIGHT;
-        if ( side_to_move == BLACK ) {
-                knight = BKNIGHT;
-        }
+        enum piece knight = ( side_to_move == WHITE ) ? WKNIGHT : BKNIGHT;
 
         mv_gen_king_knight_moves ( brd, knight, side_to_move, mvl );
-
 }
 
 /**
@@ -224,12 +217,16 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
  */
 void mv_gen_white_pawn_moves ( const struct position *pos, const struct board *brd, struct move_list *mvl )
 {
+        assert ( validate_position ( pos ) );
+        assert ( validate_board ( brd ) );
+        assert ( validate_move_list ( mvl ) );
+
         gen_white_pawn_moves_excl_first_double_move ( pos, brd, mvl );
-        gen_white_pawn_double_first_move ( pos, brd, mvl );
+        gen_white_pawn_double_first_move ( brd, mvl );
 
 }
 
-static void gen_white_pawn_double_first_move ( const struct position *pos, const struct board *brd, struct move_list *mvl )
+static void gen_white_pawn_double_first_move ( const struct board *brd, struct move_list *mvl )
 {
         const bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
 
@@ -245,7 +242,7 @@ static void gen_white_pawn_double_first_move ( const struct position *pos, const
 
                 if ( brd_is_sq_occupied ( brd, from_plus_1 ) == false
                                 && brd_is_sq_occupied ( brd, from_plus_2 ) == false ) {
-                        move_t quiet_move = move_encode_pawn_double_first( from_sq, from_plus_2 );
+                        move_t quiet_move = move_encode_pawn_double_first ( from_sq, from_plus_2 );
                         mvl_add ( mvl, quiet_move );
                 }
         }
@@ -260,20 +257,17 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
         enum square from_sq;
         enum square en_pass_sq;
 
-        bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
-        bitboard_t black_bb = brd_get_colour_bb ( brd, BLACK );
-        bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
-        bool is_en_pass_active = pos_try_get_en_pass_sq ( pos, &en_pass_sq );
+        const bitboard_t all_pawns_bb = brd_get_piece_bb ( brd, WPAWN );
+        const bitboard_t black_bb = brd_get_colour_bb ( brd, BLACK );
+        const bitboard_t all_occupied_squares_bb = brd_get_board_bb ( brd );
+        const bool is_en_pass_active = pos_try_get_en_pass_sq ( pos, &en_pass_sq );
 
         //printf("All WHITE pawns\n");
         //bb_print_as_board(all_pawns_bb);
 
 
         bitboard_t pawns_excl_rank7_bb = all_pawns_bb & ( ~RANK_7_BB );
-        bitboard_t en_pass_bb;
-        if ( is_en_pass_active ) {
-                bb_set_square ( &en_pass_bb, en_pass_sq );
-        }
+
 
 
         while ( pawns_excl_rank7_bb != 0 ) {
@@ -298,6 +292,8 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
                 }
 
                 if ( is_en_pass_active ) {
+                        bitboard_t en_pass_bb;
+                        bb_set_square ( &en_pass_bb, en_pass_sq );
                         if ( ( en_pass_bb & occ_mask ) != 0 ) {
                                 // en passant move available from this square
                                 move_t en_pass_move = move_encode_enpassant ( from_sq, en_pass_sq );
@@ -332,27 +328,10 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
 static void gen_promotions ( const enum square from_sq, const enum square to_sq,
                              const enum colour side_to_move, struct move_list *mvl, const bool is_capture )
 {
-        move_t mv;
-        enum piece dest_pce;
-
-        switch ( side_to_move ) {
-        case WHITE:
-                for ( int i = 0; i < NUM_PROMOTION_PIECES; i++ ) {
-                        dest_pce = WHITE_PROMOTION_PIECES[i];
-                        mv = move_encode_promoted ( from_sq, to_sq, dest_pce, is_capture );
-                        mvl_add ( mvl, mv );
-                }
-                break;
-        case BLACK:
-                for ( int i = 0; i < NUM_PROMOTION_PIECES; i++ ) {
-                        dest_pce = WHITE_PROMOTION_PIECES[i];
-                        mv = move_encode_promoted ( from_sq, to_sq, dest_pce, is_capture );
-                        mvl_add ( mvl, mv );
-                }
-                break;
-        default:
-                assert ( false );
-                break;
+        enum piece *pce = ( side_to_move == WHITE ) ? WHITE_PROMOTION_PIECES : BLACK_PROMOTION_PIECES;
+        for ( int i = 0; i < NUM_PROMOTION_PIECES; i++ ) {
+                move_t mv = move_encode_promoted ( from_sq, to_sq, *pce++, is_capture );
+                mvl_add ( mvl, mv );
         }
 }
 
@@ -384,13 +363,6 @@ void mv_gen_king_moves ( const struct position *pos, const enum colour side_to_m
 
         mv_gen_king_knight_moves ( brd, pce_to_move, side_to_move, mvl );
 }
-
-
-
-
-
-
-
 
 
 

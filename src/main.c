@@ -41,14 +41,14 @@
 int main ( void )
 {
 
-        const char *RANDOM_FEN_1 = "1Nr1n3/P2pkp2/pp1bb1pK/Q1pq3P/NP4pp/P3PR1P/B3P1P1/2B2nRr w - - 0 1\n";
+        const char *RANDOM_FEN_1 = "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 w - - 0 1\n";
 
         struct position *pos = pos_create();
         pos_initialise ( RANDOM_FEN_1, pos );
+        struct board *brd = pos_get_board ( pos );
         struct move_list* mvl = mvl_allocate();
 
-        struct board *brd = pos_get_board(pos);
-        mv_gen_white_pawn_moves(pos, brd, mvl );
+        mv_gen_knight_moves ( brd, WHITE, mvl );
 
 
 }

@@ -27,7 +27,7 @@
 #include <assert.h>
 #include "square.h"
 
-// Temp storage when generatinga string representation of a square
+// Temp storage when generating a string representation of a square
 #define MAX_SQUARE_TEXT 4
 static char square_text[MAX_SQUARE_TEXT];
 

@@ -128,8 +128,11 @@ int main ( void )
                 cmocka_unit_test ( test_move_white_pawns_2 ),
                 cmocka_unit_test ( test_move_white_pawns_first_move_double_1 ),
                 cmocka_unit_test ( test_move_white_pawns_first_move_double_2 ),
+                cmocka_unit_test ( test_move_white_pawns_en_passant_1 ),
+                cmocka_unit_test ( test_move_white_pawns_en_passant_2 ),
+                cmocka_unit_test ( test_move_white_pawns_en_passant_3 ),
 
-                
+
                 // castle permissions
                 cmocka_unit_test ( test_castle_permissions_get_set ),
                 cmocka_unit_test ( test_castle_permissions_no_perms_get_set ),

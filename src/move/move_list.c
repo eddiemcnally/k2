@@ -165,7 +165,10 @@ void mvl_print ( const struct move_list *mvl )
 
 
 
-
+/**
+ * @brief       Validates move list and contained moves
+ * @param mvl   Pointer to the move list
+ */
 bool validate_move_list ( const struct move_list *mvl )
 {
         if ( mvl->struct_init_key != MOVE_LIST_INIT_KEY ) {
@@ -174,6 +177,11 @@ bool validate_move_list ( const struct move_list *mvl )
 
         if ( mvl->move_count > MOVE_LIST_MAX_LEN ) {
                 return false;
+        }
+
+        for ( int i = 0; i < mvl->move_count; i++ ) {
+                move_t mv = mvl->move_list[i];
+                assert ( validate_move ( mv ) );
         }
 
         return true;
