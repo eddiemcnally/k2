@@ -35,6 +35,7 @@ move_t move_encode_quiet ( const enum square from_sq, const enum square to_sq );
 move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq, const enum piece promoted_piece, const bool is_capture );
 move_t move_encode_capture ( const enum square from_sq, const enum square to_sq );
 move_t move_encode_enpassant ( const enum square from_sq, const enum square to_sq );
+move_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq );
 move_t move_encode_castle_kingside_white();
 move_t move_encode_castle_kingside_black();
 move_t move_encode_castle_queenside_white();
@@ -51,3 +52,4 @@ bool move_is_en_passant ( move_t mv );
 char *move_print ( move_t mv );
 
 bool validate_move ( const move_t mv );
+// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

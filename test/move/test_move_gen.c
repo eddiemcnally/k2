@@ -726,5 +726,52 @@ void test_move_white_pawns_2 ( void **state )
 }
 
 
+void test_move_white_pawns_first_move_double_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N1p/1pPnP1P1/p1Rr1ppp/4B1rB/2p5/P1PPqPPR/3n1k2 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_white_pawn_moves ( pos, brd, mvl );
+
+        move_t mv = move_encode_pawn_double_first ( a2, a4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( d2, d4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( f2, f4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+}
+
+void test_move_white_pawns_first_move_double_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N1p/1p1nP1P1/p1Rr1ppp/2p1B1rB/2P3P1/PP1PqP1R/3n1k2 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_white_pawn_moves ( pos, brd, mvl );
+
+        move_t mv = move_encode_pawn_double_first ( a2, a4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( b2, b4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( d2, d4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( f2, f4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+}
+
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

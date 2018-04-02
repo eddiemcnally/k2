@@ -238,7 +238,6 @@ static void gen_white_pawn_double_first_move ( const struct position *pos, const
 
         while ( pawns_on_rank_2 != 0 ) {
                 enum square from_sq = bb_pop_1st_bit ( &pawns_on_rank_2 );
-
                 enum rank rank = sq_get_rank ( from_sq );
                 enum file file = sq_get_file ( from_sq );
                 enum square from_plus_1 = sq_gen_from_rank_file ( rank + 1, file );
@@ -246,7 +245,7 @@ static void gen_white_pawn_double_first_move ( const struct position *pos, const
 
                 if ( brd_is_sq_occupied ( brd, from_plus_1 ) == false
                                 && brd_is_sq_occupied ( brd, from_plus_2 ) == false ) {
-                        move_t quiet_move = move_encode_quiet ( from_sq, from_plus_2 );
+                        move_t quiet_move = move_encode_pawn_double_first( from_sq, from_plus_2 );
                         mvl_add ( mvl, quiet_move );
                 }
         }

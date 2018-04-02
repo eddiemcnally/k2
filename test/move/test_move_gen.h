@@ -47,6 +47,7 @@ void test_move_white_pawns_promotion_1 ( void **state );
 void test_move_white_pawns_promotion_2 ( void **state );
 void test_move_white_pawns_1 ( void **state );
 void test_move_white_pawns_2 ( void **state );
-
+void test_move_white_pawns_first_move_double_1 ( void **state );
+void test_move_white_pawns_first_move_double_2 ( void **state );
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
