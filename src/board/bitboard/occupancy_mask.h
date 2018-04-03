@@ -24,7 +24,7 @@
 
 #pragma once
 
-bitboard_t occ_mask_get_white_pawn_quiet_non_first_move ( const enum square sq );
+bitboard_t occ_mask_get_black_pawn_capture_non_first_double_move ( const enum square sq );
 bitboard_t occ_mask_get_white_pawn_capture_non_first_double_move ( const enum square sq );
 bitboard_t occ_mask_get_knight ( const enum square sq );
 bitboard_t occ_mask_get_bishop ( const enum square sq );

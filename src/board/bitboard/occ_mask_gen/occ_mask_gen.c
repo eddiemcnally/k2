@@ -321,28 +321,31 @@ void occ_mask_gen_black_pawn_capture_non_first_double_move ( uint64_t * occ_mask
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-        // ignore rank 8
-        for ( enum square sq = h7; sq <= a2; sq-- ) {
-                bitboard_t b = 0;
+        for ( enum square sq = a1; sq <= h8; sq++ ) {
+                uint64_t b = 0;
+                if ( sq >= a2 && sq <= h7 ) {
+                        int dest_rank = 0;
+                        int dest_file = 0;
 
-                uint8_t dest_rank = 0;
-                uint8_t dest_file = 0;
+                        int rank = sq_get_rank ( sq );
+                        int file = sq_get_file ( sq );
 
-                uint8_t rank = sq_get_rank ( sq );
-                uint8_t file = sq_get_file ( sq );
-
-                if ( file > FILE_A ) {
+                        // up and left
                         dest_rank = rank - 1;
                         dest_file = file - 1;
-                } else if ( file < FILE_H ) {
+                        set_dest_sq_if_valid ( dest_rank, dest_file, &b );
+
+
+                        // up and right
                         dest_rank = rank - 1;
                         dest_file = file + 1;
+                        set_dest_sq_if_valid ( dest_rank, dest_file, &b );
+
                 }
-
-                set_dest_sq_if_valid ( dest_rank, dest_file, &b );
-
                 occ_mask_array[sq] = b;
         }
+        
+        
 }
 
 

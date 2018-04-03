@@ -41,15 +41,14 @@
 int main ( void )
 {
 
-        const char *RANDOM_FEN_1 = "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 w - - 0 1\n";
-
-        struct position *pos = pos_create();
-        pos_initialise ( RANDOM_FEN_1, pos );
-        struct board *brd = pos_get_board ( pos );
-        struct move_list* mvl = mvl_allocate();
-
-        mv_gen_knight_moves ( brd, WHITE, mvl );
-
+        bitboard_t occ_mask[NUM_SQUARES] = {0};
+        
+        occ_mask_gen_black_pawn_capture_non_first_double_move(occ_mask);
+        
+        occ_mask_gen_print_all_as_hex(occ_mask, NUM_SQUARES);
+        
+        
+        
 
 }
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
