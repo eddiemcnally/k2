@@ -785,7 +785,7 @@ void test_move_white_pawns_en_passant_1 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant( g5, h6 );
+        move_t mv = move_encode_enpassant ( g5, h6 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -801,7 +801,7 @@ void test_move_white_pawns_en_passant_2 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant( b5, a6 );
+        move_t mv = move_encode_enpassant ( b5, a6 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -816,9 +816,233 @@ void test_move_white_pawns_en_passant_3 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant( b5, c6 );
+        move_t mv = move_encode_enpassant ( b5, c6 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
+
+
+void test_move_black_pawns_promotion_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "2r1N3/pPp1QpnP/Np1B4/1pP1R1PP/r3qb2/2nP4/PpKp1kpP/1b3R1B b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( contains_all_4_promotion_moves ( d2, d1, mvl, false ) );
+        assert_true ( contains_all_4_promotion_moves ( g2, f1, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( g2, g1, mvl, false ) );
+        assert_true ( contains_all_4_promotion_moves ( g2, h1, mvl, true ) );
+}
+
+
+void test_move_black_pawns_promotion_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "bbr1n1B1/1P1P1PpP/1pN1Pk2/P1r3p1/pB3P1Q/1q6/p2pK1pp/PRR1n1N1 b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( contains_all_4_promotion_moves ( a2, b1, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( d2, c1, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( d2, d1, mvl, false ) );
+        assert_true ( contains_all_4_promotion_moves ( h2, g1, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( h2, h1, mvl, false ) );
+}
+
+
+void test_move_black_pawns_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "1qN5/pR1B4/2Pp1Pbb/1pP1r1pP/k2P1p1p/Nr2P1BP/K1p2n1p/2R4Q b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 10 );
+
+        move_t mv = move_encode_quiet ( a7, a6 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( a7, a5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( b5, b4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( d6, d5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( d6, c5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( f4, e3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( f4, f3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( f4, g3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( h4, g3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( g5, g4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+
+void test_move_black_pawns_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "1Nr1n3/P3k3/p2bb1pK/Q1pq3P/NP1p1pp1/P3PR1P/Bp2P1Pp/2B2nRr b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 22 );
+
+        assert_true ( contains_all_4_promotion_moves ( b2, b1, mvl, false ) );
+        assert_true ( contains_all_4_promotion_moves ( b2, c1, mvl, true ) );
+        assert_true ( contains_all_4_promotion_moves ( h2, g1, mvl, true ) );
+
+        move_t mv = move_encode_quiet ( c5, c4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( c5, b4 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( d4, d3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( d4, e3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( f4, e3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( g6, g5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( g6, h5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_quiet ( g4, g3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_capture ( g4, f3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+
+void test_move_black_pawns_first_move_double_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3Nk1b1/pp3p1p/3n4/2RrNpp1/2P1B1rB/QPp2K1P/P1PPqPPR/3n4 b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        move_t mv = move_encode_pawn_double_first ( a7, a5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( b7, b5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( h7, h5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+}
+
+
+
+void test_move_black_pawns_first_move_double_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "4k1b1/pp3p1p/1N1n2p1/2RrN2r/2P1Bp2/QPp2K1P/P1PPqPPR/3n4 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        move_t mv = move_encode_pawn_double_first ( a7, a5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+
+        mv = move_encode_pawn_double_first ( f7, f5 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+
+void test_move_black_pawns_en_passant_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N2/3nP3/p1Rr1pPp/Ppp1B1rB/2P3P1/1P1PqP1R/3n1k2 b - a3 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        move_t mv = move_encode_enpassant ( b4, a3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+
+void test_move_black_pawns_en_passant_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N2/3nP3/p1Rr2Pp/1ppBBPp1/P1P1r1P1/1P1Pq2R/3n1k2 b - f3 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        move_t mv = move_encode_enpassant ( g4, f3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
+
+void test_move_black_pawns_en_passant_3 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3N1Kb1/1q3N2/3n4/pPpr2Pp/2p1PprB/2P3PQ/PPBP3R/3n1k2 w - e3 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_black_pawn_moves ( pos, brd, mvl );
+
+        move_t mv = move_encode_enpassant ( f4, e3 );
+        assert_true ( mvl_contains_move ( mvl, mv ) );
+}
+
 
 
 

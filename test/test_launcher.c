@@ -110,18 +110,21 @@ int main ( void )
                 cmocka_unit_test ( test_move_gen_knight_black_1 ),
                 cmocka_unit_test ( test_move_gen_knight_black_2 ),
                 cmocka_unit_test ( test_move_gen_knight_black_3 ),
+
                 cmocka_unit_test ( test_move_gen_king_white_no_castling_1 ),
                 cmocka_unit_test ( test_move_gen_king_white_no_castling_2 ),
                 cmocka_unit_test ( test_move_gen_king_white_no_castling_3 ),
                 cmocka_unit_test ( test_move_gen_king_black_no_castling_1 ),
                 cmocka_unit_test ( test_move_gen_king_black_no_castling_2 ),
                 cmocka_unit_test ( test_move_gen_king_black_no_castling_3 ),
+
                 cmocka_unit_test ( test_move_white_castling_WK_WQ ),
                 cmocka_unit_test ( test_move_white_castling_WK_only ),
                 cmocka_unit_test ( test_move_white_castling_WQ_only ),
                 cmocka_unit_test ( test_move_black_castling_BK_BQ ),
                 cmocka_unit_test ( test_move_black_castling_BK_only ),
                 cmocka_unit_test ( test_move_black_castling_BQ_only ),
+
                 cmocka_unit_test ( test_move_white_pawns_promotion_1 ),
                 cmocka_unit_test ( test_move_white_pawns_promotion_2 ),
                 cmocka_unit_test ( test_move_white_pawns_1 ),
@@ -131,6 +134,16 @@ int main ( void )
                 cmocka_unit_test ( test_move_white_pawns_en_passant_1 ),
                 cmocka_unit_test ( test_move_white_pawns_en_passant_2 ),
                 cmocka_unit_test ( test_move_white_pawns_en_passant_3 ),
+
+                cmocka_unit_test ( test_move_black_pawns_promotion_1 ),
+                cmocka_unit_test ( test_move_black_pawns_promotion_2 ),
+                cmocka_unit_test ( test_move_black_pawns_1 ),
+                cmocka_unit_test ( test_move_black_pawns_2 ),
+                cmocka_unit_test ( test_move_black_pawns_first_move_double_1 ),
+                cmocka_unit_test ( test_move_black_pawns_first_move_double_2 ),
+                cmocka_unit_test ( test_move_black_pawns_en_passant_1 ),
+                cmocka_unit_test ( test_move_black_pawns_en_passant_2 ),
+                cmocka_unit_test ( test_move_black_pawns_en_passant_3 ),
 
 
                 // castle permissions
