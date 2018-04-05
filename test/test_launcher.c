@@ -149,8 +149,6 @@ int main ( void )
                 // castle permissions
                 cmocka_unit_test ( test_castle_permissions_get_set ),
                 cmocka_unit_test ( test_castle_permissions_no_perms_get_set ),
-
-
         };
 
         return cmocka_run_group_tests ( tests, NULL, NULL );

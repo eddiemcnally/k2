@@ -46,6 +46,19 @@ enum file sq_get_file ( const enum square sq )
         return ( enum file ) ( sq % 8 );
 }
 
+enum square sq_get_square_plus_1_rank ( const enum square from_sq )
+{
+        assert ( from_sq < a8 );
+        return from_sq + 8;
+}
+
+enum square sq_get_square_minus_1_rank ( const enum square from_sq )
+{
+        assert ( from_sq > a1 );
+
+        return from_sq - 8;
+}
+
 enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
 {
         assert ( validate_rank ( rank ) );
