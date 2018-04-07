@@ -31,6 +31,7 @@
 
 typedef uint64_t bitboard_t;
 
+bitboard_t bb_get_sq_mask(const enum square sq);
 void bb_set_square ( bitboard_t* bb, const enum square sq );
 void bb_clear_square ( bitboard_t* bb, const enum square sq );
 bool bb_is_set ( const bitboard_t bb, const enum square sq );

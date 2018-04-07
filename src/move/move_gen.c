@@ -62,7 +62,7 @@ static void gen_black_pawn_moves_excl_first_double_move ( const struct position 
 static void gen_black_pawn_double_first_move ( const struct board *brd, struct move_list *mvl );
 static void gen_white_pawn_double_first_move ( const struct board *brd, struct move_list *mvl );
 static void try_encode_double_pawn_move ( const struct board *brd, const enum square from_sq, const enum square plus_1, const enum square plus_2, struct move_list *mvl );
-
+static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, struct move_list *mvl );
 
 
 /**
@@ -105,6 +105,77 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
 
         mv_gen_king_knight_moves ( brd, knight, side_to_move, mvl );
 }
+
+
+
+/**
+ * @brief       Generates Bishop moves from the given position
+ * @param brd   The board
+ * @param side_to_move The side to move
+ * @param mvl   The move list to which new moves are appended
+ */
+void mv_gen_bishop_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl )
+{
+        assert ( validate_board ( brd ) );
+        assert ( validate_colour ( side_to_move ) );
+        assert ( validate_move_list ( mvl ) );
+
+        enum piece bishop = ( side_to_move == WHITE ) ? WBISHOP : BBISHOP;
+
+        get_diagonal_antidiagonal_moves ( brd, bishop, mvl );
+}
+
+
+/**
+ * @brief       Generates diagonal and anti-diagonal moves for bishop and queen
+ * @param brd   The board
+ * @param mvl   The move list to which new moves are appended
+ */
+static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, struct move_list *mvl )
+{
+        bitboard_t pce_to_move_bb = brd_get_piece_bb ( brd, pce_to_move );
+        const bitboard_t all_occupied_sq_bb = brd_get_board_bb ( brd );
+        const enum colour side_to_move = pce_get_colour ( pce_to_move );
+        const bitboard_t col_occupied = brd_get_colour_bb ( brd, side_to_move );
+
+        while ( pce_to_move_bb != 0 ) {
+                
+                const enum square from_sq = bb_pop_1st_bit ( &pce_to_move_bb );
+                const bitboard_t pos_diag_occ_mask = occ_mask_get_positive_diagonal ( from_sq );
+                const bitboard_t neg_diag_occ_mask = occ_mask_get_negative_diagonal ( from_sq );
+
+                // create slider bb for this square
+                const bitboard_t bb_slider = bb_get_sq_mask( from_sq );
+
+                bitboard_t diag1 = ( all_occupied_sq_bb & pos_diag_occ_mask ) - ( 2 * bb_slider );
+                bitboard_t diag2 = bb_reverse ( bb_reverse ( all_occupied_sq_bb & pos_diag_occ_mask ) -
+                                                ( 2 * bb_reverse ( bb_slider ) ) );
+
+                const bitboard_t diagpos = diag1 ^ diag2;
+                diag1 = ( all_occupied_sq_bb & neg_diag_occ_mask ) - ( 2 * bb_slider );
+                diag2 = bb_reverse ( bb_reverse ( all_occupied_sq_bb & neg_diag_occ_mask ) -
+                                     ( 2 * bb_reverse ( bb_slider ) ) );
+                const bitboard_t diagneg = diag1 ^ diag2;
+
+                const bitboard_t all_moves = ( diagpos & pos_diag_occ_mask ) | ( diagneg & neg_diag_occ_mask );
+
+                // get all same colour as piece being considered
+                bitboard_t excl_same_col = all_moves & ~col_occupied;
+
+                while ( excl_same_col != 0 ) {
+                        enum square to_sq = bb_pop_1st_bit ( &excl_same_col );
+
+                        if ( brd_is_sq_occupied ( brd, to_sq ) ) {
+                                move_t capt_move= move_encode_capture ( from_sq, to_sq );
+                                mvl_add ( mvl, capt_move );
+                        } else {
+                                move_t quiet_move= move_encode_quiet ( from_sq, to_sq );
+                                mvl_add ( mvl, quiet_move );
+                        }
+                }
+        }
+}
+
 
 /**
  * @brief       Generates White Pawn moves
@@ -215,8 +286,7 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
                 }
 
                 if ( is_en_pass_active ) {
-                        bitboard_t en_pass_bb;
-                        bb_set_square ( &en_pass_bb, en_pass_sq );
+                        const bitboard_t en_pass_bb = bb_get_sq_mask(en_pass_sq );
                         if ( ( en_pass_bb & occ_mask ) != 0 ) {
                                 // en passant move available from this square
                                 move_t en_pass_move = move_encode_enpassant ( from_sq, en_pass_sq );
@@ -279,8 +349,7 @@ static void gen_black_pawn_moves_excl_first_double_move ( const struct position 
                 }
 
                 if ( is_en_pass_active ) {
-                        bitboard_t en_pass_bb;
-                        bb_set_square ( &en_pass_bb, en_pass_sq );
+                        const bitboard_t en_pass_bb = bb_get_sq_mask(en_pass_sq );
                         if ( ( en_pass_bb & occ_mask ) != 0 ) {
                                 // en passant move available from this square
                                 move_t en_pass_move = move_encode_enpassant ( from_sq, en_pass_sq );
@@ -367,7 +436,7 @@ static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece
 
         while ( bb != 0 ) {
                 const enum square from_sq = bb_pop_1st_bit ( &bb );
-                bitboard_t occ_mask;
+                bitboard_t occ_mask = 0;
                 switch ( pce_type ) {
                 case KNIGHT:
                         occ_mask = occ_mask_get_knight ( from_sq );

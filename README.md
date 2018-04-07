@@ -28,3 +28,9 @@ You can now build and run unit tests:
 - k2 is currently set up to use clang as a compiler.
 - However, there is use of various GCC built-in functions
 - The build process outputs 2 binaries: "k2" and "k2_test_runner". These can be found in the _build/bin directory.
+
+
+# Engine Notes
+- uses bitboards (uint64_t) to represent the board, square occupancy, attack squares, etc
+- uses a pseudo-legal move generator
+- uses Hyperbola Quintessence for sliding piece move generation

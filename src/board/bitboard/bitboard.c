@@ -31,6 +31,8 @@
 #define BIT_0 (0x01ull)
 
 
+// A lookup table for reversing bits in a byte.
+// See https://graphics.stanford.edu/%7Eseander/bithacks.html#BitReverseTable
 #define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
 #define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
 #define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
@@ -40,6 +42,18 @@ static const unsigned char BitReverseTable256[256] = {
 };
 
 
+/**
+ * @brief 	Returns a bitboard with a single bit set representing the given square
+ *
+ * @param sq The square
+ */
+bitboard_t bb_get_sq_mask ( const enum square sq )
+{
+        assert ( validate_square ( sq ) );
+
+        bitboard_t bb = 0;
+        return bb | ( BIT_0 << sq );
+}
 
 
 
