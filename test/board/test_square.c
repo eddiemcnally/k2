@@ -264,4 +264,29 @@ void test_square_gen_from_rank_file ( void **state )
 
 
 
+void test_sq_get_square_plus_1_rank ( void **state )
+{
+        assert_true ( a2 == sq_get_square_plus_1_rank ( a1 ) );
+        assert_true ( a3 == sq_get_square_plus_1_rank ( a2 ) );
+        assert_true ( h2 == sq_get_square_plus_1_rank ( h1 ) );
+        assert_true ( h3 == sq_get_square_plus_1_rank ( h2 ) );
+
+        assert_true ( a7 == sq_get_square_plus_1_rank ( a6 ) );
+        assert_true ( a6 == sq_get_square_plus_1_rank ( a5 ) );
+        assert_true ( h7 == sq_get_square_plus_1_rank ( h6 ) );
+        assert_true ( h6 == sq_get_square_plus_1_rank ( h5 ) );
+
+}
+
+void test_sq_get_square_minus_1_rank ( void **state )
+{
+        assert_true ( a6 == sq_get_square_minus_1_rank ( a7 ) );
+        assert_true ( a5 == sq_get_square_minus_1_rank ( a6 ) );
+        assert_true ( h6 == sq_get_square_minus_1_rank ( h7 ) );
+        assert_true ( h5 == sq_get_square_minus_1_rank ( h6 ) );
+}
+
+
+
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

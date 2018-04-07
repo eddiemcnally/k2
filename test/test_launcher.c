@@ -102,6 +102,8 @@ int main ( void )
                 cmocka_unit_test ( test_square_sq_get_rank ),
                 cmocka_unit_test ( test_square_sq_get_file ),
                 cmocka_unit_test ( test_square_gen_from_rank_file ),
+                cmocka_unit_test ( test_sq_get_square_plus_1_rank ),
+                cmocka_unit_test ( test_sq_get_square_minus_1_rank ),
 
                 // move generation
                 cmocka_unit_test ( test_move_gen_knight_white_1 ),

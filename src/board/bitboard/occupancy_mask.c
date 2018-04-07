@@ -229,8 +229,7 @@ bitboard_t occ_mask_get_black_pawn_capture_non_first_double_move ( const enum sq
 
 
 /**
- * @brief 		Get Knight occupancy mask
- * @details 	Get the occupancy mask for the Knight on the given square
+ * @brief 		Get Knight occupancy mask for the given square
  *
  * @param sq    The square containing the knight
  * @return A bitboard representing the occupancy mask
@@ -242,8 +241,7 @@ bitboard_t occ_mask_get_knight ( const enum square sq )
 }
 
 /**
- * @brief 		Get Bishop occupancy mask
- * @details 	Get the occupancy mask for the Bishop on the given square
+ * @brief 		Get Bishop occupancy mask for the given square
  *
  * @param sq    The square containing the Bishop
  * @return A bitboard representing the occupancy mask
@@ -255,8 +253,7 @@ bitboard_t occ_mask_get_bishop ( const enum square sq )
 }
 
 /**
- * @brief 		Get King occupancy mask
- * @details 	Get the occupancy mask for the King on the given square
+ * @brief 		Get King occupancy mask for the given square
  *
  * @param sq    The square containing the King
  * @return A bitboard representing the occupancy mask
@@ -268,8 +265,7 @@ bitboard_t occ_mask_get_king ( const enum square sq )
 }
 
 /**
- * @brief 		Get Queen occupancy mask
- * @details 	Get the occupancy mask for the Queen on the given square
+ * @brief 		Get Queen occupancy mask for the given square
  *
  * @param sq    The square containing the Queen
  * @return A bitboard representing the occupancy mask
@@ -281,8 +277,7 @@ bitboard_t occ_mask_get_queen ( const enum square sq )
 }
 
 /**
- * @brief 		Get Rook occupancy mask
- * @details 	Get the occupancy mask for the Rook on the given square
+ * @brief 		Get Rook occupancy mask for the given square
  *
  * @param sq    The square containing the Rook
  * @return A bitboard representing the occupancy mask
@@ -291,34 +286,6 @@ bitboard_t occ_mask_get_rook ( const enum square sq )
 {
         assert ( validate_square ( sq ) );
         return rook_occupancy_masks[sq];
-}
-
-
-bitboard_t occ_mask_get_piece_square ( const enum piece pce, const enum square sq )
-{
-        switch ( pce ) {
-        case WPAWN:
-        case BPAWN:
-                assert ( false );
-        case WBISHOP:
-        case BBISHOP:
-                return occ_mask_get_bishop ( sq );
-        case WKNIGHT:
-        case BKNIGHT:
-                return occ_mask_get_knight ( sq );
-        case WROOK:
-        case BROOK:
-                return occ_mask_get_rook ( sq );
-        case WQUEEN:
-        case BQUEEN:
-                return occ_mask_get_queen ( sq );
-        case WKING:
-        case BKING:
-                return occ_mask_get_king ( sq );
-        default:
-                assert ( false );
-
-        }
 }
 
 

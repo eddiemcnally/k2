@@ -363,11 +363,21 @@ static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece
 {
         // bitboard representing squares containing all pieces for the given colour
         bitboard_t bb = brd_get_piece_bb ( brd, pce_to_move );
+        const enum piece pce_type = pce_get_piece_type ( pce_to_move );
 
         while ( bb != 0 ) {
                 const enum square from_sq = bb_pop_1st_bit ( &bb );
-
-                const bitboard_t occ_mask = occ_mask_get_piece_square ( pce_to_move, from_sq );
+                bitboard_t occ_mask;
+                switch ( pce_type ) {
+                case KNIGHT:
+                        occ_mask = occ_mask_get_knight ( from_sq );
+                        break;
+                case KING:
+                        occ_mask = occ_mask_get_king ( from_sq );
+                        break;
+                default:
+                        assert ( false );
+                }
 
                 // generate capture moves
                 // ----------------------
