@@ -906,12 +906,132 @@ void test_move_white_bishop_2 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_bishop_moves ( brd, WHITE, mvl );
 
-        //assert_true ( mvl_get_move_count ( mvl ) == 12 );
+        assert_true ( mvl_get_move_count ( mvl ) == 15 );
 
+        CONTAINS_QUIET ( mvl, b7, a8 );
+        CONTAINS_QUIET ( mvl, b7, c8 );
+        CONTAINS_QUIET ( mvl, b7, c6 );
+        CONTAINS_QUIET ( mvl, b7, d5 );
+        CONTAINS_QUIET ( mvl, b7, e4 );
+        CONTAINS_QUIET ( mvl, b7, f3 );
+        CONTAINS_QUIET ( mvl, b7, g2 );
+        CONTAINS_QUIET ( mvl, c3, d4 );
+        CONTAINS_QUIET ( mvl, c3, e5 );
+        CONTAINS_QUIET ( mvl, c3, f6 );
         CONTAINS_QUIET ( mvl, c3, d2 );
+
+        CONTAINS_CAPTURE ( mvl, b7, h1 );
+        CONTAINS_CAPTURE ( mvl, c3, b2 );
+        CONTAINS_CAPTURE ( mvl, c3, e1 );
+        CONTAINS_CAPTURE ( mvl, c3, g7 );
 
 }
 
+
+void test_move_white_bishop_3 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3n1N1n/3R1pr1/Q2P2bK/P1P2r2/PPp1Bk1p/6N1/ppP4p/B3b3 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_bishop_moves ( brd, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 10 );
+
+        CONTAINS_QUIET ( mvl, e4, d3 );
+        CONTAINS_QUIET ( mvl, e4, d5 );
+        CONTAINS_QUIET ( mvl, e4, c6 );
+        CONTAINS_QUIET ( mvl, e4, b7 );
+        CONTAINS_QUIET ( mvl, e4, a8 );
+        CONTAINS_QUIET ( mvl, e4, f3 );
+        CONTAINS_QUIET ( mvl, e4, g2 );
+        CONTAINS_QUIET ( mvl, e4, h1 );
+
+        CONTAINS_CAPTURE ( mvl, a1, b2 );
+        CONTAINS_CAPTURE ( mvl, e4, f5 );
+}
+
+
+
+
+void test_move_black_bishop_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "4q1Q1/bp2P1P1/PRPrnN1P/P3k1p1/1r1pp2B/1Rp1p2P/pnPN4/1B2Kb2 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_bishop_moves ( brd, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 9 );
+
+        CONTAINS_QUIET ( mvl, a7, b8 );
+        CONTAINS_QUIET ( mvl, f1, e2 );
+        CONTAINS_QUIET ( mvl, f1, d3 );
+        CONTAINS_QUIET ( mvl, f1, c4 );
+        CONTAINS_QUIET ( mvl, f1, b5 );
+        CONTAINS_QUIET ( mvl, f1, g2 );
+
+        CONTAINS_CAPTURE ( mvl, a7, b6 );
+        CONTAINS_CAPTURE ( mvl, f1, a6 );
+        CONTAINS_CAPTURE ( mvl, f1, h3 );
+}
+
+
+
+void test_move_black_bishop_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "2bK2n1/Pp1p1PP1/R1P1r1PP/1R1P1QP1/1p2pB2/bq3pp1/1r2pnp1/NB2k2N b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_bishop_moves ( brd, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 0 );
+}
+
+
+
+
+void test_move_black_bishop_3 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "2N1r3/2k2P2/b7/8/r2P1p2/2B4P/1K4b1/8 b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_bishop_moves ( brd, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 16 );
+
+        CONTAINS_QUIET ( mvl, a6, b7 );
+        CONTAINS_QUIET ( mvl, a6, b5 );
+        CONTAINS_QUIET ( mvl, a6, c4 );
+        CONTAINS_QUIET ( mvl, a6, d3 );
+        CONTAINS_QUIET ( mvl, a6, e2 );
+        CONTAINS_QUIET ( mvl, a6, f1 );
+        CONTAINS_QUIET ( mvl, g2, f1 );
+        CONTAINS_QUIET ( mvl, g2, h1 );
+        CONTAINS_QUIET ( mvl, g2, f3 );
+        CONTAINS_QUIET ( mvl, g2, e4 );
+        CONTAINS_QUIET ( mvl, g2, d5 );
+        CONTAINS_QUIET ( mvl, g2, c6 );
+        CONTAINS_QUIET ( mvl, g2, b7 );
+        CONTAINS_QUIET ( mvl, g2, a8 );
+
+        CONTAINS_CAPTURE ( mvl, a6, c8 );
+        CONTAINS_CAPTURE ( mvl, g2, h3 );
+}
 
 
 

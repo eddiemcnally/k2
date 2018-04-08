@@ -150,7 +150,10 @@ int main ( void )
                 
                 cmocka_unit_test ( test_move_white_bishop_1 ),
                 cmocka_unit_test ( test_move_white_bishop_2 ),
-               
+                cmocka_unit_test ( test_move_white_bishop_3 ),
+                cmocka_unit_test ( test_move_black_bishop_1 ),
+                cmocka_unit_test ( test_move_black_bishop_2 ),               
+                cmocka_unit_test ( test_move_black_bishop_3 ),               
 
 
                 // castle permissions
