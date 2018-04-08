@@ -147,6 +147,10 @@ int main ( void )
                 cmocka_unit_test ( test_move_black_pawns_en_passant_1 ),
                 cmocka_unit_test ( test_move_black_pawns_en_passant_2 ),
                 cmocka_unit_test ( test_move_black_pawns_en_passant_3 ),
+                
+                cmocka_unit_test ( test_move_white_bishop_1 ),
+                cmocka_unit_test ( test_move_white_bishop_2 ),
+               
 
 
                 // castle permissions

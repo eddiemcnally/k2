@@ -62,7 +62,7 @@ static void gen_black_pawn_moves_excl_first_double_move ( const struct position 
 static void gen_black_pawn_double_first_move ( const struct board *brd, struct move_list *mvl );
 static void gen_white_pawn_double_first_move ( const struct board *brd, struct move_list *mvl );
 static void try_encode_double_pawn_move ( const struct board *brd, const enum square from_sq, const enum square plus_1, const enum square plus_2, struct move_list *mvl );
-static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, struct move_list *mvl );
+static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl );
 
 
 /**
@@ -122,7 +122,7 @@ void mv_gen_bishop_moves ( const struct board *brd, const enum colour side_to_mo
 
         enum piece bishop = ( side_to_move == WHITE ) ? WBISHOP : BBISHOP;
 
-        get_diagonal_antidiagonal_moves ( brd, bishop, mvl );
+        get_diagonal_antidiagonal_moves ( brd, bishop, side_to_move, mvl );
 }
 
 
@@ -131,11 +131,10 @@ void mv_gen_bishop_moves ( const struct board *brd, const enum colour side_to_mo
  * @param brd   The board
  * @param mvl   The move list to which new moves are appended
  */
-static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, struct move_list *mvl )
+static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl )
 {
         bitboard_t pce_to_move_bb = brd_get_piece_bb ( brd, pce_to_move );
         const bitboard_t all_occupied_sq_bb = brd_get_board_bb ( brd );
-        const enum colour side_to_move = pce_get_colour ( pce_to_move );
         const bitboard_t col_occupied = brd_get_colour_bb ( brd, side_to_move );
 
         while ( pce_to_move_bb != 0 ) {

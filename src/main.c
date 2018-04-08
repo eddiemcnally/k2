@@ -41,13 +41,16 @@
 int main ( void )
 {
 
-        bitboard_t occ_mask[NUM_SQUARES] = {0};
-        
-        occ_mask_gen_black_pawn_capture_non_first_double_move(occ_mask);
-        
-        occ_mask_gen_print_all_as_hex(occ_mask, NUM_SQUARES);
-        
-        
+     const char *RANDOM_FEN_1 = "3R2K1/1PknP3/p6P/Prn1Pp1p/NN3P2/r2B2Pp/p2pb3/6B1 b - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_bishop_moves ( brd, BLACK, mvl );
+
+        move_t mv = move_encode_quiet ( e2, d1 );
         
 
 }

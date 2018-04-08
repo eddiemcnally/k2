@@ -63,5 +63,8 @@ void test_move_black_pawns_en_passant_1 ( void **state );
 void test_move_black_pawns_en_passant_2 ( void **state );
 void test_move_black_pawns_en_passant_3 ( void **state );
 
+void test_move_white_bishop_1 ( void **state );
+void test_move_white_bishop_2 ( void **state );
+
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
