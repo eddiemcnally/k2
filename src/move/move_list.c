@@ -29,9 +29,8 @@
 #include "move.h"
 
 
-#define     MOVE_LIST_INIT_KEY          ((uint16_t)0xc0c0babe)
-#define     MOVE_LIST_MAX_LEN           2000
-
+static const uint16_t   MOVE_LIST_INIT_KEY = ( uint16_t ) 0xc0c0babe;
+static const int16_t    MOVE_LIST_MAX_LEN = 2048;
 
 struct move_list {
         uint16_t 	struct_init_key;

@@ -73,7 +73,7 @@ struct board {
         bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
 };
 
-#define     NO_PIECE    (NUM_PIECES + 1)
+#define     NO_PIECE    (-1)
 
 // used to check struct is populated when passed into public functions
 #define STRUCT_INIT_KEY ((uint16_t)0xdeadbeef)

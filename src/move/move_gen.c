@@ -44,7 +44,7 @@ static const bitboard_t CASTLE_MASK_BK = 0x6000000000000000;
 static const bitboard_t CASTLE_MASK_BQ = 0x0E00000000000000;
 
 // target promotion pieces
-#define         NUM_PROMOTION_PIECES    4
+static const int8_t NUM_PROMOTION_PIECES = 4;
 static const enum piece WHITE_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {BKNIGHT, BBISHOP, BROOK, BQUEEN};
 static const enum piece BLACK_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {WKNIGHT, WBISHOP, WROOK, WQUEEN};
 
@@ -62,7 +62,8 @@ static void gen_black_pawn_moves_excl_first_double_move ( const struct position 
 static void gen_black_pawn_double_first_move ( const struct board *brd, struct move_list *mvl );
 static void gen_white_pawn_double_first_move ( const struct board *brd, struct move_list *mvl );
 static void try_encode_double_pawn_move ( const struct board *brd, const enum square from_sq, const enum square plus_1, const enum square plus_2, struct move_list *mvl );
-static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl );
+static void get_sliding_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl );
+static void get_sliding_rank_file_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl );
 
 
 /**
@@ -109,10 +110,10 @@ void mv_gen_knight_moves ( const struct board *brd, const enum colour side_to_mo
 
 
 /**
- * @brief       Generates Bishop moves from the given position
- * @param brd   The board
- * @param side_to_move The side to move
- * @param mvl   The move list to which new moves are appended
+ * @brief               Generates Bishop moves from the given position
+ * @param brd           The board
+ * @param side_to_move  The side to move
+ * @param mvl           The move list to which new moves are appended
  */
 void mv_gen_bishop_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl )
 {
@@ -122,35 +123,77 @@ void mv_gen_bishop_moves ( const struct board *brd, const enum colour side_to_mo
 
         enum piece bishop = ( side_to_move == WHITE ) ? WBISHOP : BBISHOP;
 
-        get_diagonal_antidiagonal_moves ( brd, bishop, side_to_move, mvl );
+        get_sliding_diagonal_antidiagonal_moves ( brd, bishop, side_to_move, mvl );
 }
 
 
 /**
- * @brief       Generates diagonal and anti-diagonal moves for bishop and queen
- * @param brd   The board
- * @param mvl   The move list to which new moves are appended
+ * @brief               Generates Rook moves from the given position
+ * @param brd           The board
+ * @param side_to_move  The side to move
+ * @param mvl           The move list to which new moves are appended
  */
-static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl )
+void mv_gen_rook_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl )
+{
+        assert ( validate_board ( brd ) );
+        assert ( validate_colour ( side_to_move ) );
+        assert ( validate_move_list ( mvl ) );
+
+        enum piece rook = ( side_to_move == WHITE ) ? WROOK : BROOK;
+
+        get_sliding_rank_file_moves( brd, rook, side_to_move, mvl );
+}
+
+
+/**
+ * @brief               Generates Queen moves from the given position
+ * @param brd           The board
+ * @param side_to_move  The side to move
+ * @param mvl           The move list to which new moves are appended
+ */
+void mv_gen_queen_moves ( const struct board *brd, const enum colour side_to_move,  struct move_list *mvl )
+{
+        assert ( validate_board ( brd ) );
+        assert ( validate_colour ( side_to_move ) );
+        assert ( validate_move_list ( mvl ) );
+
+        enum piece queen = ( side_to_move == WHITE ) ? WQUEEN : BQUEEN;
+
+        get_sliding_rank_file_moves( brd, queen, side_to_move, mvl );
+        get_sliding_diagonal_antidiagonal_moves(brd, queen, side_to_move, mvl);
+}
+
+
+
+/**
+ * @brief               Generates diagonal and anti-diagonal moves for bishop and queen
+ * @param brd           The board
+ * @param pce_to_move   The piece to move
+ * @param side_to_move  The side to move
+ * @param mvl           The move list to which new moves are appended
+ */
+static void get_sliding_diagonal_antidiagonal_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl )
 {
         bitboard_t pce_to_move_bb = brd_get_piece_bb ( brd, pce_to_move );
         const bitboard_t all_occupied_sq_bb = brd_get_board_bb ( brd );
         const bitboard_t col_occupied = brd_get_colour_bb ( brd, side_to_move );
 
         while ( pce_to_move_bb != 0 ) {
-                
+
                 const enum square from_sq = bb_pop_1st_bit ( &pce_to_move_bb );
                 const bitboard_t pos_diag_occ_mask = occ_mask_get_positive_diagonal ( from_sq );
                 const bitboard_t neg_diag_occ_mask = occ_mask_get_negative_diagonal ( from_sq );
 
                 // create slider bb for this square
-                const bitboard_t bb_slider = bb_get_sq_mask( from_sq );
+                const bitboard_t bb_slider = bb_get_sq_mask ( from_sq );
 
+                // diagonal move
                 bitboard_t diag1 = ( all_occupied_sq_bb & pos_diag_occ_mask ) - ( 2 * bb_slider );
                 bitboard_t diag2 = bb_reverse ( bb_reverse ( all_occupied_sq_bb & pos_diag_occ_mask ) -
                                                 ( 2 * bb_reverse ( bb_slider ) ) );
-
                 const bitboard_t diagpos = diag1 ^ diag2;
+
+                // anti-diagonal moves
                 diag1 = ( all_occupied_sq_bb & neg_diag_occ_mask ) - ( 2 * bb_slider );
                 diag2 = bb_reverse ( bb_reverse ( all_occupied_sq_bb & neg_diag_occ_mask ) -
                                      ( 2 * bb_reverse ( bb_slider ) ) );
@@ -173,6 +216,60 @@ static void get_diagonal_antidiagonal_moves ( const struct board *brd, const enu
                         }
                 }
         }
+}
+
+
+
+/**
+ * @brief               Generates rank and file moves for rook and queen
+ * @param brd           The board
+ * @param pce_to_move   The piece to move
+ * @param side_to_move  The side to move
+ * @param mvl           The move list to which new moves are appended
+ */
+static void get_sliding_rank_file_moves ( const struct board *brd, const enum piece pce_to_move, const enum colour side_to_move, struct move_list *mvl )
+{
+        // taken from https://chessprogramming.wikispaces.com/Hyperbola+Quintessence
+        
+        bitboard_t pce_to_move_bb = brd_get_piece_bb ( brd, pce_to_move );
+        const bitboard_t all_occupied_sq_bb = brd_get_board_bb ( brd );
+        const bitboard_t col_occupied = brd_get_colour_bb ( brd, side_to_move );
+
+        
+        while ( pce_to_move_bb != 0 ) {
+
+                const enum square from_sq = bb_pop_1st_bit( &pce_to_move_bb );
+                const bitboard_t hmask = occ_mask_get_horizontal( from_sq );
+                const bitboard_t vmask = occ_mask_get_vertical( from_sq );
+
+                // create slider bb for this square
+                const bitboard_t bb_slider = bb_get_sq_mask(from_sq );
+
+                const bitboard_t horiz1 = all_occupied_sq_bb - ( 2 * bb_slider );
+                const bitboard_t horiz2 = bb_reverse( bb_reverse( all_occupied_sq_bb ) - 2 * bb_reverse( bb_slider ) );
+                const bitboard_t horizontal = horiz1 ^ horiz2;
+
+                const bitboard_t vert1 = ( all_occupied_sq_bb & vmask ) - ( 2 * bb_slider );
+                const bitboard_t vert2 = bb_reverse( bb_reverse( all_occupied_sq_bb & vmask ) - 2 * bb_reverse(bb_slider ) );
+                const bitboard_t vertical = vert1 ^ vert2;
+
+                const bitboard_t all_moves = ( horizontal & hmask ) | ( vertical & vmask );
+
+                uint64_t excl_same_col = all_moves & ~col_occupied;
+                while ( excl_same_col != 0 ) {
+                        enum square to_sq = bb_pop_1st_bit( &excl_same_col );
+                        
+                        if ( brd_is_sq_occupied ( brd, to_sq ) ) {
+                                move_t capt_move= move_encode_capture ( from_sq, to_sq );
+                                mvl_add ( mvl, capt_move );
+                        } else {
+                                move_t quiet_move= move_encode_quiet ( from_sq, to_sq );
+                                mvl_add ( mvl, quiet_move );
+                        }                        
+                }
+        }
+
+
 }
 
 
@@ -285,7 +382,7 @@ static void gen_white_pawn_moves_excl_first_double_move ( const struct position 
                 }
 
                 if ( is_en_pass_active ) {
-                        const bitboard_t en_pass_bb = bb_get_sq_mask(en_pass_sq );
+                        const bitboard_t en_pass_bb = bb_get_sq_mask ( en_pass_sq );
                         if ( ( en_pass_bb & occ_mask ) != 0 ) {
                                 // en passant move available from this square
                                 move_t en_pass_move = move_encode_enpassant ( from_sq, en_pass_sq );
@@ -348,7 +445,7 @@ static void gen_black_pawn_moves_excl_first_double_move ( const struct position 
                 }
 
                 if ( is_en_pass_active ) {
-                        const bitboard_t en_pass_bb = bb_get_sq_mask(en_pass_sq );
+                        const bitboard_t en_pass_bb = bb_get_sq_mask ( en_pass_sq );
                         if ( ( en_pass_bb & occ_mask ) != 0 ) {
                                 // en passant move available from this square
                                 move_t en_pass_move = move_encode_enpassant ( from_sq, en_pass_sq );

@@ -180,6 +180,11 @@ move_t move_encode_capture ( const enum square from_sq, const enum square to_sq 
         return mv;
 }
 
+/**
+ * @brief       Encodes a WK castle move
+ *
+ * @return      The encoded move
+ */
 move_t move_encode_castle_kingside_white ()
 {
         move_t mv = encode_to_from ( e1, g1 );
@@ -187,6 +192,11 @@ move_t move_encode_castle_kingside_white ()
         return mv;
 }
 
+/**
+ * @brief       Encodes a BK castle move
+ *
+ * @return      The encoded move
+ */
 move_t move_encode_castle_kingside_black ()
 {
         move_t mv = encode_to_from ( e8, g8 );
@@ -194,6 +204,11 @@ move_t move_encode_castle_kingside_black ()
         return mv;
 }
 
+/**
+ * @brief       Encodes a WQ castle move
+ *
+ * @return      The encoded move
+ */
 move_t move_encode_castle_queenside_white ()
 {
         move_t mv = encode_to_from ( e1, c1 );
@@ -201,6 +216,11 @@ move_t move_encode_castle_queenside_white ()
         return mv;
 }
 
+/**
+ * @brief       Encodes a BQ castle move
+ *
+ * @return      The encoded move
+ */
 move_t move_encode_castle_queenside_black ()
 {
         move_t mv = encode_to_from ( e8, c8 );
@@ -208,6 +228,12 @@ move_t move_encode_castle_queenside_black ()
         return mv;
 }
 
+/**
+ * @brief       Encodes a double first move for a pawn
+ * @param       from_sq the from square
+ * @param       to_sq the to square
+ * @return      The encoded move
+ */
 move_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq )
 {
         move_t mv = encode_to_from ( from_sq, to_sq );
