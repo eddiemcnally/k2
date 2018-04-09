@@ -70,5 +70,12 @@ void test_move_black_bishop_1 ( void **state );
 void test_move_black_bishop_2 ( void **state );
 void test_move_black_bishop_3 ( void **state );
 
+void test_move_white_rook_1 ( void **state );
+void test_move_white_rook_2 ( void **state );
+void test_move_white_rook_3 ( void **state );
+void test_move_black_rook_1 ( void **state );
+void test_move_black_rook_2 ( void **state );
+void test_move_black_rook_3 ( void **state );
+
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

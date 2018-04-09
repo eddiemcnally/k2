@@ -1036,4 +1036,149 @@ void test_move_black_bishop_3 ( void **state )
 
 
 
+void test_move_white_rook_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3kb2B/RP1P4/P4ppN/P1P1Rq2/2PKn1pp/1rQ3p1/2pp1NpP/rnb5 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_rook_moves ( brd, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 7 );
+
+        CONTAINS_QUIET ( mvl, a7, a8 );
+        CONTAINS_QUIET ( mvl, e5, d5 );
+        CONTAINS_QUIET ( mvl, e5, e6 );
+        CONTAINS_QUIET ( mvl, e5, e7 );
+
+        CONTAINS_CAPTURE ( mvl, e5, f5 );
+        CONTAINS_CAPTURE ( mvl, e5, e8 );
+        CONTAINS_CAPTURE ( mvl, e5, e4 );
+}
+
+
+
+void test_move_white_rook_2 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "R2Rb3/1qP2p1P/1Nr2k1p/2bp2pK/2p2B2/1r1ppBP1/1PPN1PPp/1n2Q3 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_rook_moves ( brd, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 15 );
+
+        CONTAINS_QUIET ( mvl, a8, b8 );
+        CONTAINS_QUIET ( mvl, a8, c8 );
+        CONTAINS_QUIET ( mvl, a8, a7 );
+        CONTAINS_QUIET ( mvl, a8, a6 );
+        CONTAINS_QUIET ( mvl, a8, a5 );
+        CONTAINS_QUIET ( mvl, a8, a4 );
+        CONTAINS_QUIET ( mvl, a8, a3 );
+        CONTAINS_QUIET ( mvl, a8, a2 );
+        CONTAINS_QUIET ( mvl, a8, a1 );
+        CONTAINS_QUIET ( mvl, d8, c8 );
+        CONTAINS_QUIET ( mvl, d8, b8 );
+        CONTAINS_QUIET ( mvl, d8, d7 );
+        CONTAINS_QUIET ( mvl, d8, d6 );
+
+        CONTAINS_CAPTURE ( mvl, d8, e8 );
+        CONTAINS_CAPTURE ( mvl, d8, d5 );
+
+}
+
+
+
+void test_move_white_rook_3 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "b1NRNk2/1pPp3K/p6P/Qp3rB1/nRq2p2/1r4pP/1PpPP3/b2n4 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_rook_moves ( brd, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 5 );
+
+        CONTAINS_CAPTURE ( mvl, b4, b5 );
+        CONTAINS_CAPTURE ( mvl, b4, a4 );
+        CONTAINS_CAPTURE ( mvl, b4, b3 );
+        CONTAINS_CAPTURE ( mvl, b4, c4 );
+        CONTAINS_CAPTURE ( mvl, d8, d7 );
+}
+
+
+void test_move_black_rook_1 ( void **state )
+{
+        const char *RANDOM_FEN_1 = "3kb2B/RP1P4/P4ppN/P1P1Rq2/2PKn1pp/1rQ3p1/2pp1NpP/rnb5 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_rook_moves ( brd, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 11 );
+
+        CONTAINS_QUIET ( mvl, a1, a2 );
+        CONTAINS_QUIET ( mvl, a1, a3 );
+        CONTAINS_QUIET ( mvl, a1, a4 );
+        CONTAINS_QUIET ( mvl, b3, a3 );
+        CONTAINS_QUIET ( mvl, b3, b2 );
+        CONTAINS_QUIET ( mvl, b3, b4 );
+        CONTAINS_QUIET ( mvl, b3, b5 );
+        CONTAINS_QUIET ( mvl, b3, b6 );
+
+        CONTAINS_CAPTURE ( mvl, a1, a5 );
+        CONTAINS_CAPTURE ( mvl, b3, c3 );
+        CONTAINS_CAPTURE ( mvl, b3, b7 );
+}
+
+
+
+void test_move_black_rook_2 ( void **state )
+{
+        // BROOK pieces on board, but  blocked from moving
+        const char *RANDOM_FEN_1 = "3kb2B/RP1P4/P5pN/P1P1Rq2/2PK2pp/1pQ3p1/nrpp1NpP/rnb5 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_rook_moves ( brd, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 0 );
+}
+
+
+
+void test_move_black_rook_3 ( void **state )
+{
+        // No BROOK pieces on board
+        const char *RANDOM_FEN_1 = "2q2R1n/p1P1p3/2p2n1P/PP1pP2P/1Bk1NP2/PNp1QpKb/1p4R1/2b5 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_rook_moves ( brd, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 0 );
+
+}
+
+
+
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
