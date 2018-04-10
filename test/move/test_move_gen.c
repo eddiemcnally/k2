@@ -23,6 +23,7 @@
 
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wgnu-statement-expression"
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -723,8 +724,8 @@ void test_move_black_pawns_1 ( void **state )
 
         assert_true ( mvl_get_move_count ( mvl ) == 10 );
 
-        move_t mv = move_encode_pawn_double_first ( a7, a5 );
-        assert_true ( mvl_contains_move ( mvl, mv ) );
+        move_t double_mv = move_encode_pawn_double_first ( a7, a5 );
+        assert_true ( mvl_contains_move ( mvl, double_mv ) );
 
         CONTAINS_QUIET ( mvl, a7, a6 );
         CONTAINS_QUIET ( mvl, b5, b4 );
@@ -1178,6 +1179,65 @@ void test_move_black_rook_3 ( void **state )
 
 }
 
+
+
+
+void test_move_white_queen_1 ( void **state )
+{
+        // No BROOK pieces on board
+        const char *RANDOM_FEN_1 = "q1k3rr/2p1pBB1/1K2Pp1n/Pb3Ppp/1nP1PQ2/2Pp4/5P1P/1N1N1R2 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_queen_moves ( brd, WHITE, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 11 );
+
+        CONTAINS_QUIET ( mvl, f4, f3 );
+        CONTAINS_QUIET ( mvl, f4, e3 );
+        CONTAINS_QUIET ( mvl, f4, d2 );
+        CONTAINS_QUIET ( mvl, f4, c1 );
+        CONTAINS_QUIET ( mvl, f4, g3 );
+        CONTAINS_QUIET ( mvl, f4, g4 );
+        CONTAINS_QUIET ( mvl, f4, h4 );
+        CONTAINS_QUIET ( mvl, f4, e5 );
+        CONTAINS_QUIET ( mvl, f4, d6 );
+
+        CONTAINS_CAPTURE ( mvl, f4, g5 );
+        CONTAINS_CAPTURE ( mvl, f4, c7 );
+
+}
+
+
+
+void test_move_black_queen_1 ( void **state )
+{
+        // No BROOK pieces on board
+        const char *RANDOM_FEN_1 = "q1k3rr/2p1pBB1/1K2Pp1n/Pb3Ppp/1nP1PQ2/2Pp4/5P1P/1N1N1R2 w - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        struct board *brd = pos_get_board ( pos );
+        mv_gen_queen_moves ( brd, BLACK, mvl );
+
+        assert_true ( mvl_get_move_count ( mvl ) == 8 );
+
+        CONTAINS_QUIET ( mvl, a8, b8 );
+        CONTAINS_QUIET ( mvl, a8, a7 );
+        CONTAINS_QUIET ( mvl, a8, a6 );
+        CONTAINS_QUIET ( mvl, a8, b7 );
+        CONTAINS_QUIET ( mvl, a8, c6 );
+        CONTAINS_QUIET ( mvl, a8, d5 );
+
+        CONTAINS_CAPTURE ( mvl, a8, a5 );
+        CONTAINS_CAPTURE ( mvl, a8, e4 );
+
+}
 
 
 

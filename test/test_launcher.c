@@ -162,6 +162,8 @@ int main ( void )
                 cmocka_unit_test ( test_move_black_rook_2 ), 
                 cmocka_unit_test ( test_move_black_rook_3 ), 
                 
+                cmocka_unit_test ( test_move_white_queen_1 ), 
+                cmocka_unit_test ( test_move_black_queen_1 ),                 
                 
                 // castle permissions
                 cmocka_unit_test ( test_castle_permissions_get_set ),
