@@ -1241,4 +1241,61 @@ void test_move_black_queen_1 ( void **state )
 
 
 
+
+
+void test_move_all_moves_4_knights_opening_white_to_move ( void **state )
+{
+        const char *RANDOM_FEN_1 = "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - - 0 1\n";
+
+        struct position *pos = pos_create();
+        pos_initialise ( RANDOM_FEN_1, pos );
+        struct move_list* mvl = mvl_allocate();
+
+        mv_gen_all_moves ( pos, mvl );
+
+
+        move_t double_mv = move_encode_pawn_double_first ( a2, a4 );
+        assert_true ( mvl_contains_move ( mvl, double_mv ) );
+        double_mv = move_encode_pawn_double_first ( b2, b4 );
+        assert_true ( mvl_contains_move ( mvl, double_mv ) );
+        double_mv = move_encode_pawn_double_first ( d2, d4 );
+        assert_true ( mvl_contains_move ( mvl, double_mv ) );
+        double_mv = move_encode_pawn_double_first ( g2, g4 );
+        assert_true ( mvl_contains_move ( mvl, double_mv ) );
+        double_mv = move_encode_pawn_double_first ( h2, h4 );
+        assert_true ( mvl_contains_move ( mvl, double_mv ) );
+
+        CONTAINS_QUIET ( mvl, a2, a3 );
+        CONTAINS_QUIET ( mvl, b2, b3 );
+        CONTAINS_QUIET ( mvl, d2, d3 );
+        CONTAINS_QUIET ( mvl, g2, g3 );
+        CONTAINS_QUIET ( mvl, h2, h3 );
+        CONTAINS_QUIET ( mvl, f1, e2 );
+        CONTAINS_QUIET ( mvl, f1, d3 );
+        CONTAINS_QUIET ( mvl, f1, c4 );
+        CONTAINS_QUIET ( mvl, f1, b5 );
+        CONTAINS_QUIET ( mvl, f1, a6 );
+
+        CONTAINS_QUIET ( mvl, c3, a4 );
+        CONTAINS_QUIET ( mvl, c3, b5 );
+        CONTAINS_QUIET ( mvl, c3, d5 );
+        CONTAINS_QUIET ( mvl, c3, e2 );
+        CONTAINS_QUIET ( mvl, c3, b1 );
+
+        CONTAINS_QUIET ( mvl, f3, d4 );
+        CONTAINS_QUIET ( mvl, f3, g5 );
+        CONTAINS_QUIET ( mvl, f3, h4 );
+        CONTAINS_QUIET ( mvl, f3, g1 );
+
+        CONTAINS_QUIET ( mvl, e1, e2 );
+        CONTAINS_QUIET ( mvl, d1, e2 );
+
+        CONTAINS_QUIET ( mvl, a1, b1 );
+        CONTAINS_QUIET ( mvl, h1, g1 );
+
+        CONTAINS_CAPTURE ( mvl, f3, e5 );
+}
+
+
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
