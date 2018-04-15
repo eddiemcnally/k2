@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2018 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,37 @@
  *  SOFTWARE.
  */
 
-
-#pragma once
-
-void test_piece_is_white ( void **state );
-void test_piece_is_black ( void **state );
-void test_piece_get_colour_white_pieces ( void **state );
-void test_piece_get_colour_black_pieces ( void **state );
-void test_piece_swap_side ( void **state );
-void test_piece_get_piece_label ( void **state );
-void test_piece_values ( void **state );
-void test_piece_get_piece_from_label ( void **state );
-void test_pce_get_piece_type (void ** state );
+#include <assert.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include "move.h"
+#include "position.h"
 
 
+/**
+ * @brief       Make the given move and updates the board and position accordingly
+ *
+ * @param pos   The current position
+ * @param mv    The move to make
+ * @return      true if the move is valid (ie King not in check), false otherwise
+ */
+bool mv_try_make_move ( struct position *pos, const move_t mv )
+{
+
+        return true;
+}
+
+
+/**
+ * @brief       Takes back the given move and updates the board and position accordingly
+ *
+ * @param pos   The current position
+ * @param mv    The move to make
+ */
+void mv_take_move ( struct position *pos, const move_t mv )
+{
+
+
+}
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

@@ -117,10 +117,10 @@ char * print_square ( const enum square sq )
  */
 bool validate_square ( const enum square sq )
 {
-        if ( sq >= a1 && sq <= h8 ) {
-                return true;
+        if ( sq < a1 || sq > h8 ) {
+                assert(false);
         }
-        return false;
+        return true;
 }
 
 /**
@@ -130,10 +130,10 @@ bool validate_square ( const enum square sq )
  */
 bool validate_rank ( const enum rank rank )
 {
-        if ( rank >= RANK_1 && rank <= RANK_8 ) {
-                return true;
+        if ( rank < RANK_1 || rank > RANK_8 ) {
+                assert(false);
         }
-        return false;
+        return true;
 }
 
 /**
@@ -143,10 +143,10 @@ bool validate_rank ( const enum rank rank )
  */
 bool validate_file ( const enum file file )
 {
-        if ( file  >= FILE_A && file <= FILE_H ) {
-                return true;
+        if ( file  < FILE_A || file > FILE_H ) {
+                assert(false);
         }
-        return false;
+        return true;
 }
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

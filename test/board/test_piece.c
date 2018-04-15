@@ -141,4 +141,27 @@ void test_piece_is_black ( void **state )
 }
 
 
+void test_pce_get_piece_type (void ** state )
+{
+        assert_true(pce_get_piece_type ( WPAWN) == PAWN);
+        assert_true(pce_get_piece_type ( WKNIGHT) == KNIGHT);
+        assert_true(pce_get_piece_type ( WBISHOP) == BISHOP);
+        assert_true(pce_get_piece_type ( WQUEEN) == QUEEN);
+        assert_true(pce_get_piece_type ( WKING) == KING);
+        assert_true(pce_get_piece_type ( WROOK) == ROOK);
+        assert_true(pce_get_piece_type ( WQUEEN) == QUEEN);
+
+        assert_true(pce_get_piece_type ( BPAWN) == PAWN);
+        assert_true(pce_get_piece_type ( BKNIGHT) == KNIGHT);
+        assert_true(pce_get_piece_type ( BBISHOP) == BISHOP);
+        assert_true(pce_get_piece_type ( BQUEEN) == QUEEN);
+        assert_true(pce_get_piece_type ( BKING) == KING);
+        assert_true(pce_get_piece_type ( BROOK) == ROOK);
+        assert_true(pce_get_piece_type ( BQUEEN) == QUEEN);
+
+        
+}
+
+
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

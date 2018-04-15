@@ -262,7 +262,7 @@ bitboard_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
 bool validate_board ( const struct board* brd )
 {
         if ( brd->struct_init_key != STRUCT_INIT_KEY ) {
-                return false;
+                assert ( false );
         }
         return true;
         // TODO - expand

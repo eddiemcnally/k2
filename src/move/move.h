@@ -43,6 +43,7 @@ move_t move_encode_castle_queenside_black();
 
 enum square move_decode_from_sq ( const move_t mv );
 enum square move_decode_to_sq ( const move_t mv );
+enum piece move_decode_promotion_piece ( const move_t mv );
 
 bool move_is_quiet ( move_t mv );
 bool move_is_capture ( move_t mv );

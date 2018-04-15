@@ -85,6 +85,7 @@ enum move_flag_bits {
 };
 
 static void set_flag ( move_t *mv, const uint16_t flag );
+static bool is_set ( const move_t mv, const uint16_t flag_bit );
 static move_t encode_to_from ( const enum square from_sq,
                                const enum square to_sq );
 
@@ -134,19 +135,19 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
 
         switch ( pce_type ) {
         case KNIGHT:
-                set_flag ( &mv, MV_FLG_PROMOTE_KNIGHT );
+                mv |= MV_FLG_PROMOTE_KNIGHT;
                 break;
 
         case BISHOP:
-                set_flag ( &mv, MV_FLG_PROMOTE_BISHOP );
+                mv |= MV_FLG_PROMOTE_BISHOP;
                 break;
 
         case ROOK:
-                set_flag ( &mv, MV_FLG_PROMOTE_ROOK );
+                mv |= MV_FLG_PROMOTE_ROOK;
                 break;
 
         case QUEEN:
-                set_flag ( &mv, MV_FLG_PROMOTE_QUEEN );
+                mv |= MV_FLG_PROMOTE_QUEEN;
                 break;
 
         default:
@@ -162,6 +163,37 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
 
         return mv;
 }
+
+
+/**
+ * @brief       Extracts the piece from a promotion move
+ *
+ * @param mv    The move
+ * @return      The to square
+ */
+enum piece move_decode_promotion_piece ( const move_t mv )
+{
+        const move_t m = mv & MV_MASK_FLAGS;
+
+        switch ( m ) {
+        case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
+        case MV_FLG_PROMOTE_KNIGHT:
+                return KNIGHT;
+        case MV_FLG_PROMOTE_BISHOP_CAPTURE:
+        case MV_FLG_PROMOTE_BISHOP:
+                return BISHOP;
+        case MV_FLG_PROMOTE_QUEEN_CAPTURE:
+        case MV_FLG_PROMOTE_QUEEN:
+                return QUEEN;
+        case MV_FLG_PROMOTE_ROOK_CAPTURE:
+        case MV_FLG_PROMOTE_ROOK:
+                return ROOK;
+        default:
+                assert ( false );
+        }
+}
+
+
 
 /**
  * @brief       Encodes a capture move using the given squares
@@ -282,6 +314,8 @@ enum square move_decode_to_sq ( const move_t mv )
         return ( enum square ) ( ( mv & MV_MASK_TO_SQ ) >> MV_SHFT_TO_SQ );
 }
 
+
+
 /**
  * @brief       Tests the given move_t, returns true if Quiet, false otherwise
  *
@@ -374,7 +408,11 @@ bool validate_move ( const move_t mv )
         enum square to = move_decode_to_sq ( mv );
         bool from_ok = validate_square ( from );
         bool to_ok = validate_square ( to );
-        return ( from_ok && to_ok );
+        if (from_ok && to_ok){
+                return true;
+        }
+        
+        assert(false);
 }
 
 // ==================================================================
@@ -400,4 +438,11 @@ static void set_flag ( move_t *mv, const uint16_t flag_bit )
 {
         *mv |= flag_bit;
 }
+
+static bool is_set ( const move_t mv, const uint16_t flag_bit )
+{
+        return ( mv & flag_bit ) > 0;
+}
+
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

@@ -259,7 +259,7 @@ bool validate_piece ( const enum piece pce )
         case BKING:
                 return true;
         default:
-                return false;
+                assert ( false );
         }
 #pragma GCC diagnostic pop
 }
@@ -271,10 +271,13 @@ bool validate_piece ( const enum piece pce )
  */
 bool validate_colour ( const enum colour col )
 {
-        if ( col == WHITE || col == BLACK ) {
+        switch ( col ) {
+        case WHITE:
+        case BLACK:
                 return true;
+        default:
+                assert ( false );
         }
-        return false;
 }
 
 /**
@@ -300,7 +303,7 @@ bool validate_label ( const char c )
                 return true;
         default:
                 printf ( "Invalid label %c\n", c );
-                return false;
+                assert ( false );
         }
 }
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

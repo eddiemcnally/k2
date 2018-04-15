@@ -58,6 +58,8 @@ int main ( void )
                 cmocka_unit_test ( test_move_promoted_capture_move_encode_decode ),
                 cmocka_unit_test ( test_move_promoted_non_capture_move_encode_decode ),
                 cmocka_unit_test ( test_move_en_passant_move_encode_decode ),
+                cmocka_unit_test ( test_move_decode_promotion_piece_white ),
+                cmocka_unit_test ( test_move_decode_promotion_piece_black ),
 
 
                 // move list
@@ -75,6 +77,8 @@ int main ( void )
                 cmocka_unit_test ( test_piece_get_piece_label ),
                 cmocka_unit_test ( test_piece_values ),
                 cmocka_unit_test ( test_piece_get_piece_from_label ),
+                cmocka_unit_test ( test_pce_get_piece_type ),
+                
 
                 // Position
                 cmocka_unit_test ( test_position_get_set_castle_permissions ),
@@ -87,7 +91,7 @@ int main ( void )
                 cmocka_unit_test ( test_bitboard_set_test_clear_bit ),
                 cmocka_unit_test ( test_bitboard_reverse_bits ),
                 cmocka_unit_test ( test_bb_get_sq_mask ),
-                
+
                 // board
                 cmocka_unit_test ( test_board_brd_allocate_deallocate ),
                 cmocka_unit_test ( test_board_brd_bulk_add_remove_piece ),
@@ -147,26 +151,26 @@ int main ( void )
                 cmocka_unit_test ( test_move_black_pawns_en_passant_1 ),
                 cmocka_unit_test ( test_move_black_pawns_en_passant_2 ),
                 cmocka_unit_test ( test_move_black_pawns_en_passant_3 ),
-                
+
                 cmocka_unit_test ( test_move_white_bishop_1 ),
                 cmocka_unit_test ( test_move_white_bishop_2 ),
                 cmocka_unit_test ( test_move_white_bishop_3 ),
                 cmocka_unit_test ( test_move_black_bishop_1 ),
-                cmocka_unit_test ( test_move_black_bishop_2 ),               
-                cmocka_unit_test ( test_move_black_bishop_3 ),               
+                cmocka_unit_test ( test_move_black_bishop_2 ),
+                cmocka_unit_test ( test_move_black_bishop_3 ),
 
-                cmocka_unit_test ( test_move_white_rook_1 ),     
-                cmocka_unit_test ( test_move_white_rook_2 ),                  
-                cmocka_unit_test ( test_move_white_rook_3 ),  
-                cmocka_unit_test ( test_move_black_rook_1 ),     
-                cmocka_unit_test ( test_move_black_rook_2 ), 
-                cmocka_unit_test ( test_move_black_rook_3 ), 
-                
-                cmocka_unit_test ( test_move_white_queen_1 ), 
-                cmocka_unit_test ( test_move_black_queen_1 ),                 
-                
-                cmocka_unit_test ( test_move_all_moves_4_knights_opening_white_to_move ),                 
-                
+                cmocka_unit_test ( test_move_white_rook_1 ),
+                cmocka_unit_test ( test_move_white_rook_2 ),
+                cmocka_unit_test ( test_move_white_rook_3 ),
+                cmocka_unit_test ( test_move_black_rook_1 ),
+                cmocka_unit_test ( test_move_black_rook_2 ),
+                cmocka_unit_test ( test_move_black_rook_3 ),
+
+                cmocka_unit_test ( test_move_white_queen_1 ),
+                cmocka_unit_test ( test_move_black_queen_1 ),
+
+                cmocka_unit_test ( test_move_all_moves_4_knights_opening_white_to_move ),
+
                 // castle permissions
                 cmocka_unit_test ( test_castle_permissions_get_set ),
                 cmocka_unit_test ( test_castle_permissions_no_perms_get_set ),

@@ -30,7 +30,7 @@
 
 
 static const uint16_t   MOVE_LIST_INIT_KEY = ( uint16_t ) 0xc0c0babe;
-static const int16_t    MOVE_LIST_MAX_LEN = 2048;
+#define                 MOVE_LIST_MAX_LEN       2048
 
 struct move_list {
         uint16_t 	struct_init_key;
@@ -171,11 +171,11 @@ void mvl_print ( const struct move_list *mvl )
 bool validate_move_list ( const struct move_list *mvl )
 {
         if ( mvl->struct_init_key != MOVE_LIST_INIT_KEY ) {
-                return false;
+                assert(false);
         }
 
         if ( mvl->move_count > MOVE_LIST_MAX_LEN ) {
-                return false;
+                assert(false);
         }
 
         for ( int i = 0; i < mvl->move_count; i++ ) {

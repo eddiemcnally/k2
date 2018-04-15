@@ -37,6 +37,7 @@ set (SOURCES
         ${MOVE_DIR}/move.c
         ${MOVE_DIR}/move_list.c
         ${MOVE_DIR}/move_gen.c
+        ${MOVE_DIR}/make_move.c
         ${UTILS_DIR}/utils.c
         )
 
