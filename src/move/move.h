@@ -36,10 +36,10 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
 move_t move_encode_capture ( const enum square from_sq, const enum square to_sq );
 move_t move_encode_enpassant ( const enum square from_sq, const enum square to_sq );
 move_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq );
-move_t move_encode_castle_kingside_white();
-move_t move_encode_castle_kingside_black();
-move_t move_encode_castle_queenside_white();
-move_t move_encode_castle_queenside_black();
+move_t move_encode_castle_kingside_white ( void );
+move_t move_encode_castle_kingside_black ( void );
+move_t move_encode_castle_queenside_white ( void );
+move_t move_encode_castle_queenside_black ( void );
 
 enum square move_decode_from_sq ( const move_t mv );
 enum square move_decode_to_sq ( const move_t mv );

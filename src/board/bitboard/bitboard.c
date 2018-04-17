@@ -135,7 +135,7 @@ void bb_print_as_board ( const bitboard_t bb )
         for ( int rank = RANK_8; rank >= RANK_1; rank-- ) {
                 printf ( "%d  ", rank + 1 );	// enum is zero-based
                 for ( int file = FILE_A; file <= FILE_H; file++ ) {
-                        enum square sq = sq_gen_from_rank_file ( rank, file );
+                        enum square sq = sq_gen_from_rank_file ( ( enum rank ) rank, ( enum file ) file );
                         if ( bb_is_set ( bb, sq ) ) {
                                 printf ( "  X" );
                         } else {

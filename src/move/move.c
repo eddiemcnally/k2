@@ -85,7 +85,6 @@ enum move_flag_bits {
 };
 
 static void set_flag ( move_t *mv, const uint16_t flag );
-static bool is_set ( const move_t mv, const uint16_t flag_bit );
 static move_t encode_to_from ( const enum square from_sq,
                                const enum square to_sq );
 
@@ -217,7 +216,7 @@ move_t move_encode_capture ( const enum square from_sq, const enum square to_sq 
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_kingside_white ()
+move_t move_encode_castle_kingside_white ( void )
 {
         move_t mv = encode_to_from ( e1, g1 );
         set_flag ( &mv, MV_FLG_KING_CASTLE );
@@ -229,7 +228,7 @@ move_t move_encode_castle_kingside_white ()
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_kingside_black ()
+move_t move_encode_castle_kingside_black ( void )
 {
         move_t mv = encode_to_from ( e8, g8 );
         set_flag ( &mv, MV_FLG_KING_CASTLE );
@@ -241,7 +240,7 @@ move_t move_encode_castle_kingside_black ()
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_queenside_white ()
+move_t move_encode_castle_queenside_white ( void )
 {
         move_t mv = encode_to_from ( e1, c1 );
         set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
@@ -253,7 +252,7 @@ move_t move_encode_castle_queenside_white ()
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_queenside_black ()
+move_t move_encode_castle_queenside_black ( void )
 {
         move_t mv = encode_to_from ( e8, c8 );
         set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
@@ -408,11 +407,11 @@ bool validate_move ( const move_t mv )
         enum square to = move_decode_to_sq ( mv );
         bool from_ok = validate_square ( from );
         bool to_ok = validate_square ( to );
-        if (from_ok && to_ok){
+        if ( from_ok && to_ok ) {
                 return true;
         }
-        
-        assert(false);
+
+        assert ( false );
 }
 
 // ==================================================================
@@ -437,11 +436,6 @@ static move_t encode_to_from ( const enum square from_sq,
 static void set_flag ( move_t *mv, const uint16_t flag_bit )
 {
         *mv |= flag_bit;
-}
-
-static bool is_set ( const move_t mv, const uint16_t flag_bit )
-{
-        return ( mv & flag_bit ) > 0;
 }
 
 
