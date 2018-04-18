@@ -42,4 +42,5 @@ void occ_mask_gen_black_pawn_capture_non_first_double_move ( uint64_t * occ_mask
 void occ_mask_gen_print_as_board ( const uint64_t mask );
 void occ_mask_gen_print_all_as_hex ( const uint64_t masks[], const uint8_t size );
 void occ_mask_gen_print_as_hex ( const uint64_t mask );
+void occ_mask_gen_diagonal_occupancy_masks ( void );
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

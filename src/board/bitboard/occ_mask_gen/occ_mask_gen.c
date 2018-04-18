@@ -284,13 +284,13 @@ void occ_mask_gen_white_pawn_capture_non_first_double_move ( uint64_t * occ_mask
                         // up and left
                         dest_rank = rank + 1;
                         dest_file = file - 1;
-                        set_dest_sq_if_valid ( dest_rank, dest_file, &b );
+                        set_dest_sq_if_valid ( ( enum rank ) dest_rank, ( enum file ) dest_file, &b );
 
 
                         // up and right
                         dest_rank = rank + 1;
                         dest_file = file + 1;
-                        set_dest_sq_if_valid ( dest_rank, dest_file, &b );
+                        set_dest_sq_if_valid ( ( enum rank ) dest_rank, ( enum file ) dest_file, &b );
 
                 }
                 occ_mask_array[sq] = b;
@@ -333,19 +333,19 @@ void occ_mask_gen_black_pawn_capture_non_first_double_move ( uint64_t * occ_mask
                         // up and left
                         dest_rank = rank - 1;
                         dest_file = file - 1;
-                        set_dest_sq_if_valid ( dest_rank, dest_file, &b );
+                        set_dest_sq_if_valid ( ( enum rank ) dest_rank, ( enum file ) dest_file, &b );
 
 
                         // up and right
                         dest_rank = rank - 1;
                         dest_file = file + 1;
-                        set_dest_sq_if_valid ( dest_rank, dest_file, &b );
+                        set_dest_sq_if_valid ( ( enum rank ) dest_rank, ( enum file ) dest_file, &b );
 
                 }
                 occ_mask_array[sq] = b;
         }
-        
-        
+
+
 }
 
 
@@ -480,7 +480,7 @@ void set_dest_sq_if_valid ( uint8_t rank, uint8_t file, uint64_t * bb )
 
 // when checking to see if a queen or bishop can attack a
 // square, having a localised occupancy mask can be useful
-void generate_diagonal_occupancy_masks ( void )
+void occ_mask_gen_diagonal_occupancy_masks ( void )
 {
 
         uint64_t diagonal[NUM_SQUARES] = { 0 };	// bottom left to upper right

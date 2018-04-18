@@ -47,6 +47,9 @@ struct board * pos_get_board ( const struct position *pos );
 bool pos_try_get_en_pass_sq ( const struct position *pos, enum square *en_pass_sq );
 enum colour pos_get_side_to_move ( const struct position *pos );
 
+bool pos_try_make_move ( struct position *pos, const move_t mv );
+move_t pos_take_move ( struct position *pos );
+
 bool validate_position ( const struct position *pos );
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

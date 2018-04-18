@@ -83,7 +83,6 @@ struct parsed_fen {
         struct castle_perms castle_permissions;
         bool        is_en_pass_set;
         enum square en_pass_sq;
-
 };
 
 
@@ -395,11 +394,10 @@ static uint16_t convert_move_count ( const char *str )
 
 static bool validate_struct_init ( const struct parsed_fen *pf )
 {
+        if ( pf->struct_init_key != STRUCT_INIT_KEY ) {
+                return false;
+        }
         return true;
-        //if ( pf->struct_init_key != STRUCT_INIT_KEY ) {
-        //        return false;
-        // }
-        //return true;
 }
 
 
