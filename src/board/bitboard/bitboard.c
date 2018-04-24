@@ -28,8 +28,7 @@
 #include <assert.h>
 #include "bitboard.h"
 
-static const bitboard_t BIT_0 = 0x01ull;
-
+#define BIT_0   ( (bitboard_t) 0x01ull)
 
 // A lookup table for reversing bits in a byte.
 // See https://graphics.stanford.edu/%7Eseander/bithacks.html#BitReverseTable

@@ -32,19 +32,20 @@
 #include "piece.h"
 #include "position.h"
 
-
-// Bitboards representing commonly used ranks and files
-static const bitboard_t RANK_2_BB      = 0x000000000000FF00;
-static const bitboard_t RANK_7_BB      = 0x00FF000000000000;
+// Bitboards representing commonly used ranks
+#define RANK_2_BB       ((bitboard_t) 0x000000000000FF00)
+#define RANK_7_BB       ((bitboard_t) 0x00FF000000000000)
 
 // bitboards for squares between castle squares
-static const bitboard_t CASTLE_MASK_WK = 0x0000000000000060;
-static const bitboard_t CASTLE_MASK_WQ = 0x000000000000000E;
-static const bitboard_t CASTLE_MASK_BK = 0x6000000000000000;
-static const bitboard_t CASTLE_MASK_BQ = 0x0E00000000000000;
+#define CASTLE_MASK_WK  ((bitboard_t) 0x0000000000000060)
+#define CASTLE_MASK_WQ  ((bitboard_t) 0x000000000000000E)
+#define CASTLE_MASK_BK  ((bitboard_t) 0x6000000000000000)
+#define CASTLE_MASK_BQ  ((bitboard_t) 0x0E00000000000000)
+
 
 // target promotion pieces
 #define NUM_PROMOTION_PIECES 4
+
 static const enum piece WHITE_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {BKNIGHT, BBISHOP, BROOK, BQUEEN};
 static const enum piece BLACK_PROMOTION_PIECES [NUM_PROMOTION_PIECES] = {WKNIGHT, WBISHOP, WROOK, WQUEEN};
 

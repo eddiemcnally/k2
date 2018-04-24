@@ -74,15 +74,15 @@ struct castle_perms {
 };
 
 struct parsed_fen {
-        uint16_t    struct_init_key;
+        uint16_t                struct_init_key;
         // state of each square
-        struct piece_location pieces[NUM_SQUARES];
-        uint16_t    half_move_cnt;
-        uint16_t    full_move_cnt;
-        enum colour side_to_move;
-        struct castle_perms castle_permissions;
-        bool        is_en_pass_set;
-        enum square en_pass_sq;
+        struct piece_location   pieces[NUM_SQUARES];
+        uint16_t                half_move_cnt;
+        uint16_t                full_move_cnt;
+        enum colour             side_to_move;
+        struct castle_perms     castle_permissions;
+        bool                    is_en_pass_set;
+        enum square             en_pass_sq;
 };
 
 

@@ -29,11 +29,11 @@
 #include "move.h"
 
 
-static const uint16_t   MOVE_LIST_INIT_KEY = ( uint16_t ) 0xc0c0babe;
-#define                 MOVE_LIST_MAX_LEN       2048
+#define MOVE_LIST_INIT_KEY      (( uint32_t ) 0xc0c0babe)
+#define MOVE_LIST_MAX_LEN       2048
 
 struct move_list {
-        uint16_t 	struct_init_key;
+        uint32_t 	struct_init_key;
         uint16_t 	move_count;
         move_t 		move_list[MOVE_LIST_MAX_LEN];
 };
@@ -171,11 +171,11 @@ void mvl_print ( const struct move_list *mvl )
 bool validate_move_list ( const struct move_list *mvl )
 {
         if ( mvl->struct_init_key != MOVE_LIST_INIT_KEY ) {
-                assert(false);
+                assert ( false );
         }
 
         if ( mvl->move_count > MOVE_LIST_MAX_LEN ) {
-                assert(false);
+                assert ( false );
         }
 
         for ( int i = 0; i < mvl->move_count; i++ ) {

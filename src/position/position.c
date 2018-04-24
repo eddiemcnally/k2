@@ -39,8 +39,8 @@ static void init_pos_struct ( struct position *pos );
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
 static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
 
-static const uint64_t STRUCT_INIT_KEY   = 0xdeadbeef;
-#define MAX_GAME_MOVES  (1024)
+#define STRUCT_INIT_KEY         ((uint32_t) 0xdeadbeef)
+#define MAX_GAME_MOVES          (1024)
 
 struct mv_undo {
         move_t          move;
@@ -54,7 +54,7 @@ struct mv_undo {
 
 
 struct position {
-        uint64_t struct_init_key;
+        uint32_t struct_init_key;
 
         // current board representation
         struct board *brd;

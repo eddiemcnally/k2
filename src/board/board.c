@@ -55,7 +55,7 @@ enum colour_offset {
  * @brief       Represents the state of the board (squares, pieces)
  */
 struct board {
-        uint64_t    struct_init_key;
+        uint32_t    struct_init_key;
 
         // a set bit represents an occupied square
         bitboard_t  bb_board;
@@ -73,10 +73,10 @@ struct board {
         bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
 };
 
-static const enum piece NO_PIECE = ( enum piece ) ( NUM_PIECES + 1 );
+#define NO_PIECE        (( enum piece ) ( NUM_PIECES + 1 ))
 
 // used to check struct is populated when passed into public functions
-static const uint64_t STRUCT_INIT_KEY = 0xdeadbeef;
+#define STRUCT_INIT_KEY         ((uint32_t)0xdeadbeef)
 
 
 static void setup_square ( struct board *brd, const enum piece pce, const enum square sq );
