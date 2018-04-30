@@ -38,6 +38,9 @@
 static void init_pos_struct ( struct position *pos );
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
 static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
+static bool validate_en_passant_pce_and_sq ( const struct position *pos );
+
+
 
 #define STRUCT_INIT_KEY         ((uint32_t) 0xdeadbeef)
 #define MAX_GAME_MOVES          (1024)
@@ -196,40 +199,47 @@ bool pos_try_make_move ( struct position *pos, const move_t mv )
 
         const enum square from_sq = move_decode_from_sq ( mv );
         const enum square to_sq = move_decode_to_sq ( mv );
-
-        enum piece pce;
-        bool found = brd_try_get_piece_on_square ( pos->brd, from_sq, &pce );
+        enum piece pce_to_move;
+        bool found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_to_move );
         assert ( found == true );
 
 
-        if ( move_is_en_passant ( mv ) ) {
-                assert ( pos->en_passant_set == true );
-                pos->en_passant_set = false;
-
-                enum piece en_pass_pce;
-                found = brd_try_get_piece_on_square ( pos->brd, pos->en_passant, &en_pass_pce );
-                assert ( found == true );
-
-                // remove the piece on the en passant square
-                brd_remove_piece ( pos->brd, en_pass_pce, pos->en_passant );
-        }
-
         if ( move_is_capture ( mv ) ) {
-                enum piece capt_pce;
-                found = brd_try_get_piece_on_square ( pos->brd, to_sq, &capt_pce );
-                assert ( found == true );
+                enum piece pce_capt;
+                if ( move_is_en_passant ( mv ) ) {
+                        assert ( validate_en_passant_pce_and_sq ( pos ) );
+                        enum square en_pass_pce_sq;
 
-                brd_remove_piece ( pos->brd, capt_pce, to_sq );
+                        // flip the flag
+                        pos->en_passant_set = false;
+
+                        if ( pos->side_to_move == WHITE ) {
+                                pce_capt = BPAWN;
+                                en_pass_pce_sq = sq_get_square_minus_1_rank ( to_sq );
+                        } else {
+                                pce_capt = WPAWN;
+                                en_pass_pce_sq = sq_get_square_plus_1_rank ( to_sq );
+                        }
+                        brd_remove_piece ( pos->brd, pce_capt, en_pass_pce_sq );
+                        brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+
+                } else {
+                        bool found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_capt );
+                        assert ( found == true );
+
+                        brd_remove_piece ( pos->brd, pce_capt, to_sq );
+                }
         }
 
         if ( move_is_promotion ( mv ) ) {
+                enum piece pce_prom = move_decode_promotion_piece ( mv );
 
+                brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+                brd_remove_piece ( pos->brd, pce_to_move, to_sq );
+                brd_add_piece ( pos->brd, pce_prom, to_sq );
         }
 
 
-
-
-        brd_move_piece ( pos->brd, pce, from_sq, to_sq );
 
 
         return true;
@@ -284,6 +294,17 @@ static void populate_position_from_fen ( struct position *pos, const struct pars
                         brd_add_piece ( pos->brd, pce, sq );
                 }
         }
+}
+
+
+static bool validate_en_passant_pce_and_sq ( const struct position *pos )
+{
+        assert ( pos->en_passant_set == true );
+        enum piece en_pass_pce;
+        bool found = brd_try_get_piece_on_square ( pos->brd, pos->en_passant, &en_pass_pce );
+        assert ( found == true );
+        assert ( pce_get_piece_type ( en_pass_pce ) == PAWN );
+        return true;
 }
 
 
