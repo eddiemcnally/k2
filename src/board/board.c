@@ -82,6 +82,8 @@ struct board {
 static void setup_square ( struct board *brd, const enum piece pce, const enum square sq );
 static void clear_square ( struct board *brd, const enum piece pce, const enum square sq );
 static bool validate_struct_init ( const struct board *brd );
+static bool validate_dest_sq_empty ( const struct board *brd, const enum square to_sq );
+static bool validate_pce_on_sq ( const struct board *brd, const enum piece pce, enum square sq );
 static uint8_t map_piece_to_offset ( const enum piece pce );
 static uint8_t map_colour_to_offset ( const enum colour col );
 static void add_material ( struct board *brd, enum piece pce );
@@ -196,6 +198,7 @@ void brd_add_piece ( struct board* brd, const enum piece pce, const enum square 
 void brd_remove_piece ( struct board* brd, const enum piece pce, const enum square sq )
 {
         assert ( validate_struct_init ( brd ) );
+        assert ( validate_pce_on_sq ( brd, pce, sq ) );
 
         clear_square ( brd, pce, sq );
         remove_material ( brd, pce );
@@ -212,6 +215,7 @@ void brd_remove_piece ( struct board* brd, const enum piece pce, const enum squa
 void brd_move_piece ( struct board* brd, const enum piece pce, const enum square from_sq, const enum square to_sq )
 {
         assert ( validate_struct_init ( brd ) );
+        assert ( validate_dest_sq_empty ( brd, to_sq ) );
 
         clear_square ( brd, pce, from_sq );
         setup_square ( brd, pce, to_sq );
@@ -374,6 +378,25 @@ static bool validate_struct_init ( const struct board *brd )
 }
 
 
+static bool validate_dest_sq_empty ( const struct board *brd, const enum square to_sq )
+{
+        bitboard_t bb = brd_get_board_bb ( brd );
+        bool is_set = bb_is_set ( bb, to_sq );
+        return is_set == false;
+}
 
+
+static bool validate_pce_on_sq ( const struct board *brd, const enum piece pce, enum square sq )
+{
+        enum piece pce_on_brd;
+        bool found = brd_try_get_piece_on_square ( brd, sq, &pce_on_brd );
+        if ( found == false ) {
+                return false;
+        }
+        if ( pce_on_brd != pce ) {
+                return false;
+        }
+        return true;
+}
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

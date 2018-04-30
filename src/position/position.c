@@ -203,48 +203,45 @@ bool pos_try_make_move ( struct position *pos, const move_t mv )
         bool found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_to_move );
         assert ( found == true );
 
+        if ( move_is_quiet ( mv ) ) {
+                brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+        } else {
+                if ( move_is_capture ( mv ) ) {
+                        enum piece pce_capt;
+                        if ( move_is_en_passant ( mv ) ) {
+                                assert ( validate_en_passant_pce_and_sq ( pos ) );
+                                enum square en_pass_pce_sq;
 
-        if ( move_is_capture ( mv ) ) {
-                enum piece pce_capt;
-                if ( move_is_en_passant ( mv ) ) {
-                        assert ( validate_en_passant_pce_and_sq ( pos ) );
-                        enum square en_pass_pce_sq;
+                                // flip the flag
+                                pos->en_passant_set = false;
 
-                        // flip the flag
-                        pos->en_passant_set = false;
+                                if ( pos->side_to_move == WHITE ) {
+                                        pce_capt = BPAWN;
+                                        en_pass_pce_sq = sq_get_square_minus_1_rank ( to_sq );
+                                } else {
+                                        pce_capt = WPAWN;
+                                        en_pass_pce_sq = sq_get_square_plus_1_rank ( to_sq );
+                                }
+                                brd_remove_piece ( pos->brd, pce_capt, en_pass_pce_sq );
 
-                        if ( pos->side_to_move == WHITE ) {
-                                pce_capt = BPAWN;
-                                en_pass_pce_sq = sq_get_square_minus_1_rank ( to_sq );
                         } else {
-                                pce_capt = WPAWN;
-                                en_pass_pce_sq = sq_get_square_plus_1_rank ( to_sq );
+                                bool found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_capt );
+                                assert ( found == true );
+
+                                brd_remove_piece ( pos->brd, pce_capt, to_sq );
                         }
-                        brd_remove_piece ( pos->brd, pce_capt, en_pass_pce_sq );
                         brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+                }
 
-                } else {
-                        bool found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_capt );
-                        assert ( found == true );
+                if ( move_is_promotion ( mv ) ) {
+                        enum piece pce_prom = move_decode_promotion_piece ( mv );
 
-                        brd_remove_piece ( pos->brd, pce_capt, to_sq );
+                        brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+                        brd_remove_piece ( pos->brd, pce_to_move, to_sq );
+                        brd_add_piece ( pos->brd, pce_prom, to_sq );
                 }
         }
-
-        if ( move_is_promotion ( mv ) ) {
-                enum piece pce_prom = move_decode_promotion_piece ( mv );
-
-                brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
-                brd_remove_piece ( pos->brd, pce_to_move, to_sq );
-                brd_add_piece ( pos->brd, pce_prom, to_sq );
-        }
-
-
-
-
         return true;
-
-
 }
 
 
