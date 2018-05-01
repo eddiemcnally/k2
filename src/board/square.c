@@ -74,6 +74,7 @@ enum square sq_get_square_plus_1_rank ( const enum square sq )
  */
 enum square sq_get_square_minus_1_rank ( const enum square sq )
 {
+        assert ( validate_square ( sq ) );
         assert ( sq > a1 );
 
         return sq - 8;
@@ -96,7 +97,7 @@ enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
 /**
  * @brief       Returns the square in the rank/file format (eg, "a1")
  * @param sq    The square
- * @return      The char array 
+ * @return      The char array
  */
 char * print_square ( const enum square sq )
 {
@@ -118,7 +119,7 @@ char * print_square ( const enum square sq )
 bool validate_square ( const enum square sq )
 {
         if ( sq < a1 || sq > h8 ) {
-                assert(false);
+                assert ( false );
         }
         return true;
 }
@@ -131,7 +132,7 @@ bool validate_square ( const enum square sq )
 bool validate_rank ( const enum rank rank )
 {
         if ( rank < RANK_1 || rank > RANK_8 ) {
-                assert(false);
+                assert ( false );
         }
         return true;
 }
@@ -144,7 +145,7 @@ bool validate_rank ( const enum rank rank )
 bool validate_file ( const enum file file )
 {
         if ( file  < FILE_A || file > FILE_H ) {
-                assert(false);
+                assert ( false );
         }
         return true;
 }

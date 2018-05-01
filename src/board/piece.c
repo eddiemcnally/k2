@@ -228,6 +228,7 @@ enum piece pce_get_from_label ( const char c )
  */
 enum piece pce_get_piece_type ( const enum piece piece )
 {
+        assert ( validate_piece ( piece ) );
         return ( enum piece ) ( piece & ( uint8_t ) ( ~COLOUR_MASK ) );
 }
 

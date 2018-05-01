@@ -82,7 +82,7 @@ struct board {
 static void setup_square ( struct board *brd, const enum piece pce, const enum square sq );
 static void clear_square ( struct board *brd, const enum piece pce, const enum square sq );
 static bool validate_struct_init ( const struct board *brd );
-static bool validate_dest_sq_empty ( const struct board *brd, const enum square to_sq );
+static bool validate_square_empty ( const struct board *brd, const enum square to_sq );
 static bool validate_pce_on_sq ( const struct board *brd, const enum piece pce, enum square sq );
 static uint8_t map_piece_to_offset ( const enum piece pce );
 static uint8_t map_colour_to_offset ( const enum colour col );
@@ -183,6 +183,7 @@ bool brd_try_get_piece_on_square ( const struct board* brd, const enum square sq
 void brd_add_piece ( struct board* brd, const enum piece pce, const enum square sq )
 {
         assert ( validate_struct_init ( brd ) );
+        assert ( validate_square_empty ( brd, sq ) );
 
         setup_square ( brd, pce, sq );
         add_material ( brd, pce );
@@ -215,7 +216,8 @@ void brd_remove_piece ( struct board* brd, const enum piece pce, const enum squa
 void brd_move_piece ( struct board* brd, const enum piece pce, const enum square from_sq, const enum square to_sq )
 {
         assert ( validate_struct_init ( brd ) );
-        assert ( validate_dest_sq_empty ( brd, to_sq ) );
+        assert ( validate_square_empty ( brd, to_sq ) );
+        assert ( validate_pce_on_sq ( brd, pce, from_sq ) );
 
         clear_square ( brd, pce, from_sq );
         setup_square ( brd, pce, to_sq );
@@ -233,6 +235,7 @@ void brd_move_piece ( struct board* brd, const enum piece pce, const enum square
 bitboard_t brd_get_colour_bb ( const struct board* brd, const enum colour colour )
 {
         assert ( validate_colour ( colour ) );
+        assert ( validate_struct_init ( brd ) );
 
         uint8_t offset = map_colour_to_offset ( colour );
         return brd->bb_colour[offset];
@@ -250,6 +253,7 @@ bitboard_t brd_get_colour_bb ( const struct board* brd, const enum colour colour
 bitboard_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
+        assert ( validate_struct_init ( brd ) );
 
         enum colour col = pce_get_colour ( pce );
         uint8_t col_off = map_colour_to_offset ( col );
@@ -378,10 +382,10 @@ static bool validate_struct_init ( const struct board *brd )
 }
 
 
-static bool validate_dest_sq_empty ( const struct board *brd, const enum square to_sq )
+static bool validate_square_empty ( const struct board *brd, const enum square sq )
 {
         bitboard_t bb = brd_get_board_bb ( brd );
-        bool is_set = bb_is_set ( bb, to_sq );
+        bool is_set = bb_is_set ( bb, sq );
         return is_set == false;
 }
 

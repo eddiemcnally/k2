@@ -137,116 +137,134 @@ void test_board_brd_move_piece ( void **state )
 
 void test_board_brd_get_piece_bb ( void **state )
 {
-#define NUM_TEST_SQ 10
+        const char * FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
 
-        const enum square sq_list[NUM_TEST_SQ] = {a1, b3, c1, h8, d4, h8, a8, h1, g7, f2};
-        struct board *brd = brd_allocate();
+        struct position *pos = pos_create();
+        pos_initialise ( FEN, pos );
 
-        for ( int i = 0; i < NUM_PIECES; i++ ) {
-                enum piece pce = pce_list[i];
-                // add piece to all test squares
-                for ( int j = 0; j < NUM_TEST_SQ; j++ ) {
-                        enum square sq = sq_list[j];
-                        brd_add_piece ( brd, pce, sq );
-                }
+        struct board *brd = pos_get_board ( pos );
 
-                bitboard_t bb = brd_get_piece_bb ( brd, pce );
+        bitboard_t bb = brd_get_piece_bb ( brd, WPAWN );
+        assert_true ( bb_is_set ( bb, b2 ) );
+        assert_true ( bb_is_set ( bb, d3 ) );
+        assert_true ( bb_is_set ( bb, e2 ) );
+        assert_true ( bb_is_set ( bb, f5 ) );
+        assert_true ( bb_is_set ( bb, g2 ) );
+        assert_true ( bb_is_set ( bb, g4 ) );
+        assert_true ( bb_is_set ( bb, g5 ) );
+        assert_true ( bb_is_set ( bb, h2 ) );
 
-                // verify all bits (squares) are set
-                for ( int j = 0; j < NUM_TEST_SQ; j++ ) {
-                        enum square sq = sq_list[j];
-                        bool is_set = bb_is_set ( bb, sq );
-                        assert_true ( is_set );
-                }
+        bb = brd_get_piece_bb ( brd, WBISHOP );
+        assert_true ( bb_is_set ( bb, b7 ) );
+        assert_true ( bb_is_set ( bb, f8 ) );
 
-                // now verify that all other squares are *not* set
-                for ( enum square sq = a1; sq <= h8; sq++ ) {
-                        if ( is_sq_in_list ( sq_list, NUM_TEST_SQ, sq ) ) {
-                                // ignore square
-                                continue;
-                        }
-                        bool is_set = bb_is_set ( bb, sq );
-                        assert_false ( is_set );
-                }
-        }
-        brd_deallocate ( brd );
+        bb = brd_get_piece_bb ( brd, WKNIGHT );
+        assert_true ( bb_is_set ( bb, c1 ) );
+        assert_true ( bb_is_set ( bb, e8 ) );
+
+        bb = brd_get_piece_bb ( brd, WROOK );
+        assert_true ( bb_is_set ( bb, a4 ) );
+        assert_true ( bb_is_set ( bb, d8 ) );
+
+        bb = brd_get_piece_bb ( brd, WQUEEN );
+        assert_true ( bb_is_set ( bb, f1 ) );
+
+        bb = brd_get_piece_bb ( brd, BPAWN );
+        assert_true ( bb_is_set ( bb, c3 ) );
+        assert_true ( bb_is_set ( bb, c4 ) );
+        assert_true ( bb_is_set ( bb, d5 ) );
+        assert_true ( bb_is_set ( bb, e4 ) );
+        assert_true ( bb_is_set ( bb, f3 ) );
+        assert_true ( bb_is_set ( bb, f4 ) );
+        assert_true ( bb_is_set ( bb, h3 ) );
+        assert_true ( bb_is_set ( bb, h6 ) );
+
+        bb = brd_get_piece_bb ( brd, BBISHOP );
+        assert_true ( bb_is_set ( bb, b1 ) );
+        assert_true ( bb_is_set ( bb, f6 ) );
+
+        bb = brd_get_piece_bb ( brd, BKNIGHT );
+        assert_true ( bb_is_set ( bb, d1 ) );
+        assert_true ( bb_is_set ( bb, b8 ) );
+
+        bb = brd_get_piece_bb ( brd, BROOK );
+        assert_true ( bb_is_set ( bb, e1 ) );
+        assert_true ( bb_is_set ( bb, g3 ) );
+
+        bb = brd_get_piece_bb ( brd, BQUEEN );
+        assert_true ( bb_is_set ( bb, a7 ) );
+
+        pos_destroy ( pos );
 }
 
 
 
 void test_board_brd_get_colour_bb_black ( void **state )
 {
-#define NUM_TEST_SQ 10
+        const char * FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
 
-        enum square sq_list[NUM_TEST_SQ] = {a1, b3, c1, h8, d4, h8, a8, h1, g7, f2};
-        struct board *brd = brd_allocate();
+        struct position *pos = pos_create();
+        pos_initialise ( FEN, pos );
 
-        for ( int i = 0; i < NUM_PIECE_TYPES; i++ ) {
-                enum piece pce = black_pce_list[i];
-                // add piece to all test squares
-                for ( int j = 0; j < NUM_TEST_SQ; j++ ) {
-                        enum square sq = sq_list[j];
-                        brd_add_piece ( brd, pce, sq );
-                }
+        struct board *brd = pos_get_board ( pos );
 
-                bitboard_t bb = brd_get_colour_bb ( brd, BLACK );
+        bitboard_t bb = brd_get_colour_bb ( brd, BLACK );
+        assert_true ( bb_is_set ( bb, c3 ) );
+        assert_true ( bb_is_set ( bb, c4 ) );
+        assert_true ( bb_is_set ( bb, d5 ) );
+        assert_true ( bb_is_set ( bb, e4 ) );
+        assert_true ( bb_is_set ( bb, f3 ) );
+        assert_true ( bb_is_set ( bb, f4 ) );
+        assert_true ( bb_is_set ( bb, h3 ) );
+        assert_true ( bb_is_set ( bb, h6 ) );
 
-                // verify all bits (squares) are set
-                for ( int j = 0; j < NUM_TEST_SQ; j++ ) {
-                        enum square sq = sq_list[j];
-                        bool is_set = bb_is_set ( bb, sq );
-                        assert_true ( is_set );
-                }
+        assert_true ( bb_is_set ( bb, b1 ) );
+        assert_true ( bb_is_set ( bb, f6 ) );
 
-                // now verify that all other squares are *not* set
-                for ( enum square sq = a1; sq <= h8; sq++ ) {
-                        if ( is_sq_in_list ( sq_list, NUM_TEST_SQ, sq ) ) {
-                                // ignore square
-                                continue;
-                        }
-                        bool is_set = bb_is_set ( bb, sq );
-                        assert_false ( is_set );
-                }
-        }
-        brd_deallocate ( brd );
+        assert_true ( bb_is_set ( bb, d1 ) );
+        assert_true ( bb_is_set ( bb, b8 ) );
+
+        assert_true ( bb_is_set ( bb, e1 ) );
+        assert_true ( bb_is_set ( bb, g3 ) );
+
+        assert_true ( bb_is_set ( bb, a7 ) );
+
+        pos_destroy ( pos );
 }
 
 
 void test_board_brd_get_colour_bb_white ( void **state )
 {
-#define NUM_TEST_SQ 10
+        const char * FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
 
-        enum square sq_list[NUM_TEST_SQ] = {a1, b3, c1, h8, d4, h8, a8, h1, g7, f2};
-        struct board *brd = brd_allocate();
+        struct position *pos = pos_create();
+        pos_initialise ( FEN, pos );
 
-        for ( int i = 0; i < NUM_PIECE_TYPES; i++ ) {
-                enum piece pce = white_pce_list[i];
-                // add piece to all test squares
-                for ( int j = 0; j < NUM_TEST_SQ; j++ ) {
-                        enum square sq = sq_list[j];
-                        brd_add_piece ( brd, pce, sq );
-                }
+        struct board *brd = pos_get_board ( pos );
 
-                bitboard_t bb = brd_get_colour_bb ( brd, WHITE );
+        bitboard_t bb = brd_get_colour_bb ( brd, WHITE );
 
-                // verify all bits (squares) are set
-                for ( int j = 0; j < NUM_TEST_SQ; j++ ) {
-                        enum square sq = sq_list[j];
-                        bool is_set = bb_is_set ( bb, sq );
-                        assert_true ( is_set );
-                }
+        assert_true ( bb_is_set ( bb, b2 ) );
+        assert_true ( bb_is_set ( bb, d3 ) );
+        assert_true ( bb_is_set ( bb, e2 ) );
+        assert_true ( bb_is_set ( bb, f5 ) );
+        assert_true ( bb_is_set ( bb, g2 ) );
+        assert_true ( bb_is_set ( bb, g4 ) );
+        assert_true ( bb_is_set ( bb, g5 ) );
+        assert_true ( bb_is_set ( bb, h2 ) );
 
-                // now verify that all other squares are *not* set
-                for ( enum square sq = a1; sq <= h8; sq++ ) {
-                        if ( is_sq_in_list ( sq_list, NUM_TEST_SQ, sq ) ) {
-                                // ignore square
-                                continue;
-                        }
-                        bool is_set = bb_is_set ( bb, sq );
-                        assert_false ( is_set );
-                }
-        }
-        brd_deallocate ( brd );
+        assert_true ( bb_is_set ( bb, b7 ) );
+        assert_true ( bb_is_set ( bb, f8 ) );
+
+        assert_true ( bb_is_set ( bb, c1 ) );
+        assert_true ( bb_is_set ( bb, e8 ) );
+
+        assert_true ( bb_is_set ( bb, a4 ) );
+        assert_true ( bb_is_set ( bb, d8 ) );
+
+        assert_true ( bb_is_set ( bb, f1 ) );
+
+        pos_destroy ( pos );
 }
 
 void test_board_brd_get_board_bb ( void **state )

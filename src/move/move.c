@@ -124,6 +124,7 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
 {
         assert ( validate_square ( from_sq ) );
         assert ( validate_square ( to_sq ) );
+        assert ( validate_piece ( promoted_piece ) );
 
         move_t mv = encode_to_from ( from_sq, to_sq );
 
