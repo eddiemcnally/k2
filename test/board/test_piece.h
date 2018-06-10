@@ -32,7 +32,9 @@ void test_piece_swap_side ( void **state );
 void test_piece_get_piece_label ( void **state );
 void test_piece_values ( void **state );
 void test_piece_get_piece_from_label ( void **state );
-void test_pce_get_piece_type (void ** state );
+void test_pce_get_piece_type ( void ** state );
+void test_piece_get_array_idx ( void **state );
+
 
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

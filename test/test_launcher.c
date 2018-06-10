@@ -78,7 +78,8 @@ int main ( void )
                 cmocka_unit_test ( test_piece_values ),
                 cmocka_unit_test ( test_piece_get_piece_from_label ),
                 cmocka_unit_test ( test_pce_get_piece_type ),
-                
+                cmocka_unit_test ( test_piece_get_array_idx ),
+
 
                 // Position
                 cmocka_unit_test ( test_position_get_set_castle_permissions ),

@@ -114,6 +114,45 @@ void test_piece_get_colour_black_pieces ( void **state )
         assert_true ( pce_get_colour ( BKING ) == BLACK );
 }
 
+void test_piece_get_array_idx ( void **state )
+{
+        uint8_t pce_idx;
+        uint8_t pce_idx_black;
+        uint8_t pce_idx_white;
+
+        pce_idx = pce_get_array_idx ( PAWN );
+        pce_idx_white = pce_get_array_idx ( WPAWN );
+        pce_idx_black = pce_get_array_idx ( BPAWN );
+        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+
+        pce_idx = pce_get_array_idx ( BISHOP );
+        pce_idx_white = pce_get_array_idx ( WBISHOP );
+        pce_idx_black = pce_get_array_idx ( BBISHOP );
+        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+
+        pce_idx = pce_get_array_idx ( KNIGHT );
+        pce_idx_white = pce_get_array_idx ( WKNIGHT );
+        pce_idx_black = pce_get_array_idx ( BKNIGHT );
+        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+
+        pce_idx = pce_get_array_idx ( ROOK );
+        pce_idx_white = pce_get_array_idx ( WROOK );
+        pce_idx_black = pce_get_array_idx ( BROOK );
+        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+
+        pce_idx = pce_get_array_idx ( QUEEN );
+        pce_idx_white = pce_get_array_idx ( WQUEEN );
+        pce_idx_black = pce_get_array_idx ( BQUEEN );
+        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+
+        pce_idx = pce_get_array_idx ( KING );
+        pce_idx_white = pce_get_array_idx ( WKING );
+        pce_idx_black = pce_get_array_idx ( BKING );
+        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+
+}
+
+
 void test_piece_swap_side ( void **state )
 {
         assert_true ( swap_side ( WHITE ) == BLACK );
@@ -141,25 +180,25 @@ void test_piece_is_black ( void **state )
 }
 
 
-void test_pce_get_piece_type (void ** state )
+void test_pce_get_piece_type ( void ** state )
 {
-        assert_true(pce_get_piece_type ( WPAWN) == PAWN);
-        assert_true(pce_get_piece_type ( WKNIGHT) == KNIGHT);
-        assert_true(pce_get_piece_type ( WBISHOP) == BISHOP);
-        assert_true(pce_get_piece_type ( WQUEEN) == QUEEN);
-        assert_true(pce_get_piece_type ( WKING) == KING);
-        assert_true(pce_get_piece_type ( WROOK) == ROOK);
-        assert_true(pce_get_piece_type ( WQUEEN) == QUEEN);
+        assert_true ( pce_get_piece_type ( WPAWN ) == PAWN );
+        assert_true ( pce_get_piece_type ( WKNIGHT ) == KNIGHT );
+        assert_true ( pce_get_piece_type ( WBISHOP ) == BISHOP );
+        assert_true ( pce_get_piece_type ( WQUEEN ) == QUEEN );
+        assert_true ( pce_get_piece_type ( WKING ) == KING );
+        assert_true ( pce_get_piece_type ( WROOK ) == ROOK );
+        assert_true ( pce_get_piece_type ( WQUEEN ) == QUEEN );
 
-        assert_true(pce_get_piece_type ( BPAWN) == PAWN);
-        assert_true(pce_get_piece_type ( BKNIGHT) == KNIGHT);
-        assert_true(pce_get_piece_type ( BBISHOP) == BISHOP);
-        assert_true(pce_get_piece_type ( BQUEEN) == QUEEN);
-        assert_true(pce_get_piece_type ( BKING) == KING);
-        assert_true(pce_get_piece_type ( BROOK) == ROOK);
-        assert_true(pce_get_piece_type ( BQUEEN) == QUEEN);
+        assert_true ( pce_get_piece_type ( BPAWN ) == PAWN );
+        assert_true ( pce_get_piece_type ( BKNIGHT ) == KNIGHT );
+        assert_true ( pce_get_piece_type ( BBISHOP ) == BISHOP );
+        assert_true ( pce_get_piece_type ( BQUEEN ) == QUEEN );
+        assert_true ( pce_get_piece_type ( BKING ) == KING );
+        assert_true ( pce_get_piece_type ( BROOK ) == ROOK );
+        assert_true ( pce_get_piece_type ( BQUEEN ) == QUEEN );
 
-        
+
 }
 
 

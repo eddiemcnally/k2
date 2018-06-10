@@ -34,24 +34,6 @@
 
 
 /**
- * used for indexing into an array
- */
-enum piece_offset {
-        Pawn    = 0,
-        Bishop  = 1,
-        Knight  = 2,
-        Rook    = 3,
-        Queen   = 4,
-        King    = 5
-};
-
-enum colour_offset {
-        White,
-        Black
-};
-
-
-/**
  * @brief       Represents the state of the board (squares, pieces)
  */
 struct board {
@@ -73,7 +55,6 @@ struct board {
         bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
 };
 
-#define NO_PIECE        (( enum piece ) ( NUM_PIECES + 1 ))
 
 // used to check struct is populated when passed into public functions
 #define STRUCT_INIT_KEY         ((uint32_t)0xdeadbeef)
@@ -84,11 +65,8 @@ static void clear_square ( struct board *brd, const enum piece pce, const enum s
 static bool validate_struct_init ( const struct board *brd );
 static bool validate_square_empty ( const struct board *brd, const enum square to_sq );
 static bool validate_pce_on_sq ( const struct board *brd, const enum piece pce, enum square sq );
-static uint8_t map_piece_to_offset ( const enum piece pce );
-static uint8_t map_colour_to_offset ( const enum colour col );
 static void add_material ( struct board *brd, enum piece pce );
 static void remove_material ( struct board *brd, enum piece pce );
-static uint8_t get_colour_offset ( enum piece pce );
 
 // ==================================================================
 //
@@ -109,7 +87,7 @@ struct board* brd_allocate ( void )
         retval->struct_init_key = STRUCT_INIT_KEY;
 
         for ( enum square sq = a1; sq <= h8; sq++ ) {
-                retval->pce_square[sq] = NO_PIECE;
+                retval->pce_square[sq] = pce_get_no_piece();
         }
 
         return retval;
@@ -169,7 +147,7 @@ bool brd_try_get_piece_on_square ( const struct board* brd, const enum square sq
         assert ( validate_struct_init ( brd ) );
 
         *pce = brd->pce_square[sq];
-        return *pce != NO_PIECE;
+        return *pce != pce_get_no_piece();
 }
 
 
@@ -237,7 +215,7 @@ bitboard_t brd_get_colour_bb ( const struct board* brd, const enum colour colour
         assert ( validate_colour ( colour ) );
         assert ( validate_struct_init ( brd ) );
 
-        uint8_t offset = map_colour_to_offset ( colour );
+        uint8_t offset = pce_col_get_array_idx ( colour );
         return brd->bb_colour[offset];
 
 }
@@ -256,8 +234,8 @@ bitboard_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
         assert ( validate_struct_init ( brd ) );
 
         enum colour col = pce_get_colour ( pce );
-        uint8_t col_off = map_colour_to_offset ( col );
-        uint8_t pce_off = map_piece_to_offset ( pce );
+        uint8_t col_off = pce_col_get_array_idx ( col );
+        uint8_t pce_off = pce_get_array_idx ( pce );
 
         return brd->piece_bb[col_off][pce_off];
 }
@@ -290,29 +268,26 @@ bool validate_board ( const struct board* brd )
 static void add_material ( struct board *brd, enum piece pce )
 {
         uint32_t material = pce_get_value ( pce );
-        uint8_t offset = get_colour_offset ( pce );
+        enum colour col = pce_get_colour ( pce );
+        uint8_t offset = pce_col_get_array_idx ( col );
         brd->material[offset] += material;
 }
 
 static void remove_material ( struct board *brd, enum piece pce )
 {
         uint32_t material = pce_get_value ( pce );
-        uint8_t offset = get_colour_offset ( pce );
+        enum colour col = pce_get_colour ( pce );
+        uint8_t offset = pce_col_get_array_idx ( col );
         brd->material[offset] -= material;
 }
 
-static uint8_t get_colour_offset ( enum piece pce )
-{
-        enum colour col = pce_get_colour ( pce );
-        return map_colour_to_offset ( col );
-}
 
 
 static void setup_square ( struct board *brd, const enum piece pce, const enum square sq )
 {
         enum colour col = pce_get_colour ( pce );
-        uint8_t pce_off = map_piece_to_offset ( pce );
-        uint8_t col_off = map_colour_to_offset ( col );
+        uint8_t pce_off = pce_get_array_idx ( pce );
+        uint8_t col_off = pce_col_get_array_idx ( col );
 
         bb_set_square ( &brd->piece_bb[col_off][pce_off], sq );
         bb_set_square ( &brd->bb_board, sq );
@@ -323,52 +298,13 @@ static void setup_square ( struct board *brd, const enum piece pce, const enum s
 static void clear_square ( struct board *brd, const enum piece pce, const enum square sq )
 {
         enum colour col = pce_get_colour ( pce );
-        uint8_t pce_off = map_piece_to_offset ( pce );
-        uint8_t col_off = map_colour_to_offset ( col );
+        uint8_t pce_off = pce_get_array_idx ( pce );
+        uint8_t col_off = pce_col_get_array_idx ( col );
 
         bb_clear_square ( &brd->piece_bb[col_off][pce_off], sq );
         bb_clear_square ( &brd->bb_board, sq );
         bb_clear_square ( &brd->bb_colour[col_off], sq );
-        brd->pce_square[sq] = NO_PIECE;
-}
-
-static uint8_t map_piece_to_offset ( const enum piece pce )
-{
-        enum piece pce_type = pce_get_piece_type ( pce );
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-
-        switch ( pce_type ) {
-        case PAWN:
-                return Pawn;
-        case BISHOP:
-                return Bishop;
-        case KNIGHT:
-                return Knight;
-        case ROOK:
-                return Rook;
-        case QUEEN:
-                return Queen;
-        case KING:
-                return King;
-        default:
-                assert ( false );
-        }
-#pragma GCC diagnostic pop
-
-}
-
-static uint8_t map_colour_to_offset ( const enum colour col )
-{
-        switch ( col ) {
-        case WHITE:
-                return White;
-        case BLACK:
-                return Black;
-        default:
-                assert ( false );
-        }
+        brd->pce_square[sq] = pce_get_no_piece();
 }
 
 

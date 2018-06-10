@@ -93,6 +93,17 @@ enum colour pce_get_colour ( const enum piece pce )
         return ( enum colour ) ( pce & COLOUR_MASK );
 }
 
+
+/**
+* @brief Returns an enum value that can be used to denote "no piece"
+*
+* @return piece A "no piece" enum
+*/
+enum piece pce_get_no_piece ( void )
+{
+        return ( enum piece ) ( 0 );
+}
+
 /**
  * @brief       Gets the piece value of the given piece
  *
@@ -127,6 +138,66 @@ uint32_t pce_get_value ( const enum piece pce )
 #pragma GCC diagnostic pop
 
 }
+
+
+/**
+* @brief Converts the piece to an array index for use by various modules
+*
+* @param pce p_pce The piece
+* @return uint8_t The array index
+*/
+uint8_t pce_get_array_idx ( const enum piece pce )
+{
+        switch ( pce ) {
+        case PAWN:
+        case WPAWN:
+        case BPAWN:
+                return 0;
+        case KNIGHT:
+        case WKNIGHT:
+        case BKNIGHT:
+                return 1;
+        case BISHOP:
+        case WBISHOP:
+        case BBISHOP:
+                return 2;
+        case ROOK:
+        case WROOK:
+        case BROOK:
+                return 3;
+        case QUEEN:
+        case WQUEEN:
+        case BQUEEN:
+                return 4;
+        case KING:
+        case WKING:
+        case BKING:
+                return 5;
+        default:
+                assert ( false );
+        }
+}
+
+
+/**
+* @brief Converts ths given colout to an array index.
+*
+* @param col p_col The colour
+* @return uint8_t The array index
+*/
+uint8_t pce_col_get_array_idx ( const enum colour col )
+{
+        assert ( validate_colour ( col ) );
+        switch ( col ) {
+        case WHITE:
+                return 0;
+        case BLACK:
+                return 1;
+        default:
+                assert ( false );
+        }
+}
+
 
 /**
  * @brief       Gets the piece lable for the given piece (eg, 'P' for white pawn, 'k' for black king)
