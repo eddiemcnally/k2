@@ -143,6 +143,7 @@ uint32_t pce_get_value ( const enum piece pce )
 */
 uint8_t pce_get_array_idx ( const enum piece pce )
 {
+        assert ( validate_piece ( pce ) );
         switch ( pce ) {
         case WPAWN:
         case BPAWN:
