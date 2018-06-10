@@ -128,7 +128,7 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
 
         move_t mv = encode_to_from ( from_sq, to_sq );
 
-        enum piece pce_type = pce_get_piece_type ( promoted_piece );
+        enum piece_class pce_type = pce_get_piece_class ( promoted_piece );
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
@@ -166,12 +166,12 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
 
 
 /**
- * @brief       Extracts the piece from a promotion move
+ * @brief       Extracts the piece class from a promotion move
  *
  * @param mv    The move
- * @return      The to square
+ * @return      The piece class
  */
-enum piece move_decode_promotion_piece ( const move_t mv )
+enum piece_class move_decode_promotion_piece_class ( const move_t mv )
 {
         const move_t m = mv & MV_MASK_FLAGS;
 

@@ -77,8 +77,9 @@ int main ( void )
                 cmocka_unit_test ( test_piece_get_piece_label ),
                 cmocka_unit_test ( test_piece_values ),
                 cmocka_unit_test ( test_piece_get_piece_from_label ),
-                cmocka_unit_test ( test_pce_get_piece_type ),
+                cmocka_unit_test ( test_pce_get_piece_class ),
                 cmocka_unit_test ( test_piece_get_array_idx ),
+                cmocka_unit_test ( test_pce_get_piece ),
 
 
                 // Position

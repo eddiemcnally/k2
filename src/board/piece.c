@@ -113,10 +113,7 @@ enum piece pce_get_no_piece ( void )
 uint32_t pce_get_value ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
-        enum piece p = pce_get_piece_type ( pce );
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-enum"
+        enum piece_class p = pce_get_piece_class ( pce );
 
         switch ( p ) {
         case PAWN:
@@ -135,8 +132,6 @@ uint32_t pce_get_value ( const enum piece pce )
                 assert ( false );
                 break;
         }
-#pragma GCC diagnostic pop
-
 }
 
 
@@ -149,27 +144,21 @@ uint32_t pce_get_value ( const enum piece pce )
 uint8_t pce_get_array_idx ( const enum piece pce )
 {
         switch ( pce ) {
-        case PAWN:
         case WPAWN:
         case BPAWN:
                 return 0;
-        case KNIGHT:
         case WKNIGHT:
         case BKNIGHT:
                 return 1;
-        case BISHOP:
         case WBISHOP:
         case BBISHOP:
                 return 2;
-        case ROOK:
         case WROOK:
         case BROOK:
                 return 3;
-        case QUEEN:
         case WQUEEN:
         case BQUEEN:
                 return 4;
-        case KING:
         case WKING:
         case BKING:
                 return 5;
@@ -209,10 +198,6 @@ char pce_get_label ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
 
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-
         switch ( pce ) {
         case WPAWN:
                 return 'P';
@@ -242,8 +227,6 @@ char pce_get_label ( const enum piece pce )
                 assert ( false );
                 return '-';
         }
-#pragma GCC diagnostic pop
-
 }
 
 /**
@@ -297,10 +280,20 @@ enum piece pce_get_from_label ( const char c )
  * @param piece The piece
  * @return The piece type
  */
-enum piece pce_get_piece_type ( const enum piece piece )
+enum piece_class pce_get_piece_class ( const enum piece piece )
 {
         assert ( validate_piece ( piece ) );
-        return ( enum piece ) ( piece & ( uint8_t ) ( ~COLOUR_MASK ) );
+        return ( enum piece_class ) ( piece & ( uint8_t ) ( ~COLOUR_MASK ) );
+}
+
+
+
+enum piece pce_get_piece ( const enum piece_class pc, const enum colour col )
+{
+        assert ( validate_piece_class ( pc ) );
+        assert ( validate_colour ( col ) );
+
+        return ( enum piece ) ( pc | col );
 }
 
 
@@ -313,9 +306,6 @@ enum piece pce_get_piece_type ( const enum piece piece )
  */
 bool validate_piece ( const enum piece pce )
 {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-
         switch ( pce ) {
         case WPAWN:
         case BPAWN:
@@ -333,8 +323,28 @@ bool validate_piece ( const enum piece pce )
         default:
                 assert ( false );
         }
-#pragma GCC diagnostic pop
 }
+
+/**
+ * @brief       Validates a piece class
+ *
+ * @param pce The piece class
+ */
+bool validate_piece_class ( const enum piece_class pc )
+{
+        switch ( pc ) {
+        case PAWN:
+        case KNIGHT:
+        case BISHOP:
+        case ROOK:
+        case QUEEN:
+        case KING:
+                return true;
+        default:
+                assert ( false );
+        }
+}
+
 
 /**
  * @brief       Validates a colour is within expected range of values

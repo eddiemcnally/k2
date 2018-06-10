@@ -52,7 +52,7 @@ struct board {
         enum piece  pce_square[NUM_SQUARES];
 
         // bitboard for each piece
-        bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
+        bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_CLASSES];
 };
 
 

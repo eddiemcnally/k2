@@ -48,7 +48,7 @@ enum colour {
  *  0100 0000   QUEEN
  *  1000 0000   KING
  */
-enum piece {
+enum piece_class {
         // piece type
         PAWN    = 0x04,
         KNIGHT  = 0x08,
@@ -56,6 +56,9 @@ enum piece {
         ROOK    = 0x20,
         QUEEN   = 0x40,
         KING    = 0x80,
+};
+
+enum piece {
         // white pieces
         WPAWN   = ( PAWN | WHITE ),
         WBISHOP = ( BISHOP | WHITE ),
@@ -72,8 +75,11 @@ enum piece {
         BKING   = ( KING | BLACK ),
 };
 
-#define     NUM_PIECES      12
-#define     NUM_PIECE_TYPES 6
+
+
+
+#define     NUM_PIECES          12
+#define     NUM_PIECE_CLASSES   6
 
 
 bool pce_is_white ( const enum piece pce );
@@ -81,13 +87,16 @@ bool pce_is_black ( const enum piece pce );
 enum colour swap_side ( const enum colour side );
 enum colour pce_get_colour ( const enum piece pce );
 uint32_t pce_get_value ( const enum piece pce );
-enum piece pce_get_piece_type ( const enum piece piece );
+enum piece_class pce_get_piece_class ( const enum piece piece );
 char pce_get_label ( const enum piece pce );
 enum piece pce_get_from_label ( const char c );
 uint8_t pce_get_array_idx ( const enum piece pce );
 uint8_t pce_col_get_array_idx ( const enum colour col );
 enum piece pce_get_no_piece ( void );
+enum piece pce_get_piece ( const enum piece_class pc, const enum colour col );
 bool validate_piece ( const enum piece pce );
 bool validate_colour ( const enum colour col );
 bool validate_label ( const char c );
+bool validate_piece_class ( const enum piece_class pc );
+
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

@@ -39,13 +39,6 @@
 static enum piece pce_list[NUM_PIECES] = {WPAWN, WBISHOP, WKNIGHT, WROOK, WQUEEN, WKING,
                                           BPAWN, BBISHOP, BKNIGHT, BROOK, BQUEEN, BKING
                                          };
-static enum piece white_pce_list[NUM_PIECE_TYPES] = {WPAWN, WBISHOP, WKNIGHT, WROOK, WQUEEN, WKING};
-static enum piece black_pce_list[NUM_PIECE_TYPES] = {BPAWN, BBISHOP, BKNIGHT, BROOK, BQUEEN, BKING};
-
-
-static bool is_sq_in_list ( const enum square * sqlist, const int list_size, const enum square sq_to_check );
-
-
 
 void test_board_brd_allocate_deallocate ( void **state )
 {

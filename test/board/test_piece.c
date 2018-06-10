@@ -116,39 +116,32 @@ void test_piece_get_colour_black_pieces ( void **state )
 
 void test_piece_get_array_idx ( void **state )
 {
-        uint8_t pce_idx;
         uint8_t pce_idx_black;
         uint8_t pce_idx_white;
 
-        pce_idx = pce_get_array_idx ( PAWN );
         pce_idx_white = pce_get_array_idx ( WPAWN );
         pce_idx_black = pce_get_array_idx ( BPAWN );
-        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+        assert_true ( pce_idx_white == pce_idx_black );
 
-        pce_idx = pce_get_array_idx ( BISHOP );
         pce_idx_white = pce_get_array_idx ( WBISHOP );
         pce_idx_black = pce_get_array_idx ( BBISHOP );
-        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+        assert_true ( pce_idx_white == pce_idx_black );
 
-        pce_idx = pce_get_array_idx ( KNIGHT );
         pce_idx_white = pce_get_array_idx ( WKNIGHT );
         pce_idx_black = pce_get_array_idx ( BKNIGHT );
-        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+        assert_true ( pce_idx_white == pce_idx_black );
 
-        pce_idx = pce_get_array_idx ( ROOK );
         pce_idx_white = pce_get_array_idx ( WROOK );
         pce_idx_black = pce_get_array_idx ( BROOK );
-        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+        assert_true ( pce_idx_white == pce_idx_black );
 
-        pce_idx = pce_get_array_idx ( QUEEN );
         pce_idx_white = pce_get_array_idx ( WQUEEN );
         pce_idx_black = pce_get_array_idx ( BQUEEN );
-        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+        assert_true ( pce_idx_white == pce_idx_black );
 
-        pce_idx = pce_get_array_idx ( KING );
         pce_idx_white = pce_get_array_idx ( WKING );
         pce_idx_black = pce_get_array_idx ( BKING );
-        assert_true ( ( pce_idx == pce_idx_white ) && ( pce_idx_white == pce_idx_black ) );
+        assert_true ( pce_idx_white == pce_idx_black );
 
 }
 
@@ -180,27 +173,42 @@ void test_piece_is_black ( void **state )
 }
 
 
-void test_pce_get_piece_type ( void ** state )
+void test_pce_get_piece_class ( void ** state )
 {
-        assert_true ( pce_get_piece_type ( WPAWN ) == PAWN );
-        assert_true ( pce_get_piece_type ( WKNIGHT ) == KNIGHT );
-        assert_true ( pce_get_piece_type ( WBISHOP ) == BISHOP );
-        assert_true ( pce_get_piece_type ( WQUEEN ) == QUEEN );
-        assert_true ( pce_get_piece_type ( WKING ) == KING );
-        assert_true ( pce_get_piece_type ( WROOK ) == ROOK );
-        assert_true ( pce_get_piece_type ( WQUEEN ) == QUEEN );
+        assert_true ( pce_get_piece_class ( WPAWN ) == PAWN );
+        assert_true ( pce_get_piece_class ( WKNIGHT ) == KNIGHT );
+        assert_true ( pce_get_piece_class ( WBISHOP ) == BISHOP );
+        assert_true ( pce_get_piece_class ( WQUEEN ) == QUEEN );
+        assert_true ( pce_get_piece_class ( WKING ) == KING );
+        assert_true ( pce_get_piece_class ( WROOK ) == ROOK );
+        assert_true ( pce_get_piece_class ( WQUEEN ) == QUEEN );
 
-        assert_true ( pce_get_piece_type ( BPAWN ) == PAWN );
-        assert_true ( pce_get_piece_type ( BKNIGHT ) == KNIGHT );
-        assert_true ( pce_get_piece_type ( BBISHOP ) == BISHOP );
-        assert_true ( pce_get_piece_type ( BQUEEN ) == QUEEN );
-        assert_true ( pce_get_piece_type ( BKING ) == KING );
-        assert_true ( pce_get_piece_type ( BROOK ) == ROOK );
-        assert_true ( pce_get_piece_type ( BQUEEN ) == QUEEN );
-
-
+        assert_true ( pce_get_piece_class ( BPAWN ) == PAWN );
+        assert_true ( pce_get_piece_class ( BKNIGHT ) == KNIGHT );
+        assert_true ( pce_get_piece_class ( BBISHOP ) == BISHOP );
+        assert_true ( pce_get_piece_class ( BQUEEN ) == QUEEN );
+        assert_true ( pce_get_piece_class ( BKING ) == KING );
+        assert_true ( pce_get_piece_class ( BROOK ) == ROOK );
+        assert_true ( pce_get_piece_class ( BQUEEN ) == QUEEN );
 }
 
+
+void test_pce_get_piece ( void ** state )
+{
+        assert_true ( pce_get_piece ( PAWN, WHITE ) == WPAWN );
+        assert_true ( pce_get_piece ( BISHOP, WHITE ) == WBISHOP );
+        assert_true ( pce_get_piece ( KNIGHT, WHITE ) == WKNIGHT );
+        assert_true ( pce_get_piece ( ROOK, WHITE ) == WROOK );
+        assert_true ( pce_get_piece ( QUEEN, WHITE ) == WQUEEN );
+        assert_true ( pce_get_piece ( KING, WHITE ) == WKING );
+
+        assert_true ( pce_get_piece ( PAWN, BLACK ) == BPAWN );
+        assert_true ( pce_get_piece ( BISHOP, BLACK ) == BBISHOP );
+        assert_true ( pce_get_piece ( KNIGHT, BLACK ) == BKNIGHT );
+        assert_true ( pce_get_piece ( ROOK, BLACK ) == BROOK );
+        assert_true ( pce_get_piece ( QUEEN, BLACK ) == BQUEEN );
+        assert_true ( pce_get_piece ( KING, BLACK ) == BKING );
+}
 
 
 // kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
