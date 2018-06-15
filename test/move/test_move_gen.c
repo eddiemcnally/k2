@@ -41,8 +41,8 @@
 
 static bool contains_all_4_promotion_moves ( const enum square from_sq, const enum square to_sq, struct move_list *mvl, const bool is_capture );
 
-#define CONTAINS_QUIET(mvl, from, to)          ({move_t mv; mv = move_encode_quiet ( from, to ); assert_true ( mvl_contains_move ( mvl, mv ) );})
-#define CONTAINS_CAPTURE(mvl, from, to)        ({move_t mv; mv = move_encode_capture ( from, to ); assert_true ( mvl_contains_move ( mvl, mv ) );})
+#define CONTAINS_QUIET(mvl, from, to)          ({uint16_t mv; mv = move_encode_quiet ( from, to ); assert_true ( mvl_contains_move ( mvl, mv ) );})
+#define CONTAINS_CAPTURE(mvl, from, to)        ({uint16_t mv; mv = move_encode_capture ( from, to ); assert_true ( mvl_contains_move ( mvl, mv ) );})
 
 
 
@@ -297,10 +297,10 @@ void test_move_white_castling_WK_WQ ( void **state )
 
         mv_gen_king_moves ( pos, WHITE, mvl );
 
-        move_t wk_cast = move_encode_castle_kingside_white();
+        uint16_t wk_cast = move_encode_castle_kingside_white();
         assert_true ( mvl_contains_move ( mvl, wk_cast ) );
 
-        move_t wq_cast = move_encode_castle_queenside_white();
+        uint16_t wq_cast = move_encode_castle_queenside_white();
         assert_true ( mvl_contains_move ( mvl, wq_cast ) );
 }
 
@@ -316,10 +316,10 @@ void test_move_white_castling_WK_only ( void **state )
 
         mv_gen_king_moves ( pos, WHITE, mvl );
 
-        move_t wk_cast = move_encode_castle_kingside_white();
+        uint16_t wk_cast = move_encode_castle_kingside_white();
         assert_true ( mvl_contains_move ( mvl, wk_cast ) );
 
-        move_t wq_cast = move_encode_castle_queenside_white();
+        uint16_t wq_cast = move_encode_castle_queenside_white();
         assert_false ( mvl_contains_move ( mvl, wq_cast ) );
 }
 
@@ -334,10 +334,10 @@ void test_move_white_castling_WQ_only ( void **state )
 
         mv_gen_king_moves ( pos, WHITE, mvl );
 
-        move_t wk_cast = move_encode_castle_kingside_white();
+        uint16_t wk_cast = move_encode_castle_kingside_white();
         assert_false ( mvl_contains_move ( mvl, wk_cast ) );
 
-        move_t wq_cast = move_encode_castle_queenside_white();
+        uint16_t wq_cast = move_encode_castle_queenside_white();
         assert_true ( mvl_contains_move ( mvl, wq_cast ) );
 }
 
@@ -420,10 +420,10 @@ void test_move_black_castling_BK_BQ ( void **state )
 
         mv_gen_king_moves ( pos, BLACK, mvl );
 
-        move_t bk_cast = move_encode_castle_kingside_black();
+        uint16_t bk_cast = move_encode_castle_kingside_black();
         assert_true ( mvl_contains_move ( mvl, bk_cast ) );
 
-        move_t bq_cast = move_encode_castle_queenside_black();
+        uint16_t bq_cast = move_encode_castle_queenside_black();
         assert_true ( mvl_contains_move ( mvl, bq_cast ) );
 }
 
@@ -440,10 +440,10 @@ void test_move_black_castling_BK_only ( void **state )
 
         mv_gen_king_moves ( pos, BLACK, mvl );
 
-        move_t bk_cast = move_encode_castle_kingside_black();
+        uint16_t bk_cast = move_encode_castle_kingside_black();
         assert_true ( mvl_contains_move ( mvl, bk_cast ) );
 
-        move_t bq_cast = move_encode_castle_queenside_black();
+        uint16_t bq_cast = move_encode_castle_queenside_black();
         assert_false ( mvl_contains_move ( mvl, bq_cast ) );
 }
 
@@ -458,10 +458,10 @@ void test_move_black_castling_BQ_only ( void **state )
 
         mv_gen_king_moves ( pos, BLACK, mvl );
 
-        move_t bk_cast = move_encode_castle_kingside_black();
+        uint16_t bk_cast = move_encode_castle_kingside_black();
         assert_false ( mvl_contains_move ( mvl, bk_cast ) );
 
-        move_t bq_cast = move_encode_castle_queenside_black();
+        uint16_t bq_cast = move_encode_castle_queenside_black();
         assert_true ( mvl_contains_move ( mvl, bq_cast ) );
 }
 
@@ -486,7 +486,7 @@ void test_move_white_pawns_promotion_1 ( void **state )
 
 static bool contains_all_4_promotion_moves ( const enum square from_sq, const enum square to_sq, struct move_list *mvl, const bool is_capture )
 {
-        move_t mv = move_encode_promoted ( from_sq, to_sq, WKNIGHT, is_capture );
+        uint16_t mv = move_encode_promoted ( from_sq, to_sq, WKNIGHT, is_capture );
         if ( mvl_contains_move ( mvl, mv ) == false ) {
                 return false;
         }
@@ -590,7 +590,7 @@ void test_move_white_pawns_first_move_double_1 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_pawn_double_first ( a2, a4 );
+        uint16_t mv = move_encode_pawn_double_first ( a2, a4 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 
         mv = move_encode_pawn_double_first ( d2, d4 );
@@ -612,7 +612,7 @@ void test_move_white_pawns_first_move_double_2 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_pawn_double_first ( a2, a4 );
+        uint16_t mv = move_encode_pawn_double_first ( a2, a4 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 
         mv = move_encode_pawn_double_first ( b2, b4 );
@@ -638,7 +638,7 @@ void test_move_white_pawns_en_passant_1 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant ( g5, h6 );
+        uint16_t mv = move_encode_enpassant ( g5, h6 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -654,7 +654,7 @@ void test_move_white_pawns_en_passant_2 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant ( b5, a6 );
+        uint16_t mv = move_encode_enpassant ( b5, a6 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -669,7 +669,7 @@ void test_move_white_pawns_en_passant_3 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_white_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant ( b5, c6 );
+        uint16_t mv = move_encode_enpassant ( b5, c6 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -724,7 +724,7 @@ void test_move_black_pawns_1 ( void **state )
 
         assert_true ( mvl_get_move_count ( mvl ) == 10 );
 
-        move_t double_mv = move_encode_pawn_double_first ( a7, a5 );
+        uint16_t double_mv = move_encode_pawn_double_first ( a7, a5 );
         assert_true ( mvl_contains_move ( mvl, double_mv ) );
 
         CONTAINS_QUIET ( mvl, a7, a6 );
@@ -783,7 +783,7 @@ void test_move_black_pawns_first_move_double_1 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_black_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_pawn_double_first ( a7, a5 );
+        uint16_t mv = move_encode_pawn_double_first ( a7, a5 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 
         mv = move_encode_pawn_double_first ( b7, b5 );
@@ -807,7 +807,7 @@ void test_move_black_pawns_first_move_double_2 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_black_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_pawn_double_first ( a7, a5 );
+        uint16_t mv = move_encode_pawn_double_first ( a7, a5 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 
         mv = move_encode_pawn_double_first ( f7, f5 );
@@ -827,7 +827,7 @@ void test_move_black_pawns_en_passant_1 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_black_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant ( b4, a3 );
+        uint16_t mv = move_encode_enpassant ( b4, a3 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -844,7 +844,7 @@ void test_move_black_pawns_en_passant_2 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_black_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant ( g4, f3 );
+        uint16_t mv = move_encode_enpassant ( g4, f3 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -860,7 +860,7 @@ void test_move_black_pawns_en_passant_3 ( void **state )
         struct board *brd = pos_get_board ( pos );
         mv_gen_black_pawn_moves ( pos, brd, mvl );
 
-        move_t mv = move_encode_enpassant ( f4, e3 );
+        uint16_t mv = move_encode_enpassant ( f4, e3 );
         assert_true ( mvl_contains_move ( mvl, mv ) );
 }
 
@@ -1254,7 +1254,7 @@ void test_move_all_moves_4_knights_opening_white_to_move ( void **state )
         mv_gen_all_moves ( pos, mvl );
 
 
-        move_t double_mv = move_encode_pawn_double_first ( a2, a4 );
+        uint16_t double_mv = move_encode_pawn_double_first ( a2, a4 );
         assert_true ( mvl_contains_move ( mvl, double_mv ) );
         double_mv = move_encode_pawn_double_first ( b2, b4 );
         assert_true ( mvl_contains_move ( mvl, double_mv ) );

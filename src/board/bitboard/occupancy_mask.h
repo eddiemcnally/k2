@@ -24,15 +24,15 @@
 
 #pragma once
 
-bitboard_t occ_mask_get_black_pawn_capture_non_first_double_move ( const enum square sq );
-bitboard_t occ_mask_get_white_pawn_capture_non_first_double_move ( const enum square sq );
-bitboard_t occ_mask_get_knight ( const enum square sq );
-bitboard_t occ_mask_get_bishop ( const enum square sq );
-bitboard_t occ_mask_get_king ( const enum square sq );
-bitboard_t occ_mask_get_queen ( const enum square sq );
-bitboard_t occ_mask_get_rook ( const enum square sq );
-bitboard_t occ_mask_get_positive_diagonal ( const enum square sq );
-bitboard_t occ_mask_get_negative_diagonal ( const enum square sq );
-bitboard_t occ_mask_get_vertical ( const enum square sq );
-bitboard_t occ_mask_get_horizontal ( const enum square sq );
+uint64_t occ_mask_get_black_pawn_capture_non_first_double_move ( const enum square sq );
+uint64_t occ_mask_get_white_pawn_capture_non_first_double_move ( const enum square sq );
+uint64_t occ_mask_get_knight ( const enum square sq );
+uint64_t occ_mask_get_bishop ( const enum square sq );
+uint64_t occ_mask_get_king ( const enum square sq );
+uint64_t occ_mask_get_queen ( const enum square sq );
+uint64_t occ_mask_get_rook ( const enum square sq );
+uint64_t occ_mask_get_positive_diagonal ( const enum square sq );
+uint64_t occ_mask_get_negative_diagonal ( const enum square sq );
+uint64_t occ_mask_get_vertical ( const enum square sq );
+uint64_t occ_mask_get_horizontal ( const enum square sq );
 

@@ -34,7 +34,7 @@
 
 void test_castle_permissions_get_set ( void **state )
 {
-        cast_perm_t cp = 0;
+        uint8_t cp = 0;
 
         cast_perm_set_WK ( &cp, true );
         assert_true ( cast_perm_has_WK ( cp ) );
@@ -60,7 +60,7 @@ void test_castle_permissions_get_set ( void **state )
 void test_castle_permissions_no_perms_get_set ( void **state )
 {
 
-        cast_perm_t cp;
+        uint8_t cp;
         cast_perm_set_no_perms ( &cp );
         assert_false ( cast_perm_has_WK ( cp ) );
         assert_false ( cast_perm_has_WQ ( cp ) );

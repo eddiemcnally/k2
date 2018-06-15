@@ -35,7 +35,7 @@
 struct move_list {
         uint32_t 	struct_init_key;
         uint16_t 	move_count;
-        move_t 		move_list[MOVE_LIST_MAX_LEN];
+        uint16_t 		move_list[MOVE_LIST_MAX_LEN];
 };
 
 
@@ -92,7 +92,7 @@ uint16_t mvl_get_move_count ( const struct move_list *mvl )
  * @param offset The move offset in the move list
  * @return The move at the move list offset
  */
-move_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset )
+uint16_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset )
 {
         assert ( validate_move_list ( mvl ) );
 
@@ -105,7 +105,7 @@ move_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset )
  * @param mvl The move_list instance
  * @param mv The move to add
  */
-void mvl_add ( struct move_list *mvl, move_t mv )
+void mvl_add ( struct move_list *mvl, uint16_t mv )
 {
         assert ( validate_move_list ( mvl ) );
 
@@ -132,7 +132,7 @@ void mvl_reset ( struct move_list *mvl )
  * @param mv    The move to search for
  * @return true if move is in list, false otherwise
  */
-bool mvl_contains_move ( const struct move_list *mvl, const move_t mv )
+bool mvl_contains_move ( const struct move_list *mvl, const uint16_t mv )
 {
         assert ( validate_move_list ( mvl ) );
 
@@ -157,7 +157,7 @@ void mvl_print ( const struct move_list *mvl )
         uint16_t move_count = mvl_get_move_count ( mvl );
 
         for ( uint16_t i = 0; i < move_count; i++ ) {
-                move_t m =  mvl_get_move_at_offset ( mvl, i );
+                uint16_t m =  mvl_get_move_at_offset ( mvl, i );
                 printf ( "%s\n", move_print ( m ) );
         }
 }
@@ -179,7 +179,7 @@ bool validate_move_list ( const struct move_list *mvl )
         }
 
         for ( int i = 0; i < mvl->move_count; i++ ) {
-                move_t mv = mvl->move_list[i];
+                uint16_t mv = mvl->move_list[i];
                 assert ( validate_move ( mv ) );
         }
 

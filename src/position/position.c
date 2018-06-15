@@ -46,7 +46,7 @@ static bool validate_en_passant_pce_and_sq ( const struct position *pos );
 #define MAX_GAME_MOVES          (1024)
 
 struct mv_undo {
-        move_t          move;
+        uint16_t          move;
         uint8_t         fifty_move_counter;
         uint8_t         castle_perm;
         uint64_t        board_hash;
@@ -74,7 +74,7 @@ struct position {
         uint16_t history_ply;
 
         // castling permissions
-        cast_perm_t castle_perm;
+        uint8_t castle_perm;
 
         uint8_t fifty_move_counter;
 
@@ -157,7 +157,7 @@ enum colour pos_get_side_to_move ( const struct position *pos )
         return pos->side_to_move;
 }
 
-cast_perm_t pos_get_cast_perm ( const struct position *pos )
+uint8_t pos_get_cast_perm ( const struct position *pos )
 {
         return pos->castle_perm;
 }
@@ -174,7 +174,7 @@ bool pos_try_get_en_pass_sq ( const struct position *pos, enum square *en_pass_s
 
 
 
-void pos_set_cast_perm ( struct position *pos, const cast_perm_t perms )
+void pos_set_cast_perm ( struct position *pos, const uint8_t perms )
 {
         pos->castle_perm = perms;
 }
@@ -191,7 +191,7 @@ bool validate_position ( const struct position *pos )
 }
 
 
-bool pos_try_make_move ( struct position *pos, const move_t mv )
+bool pos_try_make_move ( struct position *pos, const uint16_t mv )
 {
         assert ( validate_position ( pos ) );
 
@@ -245,7 +245,7 @@ bool pos_try_make_move ( struct position *pos, const move_t mv )
 }
 
 
-move_t pos_take_move ( struct position *pos )
+uint16_t pos_take_move ( struct position *pos )
 {
         assert ( validate_position ( pos ) );
 
@@ -253,7 +253,7 @@ move_t pos_take_move ( struct position *pos )
                 pos->ply--;
         }
 
-        return ( move_t ) 0;
+        return ( uint16_t ) 0;
 }
 
 
@@ -307,7 +307,7 @@ static bool validate_en_passant_pce_and_sq ( const struct position *pos )
 
 static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen )
 {
-        cast_perm_t cp;
+        uint8_t cp;
         // default to no castle permissions
         cast_perm_set_no_perms ( &cp );
 

@@ -40,10 +40,10 @@ struct board {
         uint32_t    struct_init_key;
 
         // a set bit represents an occupied square
-        bitboard_t  bb_board;
+        uint64_t  bb_board;
 
         // a bitboard per colour, a set bit means that colour occupies that square
-        bitboard_t  bb_colour[NUM_COLOURS];
+        uint64_t  bb_colour[NUM_COLOURS];
 
         // total material value for each colour
         uint32_t    material[NUM_COLOURS];
@@ -52,7 +52,7 @@ struct board {
         enum piece  pce_square[NUM_SQUARES];
 
         // bitboard for each piece
-        bitboard_t piece_bb[NUM_COLOURS][NUM_PIECE_CLASSES];
+        uint64_t piece_bb[NUM_COLOURS][NUM_PIECE_CLASSES];
 };
 
 
@@ -114,7 +114,7 @@ void brd_deallocate ( struct board* brd )
  * @param brd The board
  * @return A bitboard with a bit set for each occupier square
  */
-bitboard_t brd_get_board_bb ( const struct board* brd )
+uint64_t brd_get_board_bb ( const struct board* brd )
 {
         assert ( validate_struct_init ( brd ) );
         return brd->bb_board;
@@ -210,7 +210,7 @@ void brd_move_piece ( struct board* brd, const enum piece pce, const enum square
  *
  * @return A bitboard with a bit set for each piece of the given colour
  */
-bitboard_t brd_get_colour_bb ( const struct board* brd, const enum colour colour )
+uint64_t brd_get_colour_bb ( const struct board* brd, const enum colour colour )
 {
         assert ( validate_colour ( colour ) );
         assert ( validate_struct_init ( brd ) );
@@ -228,7 +228,7 @@ bitboard_t brd_get_colour_bb ( const struct board* brd, const enum colour colour
  *
  * @return A bitboard for that piece
  */
-bitboard_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
+uint64_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
         assert ( validate_struct_init ( brd ) );
@@ -320,7 +320,7 @@ static bool validate_struct_init ( const struct board *brd )
 
 static bool validate_square_empty ( const struct board *brd, const enum square sq )
 {
-        bitboard_t bb = brd_get_board_bb ( brd );
+        uint64_t bb = brd_get_board_bb ( brd );
         bool is_set = bb_is_set ( bb, sq );
         return is_set == false;
 }

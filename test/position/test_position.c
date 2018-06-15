@@ -38,12 +38,12 @@
 
 void test_position_get_set_castle_permissions ( void **state )
 {
-        cast_perm_t cp;
+        uint8_t cp;
         cast_perm_set_WK ( &cp, true );
         struct position *pos = pos_create();
 
         pos_set_cast_perm ( pos, cp );
-        cast_perm_t retrieved_cp = pos_get_cast_perm ( pos );
+        uint8_t retrieved_cp = pos_get_cast_perm ( pos );
         assert_true ( cp == retrieved_cp );
 
         cast_perm_set_WQ ( &cp, true );

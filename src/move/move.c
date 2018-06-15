@@ -84,9 +84,9 @@ enum move_flag_bits {
         MV_FLG_BIT_CAPTURE = 0x4000,
 };
 
-static void set_flag ( move_t *mv, const uint16_t flag );
-static move_t encode_to_from ( const enum square from_sq,
-                               const enum square to_sq );
+static void set_flag ( uint16_t *mv, const uint16_t flag );
+static uint16_t encode_to_from ( const enum square from_sq,
+                                 const enum square to_sq );
 
 // ==================================================================
 //
@@ -101,7 +101,7 @@ static move_t encode_to_from ( const enum square from_sq,
  * @param to_sq     The to square
  * @return The encoded move
  */
-move_t move_encode_quiet ( const enum square from_sq, const enum square to_sq )
+uint16_t move_encode_quiet ( const enum square from_sq, const enum square to_sq )
 {
         assert ( validate_square ( from_sq ) );
         assert ( validate_square ( to_sq ) );
@@ -118,15 +118,15 @@ move_t move_encode_quiet ( const enum square from_sq, const enum square to_sq )
  * @param is_capture true if also a capture move, false otherwise
  * @return The encoded move
  */
-move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq,
-                              const enum piece promoted_piece,
-                              const bool is_capture )
+uint16_t move_encode_promoted ( const enum square from_sq, const enum square to_sq,
+                                const enum piece promoted_piece,
+                                const bool is_capture )
 {
         assert ( validate_square ( from_sq ) );
         assert ( validate_square ( to_sq ) );
         assert ( validate_piece ( promoted_piece ) );
 
-        move_t mv = encode_to_from ( from_sq, to_sq );
+        uint16_t mv = encode_to_from ( from_sq, to_sq );
 
         enum piece_class pce_type = pce_get_piece_class ( promoted_piece );
 
@@ -171,9 +171,9 @@ move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq
  * @param mv    The move
  * @return      The piece class
  */
-enum piece_class move_decode_promotion_piece_class ( const move_t mv )
+enum piece_class move_decode_promotion_piece_class ( const uint16_t mv )
 {
-        const move_t m = mv & MV_MASK_FLAGS;
+        const uint16_t m = mv & MV_MASK_FLAGS;
 
         switch ( m ) {
         case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
@@ -202,12 +202,12 @@ enum piece_class move_decode_promotion_piece_class ( const move_t mv )
  * @param to_sq The to square
  * @return The encoded move
  */
-move_t move_encode_capture ( const enum square from_sq, const enum square to_sq )
+uint16_t move_encode_capture ( const enum square from_sq, const enum square to_sq )
 {
         assert ( validate_square ( from_sq ) );
         assert ( validate_square ( to_sq ) );
 
-        move_t mv = encode_to_from ( from_sq, to_sq );
+        uint16_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_CAPTURE );
         return mv;
 }
@@ -217,9 +217,9 @@ move_t move_encode_capture ( const enum square from_sq, const enum square to_sq 
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_kingside_white ( void )
+uint16_t move_encode_castle_kingside_white ( void )
 {
-        move_t mv = encode_to_from ( e1, g1 );
+        uint16_t mv = encode_to_from ( e1, g1 );
         set_flag ( &mv, MV_FLG_KING_CASTLE );
         return mv;
 }
@@ -229,9 +229,9 @@ move_t move_encode_castle_kingside_white ( void )
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_kingside_black ( void )
+uint16_t move_encode_castle_kingside_black ( void )
 {
-        move_t mv = encode_to_from ( e8, g8 );
+        uint16_t mv = encode_to_from ( e8, g8 );
         set_flag ( &mv, MV_FLG_KING_CASTLE );
         return mv;
 }
@@ -241,9 +241,9 @@ move_t move_encode_castle_kingside_black ( void )
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_queenside_white ( void )
+uint16_t move_encode_castle_queenside_white ( void )
 {
-        move_t mv = encode_to_from ( e1, c1 );
+        uint16_t mv = encode_to_from ( e1, c1 );
         set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
         return mv;
 }
@@ -253,9 +253,9 @@ move_t move_encode_castle_queenside_white ( void )
  *
  * @return      The encoded move
  */
-move_t move_encode_castle_queenside_black ( void )
+uint16_t move_encode_castle_queenside_black ( void )
 {
-        move_t mv = encode_to_from ( e8, c8 );
+        uint16_t mv = encode_to_from ( e8, c8 );
         set_flag ( &mv, MV_FLG_QUEEN_CASTLE );
         return mv;
 }
@@ -266,9 +266,9 @@ move_t move_encode_castle_queenside_black ( void )
  * @param       to_sq the to square
  * @return      The encoded move
  */
-move_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq )
+uint16_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq )
 {
-        move_t mv = encode_to_from ( from_sq, to_sq );
+        uint16_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_DOUBLE_PAWN );
         return mv;
 }
@@ -281,13 +281,13 @@ move_t move_encode_pawn_double_first ( const enum square from_sq, const enum squ
  * @param to_sq The to square
  * @return The encoded move
  */
-move_t move_encode_enpassant ( const enum square from_sq,
-                               const enum square to_sq )
+uint16_t move_encode_enpassant ( const enum square from_sq,
+                                 const enum square to_sq )
 {
         assert ( validate_square ( from_sq ) );
         assert ( validate_square ( to_sq ) );
 
-        move_t mv = encode_to_from ( from_sq, to_sq );
+        uint16_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_EN_PASS );
         return mv;
 }
@@ -298,7 +298,7 @@ move_t move_encode_enpassant ( const enum square from_sq,
  * @param mv The move
  * @return The from square
  */
-enum square move_decode_from_sq ( const move_t mv )
+enum square move_decode_from_sq ( const uint16_t mv )
 {
         return ( enum square ) ( ( mv & MV_MASK_FROM_SQ ) >> MV_SHFT_FROM_SQ );
 }
@@ -309,7 +309,7 @@ enum square move_decode_from_sq ( const move_t mv )
  * @param mv The move
  * @return The to square
  */
-enum square move_decode_to_sq ( const move_t mv )
+enum square move_decode_to_sq ( const uint16_t mv )
 {
         return ( enum square ) ( ( mv & MV_MASK_TO_SQ ) >> MV_SHFT_TO_SQ );
 }
@@ -317,27 +317,27 @@ enum square move_decode_to_sq ( const move_t mv )
 
 
 /**
- * @brief       Tests the given move_t, returns true if Quiet, false otherwise
+ * @brief       Tests the given uint16_t, returns true if Quiet, false otherwise
  *
  * @param mv The move to test
  * @return true if quiet, false otherwise
  */
-bool move_is_quiet ( move_t mv )
+bool move_is_quiet ( uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
-        move_t m = ( ( move_t ) mv ) & MV_MASK_FLAGS;
+        uint16_t m = ( ( uint16_t ) mv ) & MV_MASK_FLAGS;
         return m == MV_FLG_QUIET;
 }
 
 /**
- * @brief       Tests the given move_t, returns true if a Capture move, false
+ * @brief       Tests the given uint16_t, returns true if a Capture move, false
  * otherwise
  *
  * @param mv The move to test
  * @return true if Capture, false otherwise
  */
-bool move_is_capture ( move_t mv )
+bool move_is_capture ( uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
@@ -345,13 +345,13 @@ bool move_is_capture ( move_t mv )
 }
 
 /**
- * @brief       Tests the given move_t, returns true if a Promotion move, false
+ * @brief       Tests the given uint16_t, returns true if a Promotion move, false
  * otherwise
  *
  * @param mv The move to test
  * @return true if a promotion, false otherwise
  */
-bool move_is_promotion ( move_t mv )
+bool move_is_promotion ( uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
@@ -359,13 +359,13 @@ bool move_is_promotion ( move_t mv )
 }
 
 /**
- * @brief       Tests the given move_t, returns true if an En Passant move,
+ * @brief       Tests the given uint16_t, returns true if an En Passant move,
  * false otherwise
  *
  * @param mv The move to test
  * @return true if an En Passant move, false otherwise
  */
-bool move_is_en_passant ( move_t mv )
+bool move_is_en_passant ( uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
@@ -380,7 +380,7 @@ bool move_is_en_passant ( move_t mv )
  * @param mv The move print
  * @return The move in test
  */
-char *move_print ( move_t mv )
+char *move_print ( uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
@@ -402,7 +402,7 @@ char *move_print ( move_t mv )
 }
 
 
-bool validate_move ( const move_t mv )
+bool validate_move ( const uint16_t mv )
 {
         enum square from = move_decode_from_sq ( mv );
         enum square to = move_decode_to_sq ( mv );
@@ -421,10 +421,10 @@ bool validate_move ( const move_t mv )
 //
 // ==================================================================
 
-static move_t encode_to_from ( const enum square from_sq,
-                               const enum square to_sq )
+static uint16_t encode_to_from ( const enum square from_sq,
+                                 const enum square to_sq )
 {
-        move_t mv = 0;
+        uint16_t mv = 0;
         uint16_t m = ( uint16_t ) ( from_sq << MV_SHFT_FROM_SQ );
         mv |= ( uint16_t ) ( m & MV_MASK_FROM_SQ );
 
@@ -434,7 +434,7 @@ static move_t encode_to_from ( const enum square from_sq,
         return mv;
 }
 
-static void set_flag ( move_t *mv, const uint16_t flag_bit )
+static void set_flag ( uint16_t *mv, const uint16_t flag_bit )
 {
         *mv |= flag_bit;
 }

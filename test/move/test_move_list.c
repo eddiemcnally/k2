@@ -55,7 +55,7 @@ void test_move_list_bulk_add_moves ( void **state )
 
         // add moves
         for ( int i = 0; i < max_moves; i++ ) {
-                move_t mv = ( move_t ) ( mv_offset + i );
+                uint16_t mv = ( uint16_t ) ( mv_offset + i );
                 mvl_add ( mvl, mv );
         }
 
@@ -63,8 +63,8 @@ void test_move_list_bulk_add_moves ( void **state )
         assert_true ( count == max_moves );
 
         for ( int i = 0; i < max_moves; i++ ) {
-                move_t mv = mvl_get_move_at_offset ( mvl, ( uint16_t ) i );
-                assert_true ( mv == ( move_t ) ( mv_offset + i ) );
+                uint16_t mv = mvl_get_move_at_offset ( mvl, ( uint16_t ) i );
+                assert_true ( mv == ( uint16_t ) ( mv_offset + i ) );
         }
 
         mvl_deallocate ( mvl );
@@ -77,18 +77,18 @@ void test_move_list_contains_move ( void **state )
 
         // add moves
         for ( int i = 0; i < num_moves; i++ ) {
-                move_t mv = ( move_t ) i;
+                uint16_t mv = ( uint16_t ) i;
                 mvl_add ( mvl, mv );
         }
 
         // verify all are present
         for ( int i = 0; i < num_moves; i++ ) {
-                move_t mv = ( move_t ) i;
+                uint16_t mv = ( uint16_t ) i;
                 assert_true ( mvl_contains_move ( mvl, mv ) );
         }
 
         // verify a non-existant move is not in the list
-        move_t other_mv = ( move_t ) ( num_moves + 100 );
+        uint16_t other_mv = ( uint16_t ) ( num_moves + 100 );
         assert_false ( mvl_contains_move ( mvl, other_mv ) );
 
         mvl_deallocate ( mvl );
@@ -102,7 +102,7 @@ void test_move_list_reset_list ( void **state )
 
         // add moves
         for ( int i = 0; i < num_moves; i++ ) {
-                move_t mv = ( move_t ) i;
+                uint16_t mv = ( uint16_t ) i;
                 mvl_add ( mvl, mv );
         }
 

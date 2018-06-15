@@ -50,7 +50,7 @@ int main ( void )
         struct board *brd = pos_get_board ( pos );
         mv_gen_bishop_moves ( brd, BLACK, mvl );
 
-        move_t mv = move_encode_quiet ( e2, d1 );
+        uint16_t mv = move_encode_quiet ( e2, d1 );
         
 
 }

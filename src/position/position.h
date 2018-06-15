@@ -36,8 +36,8 @@ struct position;
 
 #define INITIAL_FEN     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
 
-cast_perm_t pos_get_cast_perm ( const struct position *pos );
-void pos_set_cast_perm ( struct position *pos, const cast_perm_t perms );
+uint8_t pos_get_cast_perm ( const struct position *pos );
+void pos_set_cast_perm ( struct position *pos, const uint8_t perms );
 
 struct position * pos_create ( void );
 void pos_destroy ( struct position *pos );
@@ -47,8 +47,8 @@ struct board * pos_get_board ( const struct position *pos );
 bool pos_try_get_en_pass_sq ( const struct position *pos, enum square *en_pass_sq );
 enum colour pos_get_side_to_move ( const struct position *pos );
 
-bool pos_try_make_move ( struct position *pos, const move_t mv );
-move_t pos_take_move ( struct position *pos );
+bool pos_try_make_move ( struct position *pos, const uint16_t mv );
+uint16_t pos_take_move ( struct position *pos );
 
 bool validate_position ( const struct position *pos );
 

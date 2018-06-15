@@ -29,14 +29,12 @@
 #include "square.h"
 
 
-typedef uint64_t bitboard_t;
-
-bitboard_t bb_get_sq_mask(const enum square sq);
-void bb_set_square ( bitboard_t* bb, const enum square sq );
-void bb_clear_square ( bitboard_t* bb, const enum square sq );
-bool bb_is_set ( const bitboard_t bb, const enum square sq );
-uint8_t bb_count_bits ( const bitboard_t bb );
-enum square bb_pop_1st_bit ( bitboard_t * bb );
-bitboard_t bb_reverse ( bitboard_t bb );
-void bb_print_as_board ( const bitboard_t bb );
+uint64_t bb_get_sq_mask(const enum square sq);
+void bb_set_square ( uint64_t* bb, const enum square sq );
+void bb_clear_square ( uint64_t* bb, const enum square sq );
+bool bb_is_set ( const uint64_t bb, const enum square sq );
+uint8_t bb_count_bits ( const uint64_t bb );
+enum square bb_pop_1st_bit ( uint64_t * bb );
+uint64_t bb_reverse ( uint64_t bb );
+void bb_print_as_board ( const uint64_t bb );
 

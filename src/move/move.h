@@ -28,28 +28,25 @@
 #include "piece.h"
 
 
-typedef uint16_t move_t;
+uint16_t move_encode_quiet ( const enum square from_sq, const enum square to_sq );
+uint16_t move_encode_promoted ( const enum square from_sq, const enum square to_sq, const enum piece promoted_piece, const bool is_capture );
+uint16_t move_encode_capture ( const enum square from_sq, const enum square to_sq );
+uint16_t move_encode_enpassant ( const enum square from_sq, const enum square to_sq );
+uint16_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq );
+uint16_t move_encode_castle_kingside_white ( void );
+uint16_t move_encode_castle_kingside_black ( void );
+uint16_t move_encode_castle_queenside_white ( void );
+uint16_t move_encode_castle_queenside_black ( void );
 
+enum square move_decode_from_sq ( const uint16_t mv );
+enum square move_decode_to_sq ( const uint16_t mv );
+enum piece_class move_decode_promotion_piece_class ( const uint16_t mv );
 
-move_t move_encode_quiet ( const enum square from_sq, const enum square to_sq );
-move_t move_encode_promoted ( const enum square from_sq, const enum square to_sq, const enum piece promoted_piece, const bool is_capture );
-move_t move_encode_capture ( const enum square from_sq, const enum square to_sq );
-move_t move_encode_enpassant ( const enum square from_sq, const enum square to_sq );
-move_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq );
-move_t move_encode_castle_kingside_white ( void );
-move_t move_encode_castle_kingside_black ( void );
-move_t move_encode_castle_queenside_white ( void );
-move_t move_encode_castle_queenside_black ( void );
+bool move_is_quiet ( uint16_t mv );
+bool move_is_capture ( uint16_t mv );
+bool move_is_promotion ( uint16_t mv );
+bool move_is_en_passant ( uint16_t mv );
 
-enum square move_decode_from_sq ( const move_t mv );
-enum square move_decode_to_sq ( const move_t mv );
-enum piece_class move_decode_promotion_piece_class ( const move_t mv );
+char *move_print ( uint16_t mv );
 
-bool move_is_quiet ( move_t mv );
-bool move_is_capture ( move_t mv );
-bool move_is_promotion ( move_t mv );
-bool move_is_en_passant ( move_t mv );
-
-char *move_print ( move_t mv );
-
-bool validate_move ( const move_t mv );
+bool validate_move ( const uint16_t mv );

@@ -137,7 +137,7 @@ void test_board_brd_get_piece_bb ( void **state )
 
         struct board *brd = pos_get_board ( pos );
 
-        bitboard_t bb = brd_get_piece_bb ( brd, WPAWN );
+        uint64_t bb = brd_get_piece_bb ( brd, WPAWN );
         assert_true ( bb_is_set ( bb, b2 ) );
         assert_true ( bb_is_set ( bb, d3 ) );
         assert_true ( bb_is_set ( bb, e2 ) );
@@ -201,7 +201,7 @@ void test_board_brd_get_colour_bb_black ( void **state )
 
         struct board *brd = pos_get_board ( pos );
 
-        bitboard_t bb = brd_get_colour_bb ( brd, BLACK );
+        uint64_t bb = brd_get_colour_bb ( brd, BLACK );
         assert_true ( bb_is_set ( bb, c3 ) );
         assert_true ( bb_is_set ( bb, c4 ) );
         assert_true ( bb_is_set ( bb, d5 ) );
@@ -235,7 +235,7 @@ void test_board_brd_get_colour_bb_white ( void **state )
 
         struct board *brd = pos_get_board ( pos );
 
-        bitboard_t bb = brd_get_colour_bb ( brd, WHITE );
+        uint64_t bb = brd_get_colour_bb ( brd, WHITE );
 
         assert_true ( bb_is_set ( bb, b2 ) );
         assert_true ( bb_is_set ( bb, d3 ) );
@@ -267,7 +267,7 @@ void test_board_brd_get_board_bb ( void **state )
         struct position *pos = pos_create();
         pos_initialise ( FEN, pos );
 
-        bitboard_t bb = brd_get_board_bb ( pos_get_board ( pos ) );
+        uint64_t bb = brd_get_board_bb ( pos_get_board ( pos ) );
 
         assert_false ( bb_is_set ( bb, a1 ) );
         assert_false ( bb_is_set ( bb, a2 ) );
