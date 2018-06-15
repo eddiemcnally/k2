@@ -28,4 +28,4 @@ void test_bitboard_count_bits ( void **state );
 void test_bitboard_set_test_clear_bit ( void **state );
 void test_bb_get_sq_mask ( void **state );
 void test_bitboard_reverse_bits ( void **state );
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
+

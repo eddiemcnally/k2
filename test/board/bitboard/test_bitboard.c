@@ -185,5 +185,3 @@ void test_bitboard_set_test_clear_bit ( void **state )
                 assert_true ( is_set );
         }
 }
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

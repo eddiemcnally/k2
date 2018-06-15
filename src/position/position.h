@@ -52,4 +52,3 @@ move_t pos_take_move ( struct position *pos );
 
 bool validate_position ( const struct position *pos );
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

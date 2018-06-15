@@ -54,4 +54,4 @@ int main ( void )
         
 
 }
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
+

@@ -113,4 +113,4 @@ void test_move_list_reset_list ( void **state )
 
         mvl_deallocate ( mvl );
 }
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
+ 

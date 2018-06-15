@@ -559,4 +559,3 @@ static bool is_sq_in_list ( const enum square * sqlist, const int list_size, con
         }
         return false;
 }
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

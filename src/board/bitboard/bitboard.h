@@ -40,4 +40,3 @@ enum square bb_pop_1st_bit ( bitboard_t * bb );
 bitboard_t bb_reverse ( bitboard_t bb );
 void bb_print_as_board ( const bitboard_t bb );
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

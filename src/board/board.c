@@ -338,5 +338,3 @@ static bool validate_pce_on_sq ( const struct board *brd, const enum piece pce, 
         }
         return true;
 }
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

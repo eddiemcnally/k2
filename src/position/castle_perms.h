@@ -43,6 +43,3 @@ void cast_perm_set_BK ( cast_perm_t* cp, const bool enabled );
 void cast_perm_set_BQ ( cast_perm_t* cp, const bool enabled );
 void cast_perm_set_no_perms ( cast_perm_t* cp );
 
-
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

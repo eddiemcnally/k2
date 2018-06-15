@@ -662,5 +662,3 @@ static void add_queenside_move_if_no_blockers ( const bitboard_t brd_bb, const b
 }
 
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

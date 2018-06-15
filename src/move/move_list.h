@@ -43,5 +43,3 @@ bool mvl_contains_move ( const struct move_list *mvl, const move_t mv );
 uint16_t mvl_get_mvl_max_size ( void );
 bool validate_move_list ( const struct move_list *mvl );
 void mvl_print ( const struct move_list *mvl );
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

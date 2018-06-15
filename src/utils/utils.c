@@ -105,5 +105,3 @@ uint64_t get_elapsed_time_in_millis ( uint64_t start_time )
         return ( now_in_millis - start_time );
 }
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

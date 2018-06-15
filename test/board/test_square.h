@@ -30,5 +30,3 @@ void test_square_gen_from_rank_file ( void **state );
 void test_sq_get_square_plus_1_rank ( void **state );
 void test_sq_get_square_minus_1_rank ( void **state );
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

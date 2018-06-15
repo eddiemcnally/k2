@@ -181,4 +181,4 @@ int main ( void )
         return cmocka_run_group_tests ( tests, NULL, NULL );
 }
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
+ 

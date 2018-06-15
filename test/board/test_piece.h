@@ -38,4 +38,3 @@ void test_pce_get_piece ( void ** state );
 
 
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

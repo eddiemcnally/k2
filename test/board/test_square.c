@@ -287,6 +287,3 @@ void test_sq_get_square_minus_1_rank ( void **state )
 }
 
 
-
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

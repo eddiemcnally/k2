@@ -606,5 +606,3 @@ void occ_mask_gen_print_as_hex ( const uint64_t mask )
         printf ( "%#018lx\n", mask );
 }
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

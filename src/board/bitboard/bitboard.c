@@ -178,4 +178,4 @@ bitboard_t bb_reverse ( bitboard_t bb )
         return __builtin_bswap64 ( retval );
 }
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
+

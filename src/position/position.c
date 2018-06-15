@@ -328,5 +328,3 @@ static void set_up_castle_permissions ( struct position *pos, const struct parse
 
 }
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

@@ -30,4 +30,3 @@ void test_move_en_passant_move_encode_decode ( void **state );
 void test_move_decode_promotion_piece_white ( void **state );
 void test_move_decode_promotion_piece_black ( void **state );
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

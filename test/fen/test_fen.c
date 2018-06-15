@@ -351,4 +351,4 @@ void test_fen_full_move_count ( void **state )
         brd = fen_parse ( RANDOM_FEN_4 );
         assert_int_equal ( fen_get_full_move_cnt ( brd ), 10 );
 }
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
+

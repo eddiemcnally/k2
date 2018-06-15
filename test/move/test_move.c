@@ -178,4 +178,3 @@ void test_move_decode_promotion_piece_black ( void **state )
 
 }
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

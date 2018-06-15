@@ -36,5 +36,3 @@ bitboard_t occ_mask_get_negative_diagonal ( const enum square sq );
 bitboard_t occ_mask_get_vertical ( const enum square sq );
 bitboard_t occ_mask_get_horizontal ( const enum square sq );
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

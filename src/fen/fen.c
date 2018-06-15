@@ -400,5 +400,3 @@ static bool validate_struct_init ( const struct parsed_fen *pf )
         return true;
 }
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

@@ -111,5 +111,3 @@ static void clear_perm ( cast_perm_t* cp, const enum castle_perm perm )
 {
         *cp &= ~perm;
 }
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

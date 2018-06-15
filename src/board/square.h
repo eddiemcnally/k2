@@ -75,4 +75,4 @@ bool validate_rank ( const enum rank rank );
 bool validate_file ( const enum file file );
 
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
+

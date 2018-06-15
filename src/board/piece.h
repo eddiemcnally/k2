@@ -98,5 +98,3 @@ bool validate_piece ( const enum piece pce );
 bool validate_colour ( const enum colour col );
 bool validate_label ( const char c );
 bool validate_piece_class ( const enum piece_class pc );
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

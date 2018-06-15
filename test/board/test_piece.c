@@ -210,5 +210,3 @@ void test_pce_get_piece ( void ** state )
         assert_true ( pce_get_piece ( KING, BLACK ) == BKING );
 }
 
-
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

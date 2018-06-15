@@ -53,4 +53,3 @@ bool move_is_en_passant ( move_t mv );
 char *move_print ( move_t mv );
 
 bool validate_move ( const move_t mv );
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

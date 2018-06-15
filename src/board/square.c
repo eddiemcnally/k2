@@ -150,4 +150,3 @@ bool validate_file ( const enum file file )
         return true;
 }
 
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 

@@ -389,4 +389,3 @@ bool validate_label ( const char c )
                 assert ( false );
         }
 }
-// kate: indent-mode cstyle; indent-width 8; replace-tabs on; 
