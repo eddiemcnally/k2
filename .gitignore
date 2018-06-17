@@ -1,6 +1,7 @@
 *.o
 k2_test
 _build
+__build
 .kdev4
 k2.kdev4
 __pycache__

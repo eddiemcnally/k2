@@ -30,9 +30,38 @@ set(TEST_UTILS_DIR      ${TEST_PROJECT_SOURCE_DIR}/utils)
 
 message("Setting up Test Runner build target compiler flags...")
 
+
+
+
+set (TEST_RUNNER_COMPILER_WARNS "-std=c11 \
+        -o2 \
+        -Wpedantic \
+        -Wall \
+        -Wextra \
+        -Wold-style-definition \
+        -Wredundant-decls \
+        -Wnested-externs \
+        -fsanitize=undefined \
+        -fno-omit-frame-pointer \
+        -Wstrict-prototypes \
+        -Wmissing-prototypes \
+        -Wswitch-default \
+        -Wunused-macros \
+        -Wextra \
+        -Wconversion \
+        -Wsign-conversion \
+        -Wshadow \
+        -Wcast-qual \
+        -Wcast-align \
+        -Wmissing-include-dirs \
+        -Wpointer-arith"
+        )
+
+
+
 # set up build target compiler flags
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${ENGINE_COMPILER_WARNS}")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${ENGINE_COMPILER_WARNS}") 
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${TEST_RUNNER_COMPILER_WARNS}")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${TEST_RUNNER_COMPILER_WARNS}") 
 
 
 # Define the include directories.

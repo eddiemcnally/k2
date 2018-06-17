@@ -59,6 +59,33 @@ set(ENGINE_SRCS ${SOURCES} PARENT_SCOPE)
 message("Setting up K2 Engine build target compiler flags...")
 
 
+set (ENGINE_COMPILER_WARNS "-std=c11 \
+        -o2 \
+        -Wpedantic \
+        -Wall \
+        -Wextra \
+        -Wold-style-definition \
+        -Wredundant-decls \
+        -Wnested-externs \
+        -fsanitize=undefined \
+        -fsanitize=address \
+        -fno-omit-frame-pointer \
+        -Wstrict-prototypes \
+        -Wmissing-prototypes \
+        -Wswitch-default \
+        -Wunused-macros \
+        -Wextra \
+        -Wconversion \
+        -Wsign-conversion \
+        -Wshadow \
+        -Wcast-qual \
+        -Wcast-align \
+        -Wmissing-include-dirs \
+        -Wpointer-arith"
+        )
+
+
+
 # set up build target compiler flags
 # set up build target compiler flags
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${ENGINE_COMPILER_WARNS}")

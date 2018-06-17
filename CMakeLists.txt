@@ -20,28 +20,6 @@ message("Setting CMAKE Compiler to '${CMAKE_C_COMPILER}'")
 set(CMAKE_BUILD_TYPE Debug)
 message("Setting build target to '${CMAKE_BUILD_TYPE}'")
 
-
-set (ENGINE_COMPILER_WARNS "-std=c11 \
-        -o2 \
-        -Wpedantic \
-        -Wall \
-        -Wextra \
-        -fsanitize=undefined \
-        -fno-omit-frame-pointer \
-        -Wstrict-prototypes \
-        -Wmissing-prototypes \
-        -Wswitch-default \
-        -Wunused-macros \
-        -Wextra \
-        -Wconversion \
-        -Wsign-conversion \
-        -Wshadow \
-        -Wcast-qual \
-        -Wcast-align \
-        -Wmissing-include-dirs \
-        -Wpointer-arith"
-        )
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 message("Setting binary output to directory to '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}'")
         
