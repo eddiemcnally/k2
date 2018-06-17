@@ -73,9 +73,9 @@ add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
 message("Setting up lib reference for cmocka...")
 target_link_libraries(${TEST_BINARY_NAME} cmocka)
 
-# defaults to STDERR, so redirect for convenience
-#message("Redirecting cmocka output to STDOUT...")
-#set(CMOCKA_MESSAGE_OUTPUT STDOUT)
+# CMOCKA defaults output to STDERR, so redirect for convenience
+# message("Redirecting cmocka output to STDOUT...")
+# set(CMOCKA_MESSAGE_OUTPUT STDOUT)
 
 message("Enabling cmake test support...")
 enable_testing()

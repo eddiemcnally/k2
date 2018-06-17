@@ -372,15 +372,13 @@ static void setup_en_passant_sq ( struct parsed_fen * pf, const char *en_pass )
         }
 }
 
-static void setup_half_move_count ( struct parsed_fen * pf,
-                                    const char *half_move_cnt )
+static void setup_half_move_count ( struct parsed_fen * pf, const char *half_move_cnt )
 {
         uint16_t half_move = convert_move_count ( half_move_cnt );
         pf->half_move_cnt = half_move;
 }
 
-static void setup_full_move_count ( struct parsed_fen * pf,
-                                    const char *full_move_cnt )
+static void setup_full_move_count ( struct parsed_fen * pf, const char *full_move_cnt )
 {
         uint16_t full_move = convert_move_count ( full_move_cnt );
         pf->full_move_cnt = full_move;

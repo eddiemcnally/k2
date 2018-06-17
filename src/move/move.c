@@ -425,6 +425,7 @@ static uint16_t encode_to_from ( const enum square from_sq,
                                  const enum square to_sq )
 {
         uint16_t mv = 0;
+
         uint16_t m = ( uint16_t ) ( from_sq << MV_SHFT_FROM_SQ );
         mv |= ( uint16_t ) ( m & MV_MASK_FROM_SQ );
 

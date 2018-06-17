@@ -32,6 +32,7 @@
 
 struct board;
 
+
 struct board* brd_allocate ( void );
 void brd_deallocate ( struct board *brd );
 bool validate_board ( const struct board *brd );

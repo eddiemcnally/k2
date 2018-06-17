@@ -116,33 +116,24 @@ void test_piece_get_colour_black_pieces ( void **state )
 
 void test_piece_get_array_idx ( void **state )
 {
-        uint8_t pce_idx_black;
-        uint8_t pce_idx_white;
+        assert_true ( pce_get_array_idx ( WPAWN ) == 0 );
+        assert_true ( pce_get_array_idx ( BPAWN ) == 1 );
+       
+        assert_true ( pce_get_array_idx ( WKNIGHT ) == 2 );
+        assert_true ( pce_get_array_idx ( BKNIGHT ) == 3 );
 
-        pce_idx_white = pce_get_array_idx ( WPAWN );
-        pce_idx_black = pce_get_array_idx ( BPAWN );
-        assert_true ( pce_idx_white == pce_idx_black );
+        assert_true ( pce_get_array_idx ( WBISHOP ) == 4 );
+        assert_true ( pce_get_array_idx ( BBISHOP ) == 5 );
 
-        pce_idx_white = pce_get_array_idx ( WBISHOP );
-        pce_idx_black = pce_get_array_idx ( BBISHOP );
-        assert_true ( pce_idx_white == pce_idx_black );
 
-        pce_idx_white = pce_get_array_idx ( WKNIGHT );
-        pce_idx_black = pce_get_array_idx ( BKNIGHT );
-        assert_true ( pce_idx_white == pce_idx_black );
+        assert_true ( pce_get_array_idx ( WROOK ) == 6 );
+        assert_true ( pce_get_array_idx ( BROOK ) == 7 );
 
-        pce_idx_white = pce_get_array_idx ( WROOK );
-        pce_idx_black = pce_get_array_idx ( BROOK );
-        assert_true ( pce_idx_white == pce_idx_black );
+        assert_true ( pce_get_array_idx ( WQUEEN ) == 8 );
+        assert_true ( pce_get_array_idx ( BQUEEN ) == 9 );
 
-        pce_idx_white = pce_get_array_idx ( WQUEEN );
-        pce_idx_black = pce_get_array_idx ( BQUEEN );
-        assert_true ( pce_idx_white == pce_idx_black );
-
-        pce_idx_white = pce_get_array_idx ( WKING );
-        pce_idx_black = pce_get_array_idx ( BKING );
-        assert_true ( pce_idx_white == pce_idx_black );
-
+        assert_true ( pce_get_array_idx ( WKING ) == 10 );
+        assert_true ( pce_get_array_idx ( BKING ) == 11 );
 }
 
 

@@ -257,7 +257,7 @@ static void get_sliding_diagonal_antidiagonal_moves ( const struct board *brd, c
                 // diagonal move
                 uint64_t diag1 = ( all_occupied_sq_bb & pos_diag_occ_mask ) - ( 2 * bb_slider );
                 uint64_t diag2 = bb_reverse ( bb_reverse ( all_occupied_sq_bb & pos_diag_occ_mask )
-                                                - ( 2 * bb_reverse ( bb_slider ) ) );
+                                              - ( 2 * bb_reverse ( bb_slider ) ) );
                 const uint64_t diagpos = diag1 ^ diag2;
 
                 // anti-diagonal moves

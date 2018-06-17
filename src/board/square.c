@@ -32,6 +32,15 @@
 static char square_text[MAX_SQUARE_TEXT];
 
 
+// ==================================================================
+//
+// public functions
+//
+// ==================================================================
+
+
+
+
 /**
  * @brief       Returns the rank for the given square
  * @param sq    The square

@@ -33,9 +33,9 @@
 #define MOVE_LIST_MAX_LEN       2048
 
 struct move_list {
-        uint32_t 	struct_init_key;
-        uint16_t 	move_count;
-        uint16_t 		move_list[MOVE_LIST_MAX_LEN];
+        uint32_t        struct_init_key;
+        uint16_t        move_count;
+        uint16_t        move_list[MOVE_LIST_MAX_LEN];
 };
 
 
@@ -50,7 +50,7 @@ struct move_list {
 /**
  * @brief       Allocates and initialises a new move list
  *
- * @return A ptr to a new move_list instance
+ * @return      A ptr to a new move_list instance
  */
 struct move_list* mvl_allocate ( void )
 {
@@ -76,8 +76,8 @@ void mvl_deallocate ( struct move_list *mvl )
 /**
  * @brief       Extract move count from move list
  *
- * @param mvl Pointer to move_list
- * @return Number of moves in the move list
+ * @param mvl   Pointer to move_list
+ * @return              Number of moves in the move list
  */
 uint16_t mvl_get_move_count ( const struct move_list *mvl )
 {
@@ -86,28 +86,30 @@ uint16_t mvl_get_move_count ( const struct move_list *mvl )
 }
 
 /**
- * @brief 	Returns the move at the given place in the move list
+ * @brief       Returns the move at the given place in the move list
  *
- * @param mvl The move list
+ * @param mvl   The move list
  * @param offset The move offset in the move list
- * @return The move at the move list offset
+ * @return      The move at the move list offset
  */
 uint16_t mvl_get_move_at_offset ( const struct move_list *mvl, uint16_t offset )
 {
         assert ( validate_move_list ( mvl ) );
+        assert ( offset <= mvl->move_count -1 );
 
         return mvl->move_list[offset];
 }
 
 /**
- * @brief 		Appends a move to the end of the current move_list
+ * @brief       Appends a move to the end of the current move_list
  *
- * @param mvl The move_list instance
- * @param mv The move to add
+ * @param mvl   The move_list instance
+ * @param mv    The move to add
  */
 void mvl_add ( struct move_list *mvl, uint16_t mv )
 {
         assert ( validate_move_list ( mvl ) );
+        assert ( validate_move ( mv ) );
 
         mvl->move_list[mvl->move_count] = mv;
         mvl->move_count++;
@@ -116,7 +118,7 @@ void mvl_add ( struct move_list *mvl, uint16_t mv )
 /**
  * @brief       Resets the move list to the initial empty state
  *
- * @param mvl Pointer to the move list
+ * @param mvl   Pointer to the move list
  */
 void mvl_reset ( struct move_list *mvl )
 {
@@ -135,6 +137,7 @@ void mvl_reset ( struct move_list *mvl )
 bool mvl_contains_move ( const struct move_list *mvl, const uint16_t mv )
 {
         assert ( validate_move_list ( mvl ) );
+        assert ( validate_move ( mv ) );
 
         for ( int i = 0; i < mvl->move_count; i++ ) {
                 if ( mvl->move_list[i] == mv ) {
@@ -174,22 +177,22 @@ bool validate_move_list ( const struct move_list *mvl )
                 assert ( false );
         }
 
-        if ( mvl->move_count > MOVE_LIST_MAX_LEN ) {
+        if ( mvl->move_count >= MOVE_LIST_MAX_LEN ) {
                 assert ( false );
-        }
-
-        for ( int i = 0; i < mvl->move_count; i++ ) {
-                uint16_t mv = mvl->move_list[i];
-                assert ( validate_move ( mv ) );
         }
 
         return true;
 }
 
+
+/**
+ * @brief       Returns ths max allowed size of the move list
+ *
+ * @return      The max size
+ */
 uint16_t mvl_get_mvl_max_size ( void )
 {
         return MOVE_LIST_MAX_LEN;
-
 }
 
 

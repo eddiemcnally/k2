@@ -40,8 +40,7 @@
 
 int main ( void )
 {
-
-
+        
         const struct CMUnitTest tests[] = {
                 // FEN Testing
                 cmocka_unit_test ( test_fen_pieces_init_position ),

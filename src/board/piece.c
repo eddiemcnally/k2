@@ -43,6 +43,13 @@ enum piece_values {
 #define     COLOUR_MASK     0x03
 
 
+// ==================================================================
+//
+// public functions
+//
+// ==================================================================
+
+
 /**
  * @brief       Tests if the given piece is WHITE
  *
@@ -146,23 +153,29 @@ uint8_t pce_get_array_idx ( const enum piece pce )
         assert ( validate_piece ( pce ) );
         switch ( pce ) {
         case WPAWN:
-        case BPAWN:
                 return 0;
-        case WKNIGHT:
-        case BKNIGHT:
+        case BPAWN:
                 return 1;
-        case WBISHOP:
-        case BBISHOP:
+        case WKNIGHT:
                 return 2;
-        case WROOK:
-        case BROOK:
+        case BKNIGHT:
                 return 3;
-        case WQUEEN:
-        case BQUEEN:
+        case WBISHOP:
                 return 4;
-        case WKING:
-        case BKING:
+        case BBISHOP:
                 return 5;
+        case WROOK:
+                return 6;
+        case BROOK:
+                return 7;
+        case WQUEEN:
+                return 8;
+        case BQUEEN:
+                return 9;
+        case WKING:
+                return 10;
+        case BKING:
+                return 11;
         default:
                 assert ( false );
         }

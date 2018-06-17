@@ -28,6 +28,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <setjmp.h>
 #include <cmocka.h>
 #include "position.h"
@@ -55,13 +56,13 @@ void test_board_brd_bulk_add_remove_piece ( void **state )
         for ( int i = 0; i < NUM_PIECES; i++ ) {
                 for ( enum square sq = a1; sq <= h8; sq++ ) {
                         enum piece pce = pce_list[i];
-
                         // add piece
                         brd_add_piece ( brd, pce, sq );
 
                         // verify it's there
                         enum piece found_pce;
                         bool found = brd_try_get_piece_on_square ( brd, sq, &found_pce );
+
                         assert_true ( found );
                         assert_true ( found_pce == pce );
                         bool is_occupied = brd_is_sq_occupied ( brd, sq );
@@ -442,120 +443,110 @@ void test_board_brd_try_get_piece_on_square ( void **state )
 
         enum piece pce;
 
-        assert_false ( brd_try_get_piece_on_square ( brd,   a1, &pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   a2 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   a3 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   a4 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, a1, &pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, a2 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, a3 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, a4 ,&pce ) );
         assert_true ( pce == WROOK );
-        assert_false ( brd_try_get_piece_on_square ( brd,   a5 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   a6 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   a7 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, a5 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, a6 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, a7 ,&pce ) );
         assert_true ( pce == BQUEEN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   a8 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, a8 ,&pce ) );
 
-        assert_true ( brd_try_get_piece_on_square ( brd,   b1 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, b1 ,&pce ) );
         assert_true ( pce == BBISHOP );
-        assert_true ( brd_try_get_piece_on_square ( brd,   b2 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, b2 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   b3 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   b4 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, b3 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, b4 ,&pce ) );
         assert_true ( pce == WKING );
-        assert_false ( brd_try_get_piece_on_square ( brd,   b5 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   b6 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, b5 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, b6 ,&pce ) );
         assert_true ( pce == BKING );
-        assert_true ( brd_try_get_piece_on_square ( brd,   b7 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, b7 ,&pce ) );
         assert_true ( pce == WBISHOP );
-        assert_true ( brd_try_get_piece_on_square ( brd,   b8 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, b8 ,&pce ) );
         assert_true ( pce == BKNIGHT );
 
-        assert_true ( brd_try_get_piece_on_square ( brd,   c1 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, c1 ,&pce ) );
         assert_true ( pce == WKNIGHT );
-        assert_false ( brd_try_get_piece_on_square ( brd,   c2 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   c3 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, c2 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, c3 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_true ( brd_try_get_piece_on_square ( brd,   c4 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, c4 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   c5 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   c6 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   c7 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   c8 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, c5 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, c6 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, c7 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, c8 ,&pce ) );
 
-        assert_true ( brd_try_get_piece_on_square ( brd,   d1 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, d1 ,&pce ) );
         assert_true ( pce == BKNIGHT );
-        assert_false ( brd_try_get_piece_on_square ( brd,   d2 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   d3 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, d2 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, d3 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   d4 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   d5 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, d4 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, d5 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   d6 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   d7 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   d8 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, d6 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, d7 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, d8 ,&pce ) );
         assert_true ( pce == WROOK );
 
-        assert_true ( brd_try_get_piece_on_square ( brd,   e1 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, e1 ,&pce ) );
         assert_true ( pce == BROOK );
-        assert_true ( brd_try_get_piece_on_square ( brd,   e2 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, e2 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   e3 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   e4 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, e3 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, e4 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   e5 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   e6 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   e7 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   e8 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, e5 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, e6 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, e7 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, e8 ,&pce ) );
         assert_true ( pce == WKNIGHT );
 
-        assert_true ( brd_try_get_piece_on_square ( brd,   f1 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, f1 ,&pce ) );
         assert_true ( pce == WQUEEN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   f2 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   f3 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, f2 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, f3 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_true ( brd_try_get_piece_on_square ( brd,   f4 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, f4 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_true ( brd_try_get_piece_on_square ( brd,   f5 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, f5 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_true ( brd_try_get_piece_on_square ( brd,   f6 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, f6 ,&pce ) );
         assert_true ( pce == BBISHOP );
-        assert_false ( brd_try_get_piece_on_square ( brd,   f7 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   f8 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, f7 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, f8 ,&pce ) );
         assert_true ( pce == WBISHOP );
 
-        assert_false ( brd_try_get_piece_on_square ( brd,   g1 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   g2 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, g1 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, g2 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_true ( brd_try_get_piece_on_square ( brd,   g3 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, g3 ,&pce ) );
         assert_true ( pce == BROOK );
-        assert_true ( brd_try_get_piece_on_square ( brd,   g4 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, g4 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_true ( brd_try_get_piece_on_square ( brd,   g5 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, g5 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   g6 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   g7 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   g8 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, g6 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, g7 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, g8 ,&pce ) );
 
-        assert_false ( brd_try_get_piece_on_square ( brd,   h1 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   h2 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, h1 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, h2 ,&pce ) );
         assert_true ( pce == WPAWN );
-        assert_true ( brd_try_get_piece_on_square ( brd,   h3 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, h3 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   h4 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   h5 ,&pce ) );
-        assert_true ( brd_try_get_piece_on_square ( brd,   h6 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, h4 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, h5 ,&pce ) );
+        assert_true ( brd_try_get_piece_on_square ( brd, h6 ,&pce ) );
         assert_true ( pce == BPAWN );
-        assert_false ( brd_try_get_piece_on_square ( brd,   h7 ,&pce ) );
-        assert_false ( brd_try_get_piece_on_square ( brd,   h8 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, h7 ,&pce ) );
+        assert_false ( brd_try_get_piece_on_square ( brd, h8 ,&pce ) );
 
 }
 
 
-
-static bool is_sq_in_list ( const enum square * sqlist, const int list_size, const enum square sq_to_check )
-{
-        for ( int i = 0; i < list_size; i++ ) {
-                if ( * ( sqlist + i ) == sq_to_check ) {
-                        return true;
-                }
-        }
-        return false;
-}
