@@ -45,7 +45,7 @@ void test_move_quiet_move_encode_decode ( void **state )
                                 continue;
                         }
 
-                        uint16_t mv = move_encode_quiet ( from_sq, to_sq );
+                        const uint16_t mv = move_encode_quiet ( from_sq, to_sq );
 
                         enum square decoded_from = move_decode_from_sq ( mv );
                         enum square decoded_to = move_decode_to_sq ( mv );

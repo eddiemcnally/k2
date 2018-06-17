@@ -22,6 +22,7 @@ message("Setting build target to '${CMAKE_BUILD_TYPE}'")
 
 
 set (ENGINE_COMPILER_WARNS "-std=c11 \
+        -o2 \
         -Wpedantic \
         -Wall \
         -Wextra \

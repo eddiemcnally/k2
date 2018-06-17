@@ -173,6 +173,8 @@ uint16_t move_encode_promoted ( const enum square from_sq, const enum square to_
  */
 enum piece_class move_decode_promotion_piece_class ( const uint16_t mv )
 {
+        assert ( validate_move ( mv ) );
+
         const uint16_t m = mv & MV_MASK_FLAGS;
 
         switch ( m ) {
@@ -268,6 +270,9 @@ uint16_t move_encode_castle_queenside_black ( void )
  */
 uint16_t move_encode_pawn_double_first ( const enum square from_sq, const enum square to_sq )
 {
+        assert ( validate_square ( from_sq ) );
+        assert ( validate_square ( to_sq ) );
+
         uint16_t mv = encode_to_from ( from_sq, to_sq );
         set_flag ( &mv, MV_FLG_DOUBLE_PAWN );
         return mv;
@@ -322,10 +327,8 @@ enum square move_decode_to_sq ( const uint16_t mv )
  * @param mv The move to test
  * @return true if quiet, false otherwise
  */
-bool move_is_quiet ( uint16_t mv )
+bool move_is_quiet ( const uint16_t mv )
 {
-        assert ( validate_move ( mv ) );
-
         uint16_t m = ( ( uint16_t ) mv ) & MV_MASK_FLAGS;
         return m == MV_FLG_QUIET;
 }
@@ -337,7 +340,7 @@ bool move_is_quiet ( uint16_t mv )
  * @param mv The move to test
  * @return true if Capture, false otherwise
  */
-bool move_is_capture ( uint16_t mv )
+bool move_is_capture ( const uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
@@ -351,7 +354,7 @@ bool move_is_capture ( uint16_t mv )
  * @param mv The move to test
  * @return true if a promotion, false otherwise
  */
-bool move_is_promotion ( uint16_t mv )
+bool move_is_promotion ( const uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
@@ -365,7 +368,7 @@ bool move_is_promotion ( uint16_t mv )
  * @param mv The move to test
  * @return true if an En Passant move, false otherwise
  */
-bool move_is_en_passant ( uint16_t mv )
+bool move_is_en_passant ( const uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 
@@ -380,7 +383,7 @@ bool move_is_en_passant ( uint16_t mv )
  * @param mv The move print
  * @return The move in test
  */
-char *move_print ( uint16_t mv )
+char *move_print ( const uint16_t mv )
 {
         assert ( validate_move ( mv ) );
 

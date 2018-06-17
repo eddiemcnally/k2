@@ -352,24 +352,17 @@ static void populate_square ( struct board *brd, const enum piece pce, const enu
         const uint8_t pce_off = pce_get_array_idx ( pce );
         const uint8_t col_off = pce_col_get_array_idx ( col );
 
-        uint64_t pce_bb = brd->piece_bb[pce_off];
-        uint64_t brd_bb = brd->bb_board;
-        uint64_t col_bb = brd->bb_colour[col_off];
         if ( state == true ) {
-                bb_set_square ( &pce_bb, sq );
-                bb_set_square ( &brd_bb, sq );
-                bb_set_square ( &col_bb, sq );
+                brd->piece_bb[pce_off] = bb_set_square ( brd->piece_bb[pce_off], sq );
+                brd->bb_board = bb_set_square ( brd->bb_board, sq );
+                brd->bb_colour[col_off] = bb_set_square ( brd->bb_colour[col_off], sq );
                 brd->pce_square[sq] = pce;
         } else {
-                bb_clear_square ( &pce_bb, sq );
-                bb_clear_square ( &brd_bb, sq );
-                bb_clear_square ( &col_bb, sq );
+                brd->piece_bb[pce_off] = bb_clear_square ( brd->piece_bb[pce_off], sq );
+                brd->bb_board = bb_clear_square ( brd->bb_board, sq );
+                brd->bb_colour[col_off] = bb_clear_square ( brd->bb_colour[col_off], sq );
                 brd->pce_square[sq] = pce_get_no_piece();
         }
-
-        brd->piece_bb[pce_off] = pce_bb;
-        brd->bb_board = brd_bb;
-        brd->bb_colour[col_off] = col_bb;
 }
 
 

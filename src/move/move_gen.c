@@ -348,9 +348,10 @@ static void gen_white_pawn_double_first_move ( const struct board *brd, struct m
         uint64_t pawns_on_rank_2 = all_pawns_bb & RANK_2_BB;
 
         while ( pawns_on_rank_2 != 0 ) {
-                enum square from_sq = bb_pop_1st_bit ( &pawns_on_rank_2 );
-                enum square from_plus_1 = sq_get_square_plus_1_rank ( from_sq );
-                enum square from_plus_2 = sq_get_square_plus_1_rank ( from_plus_1 );
+                const enum square from_sq = bb_pop_1st_bit ( &pawns_on_rank_2 );
+                const enum square from_plus_1 = sq_get_square_plus_1_rank ( from_sq );
+                const enum square from_plus_2 = sq_get_square_plus_1_rank ( from_plus_1 );
+                
                 try_encode_double_pawn_move ( brd, from_sq, from_plus_1, from_plus_2, mvl );
         }
 }
@@ -364,9 +365,10 @@ static void gen_black_pawn_double_first_move ( const struct board *brd, struct m
         uint64_t pawns_on_rank_7 = all_pawns_bb & RANK_7_BB;
 
         while ( pawns_on_rank_7 != 0 ) {
-                enum square from_sq = bb_pop_1st_bit ( &pawns_on_rank_7 );
-                enum square from_minus_1 = sq_get_square_minus_1_rank ( from_sq );
-                enum square from_minus_2 = sq_get_square_minus_1_rank ( from_minus_1 );
+                const enum square from_sq = bb_pop_1st_bit ( &pawns_on_rank_7 );
+                const enum square from_minus_1 = sq_get_square_minus_1_rank ( from_sq );
+                const enum square from_minus_2 = sq_get_square_minus_1_rank ( from_minus_1 );
+                
                 try_encode_double_pawn_move ( brd, from_sq, from_minus_1, from_minus_2, mvl );
         }
 }

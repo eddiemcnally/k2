@@ -38,7 +38,7 @@ void test_bitboard_pop_first_bit_all_squares ( void **state )
 {
         uint64_t val = 0;
         for ( enum square sq = a1; sq <= h8; sq++ ) {
-                bb_set_square ( &val, sq );
+                val = bb_set_square ( val, sq );
         }
 
         assert_true ( val == 0xffffffffffffffff );
@@ -56,14 +56,14 @@ void test_bitboard_pop_first_bit_random_squares ( void **state )
 
         uint64_t val = 0;
 
-        bb_set_square ( &val, a1 );
-        bb_set_square ( &val, b5 );
-        bb_set_square ( &val, c7 );
-        bb_set_square ( &val, d3 );
-        bb_set_square ( &val, e5 );
-        bb_set_square ( &val, f8 );
-        bb_set_square ( &val, g1 );
-        bb_set_square ( &val, h8 );
+        val = bb_set_square ( val, a1 );
+        val = bb_set_square ( val, b5 );
+        val = bb_set_square ( val, c7 );
+        val = bb_set_square ( val, d3 );
+        val = bb_set_square ( val, e5 );
+        val = bb_set_square ( val, f8 );
+        val = bb_set_square ( val, g1 );
+        val = bb_set_square ( val, h8 );
 
         enum square popped = bb_pop_1st_bit ( &val );
         assert_true ( popped == a1 );
@@ -148,7 +148,7 @@ void test_bb_get_sq_mask ( void **state )
                 is_set = bb_is_set ( bb, sq );
                 assert_true ( is_set );
 
-                bb_clear_square ( &bb, sq );
+                bb = bb_clear_square ( bb, sq );
                 is_set = bb_is_set ( bb, sq );
                 assert_false ( is_set );
         }
@@ -164,11 +164,11 @@ void test_bitboard_set_test_clear_bit ( void **state )
                 is_set = bb_is_set ( bb, sq );
                 assert_false ( is_set );
 
-                bb_set_square ( &bb, sq );
+                bb = bb_set_square ( bb, sq );
                 is_set = bb_is_set ( bb, sq );
                 assert_true ( is_set );
 
-                bb_clear_square ( &bb, sq );
+                bb = bb_clear_square ( bb, sq );
                 is_set = bb_is_set ( bb, sq );
                 assert_false ( is_set );
         }

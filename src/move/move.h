@@ -42,10 +42,10 @@ enum square move_decode_from_sq ( const uint16_t mv );
 enum square move_decode_to_sq ( const uint16_t mv );
 enum piece_class move_decode_promotion_piece_class ( const uint16_t mv );
 
-bool move_is_quiet ( uint16_t mv );
-bool move_is_capture ( uint16_t mv );
-bool move_is_promotion ( uint16_t mv );
-bool move_is_en_passant ( uint16_t mv );
+bool move_is_quiet ( const uint16_t mv );
+bool move_is_capture ( const uint16_t mv );
+bool move_is_promotion ( const uint16_t mv );
+bool move_is_en_passant ( const uint16_t mv );
 
 char *move_print ( uint16_t mv );
 

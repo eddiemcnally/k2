@@ -52,7 +52,7 @@ void occ_mask_gen_ranks_files ( void )
                 for ( uint8_t j = FILE_A; j <= FILE_H; j++ ) {
 
                         enum square sq = sq_gen_from_rank_file ( i, j );
-                        bb_set_square ( &mask, sq );
+                        mask = bb_set_square ( mask, sq );
                 }
                 r_masks[i] = mask;
         }
@@ -62,7 +62,7 @@ void occ_mask_gen_ranks_files ( void )
                 for ( uint8_t j = RANK_1; j <= RANK_8; j++ ) {
 
                         enum square sq = sq_gen_from_rank_file ( j, i );
-                        bb_set_square ( &mask, sq );
+                        mask = bb_set_square ( mask, sq );
                 }
                 f_masks[i] = mask;
         }
@@ -379,7 +379,7 @@ void occ_mask_gen_rook ( uint64_t * occ_mask_array )
                 }
 
                 // clear the square we're on
-                bb_clear_square ( &b, sq );
+                b = bb_clear_square ( b, sq );
 
                 occ_mask_array[sq] = b;
         }
@@ -460,7 +460,7 @@ void occ_mask_gen_bishop ( uint64_t * occ_mask_array )
                 }
 
                 // clear our square
-                bb_clear_square ( &b, sq );
+                b = bb_clear_square ( b, sq );
 
                 occ_mask_array[sq] = b;
         }
@@ -470,7 +470,7 @@ void set_dest_sq_if_valid ( uint8_t rank, uint8_t file, uint64_t * bb )
 {
         if ( IS_VALID_FILE ( file ) && IS_VALID_RANK ( rank ) ) {
                 enum square dest_sq = sq_gen_from_rank_file ( rank, file );
-                bb_set_square ( bb, ( enum square ) dest_sq );
+                *bb = bb_set_square ( *bb, ( enum square ) dest_sq );
                 //printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
         } else {
                 //printf("XXXX bad rank/file: %d/%d\n", rank, file);
@@ -506,7 +506,7 @@ void occ_mask_gen_diagonal_occupancy_masks ( void )
                         dest_file--;
                 }
                 // clear our square
-                bb_clear_square ( &b, sq );
+                b = bb_clear_square ( b, sq );
                 diagonal[sq] |= b;
 
                 // move NW
@@ -519,7 +519,7 @@ void occ_mask_gen_diagonal_occupancy_masks ( void )
                         dest_file--;
                 }
                 // clear our square
-                bb_clear_square ( &b, sq );
+                b = bb_clear_square ( b, sq );
                 antidiagonal[sq] |= b;
 
                 // move SE
@@ -532,7 +532,7 @@ void occ_mask_gen_diagonal_occupancy_masks ( void )
                         dest_file++;
                 }
                 // clear our square
-                bb_clear_square ( &b, sq );
+                b = bb_clear_square ( b, sq );
                 antidiagonal[sq] |= b;
 
                 // move NE
@@ -545,12 +545,9 @@ void occ_mask_gen_diagonal_occupancy_masks ( void )
                         dest_file++;
                 }
                 // clear our square
-                bb_clear_square ( &b, sq );
+                b = bb_clear_square ( b, sq );
                 diagonal[sq] |= b;
-
         }
-
-
 }
 
 
