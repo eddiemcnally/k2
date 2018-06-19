@@ -351,7 +351,7 @@ static void gen_white_pawn_double_first_move ( const struct board *brd, struct m
                 const enum square from_sq = bb_pop_1st_bit ( &pawns_on_rank_2 );
                 const enum square from_plus_1 = sq_get_square_plus_1_rank ( from_sq );
                 const enum square from_plus_2 = sq_get_square_plus_1_rank ( from_plus_1 );
-                
+
                 try_encode_double_pawn_move ( brd, from_sq, from_plus_1, from_plus_2, mvl );
         }
 }
@@ -368,7 +368,7 @@ static void gen_black_pawn_double_first_move ( const struct board *brd, struct m
                 const enum square from_sq = bb_pop_1st_bit ( &pawns_on_rank_7 );
                 const enum square from_minus_1 = sq_get_square_minus_1_rank ( from_sq );
                 const enum square from_minus_2 = sq_get_square_minus_1_rank ( from_minus_1 );
-                
+
                 try_encode_double_pawn_move ( brd, from_sq, from_minus_1, from_minus_2, mvl );
         }
 }
@@ -536,16 +536,17 @@ static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece
 {
         // bitboard representing squares containing all pieces for the given colour
         uint64_t bb = brd_get_piece_bb ( brd, pce_to_move );
-        const enum piece_class pce_type = pce_get_piece_class ( pce_to_move );
 
         while ( bb != 0 ) {
                 const enum square from_sq = bb_pop_1st_bit ( &bb );
                 uint64_t occ_mask = 0;
-                switch ( pce_type ) {
-                case KNIGHT:
+                switch ( pce_to_move ) {
+                case WKNIGHT:
+                case BKNIGHT:
                         occ_mask = occ_mask_get_knight ( from_sq );
                         break;
-                case KING:
+                case WKING:
+                case BKING:
                         occ_mask = occ_mask_get_king ( from_sq );
                         break;
                 default:

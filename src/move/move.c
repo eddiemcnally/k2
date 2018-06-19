@@ -128,25 +128,27 @@ uint16_t move_encode_promoted ( const enum square from_sq, const enum square to_
 
         uint16_t mv = encode_to_from ( from_sq, to_sq );
 
-        enum piece_class pce_type = pce_get_piece_class ( promoted_piece );
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
-        switch ( pce_type ) {
-        case KNIGHT:
+        switch ( promoted_piece ) {
+        case WKNIGHT:
+        case BKNIGHT:
                 mv |= MV_FLG_PROMOTE_KNIGHT;
                 break;
 
-        case BISHOP:
+        case WBISHOP:
+        case BBISHOP:
                 mv |= MV_FLG_PROMOTE_BISHOP;
                 break;
 
-        case ROOK:
+        case WROOK:
+        case BROOK:
                 mv |= MV_FLG_PROMOTE_ROOK;
                 break;
 
-        case QUEEN:
+        case WQUEEN:
+        case BQUEEN:
                 mv |= MV_FLG_PROMOTE_QUEEN;
                 break;
 
@@ -169,9 +171,9 @@ uint16_t move_encode_promoted ( const enum square from_sq, const enum square to_
  * @brief       Extracts the piece class from a promotion move
  *
  * @param mv    The move
- * @return      The piece class
+ * @return      The piece
  */
-enum piece_class move_decode_promotion_piece_class ( const uint16_t mv )
+enum piece move_decode_promotion_piece ( const uint16_t mv , const enum colour side )
 {
         assert ( validate_move ( mv ) );
 
@@ -180,16 +182,20 @@ enum piece_class move_decode_promotion_piece_class ( const uint16_t mv )
         switch ( m ) {
         case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
         case MV_FLG_PROMOTE_KNIGHT:
-                return KNIGHT;
+                if ( side == WHITE ) return WKNIGHT;
+                return BKNIGHT;
         case MV_FLG_PROMOTE_BISHOP_CAPTURE:
         case MV_FLG_PROMOTE_BISHOP:
-                return BISHOP;
+                if ( side == WHITE ) return WBISHOP;
+                return BBISHOP;
         case MV_FLG_PROMOTE_QUEEN_CAPTURE:
         case MV_FLG_PROMOTE_QUEEN:
-                return QUEEN;
+                if ( side == WHITE ) return WQUEEN;
+                return BQUEEN;
         case MV_FLG_PROMOTE_ROOK_CAPTURE:
         case MV_FLG_PROMOTE_ROOK:
-                return ROOK;
+                if ( side == WHITE ) return WROOK;
+                return BROOK;
         default:
                 assert ( false );
         }

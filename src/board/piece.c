@@ -40,7 +40,8 @@ enum piece_values {
         PCE_VAL_KING    = 50000
 };
 
-#define     COLOUR_MASK     0x03
+#define         COLOUR_MASK     0x01
+#define         NO_PIECE        0xFF
 
 
 // ==================================================================
@@ -59,7 +60,7 @@ enum piece_values {
 bool pce_is_white ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
-        return ( ( pce & WHITE ) != 0 );
+        return ( ( pce & COLOUR_MASK ) == WHITE );
 }
 
 /**
@@ -71,7 +72,7 @@ bool pce_is_white ( const enum piece pce )
 bool pce_is_black ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
-        return ( ( pce & BLACK ) != 0 );
+        return ( pce_is_white ( pce ) == false );
 }
 
 /**
@@ -84,8 +85,9 @@ enum colour swap_side ( const enum colour col )
 {
         assert ( validate_colour ( col ) );
 
-        enum colour inverted = ~col;
-        return ( enum colour ) ( inverted & COLOUR_MASK );
+        uint16_t opp = ~col;
+        return ( enum colour ) ( opp & COLOUR_MASK );
+
 }
 
 /**
@@ -97,6 +99,7 @@ enum colour swap_side ( const enum colour col )
 enum colour pce_get_colour ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
+
         return ( enum colour ) ( pce & COLOUR_MASK );
 }
 
@@ -108,7 +111,7 @@ enum colour pce_get_colour ( const enum piece pce )
 */
 enum piece pce_get_no_piece ( void )
 {
-        return ( enum piece ) ( 0 );
+        return ( enum piece ) ( NO_PIECE );
 }
 
 /**
@@ -120,20 +123,25 @@ enum piece pce_get_no_piece ( void )
 uint32_t pce_get_value ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
-        enum piece_class p = pce_get_piece_class ( pce );
 
-        switch ( p ) {
-        case PAWN:
+        switch ( pce ) {
+        case WPAWN:
+        case BPAWN:
                 return PCE_VAL_PAWN;
-        case BISHOP:
+        case WBISHOP:
+        case BBISHOP:
                 return PCE_VAL_BISHOP;
-        case KNIGHT:
+        case WKNIGHT:
+        case BKNIGHT:
                 return PCE_VAL_KNIGHT;
-        case ROOK:
+        case WROOK:
+        case BROOK:
                 return PCE_VAL_ROOK;
-        case QUEEN:
+        case WQUEEN:
+        case BQUEEN:
                 return PCE_VAL_QUEEN;
-        case KING:
+        case WKING:
+        case BKING:
                 return PCE_VAL_KING;
         default:
                 assert ( false );
@@ -191,14 +199,8 @@ uint8_t pce_get_array_idx ( const enum piece pce )
 uint8_t pce_col_get_array_idx ( const enum colour col )
 {
         assert ( validate_colour ( col ) );
-        switch ( col ) {
-        case WHITE:
-                return 0;
-        case BLACK:
-                return 1;
-        default:
-                assert ( false );
-        }
+
+        return ( uint8_t ) col;
 }
 
 
@@ -288,27 +290,6 @@ enum piece pce_get_from_label ( const char c )
 
 }
 
-/**
- * @brief       Given a piece (eg, white pawn), returns the piece type (eg, pawn)
- *
- * @param piece The piece
- * @return The piece type
- */
-enum piece_class pce_get_piece_class ( const enum piece piece )
-{
-        assert ( validate_piece ( piece ) );
-        return ( enum piece_class ) ( piece & ( uint8_t ) ( ~COLOUR_MASK ) );
-}
-
-
-
-enum piece pce_get_piece ( const enum piece_class pc, const enum colour col )
-{
-        assert ( validate_piece_class ( pc ) );
-        assert ( validate_colour ( col ) );
-
-        return ( enum piece ) ( pc | col );
-}
 
 
 
@@ -339,25 +320,6 @@ bool validate_piece ( const enum piece pce )
         }
 }
 
-/**
- * @brief       Validates a piece class
- *
- * @param pce The piece class
- */
-bool validate_piece_class ( const enum piece_class pc )
-{
-        switch ( pc ) {
-        case PAWN:
-        case KNIGHT:
-        case BISHOP:
-        case ROOK:
-        case QUEEN:
-        case KING:
-                return true;
-        default:
-                assert ( false );
-        }
-}
 
 
 /**

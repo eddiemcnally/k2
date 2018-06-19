@@ -234,8 +234,7 @@ bool pos_try_make_move ( struct position *pos, const uint16_t mv )
                 }
 
                 if ( move_is_promotion ( mv ) ) {
-                        enum piece_class pc = move_decode_promotion_piece_class ( mv );
-                        enum piece pce_prom = pce_get_piece ( pc, pos->side_to_move );
+                        enum piece pce_prom = move_decode_promotion_piece(mv, pos->side_to_move );
                         brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
                         brd_remove_piece ( pos->brd, pce_to_move, to_sq );
                         brd_add_piece ( pos->brd, pce_prom, to_sq );
@@ -300,7 +299,7 @@ static bool validate_en_passant_pce_and_sq ( const struct position *pos )
         enum piece en_pass_pce;
         bool found = brd_try_get_piece_on_square ( pos->brd, pos->en_passant, &en_pass_pce );
         assert ( found == true );
-        assert ( pce_get_piece_class ( en_pass_pce ) == PAWN );
+        assert ( en_pass_pce == WPAWN || en_pass_pce == BPAWN );
         return true;
 }
 

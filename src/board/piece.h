@@ -29,57 +29,32 @@
 #include "piece.h"
 
 
+// enum value : zero = WHITE (to match lsb of piece)
 enum colour {
         // colours
-        WHITE   = 0x01,
-        BLACK   = 0x02,
-        NUM_COLOURS = 2
+        WHITE = 0,
+        BLACK,
 };
 
 
-/**
- * Definition of pieces; see https://chessprogramming.wikispaces.com/Pieces
- *  0000 0001   WHITE
- *  0000 0010   BLACK
- *  0000 0100   PAWN
- *  0000 1000   KNIGHT
- *  0001 0000   BISHOP
- *  0010 0000   ROOK
- *  0100 0000   QUEEN
- *  1000 0000   KING
- */
-enum piece_class {
-        // piece type
-        PAWN    = 0x04,
-        KNIGHT  = 0x08,
-        BISHOP  = 0x10,
-        ROOK    = 0x20,
-        QUEEN   = 0x40,
-        KING    = 0x80,
-};
-
+// lsb is colour, 0 = WHITE
 enum piece {
-        // white pieces
-        WPAWN   = ( PAWN | WHITE ),
-        WBISHOP = ( BISHOP | WHITE ),
-        WKNIGHT = ( KNIGHT | WHITE ),
-        WROOK   = ( ROOK | WHITE ),
-        WQUEEN  = ( QUEEN | WHITE ),
-        WKING   = ( KING | WHITE ),
-        // black pieces
-        BPAWN   = ( PAWN | BLACK ),
-        BBISHOP = ( BISHOP | BLACK ),
-        BKNIGHT = ( KNIGHT | BLACK ),
-        BROOK   = ( ROOK | BLACK ),
-        BQUEEN  = ( QUEEN | BLACK ),
-        BKING   = ( KING | BLACK ),
+        WPAWN = 0,
+        BPAWN,
+        WBISHOP,
+        BBISHOP,
+        WKNIGHT,
+        BKNIGHT,
+        WROOK,
+        BROOK,
+        WQUEEN,
+        BQUEEN,
+        WKING,
+        BKING
 };
 
-
-
-
-#define     NUM_PIECES          12
-#define     NUM_PIECE_CLASSES   6
+#define         NUM_COLOURS     2
+#define         NUM_PIECES      12
 
 
 bool pce_is_white ( const enum piece pce );
@@ -87,14 +62,11 @@ bool pce_is_black ( const enum piece pce );
 enum colour swap_side ( const enum colour side );
 enum colour pce_get_colour ( const enum piece pce );
 uint32_t pce_get_value ( const enum piece pce );
-enum piece_class pce_get_piece_class ( const enum piece piece );
 char pce_get_label ( const enum piece pce );
 enum piece pce_get_from_label ( const char c );
 uint8_t pce_get_array_idx ( const enum piece pce );
 uint8_t pce_col_get_array_idx ( const enum colour col );
 enum piece pce_get_no_piece ( void );
-enum piece pce_get_piece ( const enum piece_class pc, const enum colour col );
 bool validate_piece ( const enum piece pce );
 bool validate_colour ( const enum colour col );
 bool validate_label ( const char c );
-bool validate_piece_class ( const enum piece_class pc );

@@ -138,20 +138,20 @@ void test_move_decode_promotion_piece_white ( void **state )
         const enum square to_sq = a8;
 
         uint16_t mv = move_encode_promoted ( from_sq, to_sq, WKNIGHT, true );
-        enum piece_class pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == KNIGHT );
+        enum piece pce = move_decode_promotion_piece ( mv, WHITE );
+        assert_true ( pce == WKNIGHT );
 
         mv = move_encode_promoted ( from_sq, to_sq, WBISHOP, true );
-        pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == BISHOP );
+        pce = move_decode_promotion_piece ( mv, WHITE );
+        assert_true ( pce == WBISHOP );
 
         mv = move_encode_promoted ( from_sq, to_sq, WROOK, true );
-        pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == ROOK );
+        pce = move_decode_promotion_piece ( mv, WHITE );
+        assert_true ( pce == WROOK );
 
         mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, true );
-        pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == QUEEN );
+        pce = move_decode_promotion_piece ( mv, WHITE );
+        assert_true ( pce == WQUEEN );
 
 }
 
@@ -161,20 +161,20 @@ void test_move_decode_promotion_piece_black ( void **state )
         const enum square to_sq = a8;
 
         uint16_t mv = move_encode_promoted ( from_sq, to_sq, BKNIGHT, true );
-        enum piece_class pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == KNIGHT );
+        enum piece pce = move_decode_promotion_piece ( mv, BLACK );
+        assert_true ( pce == BKNIGHT );
 
         mv = move_encode_promoted ( from_sq, to_sq, BBISHOP, true );
-        pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == BISHOP );
+        pce = move_decode_promotion_piece ( mv, BLACK );
+        assert_true ( pce == BBISHOP );
 
         mv = move_encode_promoted ( from_sq, to_sq, BROOK, true );
-        pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == ROOK );
+        pce = move_decode_promotion_piece ( mv, BLACK );
+        assert_true ( pce == BROOK );
 
         mv = move_encode_promoted ( from_sq, to_sq, BQUEEN, true );
-        pce = move_decode_promotion_piece_class ( mv );
-        assert_true ( pce == QUEEN );
+        pce = move_decode_promotion_piece ( mv, BLACK );
+        assert_true ( pce == BQUEEN );
 
 }
 

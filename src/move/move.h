@@ -40,8 +40,7 @@ uint16_t move_encode_castle_queenside_black ( void );
 
 enum square move_decode_from_sq ( const uint16_t mv );
 enum square move_decode_to_sq ( const uint16_t mv );
-enum piece_class move_decode_promotion_piece_class ( const uint16_t mv );
-
+enum piece move_decode_promotion_piece ( const uint16_t mv , const enum colour side);
 bool move_is_quiet ( const uint16_t mv );
 bool move_is_capture ( const uint16_t mv );
 bool move_is_promotion ( const uint16_t mv );
