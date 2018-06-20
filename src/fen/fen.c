@@ -63,7 +63,7 @@ struct piece_location {
 
 
 // used to check struct is populated when passed into public functions
-#define STRUCT_INIT_KEY ((uint16_t)0xdeadbeef)
+static uint16_t STRUCT_INIT_KEY = 0xdead;
 
 
 struct castle_perms {

@@ -58,7 +58,7 @@ struct board {
 
 
 // used to check struct is populated when passed into public functions
-#define STRUCT_INIT_KEY         ((uint32_t)0xdeadbeef)
+const static uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
 
 static bool validate_struct_init ( const struct board *brd );
 static bool validate_square_empty ( const struct board *brd, const enum square to_sq );
@@ -256,7 +256,7 @@ bool validate_board ( const struct board* brd )
                 assert ( false );
         }
 
-        // check bitboard consistency
+        // check various bitboards agree with the pices on the squares
         for ( sq = a1; sq <= h8; sq++ ) {
                 is_occupied = bb_is_set ( brd->bb_board, sq );
 
@@ -270,23 +270,11 @@ bool validate_board ( const struct board* brd )
                 if ( is_occupied ) {
                         assert ( bb_is_set ( conflated_col_bb, sq ) );
                         assert ( brd->pce_square[sq] != pce_get_no_piece() );
+                        assert ( bb_is_set ( brd->bb_board, sq ) );
                 } else {
-                        assert ( bb_is_set ( conflated_col_bb, sq ) == false );
+                        assert ( bb_is_clear ( conflated_col_bb, sq ) );
                         assert ( brd->pce_square[sq] == pce_get_no_piece() );
-                }
-        }
-
-        // check piece bitboards
-        for ( int i = 0; i < NUM_PIECES; i++ ) {
-                uint64_t pce_bb = brd->piece_bb[i];
-
-                for ( sq = a1; sq <= h8; sq++ ) {
-                        is_occupied = bb_is_set ( pce_bb, sq );
-
-                        if ( is_occupied ) {
-                                assert ( bb_is_set ( brd->bb_board, sq ) );
-                                assert ( brd->pce_square[sq] != pce_get_no_piece() );
-                        }
+                        assert ( bb_is_clear ( brd->bb_board, sq ) );
                 }
         }
 
@@ -367,7 +355,7 @@ static void populate_square ( struct board *brd, const enum piece pce, const enu
                 col_bb = bb_clear_square ( col_bb, sq );
                 brd->pce_square[sq] = pce_get_no_piece();
         }
-        
+
         brd->piece_bb[pce_off] = pce_bb;
         brd->bb_board = brd_bb;
         brd->bb_colour[col_off] = col_bb;

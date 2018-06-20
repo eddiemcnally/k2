@@ -41,12 +41,13 @@ static void set_up_castle_permissions ( struct position *pos, const struct parse
 static bool validate_en_passant_pce_and_sq ( const struct position *pos );
 
 
+// key used to verify struct has been initialised
+const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
-#define STRUCT_INIT_KEY         ((uint32_t) 0xdeadbeef)
 #define MAX_GAME_MOVES          (1024)
 
 struct mv_undo {
-        uint16_t          move;
+        uint16_t        move;
         uint8_t         fifty_move_counter;
         uint8_t         castle_perm;
         uint64_t        board_hash;
@@ -57,7 +58,7 @@ struct mv_undo {
 
 
 struct position {
-        uint32_t struct_init_key;
+        uint16_t struct_init_key;
 
         // current board representation
         struct board *brd;
@@ -234,7 +235,7 @@ bool pos_try_make_move ( struct position *pos, const uint16_t mv )
                 }
 
                 if ( move_is_promotion ( mv ) ) {
-                        enum piece pce_prom = move_decode_promotion_piece(mv, pos->side_to_move );
+                        enum piece pce_prom = move_decode_promotion_piece ( mv, pos->side_to_move );
                         brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
                         brd_remove_piece ( pos->brd, pce_to_move, to_sq );
                         brd_add_piece ( pos->brd, pce_prom, to_sq );

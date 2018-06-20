@@ -124,6 +124,9 @@ uint32_t pce_get_value ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
 
+        // TODO : benchmark this switch statement - might we worth replacing
+        // it with an array lookup
+        //
         switch ( pce ) {
         case WPAWN:
         case BPAWN:
@@ -159,41 +162,14 @@ uint32_t pce_get_value ( const enum piece pce )
 uint8_t pce_get_array_idx ( const enum piece pce )
 {
         assert ( validate_piece ( pce ) );
-        switch ( pce ) {
-        case WPAWN:
-                return 0;
-        case BPAWN:
-                return 1;
-        case WKNIGHT:
-                return 2;
-        case BKNIGHT:
-                return 3;
-        case WBISHOP:
-                return 4;
-        case BBISHOP:
-                return 5;
-        case WROOK:
-                return 6;
-        case BROOK:
-                return 7;
-        case WQUEEN:
-                return 8;
-        case BQUEEN:
-                return 9;
-        case WKING:
-                return 10;
-        case BKING:
-                return 11;
-        default:
-                assert ( false );
-        }
+        return ( uint8_t ) pce;
 }
 
 
 /**
-* @brief Converts ths given colout to an array index.
+* @brief        Converts ths given colour to an array index.
 *
-* @param col p_col The colour
+* @param col    p_col The colour
 * @return uint8_t The array index
 */
 uint8_t pce_col_get_array_idx ( const enum colour col )

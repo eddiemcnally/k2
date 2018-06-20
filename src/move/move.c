@@ -131,6 +131,8 @@ uint16_t move_encode_promoted ( const enum square from_sq, const enum square to_
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
+        // TODO : benchmark this switch statement. Possibly replace with an
+        // array lookup of the flag
         switch ( promoted_piece ) {
         case WKNIGHT:
         case BKNIGHT:

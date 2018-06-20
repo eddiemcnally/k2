@@ -112,13 +112,12 @@ void test_piece_get_array_idx ( void **state )
 {
         assert_true ( pce_get_array_idx ( WPAWN ) == 0 );
         assert_true ( pce_get_array_idx ( BPAWN ) == 1 );
-       
-        assert_true ( pce_get_array_idx ( WKNIGHT ) == 2 );
-        assert_true ( pce_get_array_idx ( BKNIGHT ) == 3 );
 
-        assert_true ( pce_get_array_idx ( WBISHOP ) == 4 );
-        assert_true ( pce_get_array_idx ( BBISHOP ) == 5 );
+        assert_true ( pce_get_array_idx ( WBISHOP ) == 2 );
+        assert_true ( pce_get_array_idx ( BBISHOP ) == 3 );
 
+        assert_true ( pce_get_array_idx ( WKNIGHT ) == 4 );
+        assert_true ( pce_get_array_idx ( BKNIGHT ) == 5 );
 
         assert_true ( pce_get_array_idx ( WROOK ) == 6 );
         assert_true ( pce_get_array_idx ( BROOK ) == 7 );

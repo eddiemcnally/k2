@@ -86,10 +86,10 @@ uint64_t bb_clear_square ( const uint64_t bb, const enum square sq )
 }
 
 /**
- * @brief               Test if a square in the given bitboard is set
+ * @brief       Test if a square in the given bitboard is set
  *
- * @param bb The bitboard
- * @param sq The square
+ * @param bb    The bitboard
+ * @param sq    The square
  *
  * @return true if bit is set, false otherwise.
  */
@@ -99,6 +99,22 @@ bool bb_is_set ( const uint64_t bb, const enum square sq )
 
         return ( bb & ( BIT_0 << sq ) ) != 0;
 }
+
+/**
+ * @brief       Test if a square in the given bitboard is clear
+ *
+ * @param bb    The bitboard
+ * @param sq    The square
+ *
+ * @return true if bit is set, false otherwise.
+ */
+bool bb_is_clear ( const uint64_t bb, const enum square sq )
+{
+        assert ( validate_square ( sq ) );
+
+        return (bb_is_set(bb, sq) == false);
+}
+
 
 
 /**
