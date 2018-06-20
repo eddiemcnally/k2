@@ -206,10 +206,10 @@ void mv_gen_black_pawn_moves ( const struct position *pos, const struct board *b
 
 
 /**
- * @brief       Generates King moves
- * @param pos   The Position
- * @param side_to_move The side to move
- * @param mvl   the move list to append new moves to
+ * @brief               Generates King moves
+ * @param pos           The Position
+ * @param side_to_move  The side to move
+ * @param mvl           the move list to append new moves to
  */
 void mv_gen_king_moves ( const struct position *pos, const enum colour side_to_move, struct move_list *mvl )
 {
@@ -537,21 +537,28 @@ static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece
         // bitboard representing squares containing all pieces for the given colour
         uint64_t bb = brd_get_piece_bb ( brd, pce_to_move );
 
+        // set up func ptr to the relevant mask function
+        uint64_t ( *occ_mask_fn ) ( enum square );
+
+        switch ( pce_to_move ) {
+        case WKNIGHT:
+        case BKNIGHT:
+                occ_mask_fn = &occ_mask_get_knight;
+                break;
+        case WKING:
+        case BKING:
+                occ_mask_fn = &occ_mask_get_king;
+                break;
+        default:
+                assert ( false );
+        }
+
+
         while ( bb != 0 ) {
                 const enum square from_sq = bb_pop_1st_bit ( &bb );
                 uint64_t occ_mask = 0;
-                switch ( pce_to_move ) {
-                case WKNIGHT:
-                case BKNIGHT:
-                        occ_mask = occ_mask_get_knight ( from_sq );
-                        break;
-                case WKING:
-                case BKING:
-                        occ_mask = occ_mask_get_king ( from_sq );
-                        break;
-                default:
-                        assert ( false );
-                }
+
+                occ_mask = ( *occ_mask_fn ) ( from_sq );
 
                 // generate capture moves
                 // ----------------------
@@ -609,9 +616,9 @@ static void mv_gen_encode_multiple_capture ( uint64_t bb, const enum square from
 
 static void mv_gen_white_castle_moves ( const struct position *pos, struct move_list *mvl )
 {
-        uint8_t cp = pos_get_cast_perm ( pos );
-        struct board *brd = pos_get_board ( pos );
-        uint64_t occupied_bb = brd_get_board_bb ( brd );
+        const uint8_t cp = pos_get_cast_perm ( pos );
+        const struct board *brd = pos_get_board ( pos );
+        const uint64_t occupied_bb = brd_get_board_bb ( brd );
 
         if ( cast_perm_has_WK ( cp ) ) {
                 add_kingside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_WK, WHITE, mvl );
@@ -624,9 +631,9 @@ static void mv_gen_white_castle_moves ( const struct position *pos, struct move_
 
 static void mv_gen_black_castle_moves ( const struct position *pos, struct move_list *mvl )
 {
-        uint8_t cp = pos_get_cast_perm ( pos );
-        struct board *brd = pos_get_board ( pos );
-        uint64_t occupied_bb = brd_get_board_bb ( brd );
+        const uint8_t cp = pos_get_cast_perm ( pos );
+        const struct board *brd = pos_get_board ( pos );
+        const uint64_t occupied_bb = brd_get_board_bb ( brd );
 
         if ( cast_perm_has_BK ( cp ) ) {
                 add_kingside_move_if_no_blockers ( occupied_bb, CASTLE_MASK_BK, BLACK, mvl );

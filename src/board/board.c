@@ -58,7 +58,7 @@ struct board {
 
 
 // used to check struct is populated when passed into public functions
-const static uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
+static const uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
 
 static bool validate_struct_init ( const struct board *brd );
 static bool validate_square_empty ( const struct board *brd, const enum square to_sq );

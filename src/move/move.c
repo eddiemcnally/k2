@@ -397,14 +397,14 @@ char *move_print ( const uint16_t mv )
 
         static char move_string[6];
 
-        enum square from_sq = move_decode_from_sq ( mv );
-        enum square to_sq = move_decode_to_sq ( mv );
+        const enum square from_sq = move_decode_from_sq ( mv );
+        const enum square to_sq = move_decode_to_sq ( mv );
 
-        enum rank from_rank = sq_get_rank ( from_sq );
-        enum file from_file = sq_get_file ( from_sq );
+        const enum rank from_rank = sq_get_rank ( from_sq );
+        const enum file from_file = sq_get_file ( from_sq );
 
-        enum rank to_rank = sq_get_rank ( to_sq );
-        enum file to_file = sq_get_file ( to_sq );
+        const enum rank to_rank = sq_get_rank ( to_sq );
+        const enum file to_file = sq_get_file ( to_sq );
 
         sprintf ( move_string, "%c%c%c%c", ( 'a' + from_file ),
                   ( '1' + from_rank ), ( 'a' + to_file ), ( '1' + to_rank ) );
@@ -415,10 +415,10 @@ char *move_print ( const uint16_t mv )
 
 bool validate_move ( const uint16_t mv )
 {
-        enum square from = move_decode_from_sq ( mv );
-        enum square to = move_decode_to_sq ( mv );
-        bool from_ok = validate_square ( from );
-        bool to_ok = validate_square ( to );
+        const enum square from = move_decode_from_sq ( mv );
+        const enum square to = move_decode_to_sq ( mv );
+        const bool from_ok = validate_square ( from );
+        const bool to_ok = validate_square ( to );
         if ( from_ok && to_ok ) {
                 return true;
         }

@@ -28,8 +28,8 @@
 #include <assert.h>
 #include "bitboard.h"
 
-#define         BIT_0           ( (uint64_t) 0x01ull)
-#define         EMPTY_BITBOARD  ((uint64_t)0)
+static const uint64_t BIT_0 = 0x0000000000000001;
+static const uint64_t EMPTY_BITBOARD = 0;
 
 // A lookup table for reversing bits in a byte.
 // See https://graphics.stanford.edu/%7Eseander/bithacks.html#BitReverseTable
@@ -45,7 +45,8 @@ static const unsigned char BitReverseTable256[256] = {
 /**
  * @brief       Returns a bitboard with a single bit set representing the given square
  *
- * @param sq The square
+ * @param sq    The square
+ * @return      The bitboard with the set bit
  */
 uint64_t bb_get_sq_mask ( const enum square sq )
 {
@@ -60,9 +61,9 @@ uint64_t bb_get_sq_mask ( const enum square sq )
 /**
  * @brief       Set bit in bitboard representing the given square
  *
- * @param bb The bitboard
- * @param sq The square
- * @return given bitboard with sq bit set
+ * @param bb    The bitboard
+ * @param sq    The square
+ * @return      The given bitboard with sq bit set
  */
 uint64_t bb_set_square ( const uint64_t bb, const enum square sq )
 {
@@ -112,16 +113,16 @@ bool bb_is_clear ( const uint64_t bb, const enum square sq )
 {
         assert ( validate_square ( sq ) );
 
-        return (bb_is_set(bb, sq) == false);
+        return ( bb_is_set ( bb, sq ) == false );
 }
 
 
 
 /**
- * @brief               Counts the number of set bits in a bitboard. Uses a built-in GCC function
+ * @brief       Counts the number of set bits in a bitboard. Uses a built-in GCC function
  *
  * @param bb    The bitboard
- * @return The number of set bits
+ * @return      The number of set bits
  */
 uint8_t bb_count_bits ( const uint64_t bb )
 {
@@ -129,11 +130,11 @@ uint8_t bb_count_bits ( const uint64_t bb )
 }
 
 /**
- * @brief               Pops the lowest set bit, and clears the bit in the bitboard.  Uses gcc built-in function
+ * @brief       Pops the lowest set bit, and clears the bit in the bitboard.  Uses gcc built-in function
  * (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
  *
  * @param bb    The bitboard
- * @return The zero-based bit that was set
+ * @return      The zero-based bit that was set
  */
 enum square bb_pop_1st_bit ( uint64_t * bb )
 {
@@ -142,14 +143,18 @@ enum square bb_pop_1st_bit ( uint64_t * bb )
         return sq;
 }
 
-
+/**
+ * @brief       Returns an empty bitboard
+ *
+ * @return      The empty bitboard
+ */
 uint64_t bb_get_empty ( void )
 {
         return EMPTY_BITBOARD;
 }
 
 /**
- * @brief               Prints outs the bitboard as a chessboard with ranks and files
+ * @brief       Prints outs the bitboard as a chessboard with ranks and files
  *
  * @param bb    The bitboard
  */
@@ -183,7 +188,7 @@ void bb_print_as_board ( const uint64_t bb )
  * @brief       Reverses the bits in the given bitboard
  *
  * @param bb    The bitboard
- * @return The reversed bitboard
+ * @return      The reversed bitboard
  */
 uint64_t bb_reverse ( uint64_t bb )
 {

@@ -29,7 +29,7 @@
 #include "move.h"
 
 
-const static uint16_t MOVE_LIST_INIT_KEY = 0xdead;
+static const uint16_t MOVE_LIST_INIT_KEY = 0xdead;
 
 #define MOVE_LIST_MAX_LEN       2048
 

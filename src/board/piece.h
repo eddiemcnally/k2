@@ -50,7 +50,7 @@ enum piece {
         WQUEEN,
         BQUEEN,
         WKING,
-        BKING
+        BKING        
 };
 
 #define         NUM_COLOURS     2
