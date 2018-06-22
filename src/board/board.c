@@ -57,6 +57,13 @@ struct board {
 };
 
 
+// square operations
+enum sq_op {
+        SET_SQ,
+        CLEAR_SQ
+};
+
+
 // used to check struct is populated when passed into public functions
 static const uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
 
@@ -66,7 +73,7 @@ static bool validate_pce_on_sq ( const struct board *brd, const enum piece pce, 
 static void add_material ( struct board *brd, enum piece pce );
 static void remove_material ( struct board *brd, enum piece pce );
 static void init_struct ( struct board *brd );
-static void populate_square ( struct board *brd, const enum piece pce, const enum square sq, const bool state );
+static void populate_square ( struct board *brd, const enum piece pce, const enum square sq, const enum sq_op operation );
 
 
 // ==================================================================
@@ -161,7 +168,7 @@ void brd_add_piece ( struct board* brd, const enum piece pce, const enum square 
         assert ( validate_piece ( pce ) );
         assert ( validate_square_empty ( brd, sq ) );
 
-        populate_square ( brd, pce, sq, true );
+        populate_square ( brd, pce, sq, SET_SQ );
         add_material ( brd, pce );
 }
 
@@ -179,7 +186,7 @@ void brd_remove_piece ( struct board* brd, const enum piece pce, const enum squa
         assert ( validate_piece ( pce ) );
         assert ( validate_pce_on_sq ( brd, pce, sq ) );
 
-        populate_square ( brd, pce, sq, false );
+        populate_square ( brd, pce, sq, CLEAR_SQ );
         remove_material ( brd, pce );
 }
 
@@ -200,8 +207,8 @@ void brd_move_piece ( struct board* brd, const enum piece pce, const enum square
         assert ( validate_square_empty ( brd, to_sq ) );
         assert ( validate_pce_on_sq ( brd, pce, from_sq ) );
 
-        populate_square ( brd, pce, from_sq, false );
-        populate_square ( brd, pce, to_sq, true );
+        populate_square ( brd, pce, from_sq, CLEAR_SQ );
+        populate_square ( brd, pce, to_sq, SET_SQ );
 }
 
 
@@ -334,7 +341,8 @@ static void remove_material ( struct board *brd, enum piece pce )
 
 
 
-static void populate_square ( struct board *brd, const enum piece pce, const enum square sq, const bool state )
+static void populate_square ( struct board *brd, const enum piece pce,
+                              const enum square sq, const enum sq_op operation )
 {
         const enum colour col = pce_get_colour ( pce );
         const uint8_t pce_off = pce_get_array_idx ( pce );
@@ -344,16 +352,21 @@ static void populate_square ( struct board *brd, const enum piece pce, const enu
         uint64_t brd_bb = brd->bb_board;
         uint64_t col_bb = brd->bb_colour[col_off];
 
-        if ( state == true ) {
-                pce_bb = bb_set_square ( pce_bb, sq );
-                brd_bb = bb_set_square ( brd_bb, sq );
-                col_bb = bb_set_square ( col_bb, sq );
-                brd->pce_square[sq] = pce;
-        } else {
+        switch ( operation ) {
+        case CLEAR_SQ:
                 pce_bb = bb_clear_square ( pce_bb, sq );
                 brd_bb = bb_clear_square ( brd_bb, sq );
                 col_bb = bb_clear_square ( col_bb, sq );
                 brd->pce_square[sq] = pce_get_no_piece();
+                break;
+        case SET_SQ:
+                pce_bb = bb_set_square ( pce_bb, sq );
+                brd_bb = bb_set_square ( brd_bb, sq );
+                col_bb = bb_set_square ( col_bb, sq );
+                brd->pce_square[sq] = pce;
+                break;
+        default:
+                assert ( false );
         }
 
         brd->piece_bb[pce_off] = pce_bb;

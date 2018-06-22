@@ -39,6 +39,10 @@ static void init_pos_struct ( struct position *pos );
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
 static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
 static bool validate_en_passant_pce_and_sq ( const struct position *pos );
+static void push_position ( struct position *pos, const uint16_t move );
+static uint16_t pop_position ( struct position *pos );
+static void make_quiet_move ( struct position *pos, const enum piece pce_to_move,
+                              const enum square from_sq, const enum square to_sq );
 
 
 // key used to verify struct has been initialised
@@ -46,42 +50,39 @@ const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
 #define MAX_GAME_MOVES          (1024)
 
-struct mv_undo {
+struct mv_state {
         uint16_t        move;
         uint8_t         fifty_move_counter;
         uint8_t         castle_perm;
-        uint64_t        board_hash;
         enum square     en_passant;
         bool            en_pass_set;
+
+        // TODO add board hash
 };
 
 
 
 struct position {
-        uint16_t struct_init_key;
+        uint16_t        struct_init_key;
 
         // current board representation
-        struct board *brd;
+        struct board    *brd;
 
         // the next side to move
-        enum colour side_to_move;
-
-        // the square where en passent is active
-        enum square en_passant;
-        bool en_passant_set;
+        enum colour     side_to_move;
 
         // keeping track of ply
-        uint16_t ply;         // half-moves
-        uint16_t history_ply;
+        uint16_t        ply;         // half-moves
+        uint16_t        history_ply;
 
-        // castling permissions
-        uint8_t castle_perm;
-
-        uint8_t fifty_move_counter;
+        // state
+        uint8_t         fifty_move_counter;
+        uint8_t         castle_perm;
+        enum square     en_passant;
+        bool            en_passant_set;
 
         // move history
-        struct mv_undo history[MAX_GAME_MOVES];
-
+        struct mv_state history[MAX_GAME_MOVES];
 };
 
 
@@ -196,16 +197,18 @@ bool pos_try_make_move ( struct position *pos, const uint16_t mv )
 {
         assert ( validate_position ( pos ) );
 
-        pos->ply++;
+        push_position ( pos, mv );
 
         const enum square from_sq = move_decode_from_sq ( mv );
         const enum square to_sq = move_decode_to_sq ( mv );
         enum piece pce_to_move;
-        bool found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_to_move );
+        bool found = brd_try_get_piece_on_square ( pos->brd, from_sq, &pce_to_move );
+
         assert ( found == true );
+        assert ( validate_piece ( pce_to_move ) );
 
         if ( move_is_quiet ( mv ) ) {
-                brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+                make_quiet_move ( pos, pce_to_move, from_sq, to_sq );
         } else {
                 if ( move_is_capture ( mv ) ) {
                         enum piece pce_capt;
@@ -327,4 +330,44 @@ static void set_up_castle_permissions ( struct position *pos, const struct parse
         pos_set_cast_perm ( pos, cp );
 
 }
+
+
+static void make_quiet_move ( struct position *pos, const enum piece pce_to_move,
+                              const enum square from_sq, const enum square to_sq )
+{
+
+        brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+}
+
+
+static void push_position ( struct position *pos, const uint16_t move )
+{
+        pos->ply++;
+
+        struct mv_state *undo = &pos->history[pos->ply];
+
+        undo->castle_perm = pos->castle_perm;
+        undo->move = move;
+        undo->en_pass_set = pos->en_passant_set;
+        undo->en_passant = pos->en_passant;
+        undo->fifty_move_counter = pos->fifty_move_counter;
+}
+
+static uint16_t pop_position ( struct position *pos )
+{
+
+        struct mv_state *undo = &pos->history[pos->ply];
+
+        pos->castle_perm = undo->castle_perm;
+        uint16_t move = undo->move;
+        pos->en_passant_set=  undo->en_pass_set;
+        pos->en_passant = undo->en_passant;
+        pos->fifty_move_counter = undo->fifty_move_counter;
+
+        pos->ply--;
+
+        return move;
+}
+
+
 
