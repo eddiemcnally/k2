@@ -43,3 +43,4 @@ bool mvl_contains_move ( const struct move_list *mvl, const uint16_t mv );
 uint16_t mvl_get_mvl_max_size ( void );
 bool validate_move_list ( const struct move_list *mvl );
 void mvl_print ( const struct move_list *mvl );
+bool mvl_compare ( const struct move_list *first, const struct move_list *second );

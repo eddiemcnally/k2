@@ -197,6 +197,30 @@ uint16_t mvl_get_mvl_max_size ( void )
 }
 
 
+/**
+ * @brief               Compares 2 move lists for equivalency
+ * @param first         Pointer to the first move list
+ * @param second        Pointer to the second move list
+ * @return              True if the lists are the same, false otherwise
+ */
+bool mvl_compare ( const struct move_list *first, const struct move_list *second )
+{
+        assert ( validate_move_list ( first ) );
+        assert ( validate_move_list ( second ) );
+
+        if ( first->move_count != second->move_count ) {
+                return false;
+        }
+
+        for ( int i = 0; i < first->move_count; i++ ) {
+                if ( first->move_list[i] != second->move_list[i] ) {
+                        return false;
+                }
+        }
+        return true;
+
+}
+
 // ==================================================================
 //
 // private functions

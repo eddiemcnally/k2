@@ -51,4 +51,5 @@ bool pos_try_make_move ( struct position *pos, const uint16_t mv );
 uint16_t pos_take_move ( struct position *pos );
 
 bool validate_position ( const struct position *pos );
+bool pos_compare ( const struct position *first, const struct position *second );
 

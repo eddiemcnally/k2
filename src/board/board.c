@@ -297,6 +297,49 @@ bool validate_board ( const struct board* brd )
 
 
 
+/**
+ * @brief               Compares 2 boards for equivalency
+ *
+ * @param first         The first board
+ * @param second        The second board
+ * @return              True if the boards are the same, false otherwise
+ */
+
+bool brd_compare ( const struct board *first, const struct board *second )
+{
+        assert ( validate_board ( first ) );
+        assert ( validate_board ( second ) );
+
+
+        if ( first->bb_board != second->bb_board ) {
+                return false;
+        }
+
+        for ( int i = 0; i < NUM_COLOURS; i++ ) {
+                if ( first->bb_colour[i] != second->bb_colour[i] ) {
+                        return false;
+                }
+                if ( first->material[i] != second->material[i] ) {
+                        return false;
+                }
+        }
+
+        for ( int i = 0; i < NUM_SQUARES; i++ ) {
+                if ( first->pce_square[i] != second->pce_square[i] ) {
+                        return false;
+                }
+        }
+
+        for ( int i = 0; i < NUM_PIECES; i++ ) {
+                if ( first->piece_bb[i] != second->piece_bb[i] ) {
+                        return false;
+                }
+        }
+
+        return true;
+}
+
+
 // ==================================================================
 //
 // private functions

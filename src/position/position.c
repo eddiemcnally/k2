@@ -35,15 +35,6 @@
 #include "move.h"
 #include "castle_perms.h"
 
-static void init_pos_struct ( struct position *pos );
-static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
-static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
-static bool validate_en_passant_pce_and_sq ( const struct position *pos );
-static void push_position ( struct position *pos, const uint16_t move );
-static uint16_t pop_position ( struct position *pos );
-static void make_quiet_move ( struct position *pos, const enum piece pce_to_move,
-                              const enum square from_sq, const enum square to_sq );
-
 
 // key used to verify struct has been initialised
 const static uint16_t STRUCT_INIT_KEY = 0xdead;
@@ -85,6 +76,15 @@ struct position {
         struct mv_state history[MAX_GAME_MOVES];
 };
 
+
+static void init_pos_struct ( struct position *pos );
+static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
+static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
+static bool validate_en_passant_pce_and_sq ( const struct position *pos );
+static void push_position ( struct position *pos, const uint16_t move );
+static uint16_t pop_position ( struct position *pos );
+static void make_quiet_move ( struct position *pos, const enum piece pce_to_move, const enum square from_sq, const enum square to_sq );
+static bool mv_state_compare ( const struct mv_state *first, const struct mv_state *second );
 
 
 
@@ -260,6 +260,91 @@ uint16_t pos_take_move ( struct position *pos )
 }
 
 
+/**
+ * @brief               Compares 2 positions for equivalency
+ * @param first         The first position
+ * @paran second        The second position
+ * @return              True if the positions are the same, false otherwise
+ */
+bool pos_compare ( const struct position *first, const struct position *second )
+{
+
+        /*
+        struct position {
+        uint16_t        struct_init_key;
+
+        // current board representation
+        struct board    *brd;
+
+        // the next side to move
+        enum colour     side_to_move;
+
+        // keeping track of ply
+        uint16_t        ply;         // half-moves
+        uint16_t        history_ply;
+
+        // state
+        uint8_t         fifty_move_counter;
+        uint8_t         castle_perm;
+        enum square     en_passant;
+        bool            en_passant_set;
+
+        // move history
+        struct mv_state history[MAX_GAME_MOVES];
+        };
+        */
+        assert ( validate_position ( first ) );
+        assert ( validate_position ( second ) );
+
+        if ( brd_compare ( first->brd, second->brd ) == false ) {
+                return false;
+        }
+
+        if ( first->side_to_move != second->side_to_move ) {
+                return false;
+        }
+
+        if ( first->ply != second->ply ) {
+                return false;
+        }
+
+        if ( first->history_ply != second->history_ply ) {
+                return false;
+        }
+
+        if ( first->fifty_move_counter != second->fifty_move_counter ) {
+                return false;
+        }
+        if ( first->castle_perm != second->castle_perm ) {
+                return false;
+        }
+        if ( first->en_passant != second->en_passant ) {
+                return false;
+        }
+        if ( first->en_passant_set != second->en_passant_set ) {
+                return false;
+        }
+
+        for ( int i= 0; i < MAX_GAME_MOVES; i++ ) {
+                const struct mv_state *mv1 = &first->history[i];
+                const struct mv_state *mv2 = &second->history[i];
+
+                if ( mv_state_compare ( mv1, mv2 ) == false ) {
+                        return false;
+                }
+        }
+
+        return true;
+
+}
+
+
+
+// ==================================================================
+//
+// private functions
+//
+// ==================================================================
 
 
 static void init_pos_struct ( struct position *pos )
@@ -369,5 +454,25 @@ static uint16_t pop_position ( struct position *pos )
         return move;
 }
 
+static bool mv_state_compare ( const struct mv_state *first, const struct mv_state *second )
+{
+        if ( first->castle_perm != second->castle_perm ) {
+                return false;
+        }
+        if ( first->move != second->move ) {
+                return false;
+        }
+        if ( first->en_pass_set != second->en_pass_set ) {
+                return false;
+        }
+        if ( first->en_passant != second->en_passant ) {
+                return false;
+        }
+        if ( first->fifty_move_counter != second->fifty_move_counter ) {
+                return false;
+        }
+
+        return true;
+}
 
 
