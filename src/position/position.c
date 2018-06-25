@@ -268,31 +268,6 @@ uint16_t pos_take_move ( struct position *pos )
  */
 bool pos_compare ( const struct position *first, const struct position *second )
 {
-
-        /*
-        struct position {
-        uint16_t        struct_init_key;
-
-        // current board representation
-        struct board    *brd;
-
-        // the next side to move
-        enum colour     side_to_move;
-
-        // keeping track of ply
-        uint16_t        ply;         // half-moves
-        uint16_t        history_ply;
-
-        // state
-        uint8_t         fifty_move_counter;
-        uint8_t         castle_perm;
-        enum square     en_passant;
-        bool            en_passant_set;
-
-        // move history
-        struct mv_state history[MAX_GAME_MOVES];
-        };
-        */
         assert ( validate_position ( first ) );
         assert ( validate_position ( second ) );
 

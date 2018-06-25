@@ -40,7 +40,7 @@
 
 int main ( void )
 {
-        
+
         const struct CMUnitTest tests[] = {
                 // FEN Testing
                 cmocka_unit_test ( test_fen_pieces_init_position ),
@@ -66,6 +66,7 @@ int main ( void )
                 cmocka_unit_test ( test_move_list_bulk_add_moves ),
                 cmocka_unit_test ( test_move_list_reset_list ),
                 cmocka_unit_test ( test_move_list_contains_move ),
+                cmocka_unit_test ( test_move_list_compare ),
 
                 // Pieces
                 cmocka_unit_test ( test_piece_is_white ),
@@ -81,6 +82,9 @@ int main ( void )
 
                 // Position
                 cmocka_unit_test ( test_position_get_set_castle_permissions ),
+                cmocka_unit_test ( test_position_brd_is_sq_occupied ),
+                cmocka_unit_test ( test_position_compare ),
+
 
 
                 // bitboard
@@ -101,6 +105,8 @@ int main ( void )
                 cmocka_unit_test ( test_board_brd_is_sq_occupied ),
                 cmocka_unit_test ( test_board_brd_try_get_piece_on_square ),
                 cmocka_unit_test ( test_board_brd_get_board_bb ),
+                cmocka_unit_test ( test_board_compare ),
+
 
                 // square
                 cmocka_unit_test ( test_square_sq_get_rank ),
@@ -178,4 +184,4 @@ int main ( void )
         return cmocka_run_group_tests ( tests, NULL, NULL );
 }
 
- 
+

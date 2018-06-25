@@ -113,4 +113,31 @@ void test_move_list_reset_list ( void **state )
 
         mvl_deallocate ( mvl );
 }
- 
+
+
+void test_move_list_compare ( void **state )
+{
+        const uint16_t num_moves = 30;
+        struct move_list* mvl1 = mvl_allocate();
+        struct move_list* mvl2 = mvl_allocate();
+
+        // add moves
+        for ( int i = 0; i < num_moves; i++ ) {
+                uint16_t mv = ( uint16_t ) i;
+                mvl_add ( mvl1, mv );
+                mvl_add ( mvl2, mv );
+        }
+
+        assert_true ( mvl_compare ( mvl1, mvl2 ) );
+
+        uint16_t m = 0;
+        mvl_add ( mvl1, m );
+        assert_false ( mvl_compare ( mvl1, mvl2 ) );
+        mvl_add ( mvl2, m );
+        assert_true ( mvl_compare ( mvl1, mvl2 ) );
+
+        mvl_deallocate ( mvl1 );
+        mvl_deallocate ( mvl2 );
+
+}
+
