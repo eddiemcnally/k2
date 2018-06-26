@@ -58,18 +58,20 @@ set(ENGINE_SRCS ${SOURCES} PARENT_SCOPE)
 
 message("Setting up K2 Engine build target compiler flags...")
 
-
+#//
+        
 set (ENGINE_COMPILER_WARNS "-std=c11 \
         -o2 \
+        -fsanitize=undefined \
+        -fsanitize=address \
+        -fno-omit-frame-pointer \
+        -fshort-enums \
         -Wpedantic \
         -Wall \
         -Wextra \
         -Wold-style-definition \
         -Wredundant-decls \
         -Wnested-externs \
-        -fsanitize=undefined \
-        -fsanitize=address \
-        -fno-omit-frame-pointer \
         -Wstrict-prototypes \
         -Wmissing-prototypes \
         -Wswitch-default \

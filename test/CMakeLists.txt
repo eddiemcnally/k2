@@ -35,14 +35,15 @@ message("Setting up Test Runner build target compiler flags...")
 
 set (TEST_RUNNER_COMPILER_WARNS "-std=c11 \
         -o2 \
+        -fsanitize=undefined \
+        -fno-omit-frame-pointer \
+        -fshort-enums \
         -Wpedantic \
         -Wall \
         -Wextra \
         -Wold-style-definition \
         -Wredundant-decls \
         -Wnested-externs \
-        -fsanitize=undefined \
-        -fno-omit-frame-pointer \
         -Wstrict-prototypes \
         -Wmissing-prototypes \
         -Wswitch-default \

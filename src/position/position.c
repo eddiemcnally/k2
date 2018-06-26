@@ -63,8 +63,8 @@ struct position {
         enum colour     side_to_move;
 
         // keeping track of ply
-        uint16_t        ply;         // half-moves
-        uint16_t        history_ply;
+        uint16_t        ply;            // half-moves
+        uint16_t        history_ply;    // full move count
 
         // state
         uint8_t         fifty_move_counter;
@@ -74,6 +74,9 @@ struct position {
 
         // move history
         struct mv_state history[MAX_GAME_MOVES];
+
+        // used to support undo of moves
+        struct board *undo_board;
 };
 
 
@@ -102,6 +105,9 @@ struct position * pos_create()
 
         struct board *brd = brd_allocate();
         retval->brd = brd;
+
+        struct board *undo_brd = brd_allocate();
+        retval->undo_board = undo_brd;
 
         return retval;
 }
@@ -252,9 +258,6 @@ uint16_t pos_take_move ( struct position *pos )
 {
         assert ( validate_position ( pos ) );
 
-        if ( pos->side_to_move == WHITE ) {
-                pos->ply--;
-        }
 
         return ( uint16_t ) 0;
 }
@@ -411,6 +414,10 @@ static void push_position ( struct position *pos, const uint16_t move )
         undo->en_pass_set = pos->en_passant_set;
         undo->en_passant = pos->en_passant;
         undo->fifty_move_counter = pos->fifty_move_counter;
+
+        // backup the board
+        brd_clone ( pos->brd, pos->undo_board );
+
 }
 
 static uint16_t pop_position ( struct position *pos )
@@ -425,6 +432,10 @@ static uint16_t pop_position ( struct position *pos )
         pos->fifty_move_counter = undo->fifty_move_counter;
 
         pos->ply--;
+
+        // revert to previous board
+        brd_clone ( pos->undo_board, pos->brd );
+
 
         return move;
 }
@@ -449,5 +460,6 @@ static bool mv_state_compare ( const struct mv_state *first, const struct mv_sta
 
         return true;
 }
+
 
 

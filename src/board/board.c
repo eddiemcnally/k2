@@ -56,6 +56,8 @@ struct board {
         uint64_t        piece_bb[NUM_PIECES];
 };
 
+static_assert((int)(sizeof(struct board)) <=200, "Board is copied, check for -fshort-enums compiler option is enabled for efficiency");
+
 
 // square operations
 enum sq_op {
@@ -211,6 +213,25 @@ void brd_move_piece ( struct board* brd, const enum piece pce, const enum square
         populate_square ( brd, pce, to_sq, SET_SQ );
 }
 
+
+
+/**
+ * @brief               Clones the given board by doing a memcpy
+ *
+ * @param source        The board to copy
+ * @param dest          The dest location
+ *
+ */
+void brd_clone ( struct board *source, struct board *dest )
+{
+        assert ( validate_board ( source ) );
+        
+        memcpy ( source, dest, sizeof ( struct board ) );
+}
+
+void brd_print_size(){
+        printf("size of board struct : %d\n", (int)(sizeof(struct board)));
+}
 
 /**
  * @brief       Gets the bitboard representing all pieces of the given colour

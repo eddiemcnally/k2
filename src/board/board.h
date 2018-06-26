@@ -46,3 +46,5 @@ void brd_remove_piece ( struct board* brd, const enum piece pce, const enum squa
 void brd_move_piece ( struct board* brd, const enum piece pce, const enum square from_sq, const enum square to_sq );
 uint64_t brd_get_colour_bb ( const struct board* brd, const enum colour colour );
 bool brd_compare ( const struct board *first, const struct board *second );
+void brd_clone ( struct board *source, struct board *dest );
+void brd_print_size(void);
