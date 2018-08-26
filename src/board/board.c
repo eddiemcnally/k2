@@ -56,7 +56,7 @@ struct board {
         uint64_t        piece_bb[NUM_PIECES];
 };
 
-static_assert((int)(sizeof(struct board)) <=200, "Board is copied, check for -fshort-enums compiler option is enabled for efficiency");
+static_assert ( ( int ) ( sizeof ( struct board ) ) <=200, "Board is copied, check for -fshort-enums compiler option is enabled for efficiency" );
 
 
 // square operations
@@ -225,12 +225,13 @@ void brd_move_piece ( struct board* brd, const enum piece pce, const enum square
 void brd_clone ( struct board *source, struct board *dest )
 {
         assert ( validate_board ( source ) );
-        
+
         memcpy ( source, dest, sizeof ( struct board ) );
 }
 
-void brd_print_size(){
-        printf("size of board struct : %d\n", (int)(sizeof(struct board)));
+void brd_print_size()
+{
+        printf ( "size of board struct : %d\n", ( int ) ( sizeof ( struct board ) ) );
 }
 
 /**
@@ -278,40 +279,63 @@ uint64_t brd_get_piece_bb ( const struct board* brd, const enum piece pce )
 bool validate_board ( const struct board* brd )
 {
         enum square sq;
-        bool is_occupied;
 
         if ( brd->struct_init_key != STRUCT_INIT_KEY ) {
                 assert ( false );
         }
 
-        // check various bitboards agree with the pices on the squares
-        for ( sq = a1; sq <= h8; sq++ ) {
-                is_occupied = bb_is_set ( brd->bb_board, sq );
+        const uint8_t white_idx = pce_col_get_array_idx ( WHITE );
+        const uint8_t black_idx = pce_col_get_array_idx ( BLACK );
 
-                // conflate colour bitboards
-                const uint8_t white_idx = pce_col_get_array_idx ( WHITE );
-                const uint8_t black_idx = pce_col_get_array_idx ( BLACK );
-                const uint64_t white_bb = brd->bb_colour[white_idx];
-                const uint64_t black_bb = brd->bb_colour[black_idx];
-                const uint64_t conflated_col_bb = white_bb | black_bb;
+        // conflate colour bitboards
+        const uint64_t white_bb = brd->bb_colour[white_idx];
+        const uint64_t black_bb = brd->bb_colour[black_idx];
+        const uint64_t conflated_col_bb = white_bb | black_bb;
+
+        // check various bitboards agree with the pieces on the squares
+        for ( sq = a1; sq <= h8; sq++ ) {
+                const bool is_occupied = bb_is_set ( brd->bb_board, sq );
 
                 if ( is_occupied ) {
+                        enum piece pce = brd->pce_square[sq];
                         assert ( bb_is_set ( conflated_col_bb, sq ) );
-                        assert ( brd->pce_square[sq] != pce_get_no_piece() );
+                        assert ( pce != pce_get_no_piece() );
                         assert ( bb_is_set ( brd->bb_board, sq ) );
+
+                        enum colour pce_col = pce_get_colour ( pce );
+                        assert ( bb_is_set ( brd->bb_colour[pce_col], sq ) );
                 } else {
                         assert ( bb_is_clear ( conflated_col_bb, sq ) );
                         assert ( brd->pce_square[sq] == pce_get_no_piece() );
                         assert ( bb_is_clear ( brd->bb_board, sq ) );
+
+                        assert ( bb_is_clear ( white_bb, sq ) );
+                        assert ( bb_is_clear ( black_bb, sq ) );
                 }
         }
 
+        // colour bitboards should AND to zero
+        assert ( ( brd->bb_colour[WHITE] & brd->bb_colour[BLACK] ) == 0 );
+
+        // can't be more bits set than max pieces on board
+        const uint8_t num_bits_on_board = ( uint8_t ) __builtin_popcountll ( brd->bb_board );
+        assert ( num_bits_on_board <= 32 );
+
+        // check colour bitboards and comflated board are the same
+        uint8_t num_white_bits = ( uint8_t ) __builtin_popcountll ( brd->bb_colour[WHITE] );
+        uint8_t num_black_bits = ( uint8_t ) __builtin_popcountll ( brd->bb_colour[BLACK] );
+        assert ( num_bits_on_board == ( num_white_bits + num_black_bits ) );
+
+
         // conflate all piece bitboards, and verify same as board bitboard
         uint64_t conflated_pce_bb = 0;
+        uint8_t total_bit_count = 0;
         for ( int i = 0; i < NUM_PIECES; i++ ) {
                 conflated_pce_bb |= brd->piece_bb[i];
+                total_bit_count += ( uint8_t ) __builtin_popcountll ( brd->piece_bb[i] );
         }
         assert ( conflated_pce_bb == brd->bb_board );
+        assert ( total_bit_count == num_bits_on_board );
 
         return true;
 }

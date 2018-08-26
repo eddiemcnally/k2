@@ -551,7 +551,7 @@ void test_board_brd_try_get_piece_on_square ( void **state )
 
 void test_board_compare ( void **state )
 {
-        const char * FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+        const char * FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
 
         struct position *pos1 = pos_create();
         pos_initialise ( FEN, pos1 );
@@ -568,9 +568,9 @@ void test_board_compare ( void **state )
         brd_remove_piece ( brd1, BPAWN, a1 );
         assert_true ( brd_compare ( brd1, brd2 ) );
 
-        brd_move_piece ( brd1, WPAWN, b2, b3 );
+        brd_move_piece ( brd1, WPAWN, a5, a6 );
         assert_false ( brd_compare ( brd1, brd2 ) );
-        brd_move_piece ( brd1, WPAWN, b3, b2 );
+        brd_move_piece ( brd1, WPAWN, a6, a5 );
         assert_true ( brd_compare ( brd1, brd2 ) );
 }
 

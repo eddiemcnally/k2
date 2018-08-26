@@ -28,7 +28,7 @@
 #include "move.h"
 
 
-
+// struct representing a list of moves
 struct move_list;
 
 

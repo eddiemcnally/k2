@@ -41,8 +41,9 @@ const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
 #define MAX_GAME_MOVES          (1024)
 
+// represents board state *before* the move was made
 struct mv_state {
-        uint16_t        move;
+        uint16_t        move;               // TODO: is this needed?
         uint8_t         fifty_move_counter;
         uint8_t         castle_perm;
         enum square     en_passant;

@@ -128,10 +128,7 @@ char * print_square ( const enum square sq )
  */
 bool validate_square ( const enum square sq )
 {
-        if ( sq < a1 || sq > h8 ) {
-                assert ( false );
-        }
-        return true;
+        return ( sq >= a1 ) && ( sq <= h8 );
 }
 
 /**
@@ -141,10 +138,7 @@ bool validate_square ( const enum square sq )
  */
 bool validate_rank ( const enum rank rank )
 {
-        if ( rank < RANK_1 || rank > RANK_8 ) {
-                assert ( false );
-        }
-        return true;
+        return ( rank >= RANK_1 ) && ( rank <= RANK_8 );
 }
 
 /**
@@ -154,9 +148,6 @@ bool validate_rank ( const enum rank rank )
  */
 bool validate_file ( const enum file file )
 {
-        if ( file  < FILE_A || file > FILE_H ) {
-                assert ( false );
-        }
-        return true;
+        return ( file >= FILE_A ) && ( file <= FILE_H );
 }
 

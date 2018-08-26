@@ -65,19 +65,20 @@ void test_position_get_set_castle_permissions ( void **state )
 
 void test_position_compare ( void **state )
 {
-        const char * FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+        const char * FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
 
         struct position *pos1 = pos_create();
         pos_initialise ( FEN, pos1 );
         struct board *brd1 = pos_get_board(pos1);
+
         struct position *pos2 = pos_create();
         pos_initialise ( FEN, pos2 );
-        struct board *brd2 = pos_get_board(pos2);
         
         assert_true(pos_compare(pos1, pos2));
         
         brd_add_piece(brd1, WPAWN, a1 );
         assert_false(pos_compare(pos1, pos2));
+
         brd_remove_piece(brd1, WPAWN, a1);
         assert_true(pos_compare(pos1, pos2));
         
