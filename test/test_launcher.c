@@ -106,6 +106,7 @@ int main ( void )
                 cmocka_unit_test ( test_board_brd_try_get_piece_on_square ),
                 cmocka_unit_test ( test_board_brd_get_board_bb ),
                 cmocka_unit_test ( test_board_compare ),
+                cmocka_unit_test ( test_board_snapshot ),
 
 
                 // square

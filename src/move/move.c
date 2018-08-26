@@ -270,6 +270,9 @@ uint16_t move_encode_castle_queenside_black ( void )
         return mv;
 }
 
+
+
+
 /**
  * @brief       Encodes a double first move for a pawn
  * @param       from_sq the from square
@@ -383,6 +386,20 @@ bool move_is_en_passant ( const uint16_t mv )
         return ( mv & MV_FLG_EN_PASS ) != 0;
 }
 
+/**
+ * @brief       Tests the given uint16_t, returns true if a Castle move,
+ * false otherwise
+ *
+ * @param mv The move to test
+ * @return true if a Castle move, false otherwise
+ */
+bool move_is_castle ( const uint16_t mv )
+{
+        assert ( validate_move ( mv ) );
+
+        return ( ( ( mv & MV_FLG_KING_CASTLE ) != 0 )
+                 || ( ( mv & MV_FLG_QUEEN_CASTLE ) != 0 ) );
+}
 
 
 /**
@@ -419,11 +436,8 @@ bool validate_move ( const uint16_t mv )
         const enum square to = move_decode_to_sq ( mv );
         const bool from_ok = validate_square ( from );
         const bool to_ok = validate_square ( to );
-        if ( from_ok && to_ok ) {
-                return true;
-        }
 
-        assert ( false );
+        return from_ok && to_ok;
 }
 
 // ==================================================================

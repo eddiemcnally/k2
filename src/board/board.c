@@ -65,6 +65,9 @@ enum sq_op {
         CLEAR_SQ
 };
 
+// snapshot board;
+static struct board snapshot_board;
+
 
 // used to check struct is populated when passed into public functions
 static const uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
@@ -76,6 +79,7 @@ static void add_material ( struct board *brd, enum piece pce );
 static void remove_material ( struct board *brd, enum piece pce );
 static void init_struct ( struct board *brd );
 static void populate_square ( struct board *brd, const enum piece pce, const enum square sq, const enum sq_op operation );
+static bool validate_castle_squares ( struct board *brd, const enum square from_sq, const enum square to_sq );
 
 
 // ==================================================================
@@ -214,20 +218,42 @@ void brd_move_piece ( struct board* brd, const enum piece pce, const enum square
 }
 
 
-
 /**
- * @brief               Clones the given board by doing a memcpy
+ * @brief       Make a castle move from the "From" square to the "To" square
  *
- * @param source        The board to copy
- * @param dest          The dest location
- *
+ * @param brd   The board
+ * @param pce   The piece to move
+ * @param from_sq The From square
+ * @param to_sq The To square
  */
-void brd_clone ( struct board *source, struct board *dest )
+void brd_make_castle_move ( struct board* brd, const enum square from_sq, const enum square to_sq )
 {
-        assert ( validate_board ( source ) );
+        assert ( validate_board ( brd ) );
+        assert ( validate_square ( from_sq ) );
+        assert ( validate_square ( to_sq ) );
+        assert ( validate_castle_squares ( brd, from_sq, to_sq ) );
 
-        memcpy ( source, dest, sizeof ( struct board ) );
+        enum piece king;
+        enum piece rook;
+
+        if ( from_sq == e1 ) {
+                king = WKING;
+                rook = WROOK;
+        } else if ( from_sq == e8 ) {
+                king = BKING;
+                rook = BROOK;
+        } else {
+                assert ( false );
+        }
+
+        brd_remove_piece ( brd, king, from_sq );
+        brd_remove_piece ( brd, rook, to_sq );
+
+        brd_add_piece ( brd, king, to_sq );
+        brd_remove_piece ( brd, rook, from_sq );
 }
+
+
 
 void brd_print_size()
 {
@@ -384,6 +410,39 @@ bool brd_compare ( const struct board *first, const struct board *second )
         return true;
 }
 
+/**
+ * @brief               Makes a snapshot of the given board
+ *
+ * @param brd           The board to snap
+ */
+
+void brd_snaphot_make ( const struct board *brd )
+{
+        validate_board ( brd );
+
+        memcpy ( &snapshot_board, brd, sizeof ( struct board ) );
+}
+
+
+/**
+ * @brief               Overwrites the given memory with the snapshotted board
+ *
+ * @param brd           The board to snap
+ */
+
+void brd_snaphot_extract ( struct board *brd )
+{
+        // expecting the incoming board to have been initialised already
+        validate_board ( brd );
+        assert ( validate_struct_init ( &snapshot_board ) );
+
+        memcpy ( brd, &snapshot_board, sizeof ( struct board ) );
+}
+
+
+
+
+
 
 // ==================================================================
 //
@@ -463,14 +522,41 @@ static void populate_square ( struct board *brd, const enum piece pce,
 }
 
 
+static bool validate_castle_squares ( struct board *brd,  const enum square from_sq, const enum square to_sq )
+{
+
+        switch ( from_sq ) {
+        case e1:
+                if ( to_sq != c1 || to_sq != g1 ) {
+                        return false;
+                }
+                if ( brd->pce_square[from_sq] != WKING ) {
+                        return false;
+                }
+                if ( brd->pce_square[to_sq] != WROOK ) {
+                        return false;
+                }
+                return true;
+        case e8:
+                if ( to_sq != c8 || to_sq != g8 ) {
+                        return false;
+                }
+                if ( brd->pce_square[from_sq] != BKING ) {
+                        return false;
+                }
+                if ( brd->pce_square[to_sq] != BROOK ) {
+                        return false;
+                }
+                return true;
+        default:
+                return false;
+        }
+}
 
 
 static bool validate_struct_init ( const struct board *brd )
 {
-        if ( brd->struct_init_key != STRUCT_INIT_KEY ) {
-                return false;
-        }
-        return true;
+        return brd->struct_init_key == STRUCT_INIT_KEY;
 }
 
 

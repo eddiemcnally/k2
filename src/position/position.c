@@ -75,9 +75,6 @@ struct position {
 
         // move history
         struct mv_state history[MAX_GAME_MOVES];
-
-        // used to support undo of moves
-        struct board *undo_board;
 };
 
 
@@ -87,10 +84,8 @@ static void set_up_castle_permissions ( struct position *pos, const struct parse
 static bool validate_en_passant_pce_and_sq ( const struct position *pos );
 static void push_position ( struct position *pos, const uint16_t move );
 static uint16_t pop_position ( struct position *pos );
-static void make_quiet_move ( struct position *pos, const enum piece pce_to_move, const enum square from_sq, const enum square to_sq );
 static bool mv_state_compare ( const struct mv_state *first, const struct mv_state *second );
-
-
+static void update_castle_perms ( struct position *pos, const enum square from_sq, const enum square to_sq );
 
 
 
@@ -106,9 +101,6 @@ struct position * pos_create()
 
         struct board *brd = brd_allocate();
         retval->brd = brd;
-
-        struct board *undo_brd = brd_allocate();
-        retval->undo_board = undo_brd;
 
         return retval;
 }
@@ -215,42 +207,46 @@ bool pos_try_make_move ( struct position *pos, const uint16_t mv )
         assert ( validate_piece ( pce_to_move ) );
 
         if ( move_is_quiet ( mv ) ) {
-                make_quiet_move ( pos, pce_to_move, from_sq, to_sq );
-        } else {
-                if ( move_is_capture ( mv ) ) {
-                        enum piece pce_capt;
-                        if ( move_is_en_passant ( mv ) ) {
-                                assert ( validate_en_passant_pce_and_sq ( pos ) );
-                                enum square en_pass_pce_sq;
+                brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+        } else if ( move_is_capture ( mv ) ) {
+                enum piece pce_capt;
+                if ( move_is_en_passant ( mv ) ) {
+                        assert ( validate_en_passant_pce_and_sq ( pos ) );
+                        enum square en_pass_pce_sq;
 
-                                // flip the flag
-                                pos->en_passant_set = false;
+                        // flip the flag
+                        pos->en_passant_set = false;
 
-                                if ( pos->side_to_move == WHITE ) {
-                                        pce_capt = BPAWN;
-                                        en_pass_pce_sq = sq_get_square_minus_1_rank ( to_sq );
-                                } else {
-                                        pce_capt = WPAWN;
-                                        en_pass_pce_sq = sq_get_square_plus_1_rank ( to_sq );
-                                }
-                                brd_remove_piece ( pos->brd, pce_capt, en_pass_pce_sq );
-
+                        if ( pos->side_to_move == WHITE ) {
+                                pce_capt = BPAWN;
+                                en_pass_pce_sq = sq_get_square_minus_1_rank ( to_sq );
                         } else {
-                                found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_capt );
-                                assert ( found == true );
-
-                                brd_remove_piece ( pos->brd, pce_capt, to_sq );
+                                pce_capt = WPAWN;
+                                en_pass_pce_sq = sq_get_square_plus_1_rank ( to_sq );
                         }
-                        brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
-                }
+                        brd_remove_piece ( pos->brd, pce_capt, en_pass_pce_sq );
 
-                if ( move_is_promotion ( mv ) ) {
-                        enum piece pce_prom = move_decode_promotion_piece ( mv, pos->side_to_move );
-                        brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
-                        brd_remove_piece ( pos->brd, pce_to_move, to_sq );
-                        brd_add_piece ( pos->brd, pce_prom, to_sq );
+                } else {
+                        found = brd_try_get_piece_on_square ( pos->brd, to_sq, &pce_capt );
+                        assert ( found == true );
+
+                        brd_remove_piece ( pos->brd, pce_capt, to_sq );
                 }
+                brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
         }
+
+        if ( move_is_castle ( mv ) ) {
+                brd_make_castle_move ( pos->brd, from_sq, to_sq );
+                update_castle_perms ( pos, from_sq, to_sq );
+        }
+
+        if ( move_is_promotion ( mv ) ) {
+                enum piece pce_prom = move_decode_promotion_piece ( mv, pos->side_to_move );
+                brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
+                brd_remove_piece ( pos->brd, pce_to_move, to_sq );
+                brd_add_piece ( pos->brd, pce_prom, to_sq );
+        }
+
         return true;
 }
 
@@ -333,6 +329,37 @@ static void init_pos_struct ( struct position *pos )
 }
 
 
+static void update_castle_perms ( struct position *pos, const enum square from_sq, const enum square to_sq )
+{
+        if ( from_sq == e1 ) {
+                switch ( to_sq ) {
+                case c1:
+                        cast_perm_set_WQ ( &pos->castle_perm, false );
+                        return;
+                case g1:
+                        cast_perm_set_WK ( &pos->castle_perm, false );
+                        return;
+                default:
+                        break;
+                }
+        } else if ( from_sq == e8 ) {
+                switch ( to_sq ) {
+                case c8:
+                        cast_perm_set_BQ ( &pos->castle_perm, false );
+                        return;
+                case g8:
+                        cast_perm_set_BK ( &pos->castle_perm, false );
+                        return;
+                default:
+                        break;
+                }
+        }
+
+        assert ( false );
+
+}
+
+
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen )
 {
         pos->side_to_move = fen_get_side_to_move ( fen );
@@ -396,13 +423,6 @@ static void set_up_castle_permissions ( struct position *pos, const struct parse
 }
 
 
-static void make_quiet_move ( struct position *pos, const enum piece pce_to_move,
-                              const enum square from_sq, const enum square to_sq )
-{
-
-        brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
-}
-
 
 static void push_position ( struct position *pos, const uint16_t move )
 {
@@ -417,8 +437,7 @@ static void push_position ( struct position *pos, const uint16_t move )
         undo->fifty_move_counter = pos->fifty_move_counter;
 
         // backup the board
-        brd_clone ( pos->brd, pos->undo_board );
-
+        brd_snaphot_make ( pos->brd );
 }
 
 static uint16_t pop_position ( struct position *pos )
@@ -435,7 +454,7 @@ static uint16_t pop_position ( struct position *pos )
         pos->ply--;
 
         // revert to previous board
-        brd_clone ( pos->undo_board, pos->brd );
+        brd_snaphot_extract ( pos->brd );
 
 
         return move;
@@ -461,6 +480,7 @@ static bool mv_state_compare ( const struct mv_state *first, const struct mv_sta
 
         return true;
 }
+
 
 
 

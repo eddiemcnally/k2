@@ -27,7 +27,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
 bool cast_perm_has_WK ( const uint8_t cp );
 bool cast_perm_has_WQ ( const uint8_t cp );
 bool cast_perm_has_BK ( const uint8_t cp );
