@@ -25,12 +25,17 @@ You can now build and run unit tests:
 - make && ctest -VV
 
 ## Build notes:
-- k2 is currently set up to use clang as a compiler.
-- However, there is use of various GCC built-in functions
+- k2 is currently set up to use clang as the compiler.
+- However, the code uses various GCC built-in functions
 - The build process outputs 2 binaries: "k2" and "k2_test_runner". These can be found in the _build/bin directory.
 
 
 # Engine Notes
 - uses bitboards (uint64_t) to represent the board, square occupancy, attack squares, etc
+- uses occupancy masks for identification of target squares.
 - uses a pseudo-legal move generator
 - uses Hyperbola Quintessence for sliding piece move generation
+
+# Current Status
+- Move generation for all pieces is complete
+- Initial dev has started for position management
