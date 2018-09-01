@@ -175,6 +175,97 @@ void test_move_decode_promotion_piece_black ( void **state )
         mv = move_encode_promoted ( from_sq, to_sq, BQUEEN, true );
         pce = move_decode_promotion_piece ( mv, BLACK );
         assert_true ( pce == BQUEEN );
+}
 
+
+void test_move_is_king_side_castle_white ( void **state )
+{
+        uint16_t mv = move_encode_castle_kingside_white();
+        assert_true ( move_is_king_castle ( mv ) );
+}
+
+void test_move_is_king_side_castle_black ( void **state )
+{
+        uint16_t mv = move_encode_castle_kingside_black();
+        assert_true ( move_is_king_castle ( mv ) );
+}
+
+
+void test_move_is_queen_side_castle_white ( void **state )
+{
+        uint16_t mv = move_encode_castle_queenside_white();
+        assert_true ( move_is_queen_castle ( mv ) );
+}
+
+void test_move_is_queen_side_castle_black ( void **state )
+{
+        uint16_t mv = move_encode_castle_queenside_black();
+        assert_true ( move_is_queen_castle ( mv ) );
+}
+
+
+void test_move_is_double_pawn_white ( void **state )
+{
+        for ( enum square from_sq = a2; from_sq <= h2; from_sq++ ) {
+
+                const enum square to_sq = ( enum square ) ( from_sq + 16 );
+                uint16_t mv = move_encode_pawn_double_first ( from_sq, to_sq );
+
+                assert_true ( move_is_double_pawn ( mv ) );
+        }
+}
+
+
+
+void test_move_is_double_pawn_black ( void **state )
+{
+        for ( enum square from_sq = a7; from_sq <= h7; from_sq++ ) {
+
+                const enum square to_sq = ( enum square ) ( from_sq - 16 );
+                uint16_t mv = move_encode_pawn_double_first ( from_sq, to_sq );
+
+                assert_true ( move_is_double_pawn ( mv ) );
+        }
+}
+
+
+
+void test_move_get_promote_piece_white ( void **state )
+{
+        const enum square from_sq = e7;
+        const enum square to_sq = e8;
+
+        enum piece test_pieces[4] = {WKNIGHT, WBISHOP, WROOK, WQUEEN};
+
+        for ( int i = 0; i < 4; i++ ) {
+                enum piece pce = test_pieces[i];
+
+                uint16_t mv = move_encode_promoted ( from_sq, to_sq, pce, true );
+                assert_true ( move_get_promote_piece ( mv, WHITE ) == pce );
+
+                mv = move_encode_promoted ( from_sq, to_sq, pce, false );
+                assert_true ( move_get_promote_piece ( mv, WHITE ) == pce );
+
+        }
+}
+
+
+void test_move_get_promote_piece_black ( void **state )
+{
+        const enum square from_sq = e2;
+        const enum square to_sq = e1;
+
+        enum piece test_pieces[4] = {BKNIGHT, BBISHOP, BROOK, BQUEEN};
+
+        for ( int i = 0; i < 4; i++ ) {
+                enum piece pce = test_pieces[i];
+
+                uint16_t mv = move_encode_promoted ( from_sq, to_sq, pce, true );
+                assert_true ( move_get_promote_piece ( mv, BLACK ) == pce );
+
+                mv = move_encode_promoted ( from_sq, to_sq, pce, false );
+                assert_true ( move_get_promote_piece ( mv, BLACK ) == pce );
+
+        }
 }
 

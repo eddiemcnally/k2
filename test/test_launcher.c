@@ -59,7 +59,14 @@ int main ( void )
                 cmocka_unit_test ( test_move_en_passant_move_encode_decode ),
                 cmocka_unit_test ( test_move_decode_promotion_piece_white ),
                 cmocka_unit_test ( test_move_decode_promotion_piece_black ),
-
+                cmocka_unit_test ( test_move_is_double_pawn_white ),
+                cmocka_unit_test ( test_move_is_double_pawn_black ),
+                cmocka_unit_test ( test_move_is_king_side_castle_white ),
+                cmocka_unit_test ( test_move_is_king_side_castle_black ),
+                cmocka_unit_test ( test_move_is_queen_side_castle_white ),
+                cmocka_unit_test ( test_move_is_queen_side_castle_black ),
+                cmocka_unit_test ( test_move_get_promote_piece_white ),
+                cmocka_unit_test ( test_move_get_promote_piece_black ),
 
                 // move list
                 cmocka_unit_test ( test_move_list_init ),

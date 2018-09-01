@@ -46,6 +46,13 @@ bool move_is_capture ( const uint16_t mv );
 bool move_is_promotion ( const uint16_t mv );
 bool move_is_en_passant ( const uint16_t mv );
 bool move_is_castle ( const uint16_t mv );
+bool move_is_double_pawn ( const uint16_t mv );
+bool move_is_king_castle ( const uint16_t mv );
+bool move_is_queen_castle ( const uint16_t mv );
+enum piece move_get_promote_piece ( const uint16_t mv, const enum colour side_being_moved );
+
+
+
 
 char *move_print ( uint16_t mv );
 

@@ -331,18 +331,104 @@ enum square move_decode_to_sq ( const uint16_t mv )
 }
 
 
-
 /**
  * @brief       Tests the given uint16_t, returns true if Quiet, false otherwise
  *
- * @param mv The move to test
- * @return true if quiet, false otherwise
+ * @param mv    The move to test
+ * @return      true if quiet, false otherwise
  */
 bool move_is_quiet ( const uint16_t mv )
 {
         uint16_t m = ( ( uint16_t ) mv ) & MV_MASK_FLAGS;
         return m == MV_FLG_QUIET;
 }
+
+/**
+ * @brief       Tests the given uint16_t, returns true if Double pawn move, false otherwise
+ *
+ * @param mv    The move to test
+ * @return      true if double pawn move, false otherwise
+ */
+bool move_is_double_pawn ( const uint16_t mv )
+{
+        uint16_t m = ( ( uint16_t ) mv ) & MV_MASK_FLAGS;
+        return m == MV_FLG_DOUBLE_PAWN;
+}
+
+
+/**
+ * @brief       Tests the given uint16_t, returns true if King Castle move, false otherwise
+ *
+ * @param mv    The move to test
+ * @return      true if king-side castle move, false otherwise
+ */
+bool move_is_king_castle ( const uint16_t mv )
+{
+        uint16_t m = ( ( uint16_t ) mv ) & MV_MASK_FLAGS;
+        return m == MV_FLG_KING_CASTLE;
+}
+
+
+/**
+ * @brief       Tests the given uint16_t, returns true if Queen Castle move, false otherwise
+ *
+ * @param mv    The move to test
+ * @return      true if queen-side castle move, false otherwise
+ */
+bool move_is_queen_castle ( const uint16_t mv )
+{
+        uint16_t m = ( ( uint16_t ) mv ) & MV_MASK_FLAGS;
+        return m == MV_FLG_QUEEN_CASTLE;
+}
+
+
+/**
+ * @brief       Returns the promotion piece encoded in the move
+ *
+ * @param mv    The move with the encoded piece
+ * @param       The side being moves
+ * @return      The target promotion piece
+ */
+enum piece move_get_promote_piece ( const uint16_t mv, const enum colour side_being_moved )
+{        
+        uint16_t m = ( ( uint16_t ) mv ) & MV_MASK_FLAGS;
+        
+        assert((m & MV_FLG_BIT_PROMOTE) != 0);
+        
+        switch(m){
+            case MV_FLG_PROMOTE_KNIGHT:
+            case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
+                if (side_being_moved == WHITE){
+                    return WKNIGHT;
+                }
+                return BKNIGHT;
+                break;
+            case MV_FLG_PROMOTE_BISHOP:
+            case MV_FLG_PROMOTE_BISHOP_CAPTURE:
+                if (side_being_moved == WHITE){
+                    return WBISHOP;
+                }
+                return BBISHOP;
+                break;
+                
+            case MV_FLG_PROMOTE_ROOK:
+            case MV_FLG_PROMOTE_ROOK_CAPTURE:
+                if (side_being_moved == WHITE){
+                    return WROOK;
+                }
+                return BROOK;
+                break;
+            case MV_FLG_PROMOTE_QUEEN:
+            case MV_FLG_PROMOTE_QUEEN_CAPTURE:
+                if (side_being_moved == WHITE){
+                    return WQUEEN;
+                }
+                return BQUEEN;
+                break;
+        }                
+}
+
+
 
 /**
  * @brief       Tests the given uint16_t, returns true if a Capture move, false
