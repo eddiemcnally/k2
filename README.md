@@ -12,6 +12,10 @@ Uses Cmocka (https://cmocka.org/) as a unit test framework.
 To install on openSUSE:
 - sudo zypper install libcmocka0 libcmocka-devel libcmocka-devel-static
 
+To install on Debian:
+- sudo apt-get install libcmocka0 libcmocka-dev
+
+
 ## CMake and CTest
 k2 uses CMake and CTest.
 
