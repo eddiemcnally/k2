@@ -617,7 +617,7 @@ static void mv_gen_encode_multiple_capture ( uint64_t bb, const enum square from
 
 static void mv_gen_white_castle_moves ( const struct position *pos, struct move_list *mvl )
 {
-        const uint8_t cp = pos_get_cast_perm ( pos );
+        const struct cast_perm cp = pos_get_cast_perm ( pos );
         const struct board *brd = pos_get_board ( pos );
         const uint64_t occupied_bb = brd_get_board_bb ( brd );
 
@@ -632,7 +632,7 @@ static void mv_gen_white_castle_moves ( const struct position *pos, struct move_
 
 static void mv_gen_black_castle_moves ( const struct position *pos, struct move_list *mvl )
 {
-        const uint8_t cp = pos_get_cast_perm ( pos );
+        const struct cast_perm cp = pos_get_cast_perm ( pos );
         const struct board *brd = pos_get_board ( pos );
         const uint64_t occupied_bb = brd_get_board_bb ( brd );
 

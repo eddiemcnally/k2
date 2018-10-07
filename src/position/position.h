@@ -36,8 +36,8 @@ struct position;
 
 #define INITIAL_FEN     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
 
-uint8_t pos_get_cast_perm ( const struct position *pos );
-void pos_set_cast_perm ( struct position *pos, const uint8_t perms );
+struct cast_perm pos_get_cast_perm ( const struct position *pos );
+void pos_set_cast_perm ( struct position *pos, const struct cast_perm perms );
 
 struct position * pos_create ( void );
 void pos_destroy ( struct position *pos );

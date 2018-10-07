@@ -38,28 +38,28 @@
 
 void test_position_get_set_castle_permissions ( void **state )
 {
-        uint8_t cp;
+        struct cast_perm cp = {.val = 0};
         cast_perm_set_WK ( &cp, true );
         struct position *pos = pos_create();
 
         pos_set_cast_perm ( pos, cp );
-        uint8_t retrieved_cp = pos_get_cast_perm ( pos );
-        assert_true ( cp == retrieved_cp );
+        struct cast_perm retrieved_cp = pos_get_cast_perm ( pos );
+        assert_true ( cast_compare_perms ( cp, retrieved_cp ) );
 
         cast_perm_set_WQ ( &cp, true );
         pos_set_cast_perm ( pos, cp );
         retrieved_cp = pos_get_cast_perm ( pos );
-        assert_true ( cp == retrieved_cp );
+        assert_true ( cast_compare_perms ( cp, retrieved_cp ) );
 
         cast_perm_set_BK ( &cp, true );
         pos_set_cast_perm ( pos, cp );
         retrieved_cp = pos_get_cast_perm ( pos );
-        assert_true ( cp == retrieved_cp );
+        assert_true ( cast_compare_perms ( cp, retrieved_cp ) );
 
         cast_perm_set_BQ ( &cp, true );
         pos_set_cast_perm ( pos, cp );
         retrieved_cp = pos_get_cast_perm ( pos );
-        assert_true ( cp == retrieved_cp );
+        assert_true ( cast_compare_perms ( cp, retrieved_cp ) );
 }
 
 
@@ -69,20 +69,20 @@ void test_position_compare ( void **state )
 
         struct position *pos1 = pos_create();
         pos_initialise ( FEN, pos1 );
-        struct board *brd1 = pos_get_board(pos1);
+        struct board *brd1 = pos_get_board ( pos1 );
 
         struct position *pos2 = pos_create();
         pos_initialise ( FEN, pos2 );
-        
-        assert_true(pos_compare(pos1, pos2));
-        
-        brd_add_piece(brd1, WPAWN, a1 );
-        assert_false(pos_compare(pos1, pos2));
 
-        brd_remove_piece(brd1, WPAWN, a1);
-        assert_true(pos_compare(pos1, pos2));
-        
-        
+        assert_true ( pos_compare ( pos1, pos2 ) );
+
+        brd_add_piece ( brd1, WPAWN, a1 );
+        assert_false ( pos_compare ( pos1, pos2 ) );
+
+        brd_remove_piece ( brd1, WPAWN, a1 );
+        assert_true ( pos_compare ( pos1, pos2 ) );
+
+
 }
 
 

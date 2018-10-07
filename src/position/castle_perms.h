@@ -27,16 +27,23 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-bool cast_perm_has_WK ( const uint8_t cp );
-bool cast_perm_has_WQ ( const uint8_t cp );
-bool cast_perm_has_BK ( const uint8_t cp );
-bool cast_perm_has_BQ ( const uint8_t cp );
-bool cast_perm_has_perms ( const uint8_t cp );
+struct cast_perm {
+        uint8_t val;
+};
 
 
-void cast_perm_set_WK ( uint8_t* cp, const bool enabled );
-void cast_perm_set_WQ ( uint8_t* cp, const bool enabled );
-void cast_perm_set_BK ( uint8_t* cp, const bool enabled );
-void cast_perm_set_BQ ( uint8_t* cp, const bool enabled );
-void cast_perm_set_no_perms ( uint8_t* cp );
+bool cast_perm_has_WK ( const struct cast_perm cp );
+bool cast_perm_has_WQ ( const struct cast_perm cp );
+bool cast_perm_has_BK ( const struct cast_perm cp );
+bool cast_perm_has_BQ ( const struct cast_perm cp );
+bool cast_perm_has_perms ( const struct cast_perm cp );
+
+
+void cast_perm_set_WK ( struct cast_perm* cp, const bool enabled );
+void cast_perm_set_WQ ( struct cast_perm* cp, const bool enabled );
+void cast_perm_set_BK ( struct cast_perm* cp, const bool enabled );
+void cast_perm_set_BQ ( struct cast_perm* cp, const bool enabled );
+void cast_perm_set_no_perms ( struct cast_perm* cp );
+
+bool cast_compare_perms ( const struct cast_perm cp1, const struct cast_perm cp2 );
 

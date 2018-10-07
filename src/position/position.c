@@ -45,10 +45,10 @@ const static uint16_t STRUCT_INIT_KEY = 0xdead;
 struct mv_state {
         struct move     mv;               // TODO: is this needed?
         uint8_t         fifty_move_counter;
-        uint8_t         castle_perm;
         enum square     en_passant;
         bool            en_pass_set;
 
+        struct cast_perm    castle_perm;
         // TODO add board hash
 };
 
@@ -69,12 +69,13 @@ struct position {
 
         // state
         uint8_t         fifty_move_counter;
-        uint8_t         castle_perm;
         enum square     en_passant;
         bool            en_passant_set;
 
         // move history
         struct mv_state history[MAX_GAME_MOVES];
+
+        struct cast_perm castle_perm;
 };
 
 
@@ -158,7 +159,7 @@ enum colour pos_get_side_to_move ( const struct position *pos )
         return pos->side_to_move;
 }
 
-uint8_t pos_get_cast_perm ( const struct position *pos )
+struct cast_perm pos_get_cast_perm ( const struct position *pos )
 {
         return pos->castle_perm;
 }
@@ -175,7 +176,7 @@ bool pos_try_get_en_pass_sq ( const struct position *pos, enum square *en_pass_s
 
 
 
-void pos_set_cast_perm ( struct position *pos, const uint8_t perms )
+void pos_set_cast_perm ( struct position *pos, const struct cast_perm perms )
 {
         pos->castle_perm = perms;
 }
@@ -290,9 +291,10 @@ bool pos_compare ( const struct position *first, const struct position *second )
         if ( first->fifty_move_counter != second->fifty_move_counter ) {
                 return false;
         }
-        if ( first->castle_perm != second->castle_perm ) {
+        if ( cast_compare_perms ( first->castle_perm, second->castle_perm ) == false ) {
                 return false;
         }
+
         if ( first->en_passant != second->en_passant ) {
                 return false;
         }
@@ -300,7 +302,7 @@ bool pos_compare ( const struct position *first, const struct position *second )
                 return false;
         }
 
-        for ( int i= 0; i < MAX_GAME_MOVES; i++ ) {
+        for ( int i = 0; i < MAX_GAME_MOVES; i++ ) {
                 const struct mv_state *mv1 = &first->history[i];
                 const struct mv_state *mv2 = &second->history[i];
 
@@ -401,7 +403,7 @@ static bool validate_en_passant_pce_and_sq ( const struct position *pos )
 
 static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen )
 {
-        uint8_t cp;
+        struct cast_perm cp;
         // default to no castle permissions
         cast_perm_set_no_perms ( &cp );
 
@@ -447,7 +449,7 @@ static struct move pop_position ( struct position *pos )
 
         pos->castle_perm = undo->castle_perm;
         struct move mv = undo->mv;
-        pos->en_passant_set=  undo->en_pass_set;
+        pos->en_passant_set =  undo->en_pass_set;
         pos->en_passant = undo->en_passant;
         pos->fifty_move_counter = undo->fifty_move_counter;
 
@@ -462,10 +464,10 @@ static struct move pop_position ( struct position *pos )
 
 static bool mv_state_compare ( const struct mv_state *first, const struct mv_state *second )
 {
-        if ( first->castle_perm != second->castle_perm ) {
+        if ( cast_compare_perms ( first->castle_perm, second->castle_perm ) == false ) {
                 return false;
         }
-        if ( move_compare(first->mv, second->mv ) == false) {
+        if ( move_compare ( first->mv, second->mv ) == false ) {
                 return false;
         }
         if ( first->en_pass_set != second->en_pass_set ) {
