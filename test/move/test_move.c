@@ -45,7 +45,7 @@ void test_move_quiet_move_encode_decode ( void **state )
                                 continue;
                         }
 
-                        const uint16_t mv = move_encode_quiet ( from_sq, to_sq );
+                        const struct move mv = move_encode_quiet ( from_sq, to_sq );
 
                         enum square decoded_from = move_decode_from_sq ( mv );
                         enum square decoded_to = move_decode_to_sq ( mv );
@@ -69,7 +69,7 @@ void test_move_promoted_capture_move_encode_decode ( void **state )
                                 continue;
                         }
 
-                        uint16_t mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, true );
+                        struct move mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, true );
 
                         enum square decoded_from = move_decode_from_sq ( mv );
                         enum square decoded_to = move_decode_to_sq ( mv );
@@ -91,7 +91,7 @@ void test_move_promoted_non_capture_move_encode_decode ( void **state )
                                 continue;
                         }
 
-                        uint16_t mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, false );
+                        struct move mv = move_encode_promoted ( from_sq, to_sq, WQUEEN, false );
 
                         enum square decoded_from = move_decode_from_sq ( mv );
                         enum square decoded_to = move_decode_to_sq ( mv );
@@ -114,7 +114,7 @@ void test_move_en_passant_move_encode_decode ( void **state )
                                 continue;
                         }
 
-                        uint16_t mv = move_encode_enpassant ( from_sq, to_sq );
+                        struct move mv = move_encode_enpassant ( from_sq, to_sq );
 
                         enum square decoded_from = move_decode_from_sq ( mv );
                         enum square decoded_to = move_decode_to_sq ( mv );
@@ -137,7 +137,7 @@ void test_move_decode_promotion_piece_white ( void **state )
         const enum square from_sq = a7;
         const enum square to_sq = a8;
 
-        uint16_t mv = move_encode_promoted ( from_sq, to_sq, WKNIGHT, true );
+        struct move mv = move_encode_promoted ( from_sq, to_sq, WKNIGHT, true );
         enum piece pce = move_decode_promotion_piece ( mv, WHITE );
         assert_true ( pce == WKNIGHT );
 
@@ -160,7 +160,7 @@ void test_move_decode_promotion_piece_black ( void **state )
         const enum square from_sq = a7;
         const enum square to_sq = a8;
 
-        uint16_t mv = move_encode_promoted ( from_sq, to_sq, BKNIGHT, true );
+        struct move mv = move_encode_promoted ( from_sq, to_sq, BKNIGHT, true );
         enum piece pce = move_decode_promotion_piece ( mv, BLACK );
         assert_true ( pce == BKNIGHT );
 
@@ -180,26 +180,26 @@ void test_move_decode_promotion_piece_black ( void **state )
 
 void test_move_is_king_side_castle_white ( void **state )
 {
-        uint16_t mv = move_encode_castle_kingside_white();
+        struct move mv = move_encode_castle_kingside_white();
         assert_true ( move_is_king_castle ( mv ) );
 }
 
 void test_move_is_king_side_castle_black ( void **state )
 {
-        uint16_t mv = move_encode_castle_kingside_black();
+        struct move mv = move_encode_castle_kingside_black();
         assert_true ( move_is_king_castle ( mv ) );
 }
 
 
 void test_move_is_queen_side_castle_white ( void **state )
 {
-        uint16_t mv = move_encode_castle_queenside_white();
+        struct move mv = move_encode_castle_queenside_white();
         assert_true ( move_is_queen_castle ( mv ) );
 }
 
 void test_move_is_queen_side_castle_black ( void **state )
 {
-        uint16_t mv = move_encode_castle_queenside_black();
+        struct move mv = move_encode_castle_queenside_black();
         assert_true ( move_is_queen_castle ( mv ) );
 }
 
@@ -209,7 +209,7 @@ void test_move_is_double_pawn_white ( void **state )
         for ( enum square from_sq = a2; from_sq <= h2; from_sq++ ) {
 
                 const enum square to_sq = ( enum square ) ( from_sq + 16 );
-                uint16_t mv = move_encode_pawn_double_first ( from_sq, to_sq );
+                struct move mv = move_encode_pawn_double_first ( from_sq, to_sq );
 
                 assert_true ( move_is_double_pawn ( mv ) );
         }
@@ -222,7 +222,7 @@ void test_move_is_double_pawn_black ( void **state )
         for ( enum square from_sq = a7; from_sq <= h7; from_sq++ ) {
 
                 const enum square to_sq = ( enum square ) ( from_sq - 16 );
-                uint16_t mv = move_encode_pawn_double_first ( from_sq, to_sq );
+                struct move mv = move_encode_pawn_double_first ( from_sq, to_sq );
 
                 assert_true ( move_is_double_pawn ( mv ) );
         }
@@ -240,7 +240,7 @@ void test_move_get_promote_piece_white ( void **state )
         for ( int i = 0; i < 4; i++ ) {
                 enum piece pce = test_pieces[i];
 
-                uint16_t mv = move_encode_promoted ( from_sq, to_sq, pce, true );
+                struct move mv = move_encode_promoted ( from_sq, to_sq, pce, true );
                 assert_true ( move_get_promote_piece ( mv, WHITE ) == pce );
 
                 mv = move_encode_promoted ( from_sq, to_sq, pce, false );
@@ -260,7 +260,7 @@ void test_move_get_promote_piece_black ( void **state )
         for ( int i = 0; i < 4; i++ ) {
                 enum piece pce = test_pieces[i];
 
-                uint16_t mv = move_encode_promoted ( from_sq, to_sq, pce, true );
+                struct move mv = move_encode_promoted ( from_sq, to_sq, pce, true );
                 assert_true ( move_get_promote_piece ( mv, BLACK ) == pce );
 
                 mv = move_encode_promoted ( from_sq, to_sq, pce, false );

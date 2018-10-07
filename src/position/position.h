@@ -47,8 +47,8 @@ struct board * pos_get_board ( const struct position *pos );
 bool pos_try_get_en_pass_sq ( const struct position *pos, enum square *en_pass_sq );
 enum colour pos_get_side_to_move ( const struct position *pos );
 
-bool pos_try_make_move ( struct position *pos, const uint16_t mv );
-uint16_t pos_take_move ( struct position *pos );
+bool pos_try_make_move ( struct position *pos, const struct move mv );
+struct move pos_take_move ( struct position *pos );
 
 bool validate_position ( const struct position *pos );
 bool pos_compare ( const struct position *first, const struct position *second );

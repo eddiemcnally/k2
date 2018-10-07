@@ -43,7 +43,7 @@ const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
 // represents board state *before* the move was made
 struct mv_state {
-        uint16_t        move;               // TODO: is this needed?
+        struct move     mv;               // TODO: is this needed?
         uint8_t         fifty_move_counter;
         uint8_t         castle_perm;
         enum square     en_passant;
@@ -82,8 +82,8 @@ static void init_pos_struct ( struct position *pos );
 static void populate_position_from_fen ( struct position *pos, const struct parsed_fen *fen );
 static void set_up_castle_permissions ( struct position *pos, const struct parsed_fen *fen );
 static bool validate_en_passant_pce_and_sq ( const struct position *pos );
-static void push_position ( struct position *pos, const uint16_t move );
-static uint16_t pop_position ( struct position *pos );
+static void push_position ( struct position *pos, const struct move move );
+static struct move pop_position ( struct position *pos );
 static bool mv_state_compare ( const struct mv_state *first, const struct mv_state *second );
 static void update_castle_perms ( struct position *pos, const enum square from_sq, const enum square to_sq );
 
@@ -192,7 +192,7 @@ bool validate_position ( const struct position *pos )
 }
 
 
-bool pos_try_make_move ( struct position *pos, const uint16_t mv )
+bool pos_try_make_move ( struct position *pos, const struct move mv )
 {
         assert ( validate_position ( pos ) );
 
@@ -251,12 +251,12 @@ bool pos_try_make_move ( struct position *pos, const uint16_t mv )
 }
 
 
-uint16_t pos_take_move ( struct position *pos )
+struct move pos_take_move ( struct position *pos )
 {
         assert ( validate_position ( pos ) );
 
-
-        return ( uint16_t ) 0;
+        struct move mv = {.val = 0};
+        return mv;
 }
 
 
@@ -424,14 +424,14 @@ static void set_up_castle_permissions ( struct position *pos, const struct parse
 
 
 
-static void push_position ( struct position *pos, const uint16_t move )
+static void push_position ( struct position *pos, const struct move mv )
 {
         pos->ply++;
 
         struct mv_state *undo = &pos->history[pos->ply];
 
         undo->castle_perm = pos->castle_perm;
-        undo->move = move;
+        undo->mv = mv;
         undo->en_pass_set = pos->en_passant_set;
         undo->en_passant = pos->en_passant;
         undo->fifty_move_counter = pos->fifty_move_counter;
@@ -440,13 +440,13 @@ static void push_position ( struct position *pos, const uint16_t move )
         brd_snaphot_make ( pos->brd );
 }
 
-static uint16_t pop_position ( struct position *pos )
+static struct move pop_position ( struct position *pos )
 {
 
         struct mv_state *undo = &pos->history[pos->ply];
 
         pos->castle_perm = undo->castle_perm;
-        uint16_t move = undo->move;
+        struct move mv = undo->mv;
         pos->en_passant_set=  undo->en_pass_set;
         pos->en_passant = undo->en_passant;
         pos->fifty_move_counter = undo->fifty_move_counter;
@@ -457,7 +457,7 @@ static uint16_t pop_position ( struct position *pos )
         brd_snaphot_extract ( pos->brd );
 
 
-        return move;
+        return mv;
 }
 
 static bool mv_state_compare ( const struct mv_state *first, const struct mv_state *second )
@@ -465,7 +465,7 @@ static bool mv_state_compare ( const struct mv_state *first, const struct mv_sta
         if ( first->castle_perm != second->castle_perm ) {
                 return false;
         }
-        if ( first->move != second->move ) {
+        if ( move_compare(first->mv, second->mv ) == false) {
                 return false;
         }
         if ( first->en_pass_set != second->en_pass_set ) {

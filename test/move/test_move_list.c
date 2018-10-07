@@ -55,7 +55,7 @@ void test_move_list_bulk_add_moves ( void **state )
 
         // add moves
         for ( int i = 0; i < max_moves; i++ ) {
-                uint16_t mv = ( uint16_t ) ( mv_offset + i );
+                struct move mv = {.val = ( uint16_t ) ( mv_offset + i )};
                 mvl_add ( mvl, mv );
         }
 
@@ -63,8 +63,10 @@ void test_move_list_bulk_add_moves ( void **state )
         assert_true ( count == max_moves );
 
         for ( int i = 0; i < max_moves; i++ ) {
-                uint16_t mv = mvl_get_move_at_offset ( mvl, ( uint16_t ) i );
-                assert_true ( mv == ( uint16_t ) ( mv_offset + i ) );
+                struct move expected = {.val=( uint16_t ) ( mv_offset + i )};
+                struct move mv = mvl_get_move_at_offset ( mvl, ( uint16_t ) i );
+
+                assert_true ( move_compare(mv, expected ));
         }
 
         mvl_deallocate ( mvl );
@@ -77,18 +79,19 @@ void test_move_list_contains_move ( void **state )
 
         // add moves
         for ( int i = 0; i < num_moves; i++ ) {
-                uint16_t mv = ( uint16_t ) i;
+                struct move mv = {.val = ( uint16_t ) i};
                 mvl_add ( mvl, mv );
         }
 
         // verify all are present
         for ( int i = 0; i < num_moves; i++ ) {
-                uint16_t mv = ( uint16_t ) i;
+                struct move mv = {.val = ( uint16_t ) i};
                 assert_true ( mvl_contains_move ( mvl, mv ) );
         }
 
         // verify a non-existant move is not in the list
-        uint16_t other_mv = ( uint16_t ) ( num_moves + 100 );
+        struct move other_mv = {.val = ( uint16_t ) num_moves + 100};
+
         assert_false ( mvl_contains_move ( mvl, other_mv ) );
 
         mvl_deallocate ( mvl );
@@ -102,7 +105,7 @@ void test_move_list_reset_list ( void **state )
 
         // add moves
         for ( int i = 0; i < num_moves; i++ ) {
-                uint16_t mv = ( uint16_t ) i;
+                struct move mv ={.val = ( uint16_t ) i};
                 mvl_add ( mvl, mv );
         }
 
@@ -123,14 +126,14 @@ void test_move_list_compare ( void **state )
 
         // add moves
         for ( int i = 0; i < num_moves; i++ ) {
-                uint16_t mv = ( uint16_t ) i;
+                struct move mv = {.val = ( uint16_t ) i};
                 mvl_add ( mvl1, mv );
                 mvl_add ( mvl2, mv );
         }
 
         assert_true ( mvl_compare ( mvl1, mvl2 ) );
 
-        uint16_t m = 0;
+        struct move m = {.val = 0};
         mvl_add ( mvl1, m );
         assert_false ( mvl_compare ( mvl1, mvl2 ) );
         mvl_add ( mvl2, m );
