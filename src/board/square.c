@@ -151,3 +151,23 @@ bool validate_file ( const enum file file )
         return ( file >= FILE_A ) && ( file <= FILE_H );
 }
 
+/**
+ * @brief               Validates the given file is a valid en passent square
+ * @param sq_to_check   The file
+ * @return              true if valid, false otherwise
+ */
+
+bool validate_en_pass_sq ( const enum square sq_to_check )
+{
+        validate_square ( sq_to_check );
+        enum rank r = sq_get_rank ( sq_to_check );
+        
+        switch ( r ) {
+        case RANK_3:
+        case RANK_6:
+                return true;
+        default:
+                return false;
+        }
+}
+

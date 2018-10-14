@@ -73,6 +73,7 @@ char * print_square ( const enum square sq );
 bool validate_square ( const enum square sq );
 bool validate_rank ( const enum rank rank );
 bool validate_file ( const enum file file );
+bool validate_en_pass_sq ( const enum square sq_to_check );
 
 
 

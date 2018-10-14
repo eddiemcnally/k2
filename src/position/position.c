@@ -87,7 +87,7 @@ static void push_position ( struct position *pos, const struct move move );
 static struct move pop_position ( struct position *pos );
 static bool mv_state_compare ( const struct mv_state *first, const struct mv_state *second );
 static void update_castle_perms ( struct position *pos, const enum square from_sq, const enum square to_sq );
-
+static enum square get_en_pass_sq ( const enum colour side, const enum square from_sq );
 
 
 /**
@@ -206,6 +206,13 @@ bool pos_try_make_move ( struct position *pos, const struct move mv )
 
         assert ( found == true );
         assert ( validate_piece ( pce_to_move ) );
+
+        if ( move_is_double_pawn ( mv ) ) {
+                pos->en_passant = to_sq;
+                pos->en_passant_set = true;
+        } else {
+                pos->en_passant_set = false;
+        }
 
         if ( move_is_quiet ( mv ) ) {
                 brd_move_piece ( pos->brd, pce_to_move, from_sq, to_sq );
@@ -422,6 +429,22 @@ static void set_up_castle_permissions ( struct position *pos, const struct parse
 
         pos_set_cast_perm ( pos, cp );
 
+}
+
+
+static enum square get_en_pass_sq ( const enum colour side, const enum square from_sq )
+{
+
+        enum square retval;
+        if ( side == WHITE ) {
+                retval = sq_get_square_plus_1_rank ( from_sq );
+        }
+
+        retval = sq_get_square_minus_1_rank ( from_sq );
+
+        assert ( validate_en_pass_sq ( retval ) );
+
+        return retval;
 }
 
 
