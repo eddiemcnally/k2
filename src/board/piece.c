@@ -78,10 +78,10 @@ bool pce_is_black ( const enum piece pce )
 /**
  * @brief       Takes a given colour/side, and returns the other colour/side
  *
- * @param col The given colour
- * @return The opposite colour
+ * @param col   The given colour
+ * @return      The opposite colour
  */
-enum colour swap_side ( const enum colour col )
+enum colour pce_swap_side ( const enum colour col )
 {
         assert ( validate_colour ( col ) );
 

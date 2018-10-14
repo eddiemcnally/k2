@@ -394,19 +394,19 @@ enum piece move_get_promote_piece ( const struct move mv, const enum colour side
 {
         uint16_t m = ( ( uint16_t ) mv.val ) & MV_MASK_FLAGS;
 
-        assert((m & MV_FLG_BIT_PROMOTE) != 0);
+        assert ( ( m & MV_FLG_BIT_PROMOTE ) != 0 );
 
-        switch(m) {
+        switch ( m ) {
         case MV_FLG_PROMOTE_KNIGHT:
         case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
-                if (side_being_moved == WHITE) {
+                if ( side_being_moved == WHITE ) {
                         return WKNIGHT;
                 }
                 return BKNIGHT;
                 break;
         case MV_FLG_PROMOTE_BISHOP:
         case MV_FLG_PROMOTE_BISHOP_CAPTURE:
-                if (side_being_moved == WHITE) {
+                if ( side_being_moved == WHITE ) {
                         return WBISHOP;
                 }
                 return BBISHOP;
@@ -414,18 +414,20 @@ enum piece move_get_promote_piece ( const struct move mv, const enum colour side
 
         case MV_FLG_PROMOTE_ROOK:
         case MV_FLG_PROMOTE_ROOK_CAPTURE:
-                if (side_being_moved == WHITE) {
+                if ( side_being_moved == WHITE ) {
                         return WROOK;
                 }
                 return BROOK;
                 break;
         case MV_FLG_PROMOTE_QUEEN:
         case MV_FLG_PROMOTE_QUEEN_CAPTURE:
-                if (side_being_moved == WHITE) {
+                if ( side_being_moved == WHITE ) {
                         return WQUEEN;
                 }
                 return BQUEEN;
                 break;
+        default:
+                assert ( false );
         }
 }
 
@@ -496,7 +498,7 @@ bool move_is_castle ( const struct move mv )
  * @return true if moves are the same, false otherwise
  */
 
-bool move_compare(const struct move mv1, const struct move mv2)
+bool move_compare ( const struct move mv1, const struct move mv2 )
 {
         return mv1.val == mv2.val;
 }

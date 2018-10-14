@@ -132,8 +132,8 @@ void test_piece_get_array_idx ( void **state )
 
 void test_piece_swap_side ( void **state )
 {
-        assert_true ( swap_side ( WHITE ) == BLACK );
-        assert_true ( swap_side ( BLACK ) == WHITE );
+        assert_true ( pce_swap_side ( WHITE ) == BLACK );
+        assert_true ( pce_swap_side ( BLACK ) == WHITE );
 }
 
 void test_piece_is_white ( void **state )

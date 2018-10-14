@@ -565,7 +565,7 @@ static void mv_gen_king_knight_moves ( const struct board *brd, const enum piece
                 // ----------------------
                 // AND'ing with opposite colour pieces with the occupancy mask, will
                 // give all pieces that can be captured by the piece on this square
-                const enum colour opp_side = swap_side ( side_to_move );
+                const enum colour opp_side = pce_swap_side ( side_to_move );
                 const uint64_t opp_colours_bb = brd_get_colour_bb ( brd, opp_side );
                 const uint64_t captures_bb = occ_mask & opp_colours_bb;
                 mv_gen_encode_multiple_capture ( captures_bb, from_sq, mvl );

@@ -59,7 +59,7 @@ enum piece {
 
 bool pce_is_white ( const enum piece pce );
 bool pce_is_black ( const enum piece pce );
-enum colour swap_side ( const enum colour side );
+enum colour pce_swap_side ( const enum colour side );
 enum colour pce_get_colour ( const enum piece pce );
 uint32_t pce_get_value ( const enum piece pce );
 char pce_get_label ( const enum piece pce );
