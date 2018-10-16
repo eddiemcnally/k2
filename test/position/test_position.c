@@ -34,7 +34,10 @@
 #include "board.h"
 #include "test_position.h"
 
-
+struct mv_from_to {
+        enum square from_sq;
+        enum square to_sq;
+};
 
 void test_position_get_set_castle_permissions ( void **state )
 {
@@ -85,6 +88,48 @@ void test_position_compare ( void **state )
 
 }
 
+
+
+void test_position_white_double_first_move ( void **state )
+{
+        struct mv_from_to moves [8] = {
+                {.from_sq = a2, .to_sq = a4},
+                {.from_sq = b2, .to_sq = b4},
+                {.from_sq = c2, .to_sq = c4},
+                {.from_sq = d2, .to_sq = d4},
+                {.from_sq = e2, .to_sq = e4},
+                {.from_sq = f2, .to_sq = f4},
+                {.from_sq = g2, .to_sq = g4},
+                {.from_sq = h2, .to_sq = h4}
+        };
+
+        struct move quiet_move = move_encode_quiet ( a1, a3 );
+        struct position *pos = pos_create();
+
+        for ( int i = 0; i < 8; i++ ) {
+                pos_initialise ( INITIAL_FEN, pos );
+
+                struct move mv = move_encode_pawn_double_first ( moves[i].from_sq, moves[i].to_sq );
+
+                // baseline, not set
+                enum square enp_sq;
+                bool found = pos_try_get_en_pass_sq ( pos, &enp_sq );
+                assert_false ( found );
+
+                // make move and check en passant square
+                pos_try_make_move ( pos, mv );
+                found = pos_try_get_en_pass_sq ( pos, &enp_sq );
+                assert_true ( found );
+
+                enum square expected_enp_sq = sq_get_square_plus_1_rank ( moves[i].from_sq );
+                assert_true ( expected_enp_sq == enp_sq );
+
+                // make a normal move, verifyen passant square no longer active
+                pos_try_make_move ( pos, quiet_move );
+                found = pos_try_get_en_pass_sq ( pos, &enp_sq );
+                assert_false ( found );
+        }
+}
 
 void test_position_brd_is_sq_occupied ( void **state )
 {

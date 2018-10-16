@@ -91,6 +91,8 @@ int main ( void )
                 cmocka_unit_test ( test_position_get_set_castle_permissions ),
                 cmocka_unit_test ( test_position_brd_is_sq_occupied ),
                 cmocka_unit_test ( test_position_compare ),
+                cmocka_unit_test ( test_position_white_double_first_move ),
+
 
 
 
