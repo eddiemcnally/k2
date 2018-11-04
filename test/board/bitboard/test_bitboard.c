@@ -34,154 +34,154 @@
 #include "bitboard.h"
 #include "test_bitboard.h"
 
-void test_bitboard_pop_first_bit_all_squares ( void **state )
+void test_bitboard_pop_first_bit_all_squares(void **state)
 {
         uint64_t val = 0;
-        for ( enum square sq = a1; sq <= h8; sq++ ) {
-                val = bb_set_square ( val, sq );
+        for (enum square sq = a1; sq <= h8; sq++) {
+                val = bb_set_square(val, sq);
         }
 
-        assert_true ( val == 0xffffffffffffffff );
-        for ( enum square sq = a1; sq <= h8; sq++ ) {
-                enum square popped = bb_pop_1st_bit ( &val );
-                assert_true ( popped == sq );
+        assert_true(val == 0xffffffffffffffff);
+        for (enum square sq = a1; sq <= h8; sq++) {
+                enum square popped = bb_pop_1st_bit(&val);
+                assert_true(popped == sq);
         }
-        assert_true ( val == 0 );
+        assert_true(val == 0);
 }
 
 
 
-void test_bitboard_pop_first_bit_random_squares ( void **state )
+void test_bitboard_pop_first_bit_random_squares(void **state)
 {
 
         uint64_t val = 0;
 
-        val = bb_set_square ( val, a1 );
-        val = bb_set_square ( val, b5 );
-        val = bb_set_square ( val, c7 );
-        val = bb_set_square ( val, d3 );
-        val = bb_set_square ( val, e5 );
-        val = bb_set_square ( val, f8 );
-        val = bb_set_square ( val, g1 );
-        val = bb_set_square ( val, h8 );
+        val = bb_set_square(val, a1);
+        val = bb_set_square(val, b5);
+        val = bb_set_square(val, c7);
+        val = bb_set_square(val, d3);
+        val = bb_set_square(val, e5);
+        val = bb_set_square(val, f8);
+        val = bb_set_square(val, g1);
+        val = bb_set_square(val, h8);
 
-        enum square popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == a1 );
+        enum square popped = bb_pop_1st_bit(&val);
+        assert_true(popped == a1);
 
-        popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == g1 );
+        popped = bb_pop_1st_bit(&val);
+        assert_true(popped == g1);
 
-        popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == d3 );
+        popped = bb_pop_1st_bit(&val);
+        assert_true(popped == d3);
 
-        popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == b5 );
+        popped = bb_pop_1st_bit(&val);
+        assert_true(popped == b5);
 
-        popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == e5 );
+        popped = bb_pop_1st_bit(&val);
+        assert_true(popped == e5);
 
-        popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == c7 );
+        popped = bb_pop_1st_bit(&val);
+        assert_true(popped == c7);
 
-        popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == f8 );
+        popped = bb_pop_1st_bit(&val);
+        assert_true(popped == f8);
 
-        popped = bb_pop_1st_bit ( &val );
-        assert_true ( popped == h8 );
+        popped = bb_pop_1st_bit(&val);
+        assert_true(popped == h8);
 
-        assert_true ( val == 0 );
+        assert_true(val == 0);
 }
 
 
-void test_bitboard_count_bits ( void **state )
+void test_bitboard_count_bits(void **state)
 {
-        uint64_t bb = ( uint64_t ) 0xFE100CA541;
-        uint8_t num_bits_set = bb_count_bits ( bb );
-        assert_true ( num_bits_set == 16 );
+        uint64_t bb = (uint64_t)0xFE100CA541;
+        uint8_t num_bits_set = bb_count_bits(bb);
+        assert_true(num_bits_set == 16);
 
-        bb = ( uint64_t ) 0;
-        num_bits_set = bb_count_bits ( bb );
-        assert_true ( num_bits_set == 0 );
+        bb = (uint64_t)0;
+        num_bits_set = bb_count_bits(bb);
+        assert_true(num_bits_set == 0);
 
-        bb = ( uint64_t ) 1;
-        num_bits_set = bb_count_bits ( bb );
-        assert_true ( num_bits_set == 1 );
+        bb = (uint64_t)1;
+        num_bits_set = bb_count_bits(bb);
+        assert_true(num_bits_set == 1);
 
-        bb = ( uint64_t ) 0xFFFFFFFFFFFFFFFF;
-        num_bits_set = bb_count_bits ( bb );
-        assert_true ( num_bits_set == 64 );
+        bb = (uint64_t)0xFFFFFFFFFFFFFFFF;
+        num_bits_set = bb_count_bits(bb);
+        assert_true(num_bits_set == 64);
 }
 
 
-void test_bitboard_reverse_bits ( void **state )
+void test_bitboard_reverse_bits(void **state)
 {
         uint64_t test_word = 0xFA340A7314DA;
-        uint64_t reversed = bb_reverse ( test_word );
-        assert_true ( reversed == 0x5B28CE502C5F0000 );
+        uint64_t reversed = bb_reverse(test_word);
+        assert_true(reversed == 0x5B28CE502C5F0000);
 
         test_word = 0x6F43DA3E2;
-        reversed = bb_reverse ( test_word );
-        assert_true ( reversed == 0x47C5BC2F60000000 );
+        reversed = bb_reverse(test_word);
+        assert_true(reversed == 0x47C5BC2F60000000);
 
         // swap the above to confirm
         test_word = 0x47C5BC2F60000000;
-        reversed = bb_reverse ( test_word );
-        assert_true ( reversed == 0x6F43DA3E2 );
+        reversed = bb_reverse(test_word);
+        assert_true(reversed == 0x6F43DA3E2);
 
         test_word = 0x3AD1FDE008934A;
-        reversed = bb_reverse ( test_word );
-        assert_true ( reversed == 0x52C91007BF8B5C00 );
+        reversed = bb_reverse(test_word);
+        assert_true(reversed == 0x52C91007BF8B5C00);
 
         test_word = 0x00000000000000AA;
-        reversed = bb_reverse ( test_word );
-        assert_true ( reversed == 0x5500000000000000 );
+        reversed = bb_reverse(test_word);
+        assert_true(reversed == 0x5500000000000000);
 
 }
 
-void test_bb_get_sq_mask ( void **state )
+void test_bb_get_sq_mask(void **state)
 {
-        uint64_t bb = ( uint64_t ) 0;
+        uint64_t bb = (uint64_t)0;
         bool is_set = false;
 
-        for ( enum square sq = a1; sq <= h8; sq++ ) {
-                bb = bb_get_sq_mask ( sq );
-                is_set = bb_is_set ( bb, sq );
-                assert_true ( is_set );
+        for (enum square sq = a1; sq <= h8; sq++) {
+                bb = bb_get_sq_mask(sq);
+                is_set = bb_is_set(bb, sq);
+                assert_true(is_set);
 
-                bb = bb_clear_square ( bb, sq );
-                is_set = bb_is_set ( bb, sq );
-                assert_false ( is_set );
+                bb = bb_clear_square(bb, sq);
+                is_set = bb_is_set(bb, sq);
+                assert_false(is_set);
         }
 }
 
 
-void test_bitboard_set_test_clear_bit ( void **state )
+void test_bitboard_set_test_clear_bit(void **state)
 {
-        uint64_t bb = ( uint64_t ) 0;
+        uint64_t bb = (uint64_t)0;
         bool is_set = false;
 
-        for ( enum square sq = a1; sq <= h8; sq++ ) {
-                is_set = bb_is_set ( bb, sq );
-                assert_false ( is_set );
+        for (enum square sq = a1; sq <= h8; sq++) {
+                is_set = bb_is_set(bb, sq);
+                assert_false(is_set);
 
-                bb = bb_set_square ( bb, sq );
-                is_set = bb_is_set ( bb, sq );
-                assert_true ( is_set );
+                bb = bb_set_square(bb, sq);
+                is_set = bb_is_set(bb, sq);
+                assert_true(is_set);
 
-                bb = bb_clear_square ( bb, sq );
-                is_set = bb_is_set ( bb, sq );
-                assert_false ( is_set );
+                bb = bb_clear_square(bb, sq);
+                is_set = bb_is_set(bb, sq);
+                assert_false(is_set);
         }
 
-        bb = ( uint64_t ) 0;
-        for ( enum square sq = a1; sq <= h8; sq++ ) {
-                is_set = bb_is_set ( bb, sq );
-                assert_false ( is_set );
+        bb = (uint64_t)0;
+        for (enum square sq = a1; sq <= h8; sq++) {
+                is_set = bb_is_set(bb, sq);
+                assert_false(is_set);
         }
 
-        bb = ( uint64_t ) 0xFFFFFFFFFFFFFFFF;
-        for ( enum square sq = a1; sq <= h8; sq++ ) {
-                is_set = bb_is_set ( bb, sq );
-                assert_true ( is_set );
+        bb = (uint64_t)0xFFFFFFFFFFFFFFFF;
+        for (enum square sq = a1; sq <= h8; sq++) {
+                is_set = bb_is_set(bb, sq);
+                assert_true(is_set);
         }
 }

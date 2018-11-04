@@ -33,8 +33,8 @@
 //
 //
 // NOTES :
-//		- For these occupancy masks, element [0] is a1, and [63] is h8
-//		- The bit mask represents the set of possible target squares for a piece on a given square
+//              - For these occupancy masks, element [0] is a1, and [63] is h8
+//              - The bit mask represents the set of possible target squares for a piece on a given square
 //
 static const uint64_t knight_occupancy_masks[NUM_SQUARES] = {
         0x0000000000020400, 0x0000000000050800, 0x00000000000a1100, 0x0000000000142200,
@@ -267,113 +267,113 @@ static const uint64_t negative_diagonal_masks[] = {
 
 
 
-uint64_t occ_mask_get_positive_diagonal ( const enum square sq )
+uint64_t occ_mask_get_positive_diagonal(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return positive_diagonal_masks[sq];
 }
 
-uint64_t occ_mask_get_negative_diagonal ( const enum square sq )
+uint64_t occ_mask_get_negative_diagonal(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return negative_diagonal_masks[sq];
 }
 
-uint64_t occ_mask_get_vertical ( const enum square sq )
+uint64_t occ_mask_get_vertical(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return vertical_move_mask[sq];
 }
-uint64_t occ_mask_get_horizontal ( const enum square sq )
+uint64_t occ_mask_get_horizontal(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return horizontal_move_mask[sq];
 }
 
 
 /**
- * @brief 		Get white pawn capture non-first move occupancy mask
+ * @brief               Get white pawn capture non-first move occupancy mask
  *
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_white_pawn_capture_non_first_double_move ( const enum square sq )
+uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return white_pawn_capture_non_first_double_move[sq];
 }
 
 
 /**
- * @brief 		Get black pawn capture non-first move occupancy mask
+ * @brief               Get black pawn capture non-first move occupancy mask
  *
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_black_pawn_capture_non_first_double_move ( const enum square sq )
+uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return black_pawn_capture_non_first_double_move[sq];
 }
 
 
 /**
- * @brief 		Get Knight occupancy mask for the given square
+ * @brief               Get Knight occupancy mask for the given square
  *
  * @param sq    The square containing the knight
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_knight ( const enum square sq )
+uint64_t occ_mask_get_knight(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return knight_occupancy_masks[sq];
 }
 
 /**
- * @brief 		Get Bishop occupancy mask for the given square
+ * @brief               Get Bishop occupancy mask for the given square
  *
  * @param sq    The square containing the Bishop
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_bishop ( const enum square sq )
+uint64_t occ_mask_get_bishop(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return bishop_occupancy_masks[sq];
 }
 
 /**
- * @brief 		Get King occupancy mask for the given square
+ * @brief               Get King occupancy mask for the given square
  *
  * @param sq    The square containing the King
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_king ( const enum square sq )
+uint64_t occ_mask_get_king(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return king_occupancy_masks[sq];
 }
 
 /**
- * @brief 		Get Queen occupancy mask for the given square
+ * @brief               Get Queen occupancy mask for the given square
  *
  * @param sq    The square containing the Queen
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_queen ( const enum square sq )
+uint64_t occ_mask_get_queen(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return queen_occupancy_masks[sq];
 }
 
 /**
- * @brief 		Get Rook occupancy mask for the given square
+ * @brief               Get Rook occupancy mask for the given square
  *
  * @param sq    The square containing the Rook
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_rook ( const enum square sq )
+uint64_t occ_mask_get_rook(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
         return rook_occupancy_masks[sq];
 }
 

@@ -38,7 +38,7 @@
 //#define VERSION_MAJOR	0
 //#define VERSION_MINOR	1
 
-int main ( void )
+int main(void)
 {
 
         const char *RANDOM_FEN_1 = "3R2K1/1PknP3/p6P/Prn1Pp1p/NN3P2/r2B2Pp/p2pb3/6B1 b - - 0 1\n";
@@ -47,15 +47,15 @@ int main ( void )
 
 
         struct position *pos = pos_create();
-        pos_initialise ( RANDOM_FEN_1, pos );
+        pos_initialise(RANDOM_FEN_1, pos);
 
         brd_print_size();
         struct move_list* mvl = mvl_allocate();
 
-        struct board *brd = pos_get_board ( pos );
-        mv_gen_bishop_moves ( brd, BLACK, mvl );
+        struct board *brd = pos_get_board(pos);
+        mv_gen_bishop_moves(brd, BLACK, mvl);
 
-        struct move mv = move_encode_quiet ( e2, d1 );
+        struct move mv = move_encode_quiet(e2, d1);
 
 
 }

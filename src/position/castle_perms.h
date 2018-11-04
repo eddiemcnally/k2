@@ -32,18 +32,18 @@ struct cast_perm {
 };
 
 
-bool cast_perm_has_WK ( const struct cast_perm cp );
-bool cast_perm_has_WQ ( const struct cast_perm cp );
-bool cast_perm_has_BK ( const struct cast_perm cp );
-bool cast_perm_has_BQ ( const struct cast_perm cp );
-bool cast_perm_has_perms ( const struct cast_perm cp );
+bool cast_perm_has_WK(const struct cast_perm cp);
+bool cast_perm_has_WQ(const struct cast_perm cp);
+bool cast_perm_has_BK(const struct cast_perm cp);
+bool cast_perm_has_BQ(const struct cast_perm cp);
+bool cast_perm_has_perms(const struct cast_perm cp);
 
 
-void cast_perm_set_WK ( struct cast_perm* cp, const bool enabled );
-void cast_perm_set_WQ ( struct cast_perm* cp, const bool enabled );
-void cast_perm_set_BK ( struct cast_perm* cp, const bool enabled );
-void cast_perm_set_BQ ( struct cast_perm* cp, const bool enabled );
-void cast_perm_set_no_perms ( struct cast_perm* cp );
+void cast_perm_set_WK(struct cast_perm* cp, const bool enabled);
+void cast_perm_set_WQ(struct cast_perm* cp, const bool enabled);
+void cast_perm_set_BK(struct cast_perm* cp, const bool enabled);
+void cast_perm_set_BQ(struct cast_perm* cp, const bool enabled);
+void cast_perm_set_no_perms(struct cast_perm* cp);
 
-bool cast_compare_perms ( const struct cast_perm cp1, const struct cast_perm cp2 );
+bool cast_compare_perms(const struct cast_perm cp1, const struct cast_perm cp2);
 

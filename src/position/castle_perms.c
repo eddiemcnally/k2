@@ -38,61 +38,61 @@ enum castle_perm {
         CAST_PERM_BQ    = 0x01 << 3,
 };
 
-static void set_perm_state ( struct cast_perm* cp, const enum castle_perm perm, const bool state );
-static void set_perm ( struct cast_perm* cp, const enum castle_perm perm );
-static void clear_perm ( struct cast_perm* cp, const enum castle_perm perm );
+static void set_perm_state(struct cast_perm* cp, const enum castle_perm perm, const bool state);
+static void set_perm(struct cast_perm* cp, const enum castle_perm perm);
+static void clear_perm(struct cast_perm* cp, const enum castle_perm perm);
 
 
-bool cast_perm_has_WK ( const struct cast_perm cp )
+bool cast_perm_has_WK(const struct cast_perm cp)
 {
-        return ( cp.val & CAST_PERM_WK ) != 0;
+        return (cp.val & CAST_PERM_WK) != 0;
 }
-bool cast_perm_has_WQ ( const struct cast_perm cp )
+bool cast_perm_has_WQ(const struct cast_perm cp)
 {
-        return ( cp.val & CAST_PERM_WQ ) != 0;
+        return (cp.val & CAST_PERM_WQ) != 0;
 
 }
-bool cast_perm_has_BK ( const struct cast_perm cp )
+bool cast_perm_has_BK(const struct cast_perm cp)
 {
-        return ( cp.val & CAST_PERM_BK ) != 0;
+        return (cp.val & CAST_PERM_BK) != 0;
 }
-bool cast_perm_has_BQ ( const struct cast_perm cp )
+bool cast_perm_has_BQ(const struct cast_perm cp)
 {
-        return ( cp.val & CAST_PERM_BQ ) != 0;
+        return (cp.val & CAST_PERM_BQ) != 0;
 }
-bool cast_perm_has_perms ( const struct cast_perm cp )
+bool cast_perm_has_perms(const struct cast_perm cp)
 {
         return cp.val != 0;
 }
 
 
-void cast_perm_set_WK ( struct cast_perm* cp, const bool enabled )
+void cast_perm_set_WK(struct cast_perm* cp, const bool enabled)
 {
-        set_perm_state ( cp, CAST_PERM_WK, enabled );
+        set_perm_state(cp, CAST_PERM_WK, enabled);
 
 }
-void cast_perm_set_WQ ( struct cast_perm* cp, const bool enabled )
+void cast_perm_set_WQ(struct cast_perm* cp, const bool enabled)
 {
-        set_perm_state ( cp, CAST_PERM_WQ, enabled );
+        set_perm_state(cp, CAST_PERM_WQ, enabled);
 
 }
-void cast_perm_set_BK ( struct cast_perm* cp, const bool enabled )
+void cast_perm_set_BK(struct cast_perm* cp, const bool enabled)
 {
-        set_perm_state ( cp, CAST_PERM_BK, enabled );
+        set_perm_state(cp, CAST_PERM_BK, enabled);
 
 }
-void cast_perm_set_BQ ( struct cast_perm* cp, const bool enabled )
+void cast_perm_set_BQ(struct cast_perm* cp, const bool enabled)
 {
-        set_perm_state ( cp, CAST_PERM_BQ, enabled );
+        set_perm_state(cp, CAST_PERM_BQ, enabled);
 
 }
-void cast_perm_set_no_perms ( struct cast_perm* cp )
+void cast_perm_set_no_perms(struct cast_perm* cp)
 {
         cp->val = 0;
 }
 
 
-bool cast_compare_perms ( const struct cast_perm cp1, const struct cast_perm cp2 )
+bool cast_compare_perms(const struct cast_perm cp1, const struct cast_perm cp2)
 {
         return cp1.val == cp2.val;
 }
@@ -100,23 +100,23 @@ bool cast_compare_perms ( const struct cast_perm cp1, const struct cast_perm cp2
 
 
 
-static void set_perm_state ( struct cast_perm* cp, const enum castle_perm perm, const bool state )
+static void set_perm_state(struct cast_perm* cp, const enum castle_perm perm, const bool state)
 {
-        if ( state ) {
-                set_perm ( cp, perm );
+        if (state) {
+                set_perm(cp, perm);
         } else {
-                clear_perm ( cp, perm );
+                clear_perm(cp, perm);
         }
 }
 
 
 
-static void set_perm ( struct cast_perm* cp, const enum castle_perm perm )
+static void set_perm(struct cast_perm* cp, const enum castle_perm perm)
 {
         cp->val |= perm;
 }
 
-static void clear_perm ( struct cast_perm* cp, const enum castle_perm perm )
+static void clear_perm(struct cast_perm* cp, const enum castle_perm perm)
 {
         cp->val &= ~perm;
 }

@@ -43,13 +43,13 @@ struct sq_pce {
 };
 
 
-void test_fen_pieces_init_position ( void **state )
+void test_fen_pieces_init_position(void **state)
 {
-        struct parsed_fen* brd = fen_parse ( INITIAL_FEN );
+        struct parsed_fen* brd = fen_parse(INITIAL_FEN);
 
         // setup test data for comparison
         struct sq_pce data[NUM_SQUARES];
-        for ( int i = a1; i < h8; i++ ) {
+        for (int i = a1; i < h8; i++) {
                 data[a1].has_piece = false;
         }
 
@@ -69,7 +69,7 @@ void test_fen_pieces_init_position ( void **state )
         data[g1].piece = WKNIGHT;
         data[h1].has_piece = true;
         data[h1].piece = WROOK;
-        for ( int i = a2; i <= h2; i++ ) {
+        for (int i = a2; i <= h2; i++) {
                 data[i].has_piece = true;
                 data[i].piece = WPAWN;
         }
@@ -90,43 +90,43 @@ void test_fen_pieces_init_position ( void **state )
         data[g8].piece = BKNIGHT;
         data[h8].has_piece = true;
         data[h8].piece = BROOK;
-        for ( int i = a7; i <= h7; i++ ) {
+        for (int i = a7; i <= h7; i++) {
                 data[i].has_piece = true;
                 data[i].piece = BPAWN;
         }
 
         bool found = false;
         enum piece pce;
-        for ( int s = a1; s <= h8; s++ ) {
+        for (int s = a1; s <= h8; s++) {
                 struct sq_pce d = data[s];
 
-                bool b = fen_try_get_piece_on_sq ( brd, ( enum square ) s, &pce );
+                bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
 
-                if ( b == true ) {
-                        assert_true ( pce == d.piece );
+                if (b == true) {
+                        assert_true(pce == d.piece);
                 }
         }
 
         // all other squares are empty
-        for ( int r = RANK_3; r <= RANK_6; r++ ) {
-                for ( int f = FILE_A; f <= FILE_H; f++ ) {
-                        enum square sq = sq_gen_from_rank_file ( ( enum rank ) r, ( enum file ) f );
+        for (int r = RANK_3; r <= RANK_6; r++) {
+                for (int f = FILE_A; f <= FILE_H; f++) {
+                        enum square sq = sq_gen_from_rank_file(( enum rank)r, (enum file)f);
 
-                        found = fen_try_get_piece_on_sq ( brd, sq, &pce );
-                        assert_false ( found );
+                        found = fen_try_get_piece_on_sq(brd, sq, &pce);
+                        assert_false(found);
                 }
         }
 }
 
 
-void test_fen_pieces_random_position ( void **state )
+void test_fen_pieces_random_position(void **state)
 {
         char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 1 4\n";
-        struct parsed_fen* brd = fen_parse ( RANDOM_FEN_1 );
+        struct parsed_fen* brd = fen_parse(RANDOM_FEN_1);
 
         // setup test data for comparison
         struct sq_pce data[NUM_SQUARES];
-        for ( int i = a1; i < h8; i++ ) {
+        for (int i = a1; i < h8; i++) {
                 data[a1].has_piece = false;
         }
 
@@ -211,80 +211,80 @@ void test_fen_pieces_random_position ( void **state )
         data[h8].piece = BROOK;
 
         enum piece pce;
-        for ( int s = a1; s <= h8; s++ ) {
+        for (int s = a1; s <= h8; s++) {
                 struct sq_pce d = data[s];
 
-                bool b = fen_try_get_piece_on_sq ( brd, ( enum square ) s, &pce );
+                bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
 
-                if ( b == true ) {
-                        assert_true ( pce == d.piece );
+                if (b == true) {
+                        assert_true(pce == d.piece);
                 }
         }
 }
 
-void test_fen_side_to_move ( void **state )
+void test_fen_side_to_move(void **state)
 {
         const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 1 4\n";
         const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 0 3\n";
 
-        struct parsed_fen* brd = fen_parse ( RANDOM_FEN_1 );
-        enum colour side = fen_get_side_to_move ( brd );
-        assert_true ( side == WHITE );
+        struct parsed_fen* brd = fen_parse(RANDOM_FEN_1);
+        enum colour side = fen_get_side_to_move(brd);
+        assert_true(side == WHITE);
 
-        brd = fen_parse ( RANDOM_FEN_2 );
-        side = fen_get_side_to_move ( brd );
-        assert_true ( side == BLACK );
+        brd = fen_parse(RANDOM_FEN_2);
+        side = fen_get_side_to_move(brd);
+        assert_true(side == BLACK);
 }
 
-void test_fen_castle_permissions_initial_fen ( void **state )
+void test_fen_castle_permissions_initial_fen(void **state)
 {
-        struct parsed_fen* fen = fen_parse ( INITIAL_FEN );
+        struct parsed_fen* fen = fen_parse(INITIAL_FEN);
 
-        assert_true ( fen_has_wk_castle_perms ( fen ) );
-        assert_true ( fen_has_wq_castle_perms ( fen ) );
-        assert_true ( fen_has_bk_castle_perms ( fen ) );
-        assert_true ( fen_has_bq_castle_perms ( fen ) );
+        assert_true(fen_has_wk_castle_perms(fen));
+        assert_true(fen_has_wq_castle_perms(fen));
+        assert_true(fen_has_bk_castle_perms(fen));
+        assert_true(fen_has_bq_castle_perms(fen));
 
 }
 
 
-void test_fen_castle_permissions_random_fen ( void **state )
+void test_fen_castle_permissions_random_fen(void **state)
 {
         const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 1 4\n";
         const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 0 3\n";
         const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
         const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
-        struct parsed_fen* fen = fen_parse ( RANDOM_FEN_1 );
+        struct parsed_fen* fen = fen_parse(RANDOM_FEN_1);
 
-        assert_false ( fen_has_wk_castle_perms ( fen ) );
-        assert_true ( fen_has_wq_castle_perms ( fen ) );
-        assert_true ( fen_has_bk_castle_perms ( fen ) );
-        assert_true ( fen_has_wq_castle_perms ( fen ) );
+        assert_false(fen_has_wk_castle_perms(fen));
+        assert_true(fen_has_wq_castle_perms(fen));
+        assert_true(fen_has_bk_castle_perms(fen));
+        assert_true(fen_has_wq_castle_perms(fen));
 
-        fen = fen_parse ( RANDOM_FEN_2 );
-        assert_true ( fen_has_wk_castle_perms ( fen ) );
-        assert_true ( fen_has_wq_castle_perms ( fen ) );
-        assert_true ( fen_has_bk_castle_perms ( fen ) );
-        assert_true ( fen_has_wq_castle_perms ( fen ) );
+        fen = fen_parse(RANDOM_FEN_2);
+        assert_true(fen_has_wk_castle_perms(fen));
+        assert_true(fen_has_wq_castle_perms(fen));
+        assert_true(fen_has_bk_castle_perms(fen));
+        assert_true(fen_has_wq_castle_perms(fen));
 
-        fen = fen_parse ( RANDOM_FEN_3 );
-        assert_true ( fen_has_wk_castle_perms ( fen ) );
-        assert_false ( fen_has_wq_castle_perms ( fen ) );
-        assert_false ( fen_has_bk_castle_perms ( fen ) );
-        assert_true ( fen_has_bq_castle_perms ( fen ) );
+        fen = fen_parse(RANDOM_FEN_3);
+        assert_true(fen_has_wk_castle_perms(fen));
+        assert_false(fen_has_wq_castle_perms(fen));
+        assert_false(fen_has_bk_castle_perms(fen));
+        assert_true(fen_has_bq_castle_perms(fen));
 
-        fen = fen_parse ( RANDOM_FEN_4 );
-        assert_false ( fen_has_wk_castle_perms ( fen ) );
-        assert_false ( fen_has_wq_castle_perms ( fen ) );
-        assert_false ( fen_has_bk_castle_perms ( fen ) );
-        assert_false ( fen_has_bq_castle_perms ( fen ) );
+        fen = fen_parse(RANDOM_FEN_4);
+        assert_false(fen_has_wk_castle_perms(fen));
+        assert_false(fen_has_wq_castle_perms(fen));
+        assert_false(fen_has_bk_castle_perms(fen));
+        assert_false(fen_has_bq_castle_perms(fen));
 
 
 }
 
 
-void test_fen_en_passant ( void **state )
+void test_fen_en_passant(void **state)
 {
         const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq f6 22 4\n";
         const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq c6 11 3\n";
@@ -293,62 +293,62 @@ void test_fen_en_passant ( void **state )
         const char *RANDOM_FEN_5 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
         enum square enp_sq;
-        struct parsed_fen* brd = fen_parse ( RANDOM_FEN_1 );
-        bool found = fen_try_get_en_pass_sq ( brd, &enp_sq );
-        assert_true ( found );
-        assert_true ( enp_sq == f6 );
+        struct parsed_fen* brd = fen_parse(RANDOM_FEN_1);
+        bool found = fen_try_get_en_pass_sq(brd, &enp_sq);
+        assert_true(found);
+        assert_true(enp_sq == f6);
 
-        brd = fen_parse ( RANDOM_FEN_2 );
-        found = fen_try_get_en_pass_sq ( brd, &enp_sq );
-        assert_true ( found );
-        assert_true ( enp_sq == c6 );
+        brd = fen_parse(RANDOM_FEN_2);
+        found = fen_try_get_en_pass_sq(brd, &enp_sq);
+        assert_true(found);
+        assert_true(enp_sq == c6);
 
-        brd = fen_parse ( RANDOM_FEN_3 );
-        found = fen_try_get_en_pass_sq ( brd, &enp_sq );
-        assert_true ( found );
-        assert_true ( enp_sq == b3 );
+        brd = fen_parse(RANDOM_FEN_3);
+        found = fen_try_get_en_pass_sq(brd, &enp_sq);
+        assert_true(found);
+        assert_true(enp_sq == b3);
 
-        brd = fen_parse ( RANDOM_FEN_4 );
-        found = fen_try_get_en_pass_sq ( brd, &enp_sq );
-        assert_true ( found );
-        assert_true ( enp_sq == g3 );
+        brd = fen_parse(RANDOM_FEN_4);
+        found = fen_try_get_en_pass_sq(brd, &enp_sq);
+        assert_true(found);
+        assert_true(enp_sq == g3);
 
-        brd = fen_parse ( RANDOM_FEN_5 );
-        found = fen_try_get_en_pass_sq ( brd, &enp_sq );
-        assert_false ( found );
+        brd = fen_parse(RANDOM_FEN_5);
+        found = fen_try_get_en_pass_sq(brd, &enp_sq);
+        assert_false(found);
 }
 
-void test_fen_half_move_count ( void **state )
+void test_fen_half_move_count(void **state)
 {
         const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 22 4\n";
         const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 11 3\n";
         const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
         const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
-        struct parsed_fen* brd = fen_parse ( RANDOM_FEN_1 );
-        assert_int_equal ( fen_get_half_move_cnt ( brd ), 22 );
-        brd = fen_parse ( RANDOM_FEN_2 );
-        assert_int_equal ( fen_get_half_move_cnt ( brd ), 11 );
-        brd = fen_parse ( RANDOM_FEN_3 );
-        assert_int_equal ( fen_get_half_move_cnt ( brd ), 1 );
-        brd = fen_parse ( RANDOM_FEN_4 );
-        assert_int_equal ( fen_get_half_move_cnt ( brd ), 0 );
+        struct parsed_fen* brd = fen_parse(RANDOM_FEN_1);
+        assert_int_equal(fen_get_half_move_cnt(brd), 22);
+        brd = fen_parse(RANDOM_FEN_2);
+        assert_int_equal(fen_get_half_move_cnt(brd), 11);
+        brd = fen_parse(RANDOM_FEN_3);
+        assert_int_equal(fen_get_half_move_cnt(brd), 1);
+        brd = fen_parse(RANDOM_FEN_4);
+        assert_int_equal(fen_get_half_move_cnt(brd), 0);
 }
 
-void test_fen_full_move_count ( void **state )
+void test_fen_full_move_count(void **state)
 {
         const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 w Qkq - 22 4\n";
         const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b KQkq - 11 3\n";
         const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
         const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 10\n";
 
-        struct parsed_fen* brd = fen_parse ( RANDOM_FEN_1 );
-        assert_int_equal ( fen_get_full_move_cnt ( brd ), 4 );
-        brd = fen_parse ( RANDOM_FEN_2 );
-        assert_int_equal ( fen_get_full_move_cnt ( brd ), 3 );
-        brd = fen_parse ( RANDOM_FEN_3 );
-        assert_int_equal ( fen_get_full_move_cnt ( brd ), 2 );
-        brd = fen_parse ( RANDOM_FEN_4 );
-        assert_int_equal ( fen_get_full_move_cnt ( brd ), 10 );
+        struct parsed_fen* brd = fen_parse(RANDOM_FEN_1);
+        assert_int_equal(fen_get_full_move_cnt(brd), 4);
+        brd = fen_parse(RANDOM_FEN_2);
+        assert_int_equal(fen_get_full_move_cnt(brd), 3);
+        brd = fen_parse(RANDOM_FEN_3);
+        assert_int_equal(fen_get_full_move_cnt(brd), 2);
+        brd = fen_parse(RANDOM_FEN_4);
+        assert_int_equal(fen_get_full_move_cnt(brd), 10);
 }
 

@@ -46,11 +46,11 @@ static char square_text[MAX_SQUARE_TEXT];
  * @param sq    The square
  * @return      The rank for the given square
  */
-enum rank sq_get_rank ( const enum square sq )
+enum rank sq_get_rank(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
 
-        return ( enum rank ) ( sq >> 3 );
+        return (enum rank)(sq >> 3);
 }
 
 /**
@@ -58,11 +58,11 @@ enum rank sq_get_rank ( const enum square sq )
  * @param sq    The square
  * @return      The file for the given square
  */
-enum file sq_get_file ( const enum square sq )
+enum file sq_get_file(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
 
-        return ( enum file ) ( sq % 8 );
+        return (enum file)(sq % 8);
 }
 
 /**
@@ -70,10 +70,10 @@ enum file sq_get_file ( const enum square sq )
  * @param sq    The square
  * @return      The square that is 1 rank up
  */
-enum square sq_get_square_plus_1_rank ( const enum square sq )
+enum square sq_get_square_plus_1_rank(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
-        assert ( sq < a8 );
+        assert(validate_square(sq));
+        assert(sq < a8);
         return sq + 8;
 }
 
@@ -82,10 +82,10 @@ enum square sq_get_square_plus_1_rank ( const enum square sq )
  * @param sq    The square
  * @return      The square that is 1 rank down
  */
-enum square sq_get_square_minus_1_rank ( const enum square sq )
+enum square sq_get_square_minus_1_rank(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
-        assert ( sq > a1 );
+        assert(validate_square(sq));
+        assert(sq > a1);
 
         return sq - 8;
 }
@@ -96,12 +96,12 @@ enum square sq_get_square_minus_1_rank ( const enum square sq )
  * @param file  The file
  * @return      The square that is the given rank and file
  */
-enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
+enum square sq_gen_from_rank_file(const enum rank rank, const enum file file)
 {
-        assert ( validate_rank ( rank ) );
-        assert ( validate_file ( file ) );
+        assert(validate_rank(rank));
+        assert(validate_file(file));
 
-        return ( enum square ) ( ( rank << 3 ) + file );
+        return (enum square)(( rank << 3) + file);
 }
 
 /**
@@ -109,14 +109,14 @@ enum square sq_gen_from_rank_file ( const enum rank rank, const enum file file )
  * @param sq    The square
  * @return      The char array
  */
-char * print_square ( const enum square sq )
+char * print_square(const enum square sq)
 {
-        assert ( validate_square ( sq ) );
+        assert(validate_square(sq));
 
-        int file = sq_get_file ( sq );
-        int rank = sq_get_rank ( sq );
+        int file = sq_get_file(sq);
+        int rank = sq_get_rank(sq);
 
-        sprintf ( square_text, "%c%c", ( 'a' + file ), ( '1' + rank ) );
+        sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
 
         return square_text;
 }
@@ -126,9 +126,9 @@ char * print_square ( const enum square sq )
  * @param sq    The square
  * @return      true if valid, false otherwise
  */
-bool validate_square ( const enum square sq )
+bool validate_square(const enum square sq)
 {
-        return ( sq >= a1 ) && ( sq <= h8 );
+        return (sq >= a1) && (sq <= h8);
 }
 
 /**
@@ -136,9 +136,9 @@ bool validate_square ( const enum square sq )
  * @param rank  The rank
  * @return      true if valid, false otherwise
  */
-bool validate_rank ( const enum rank rank )
+bool validate_rank(const enum rank rank)
 {
-        return ( rank >= RANK_1 ) && ( rank <= RANK_8 );
+        return (rank >= RANK_1) && (rank <= RANK_8);
 }
 
 /**
@@ -146,9 +146,9 @@ bool validate_rank ( const enum rank rank )
  * @param file  The file
  * @return      true if valid, false otherwise
  */
-bool validate_file ( const enum file file )
+bool validate_file(const enum file file)
 {
-        return ( file >= FILE_A ) && ( file <= FILE_H );
+        return (file >= FILE_A) && (file <= FILE_H);
 }
 
 /**
@@ -157,12 +157,12 @@ bool validate_file ( const enum file file )
  * @return              true if valid, false otherwise
  */
 
-bool validate_en_pass_sq ( const enum square sq_to_check )
+bool validate_en_pass_sq(const enum square sq_to_check)
 {
-        validate_square ( sq_to_check );
-        enum rank r = sq_get_rank ( sq_to_check );
-        
-        switch ( r ) {
+        validate_square(sq_to_check);
+        enum rank r = sq_get_rank(sq_to_check);
+
+        switch (r) {
         case RANK_3:
         case RANK_6:
                 return true;

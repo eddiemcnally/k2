@@ -36,20 +36,20 @@
 /**
  * @brief       Sets CPU affinity to CPU 1, and sets pririty to max
  */
-void set_priority_and_affinity ( void )
+void set_priority_and_affinity(void)
 {
         // set up CPU affinity
         cpu_set_t my_set;
-        CPU_ZERO ( &my_set );
-        CPU_SET ( 1, &my_set );
-        if ( sched_setaffinity ( 0, sizeof ( cpu_set_t ), &my_set ) > 0 ) {
-                printf ( "affinity error" );
-                exit ( -1 );
+        CPU_ZERO(&my_set);
+        CPU_SET(1, &my_set);
+        if (sched_setaffinity(0, sizeof(cpu_set_t), &my_set) > 0) {
+                printf("affinity error");
+                exit(-1);
         }
         // set process priority to max
-        if ( setpriority ( PRIO_PROCESS, 0, PRIO_MAX ) != 0 ) {
-                printf ( "process priority error" );
-                exit ( -1 );
+        if (setpriority(PRIO_PROCESS, 0, PRIO_MAX) != 0) {
+                printf("process priority error");
+                exit(-1);
         }
 
 }
@@ -58,23 +58,23 @@ void set_priority_and_affinity ( void )
  * @brief       Prints the current stack to STD_OUT
  */
 void
-print_stacktrace ( void )
+print_stacktrace(void)
 {
         void *array[10];
         size_t size;
         char **strings;
         size_t i;
 
-        size = ( size_t ) backtrace ( array, 10 );
-        strings = backtrace_symbols ( array, ( int ) size );
+        size = (size_t)backtrace(array, 10);
+        strings = backtrace_symbols(array, (int)size);
 
-        printf ( "Obtained %zd stack frames.\n", size );
+        printf("Obtained %zd stack frames.\n", size);
 
-        for ( i = 0; i < size; i++ ) {
-                printf ( "%s\n", strings[i] );
+        for (i = 0; i < size; i++) {
+                printf("%s\n", strings[i]);
         }
 
-        free ( strings );
+        free(strings);
 }
 
 
@@ -82,14 +82,14 @@ print_stacktrace ( void )
  * @brief       Returns the current time of day in milliseconds
  * @return      Time of day in millis
  */
-uint64_t get_time_of_day_in_millis ( void )
+uint64_t get_time_of_day_in_millis(void)
 {
         struct timeval tp;
 
-        int errno = gettimeofday ( &tp, NULL );
+        int errno = gettimeofday(&tp, NULL);
 
-        if ( errno == 0 ) {
-                return ( uint64_t ) ( tp.tv_sec * 1000 + tp.tv_usec / 1000 );
+        if (errno == 0) {
+                return (uint64_t)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
         }
 
         return 0;
@@ -99,9 +99,9 @@ uint64_t get_time_of_day_in_millis ( void )
  * @brief       Returns elapsed time between the given time and now, in milliseconds.
  * @return      Elapsed time in milliseconds
  */
-uint64_t get_elapsed_time_in_millis ( uint64_t start_time )
+uint64_t get_elapsed_time_in_millis(uint64_t start_time)
 {
         uint64_t now_in_millis = get_time_of_day_in_millis();
-        return ( now_in_millis - start_time );
+        return (now_in_millis - start_time);
 }
 

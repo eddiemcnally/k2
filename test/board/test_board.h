@@ -23,18 +23,18 @@
 
 #pragma once
 
-void test_board_brd_allocate_deallocate ( void **state );
-void test_board_brd_bulk_add_remove_piece ( void **state );
-void test_board_brd_move_piece ( void **state );
-void test_board_brd_get_piece_bb ( void **state );
-void test_board_brd_get_colour_bb_black ( void **state );
-void test_board_brd_get_colour_bb_white ( void **state );
-void test_board_brd_is_sq_occupied ( void **state );
-void test_board_brd_try_get_piece_on_square ( void **state );
-void test_board_brd_get_board_bb ( void **state );
-void test_board_brd_is_sq_occupied ( void **state );
-void test_board_compare ( void **state );
-void test_board_snapshot ( void **state );
+void test_board_brd_allocate_deallocate(void **state);
+void test_board_brd_bulk_add_remove_piece(void **state);
+void test_board_brd_move_piece(void **state);
+void test_board_brd_get_piece_bb(void **state);
+void test_board_brd_get_colour_bb_black(void **state);
+void test_board_brd_get_colour_bb_white(void **state);
+void test_board_brd_is_sq_occupied(void **state);
+void test_board_brd_try_get_piece_on_square(void **state);
+void test_board_brd_get_board_bb(void **state);
+void test_board_brd_is_sq_occupied(void **state);
+void test_board_compare(void **state);
+void test_board_snapshot(void **state);
 
 
 

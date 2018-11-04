@@ -32,43 +32,43 @@
 #include "castle_perms.h"
 #include "test_castle_permissions.h"
 
-void test_castle_permissions_get_set ( void **state )
+void test_castle_permissions_get_set(void **state)
 {
         struct cast_perm cp = {.val = 0};
 
-        cast_perm_set_WK ( &cp, true );
-        assert_true ( cast_perm_has_WK ( cp ) );
-        cast_perm_set_WK ( &cp, false );
-        assert_false ( cast_perm_has_WK ( cp ) );
+        cast_perm_set_WK(&cp, true);
+        assert_true(cast_perm_has_WK(cp));
+        cast_perm_set_WK(&cp, false);
+        assert_false(cast_perm_has_WK(cp));
 
-        cast_perm_set_WQ ( &cp, true );
-        assert_true ( cast_perm_has_WQ ( cp ) );
-        cast_perm_set_WQ ( &cp, false );
-        assert_false ( cast_perm_has_WQ ( cp ) );
+        cast_perm_set_WQ(&cp, true);
+        assert_true(cast_perm_has_WQ(cp));
+        cast_perm_set_WQ(&cp, false);
+        assert_false(cast_perm_has_WQ(cp));
 
-        cast_perm_set_BK ( &cp, true );
-        assert_true ( cast_perm_has_BK ( cp ) );
-        cast_perm_set_BK ( &cp, false );
-        assert_false ( cast_perm_has_BK ( cp ) );
+        cast_perm_set_BK(&cp, true);
+        assert_true(cast_perm_has_BK(cp));
+        cast_perm_set_BK(&cp, false);
+        assert_false(cast_perm_has_BK(cp));
 
-        cast_perm_set_BQ ( &cp, true );
-        assert_true ( cast_perm_has_BQ ( cp ) );
-        cast_perm_set_BQ ( &cp, false );
-        assert_false ( cast_perm_has_BQ ( cp ) );
+        cast_perm_set_BQ(&cp, true);
+        assert_true(cast_perm_has_BQ(cp));
+        cast_perm_set_BQ(&cp, false);
+        assert_false(cast_perm_has_BQ(cp));
 }
 
-void test_castle_permissions_no_perms_get_set ( void **state )
+void test_castle_permissions_no_perms_get_set(void **state)
 {
 
         struct cast_perm cp = {.val = 0};
 
-        cast_perm_set_no_perms ( &cp );
-        assert_false ( cast_perm_has_WK ( cp ) );
-        assert_false ( cast_perm_has_WQ ( cp ) );
-        assert_false ( cast_perm_has_BK ( cp ) );
-        assert_false ( cast_perm_has_BQ ( cp ) );
+        cast_perm_set_no_perms(&cp);
+        assert_false(cast_perm_has_WK(cp));
+        assert_false(cast_perm_has_WQ(cp));
+        assert_false(cast_perm_has_BK(cp));
+        assert_false(cast_perm_has_BQ(cp));
 
-        assert_false ( cast_perm_has_perms ( cp ) );
+        assert_false(cast_perm_has_perms(cp));
 }
 
 

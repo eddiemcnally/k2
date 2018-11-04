@@ -50,23 +50,23 @@ enum piece {
         WQUEEN,
         BQUEEN,
         WKING,
-        BKING        
+        BKING
 };
 
 #define         NUM_COLOURS     2
 #define         NUM_PIECES      12
 
 
-bool pce_is_white ( const enum piece pce );
-bool pce_is_black ( const enum piece pce );
-enum colour pce_swap_side ( const enum colour side );
-enum colour pce_get_colour ( const enum piece pce );
-uint32_t pce_get_value ( const enum piece pce );
-char pce_get_label ( const enum piece pce );
-enum piece pce_get_from_label ( const char c );
-uint8_t pce_get_array_idx ( const enum piece pce );
-uint8_t pce_col_get_array_idx ( const enum colour col );
-enum piece pce_get_no_piece ( void );
-bool validate_piece ( const enum piece pce );
-bool validate_colour ( const enum colour col );
-bool validate_label ( const char c );
+bool pce_is_white(const enum piece pce);
+bool pce_is_black(const enum piece pce);
+enum colour pce_swap_side(const enum colour side);
+enum colour pce_get_colour(const enum piece pce);
+uint32_t pce_get_value(const enum piece pce);
+char pce_get_label(const enum piece pce);
+enum piece pce_get_from_label(const char c);
+uint8_t pce_get_array_idx(const enum piece pce);
+uint8_t pce_col_get_array_idx(const enum colour col);
+enum piece pce_get_no_piece(void);
+bool validate_piece(const enum piece pce);
+bool validate_colour(const enum colour col);
+bool validate_label(const char c);

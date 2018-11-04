@@ -57,10 +57,10 @@ enum piece_values {
  * @param pce   The piece
  * @return true if WHITE, false otherwise
  */
-bool pce_is_white ( const enum piece pce )
+bool pce_is_white(const enum piece pce)
 {
-        assert ( validate_piece ( pce ) );
-        return ( ( pce & COLOUR_MASK ) == WHITE );
+        assert(validate_piece(pce));
+        return (( pce & COLOUR_MASK) == WHITE);
 }
 
 /**
@@ -69,10 +69,10 @@ bool pce_is_white ( const enum piece pce )
  * @param pce   The piece
  * @return true if BLACK, false otherwise
  */
-bool pce_is_black ( const enum piece pce )
+bool pce_is_black(const enum piece pce)
 {
-        assert ( validate_piece ( pce ) );
-        return ( pce_is_white ( pce ) == false );
+        assert(validate_piece(pce));
+        return (pce_is_white(pce) == false);
 }
 
 /**
@@ -81,12 +81,12 @@ bool pce_is_black ( const enum piece pce )
  * @param col   The given colour
  * @return      The opposite colour
  */
-enum colour pce_swap_side ( const enum colour col )
+enum colour pce_swap_side(const enum colour col)
 {
-        assert ( validate_colour ( col ) );
+        assert(validate_colour(col));
 
         uint16_t opp = ~col;
-        return ( enum colour ) ( opp & COLOUR_MASK );
+        return (enum colour)(opp & COLOUR_MASK);
 
 }
 
@@ -96,11 +96,11 @@ enum colour pce_swap_side ( const enum colour col )
  * @param pce The piece
  * @return The colour of the given piece
  */
-enum colour pce_get_colour ( const enum piece pce )
+enum colour pce_get_colour(const enum piece pce)
 {
-        assert ( validate_piece ( pce ) );
+        assert(validate_piece(pce));
 
-        return ( enum colour ) ( pce & COLOUR_MASK );
+        return (enum colour)(pce & COLOUR_MASK);
 }
 
 
@@ -109,9 +109,9 @@ enum colour pce_get_colour ( const enum piece pce )
 *
 * @return piece A "no piece" enum
 */
-enum piece pce_get_no_piece ( void )
+enum piece pce_get_no_piece(void)
 {
-        return ( enum piece ) ( NO_PIECE );
+        return (enum piece)(NO_PIECE);
 }
 
 /**
@@ -120,14 +120,14 @@ enum piece pce_get_no_piece ( void )
  * @param pce The piece
  * @return The piece value
  */
-uint32_t pce_get_value ( const enum piece pce )
+uint32_t pce_get_value(const enum piece pce)
 {
-        assert ( validate_piece ( pce ) );
+        assert(validate_piece(pce));
 
         // TODO : benchmark this switch statement - might we worth replacing
         // it with an array lookup
         //
-        switch ( pce ) {
+        switch (pce) {
         case WPAWN:
         case BPAWN:
                 return PCE_VAL_PAWN;
@@ -147,7 +147,7 @@ uint32_t pce_get_value ( const enum piece pce )
         case BKING:
                 return PCE_VAL_KING;
         default:
-                assert ( false );
+                assert(false);
                 break;
         }
 }
@@ -159,10 +159,10 @@ uint32_t pce_get_value ( const enum piece pce )
 * @param pce p_pce The piece
 * @return uint8_t The array index
 */
-uint8_t pce_get_array_idx ( const enum piece pce )
+uint8_t pce_get_array_idx(const enum piece pce)
 {
-        assert ( validate_piece ( pce ) );
-        return ( uint8_t ) pce;
+        assert(validate_piece(pce));
+        return (uint8_t)pce;
 }
 
 
@@ -172,11 +172,11 @@ uint8_t pce_get_array_idx ( const enum piece pce )
 * @param col    p_col The colour
 * @return uint8_t The array index
 */
-uint8_t pce_col_get_array_idx ( const enum colour col )
+uint8_t pce_col_get_array_idx(const enum colour col)
 {
-        assert ( validate_colour ( col ) );
+        assert(validate_colour(col));
 
-        return ( uint8_t ) col;
+        return (uint8_t)col;
 }
 
 
@@ -186,11 +186,11 @@ uint8_t pce_col_get_array_idx ( const enum colour col )
  * @param pce The piece
  * @return A character representing the labe
  */
-char pce_get_label ( const enum piece pce )
+char pce_get_label(const enum piece pce)
 {
-        assert ( validate_piece ( pce ) );
+        assert(validate_piece(pce));
 
-        switch ( pce ) {
+        switch (pce) {
         case WPAWN:
                 return 'P';
         case BPAWN:
@@ -216,7 +216,7 @@ char pce_get_label ( const enum piece pce )
         case BKING:
                 return 'k';
         default:
-                assert ( false );
+                assert(false);
                 return '-';
         }
 }
@@ -227,14 +227,14 @@ char pce_get_label ( const enum piece pce )
  * @param c The piece label
  * @return The associated piece
  */
-enum piece pce_get_from_label ( const char c )
+enum piece pce_get_from_label(const char c)
 {
-        assert ( validate_label ( c ) );
+        assert(validate_label(c));
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
-        switch ( c ) {
+        switch (c) {
         case 'p':
                 return BPAWN;
         case 'r':
@@ -260,7 +260,7 @@ enum piece pce_get_from_label ( const char c )
         case 'K':
                 return WKING;
         default:
-                assert ( false );
+                assert(false);
         }
 #pragma GCC diagnostic pop
 
@@ -275,9 +275,9 @@ enum piece pce_get_from_label ( const char c )
  *
  * @param pce The piece
  */
-bool validate_piece ( const enum piece pce )
+bool validate_piece(const enum piece pce)
 {
-        switch ( pce ) {
+        switch (pce) {
         case WPAWN:
         case BPAWN:
         case WKNIGHT:
@@ -292,7 +292,7 @@ bool validate_piece ( const enum piece pce )
         case BKING:
                 return true;
         default:
-                assert ( false );
+                assert(false);
         }
 }
 
@@ -303,14 +303,14 @@ bool validate_piece ( const enum piece pce )
  *
  * @param col The colour
  */
-bool validate_colour ( const enum colour col )
+bool validate_colour(const enum colour col)
 {
-        switch ( col ) {
+        switch (col) {
         case WHITE:
         case BLACK:
                 return true;
         default:
-                assert ( false );
+                assert(false);
         }
 }
 
@@ -319,9 +319,9 @@ bool validate_colour ( const enum colour col )
  *
  * @param c The piece label
  */
-bool validate_label ( const char c )
+bool validate_label(const char c)
 {
-        switch ( c ) {
+        switch (c) {
         case 'p':
         case 'r':
         case 'n':
@@ -336,7 +336,7 @@ bool validate_label ( const char c )
         case 'K':
                 return true;
         default:
-                printf ( "Invalid label %c\n", c );
-                assert ( false );
+                printf("Invalid label %c\n", c);
+                assert(false);
         }
 }
