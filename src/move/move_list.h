@@ -21,26 +21,22 @@
  *  SOFTWARE.
  */
 
-
 #pragma once
-
-#include <stdint.h>
 #include "move.h"
-
+#include <stdint.h>
 
 // struct representing a list of moves
 struct move_list;
 
-
 struct move_list* mvl_allocate(void);
-void mvl_deallocate(struct move_list *mvl);
-uint16_t mvl_get_move_count(const struct move_list *mvl);
-struct move mvl_get_move_at_offset(const struct move_list *mvl, uint16_t offset);
-void mvl_add(struct move_list *mvl, struct move mv);
-void mvl_reset(struct move_list *mvl);
-bool mvl_contains_move(const struct move_list *mvl, const struct move mv);
+void mvl_deallocate(struct move_list* mvl);
+uint16_t mvl_get_move_count(const struct move_list* mvl);
+struct move mvl_get_move_at_offset(const struct move_list* mvl, uint16_t offset);
+void mvl_add(struct move_list* mvl, struct move mv);
+void mvl_reset(struct move_list* mvl);
+bool mvl_contains_move(const struct move_list* mvl, const struct move mv);
 
 uint16_t mvl_get_mvl_max_size(void);
-bool validate_move_list(const struct move_list *mvl);
-void mvl_print(const struct move_list *mvl);
-bool mvl_compare(const struct move_list *first, const struct move_list *second);
+bool validate_move_list(const struct move_list* mvl);
+void mvl_print(const struct move_list* mvl);
+bool mvl_compare(const struct move_list* first, const struct move_list* second);

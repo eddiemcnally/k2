@@ -21,12 +21,15 @@
  *  SOFTWARE.
  */
 
-
 #pragma once
 
-void test_position_get_set_castle_permissions(void **state);
-void test_position_brd_is_sq_occupied(void **state);
-void test_position_compare(void **state);
-void test_position_white_double_first_move(void **state);
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
-
+void test_position_get_set_castle_permissions(void** state);
+void test_position_brd_is_sq_occupied(void** state);
+void test_position_compare(void** state);
+void test_position_white_double_first_move(void** state);

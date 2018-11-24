@@ -21,35 +21,29 @@
  *  SOFTWARE.
  */
 
-
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <assert.h>
 #include "piece.h"
+#include <assert.h>
 
 /**
  * Piece values
  */
 enum piece_values {
-        PCE_VAL_PAWN    = 100,
-        PCE_VAL_BISHOP  = 325,
-        PCE_VAL_KNIGHT  = 325,
-        PCE_VAL_ROOK    = 500,
-        PCE_VAL_QUEEN   = 1000,
-        PCE_VAL_KING    = 50000
+    PCE_VAL_PAWN = 100,
+    PCE_VAL_BISHOP = 325,
+    PCE_VAL_KNIGHT = 325,
+    PCE_VAL_ROOK = 500,
+    PCE_VAL_QUEEN = 1000,
+    PCE_VAL_KING = 50000
 };
 
-#define         COLOUR_MASK     0x01
-#define         NO_PIECE        0xFF
-
+#define COLOUR_MASK 0x01
+#define NO_PIECE 0xFF
 
 // ==================================================================
 //
 // public functions
 //
 // ==================================================================
-
 
 /**
  * @brief       Tests if the given piece is WHITE
@@ -59,8 +53,8 @@ enum piece_values {
  */
 bool pce_is_white(const enum piece pce)
 {
-        assert(validate_piece(pce));
-        return (( pce & COLOUR_MASK) == WHITE);
+    assert(validate_piece(pce));
+    return ((pce & COLOUR_MASK) == WHITE);
 }
 
 /**
@@ -71,8 +65,8 @@ bool pce_is_white(const enum piece pce)
  */
 bool pce_is_black(const enum piece pce)
 {
-        assert(validate_piece(pce));
-        return (pce_is_white(pce) == false);
+    assert(validate_piece(pce));
+    return (pce_is_white(pce) == false);
 }
 
 /**
@@ -83,11 +77,10 @@ bool pce_is_black(const enum piece pce)
  */
 enum colour pce_swap_side(const enum colour col)
 {
-        assert(validate_colour(col));
+    assert(validate_colour(col));
 
-        uint16_t opp = ~col;
-        return (enum colour)(opp & COLOUR_MASK);
-
+    uint16_t opp = ~col;
+    return (enum colour)(opp & COLOUR_MASK);
 }
 
 /**
@@ -98,11 +91,10 @@ enum colour pce_swap_side(const enum colour col)
  */
 enum colour pce_get_colour(const enum piece pce)
 {
-        assert(validate_piece(pce));
+    assert(validate_piece(pce));
 
-        return (enum colour)(pce & COLOUR_MASK);
+    return (enum colour)(pce & COLOUR_MASK);
 }
-
 
 /**
 * @brief Returns an enum value that can be used to denote "no piece"
@@ -111,7 +103,7 @@ enum colour pce_get_colour(const enum piece pce)
 */
 enum piece pce_get_no_piece(void)
 {
-        return (enum piece)(NO_PIECE);
+    return (enum piece)(NO_PIECE);
 }
 
 /**
@@ -122,36 +114,35 @@ enum piece pce_get_no_piece(void)
  */
 uint32_t pce_get_value(const enum piece pce)
 {
-        assert(validate_piece(pce));
+    assert(validate_piece(pce));
 
-        // TODO : benchmark this switch statement - might we worth replacing
-        // it with an array lookup
-        //
-        switch (pce) {
-        case WPAWN:
-        case BPAWN:
-                return PCE_VAL_PAWN;
-        case WBISHOP:
-        case BBISHOP:
-                return PCE_VAL_BISHOP;
-        case WKNIGHT:
-        case BKNIGHT:
-                return PCE_VAL_KNIGHT;
-        case WROOK:
-        case BROOK:
-                return PCE_VAL_ROOK;
-        case WQUEEN:
-        case BQUEEN:
-                return PCE_VAL_QUEEN;
-        case WKING:
-        case BKING:
-                return PCE_VAL_KING;
-        default:
-                assert(false);
-                break;
-        }
+    // TODO : benchmark this switch statement - might we worth replacing
+    // it with an array lookup
+    //
+    switch (pce) {
+    case WPAWN:
+    case BPAWN:
+        return PCE_VAL_PAWN;
+    case WBISHOP:
+    case BBISHOP:
+        return PCE_VAL_BISHOP;
+    case WKNIGHT:
+    case BKNIGHT:
+        return PCE_VAL_KNIGHT;
+    case WROOK:
+    case BROOK:
+        return PCE_VAL_ROOK;
+    case WQUEEN:
+    case BQUEEN:
+        return PCE_VAL_QUEEN;
+    case WKING:
+    case BKING:
+        return PCE_VAL_KING;
+    default:
+        assert(false);
+        break;
+    }
 }
-
 
 /**
 * @brief Converts the piece to an array index for use by various modules
@@ -161,10 +152,9 @@ uint32_t pce_get_value(const enum piece pce)
 */
 uint8_t pce_get_array_idx(const enum piece pce)
 {
-        assert(validate_piece(pce));
-        return (uint8_t)pce;
+    assert(validate_piece(pce));
+    return (uint8_t)pce;
 }
-
 
 /**
 * @brief        Converts ths given colour to an array index.
@@ -174,11 +164,10 @@ uint8_t pce_get_array_idx(const enum piece pce)
 */
 uint8_t pce_col_get_array_idx(const enum colour col)
 {
-        assert(validate_colour(col));
+    assert(validate_colour(col));
 
-        return (uint8_t)col;
+    return (uint8_t)col;
 }
-
 
 /**
  * @brief       Gets the piece lable for the given piece (eg, 'P' for white pawn, 'k' for black king)
@@ -188,37 +177,37 @@ uint8_t pce_col_get_array_idx(const enum colour col)
  */
 char pce_get_label(const enum piece pce)
 {
-        assert(validate_piece(pce));
+    assert(validate_piece(pce));
 
-        switch (pce) {
-        case WPAWN:
-                return 'P';
-        case BPAWN:
-                return 'p';
-        case WBISHOP:
-                return 'B';
-        case BBISHOP:
-                return 'b';
-        case WKNIGHT:
-                return 'N';
-        case BKNIGHT:
-                return 'n';
-        case WROOK:
-                return 'R';
-        case BROOK:
-                return 'r';
-        case WQUEEN:
-                return 'Q';
-        case BQUEEN:
-                return 'q';
-        case WKING:
-                return 'K';
-        case BKING:
-                return 'k';
-        default:
-                assert(false);
-                return '-';
-        }
+    switch (pce) {
+    case WPAWN:
+        return 'P';
+    case BPAWN:
+        return 'p';
+    case WBISHOP:
+        return 'B';
+    case BBISHOP:
+        return 'b';
+    case WKNIGHT:
+        return 'N';
+    case BKNIGHT:
+        return 'n';
+    case WROOK:
+        return 'R';
+    case BROOK:
+        return 'r';
+    case WQUEEN:
+        return 'Q';
+    case BQUEEN:
+        return 'q';
+    case WKING:
+        return 'K';
+    case BKING:
+        return 'k';
+    default:
+        assert(false);
+        return '-';
+    }
 }
 
 /**
@@ -229,46 +218,41 @@ char pce_get_label(const enum piece pce)
  */
 enum piece pce_get_from_label(const char c)
 {
-        assert(validate_label(c));
+    assert(validate_label(c));
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
-        switch (c) {
-        case 'p':
-                return BPAWN;
-        case 'r':
-                return BROOK;
-        case 'n':
-                return BKNIGHT;
-        case 'b':
-                return BBISHOP;
-        case 'q':
-                return BQUEEN;
-        case 'k':
-                return BKING;
-        case 'P':
-                return WPAWN;
-        case 'R':
-                return WROOK;
-        case 'N':
-                return WKNIGHT;
-        case 'B':
-                return WBISHOP;
-        case 'Q':
-                return WQUEEN;
-        case 'K':
-                return WKING;
-        default:
-                assert(false);
-        }
+    switch (c) {
+    case 'p':
+        return BPAWN;
+    case 'r':
+        return BROOK;
+    case 'n':
+        return BKNIGHT;
+    case 'b':
+        return BBISHOP;
+    case 'q':
+        return BQUEEN;
+    case 'k':
+        return BKING;
+    case 'P':
+        return WPAWN;
+    case 'R':
+        return WROOK;
+    case 'N':
+        return WKNIGHT;
+    case 'B':
+        return WBISHOP;
+    case 'Q':
+        return WQUEEN;
+    case 'K':
+        return WKING;
+    default:
+        assert(false);
+    }
 #pragma GCC diagnostic pop
-
 }
-
-
-
-
 
 /**
  * @brief       Validates a piece is within expected range of values
@@ -277,26 +261,24 @@ enum piece pce_get_from_label(const char c)
  */
 bool validate_piece(const enum piece pce)
 {
-        switch (pce) {
-        case WPAWN:
-        case BPAWN:
-        case WKNIGHT:
-        case BKNIGHT:
-        case WBISHOP:
-        case BBISHOP:
-        case WROOK:
-        case BROOK:
-        case WQUEEN:
-        case BQUEEN:
-        case WKING:
-        case BKING:
-                return true;
-        default:
-                assert(false);
-        }
+    switch (pce) {
+    case WPAWN:
+    case BPAWN:
+    case WKNIGHT:
+    case BKNIGHT:
+    case WBISHOP:
+    case BBISHOP:
+    case WROOK:
+    case BROOK:
+    case WQUEEN:
+    case BQUEEN:
+    case WKING:
+    case BKING:
+        return true;
+    default:
+        assert(false);
+    }
 }
-
-
 
 /**
  * @brief       Validates a colour is within expected range of values
@@ -305,13 +287,13 @@ bool validate_piece(const enum piece pce)
  */
 bool validate_colour(const enum colour col)
 {
-        switch (col) {
-        case WHITE:
-        case BLACK:
-                return true;
-        default:
-                assert(false);
-        }
+    switch (col) {
+    case WHITE:
+    case BLACK:
+        return true;
+    default:
+        assert(false);
+    }
 }
 
 /**
@@ -321,22 +303,22 @@ bool validate_colour(const enum colour col)
  */
 bool validate_label(const char c)
 {
-        switch (c) {
-        case 'p':
-        case 'r':
-        case 'n':
-        case 'b':
-        case 'q':
-        case 'k':
-        case 'P':
-        case 'R':
-        case 'N':
-        case 'B':
-        case 'Q':
-        case 'K':
-                return true;
-        default:
-                printf("Invalid label %c\n", c);
-                assert(false);
-        }
+    switch (c) {
+    case 'p':
+    case 'r':
+    case 'n':
+    case 'b':
+    case 'q':
+    case 'k':
+    case 'P':
+    case 'R':
+    case 'N':
+    case 'B':
+    case 'Q':
+    case 'K':
+        return true;
+    default:
+        printf("Invalid label %c\n", c);
+        assert(false);
+    }
 }

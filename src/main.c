@@ -21,19 +21,17 @@
  *  SOFTWARE.
  */
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "board.h"
-#include "square.h"
-#include "position.h"
 #include "move_gen.h"
 #include "move_list.h"
-#include "piece.h"
 #include "occ_mask_gen.h"
-
+#include "piece.h"
+#include "position.h"
+#include "square.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 //#define VERSION_MAJOR	0
 //#define VERSION_MINOR	1
@@ -41,22 +39,16 @@
 int main(void)
 {
 
-        const char *RANDOM_FEN_1 = "3R2K1/1PknP3/p6P/Prn1Pp1p/NN3P2/r2B2Pp/p2pb3/6B1 b - - 0 1\n";
+    const char* RANDOM_FEN_1 = "3R2K1/1PknP3/p6P/Prn1Pp1p/NN3P2/r2B2Pp/p2pb3/6B1 b - - 0 1\n";
 
+    struct position* pos = pos_create();
+    pos_initialise(RANDOM_FEN_1, pos);
 
+    brd_print_size();
+    struct move_list* mvl = mvl_allocate();
 
+    struct board* brd = pos_get_board(pos);
+    mv_gen_bishop_moves(brd, BLACK, mvl);
 
-        struct position *pos = pos_create();
-        pos_initialise(RANDOM_FEN_1, pos);
-
-        brd_print_size();
-        struct move_list* mvl = mvl_allocate();
-
-        struct board *brd = pos_get_board(pos);
-        mv_gen_bishop_moves(brd, BLACK, mvl);
-
-        struct move mv = move_encode_quiet(e2, d1);
-
-
+    struct move mv = move_encode_quiet(e2, d1);
 }
-

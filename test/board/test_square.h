@@ -21,12 +21,13 @@
  *  SOFTWARE.
  */
 
-
 #pragma once
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stddef.h>
 
-void test_square_sq_get_rank(void **state);
-void test_square_sq_get_file(void **state);
-void test_square_gen_from_rank_file(void **state);
-void test_sq_get_square_plus_1_rank(void **state);
-void test_sq_get_square_minus_1_rank(void **state);
-
+void test_square_sq_get_rank(void** state);
+void test_square_sq_get_file(void** state);
+void test_square_gen_from_rank_file(void** state);
+void test_sq_get_square_plus_1_rank(void** state);
+void test_sq_get_square_minus_1_rank(void** state);

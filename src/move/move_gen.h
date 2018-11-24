@@ -22,15 +22,15 @@
  */
 
 #pragma once
-#include "position.h"
+
 #include "move_list.h"
+#include "position.h"
 
-
-void mv_gen_all_moves(const struct position *pos, struct move_list *mvl);
-void mv_gen_knight_moves(const struct board *brd, const enum colour side_to_move,  struct move_list *mvl);
-void mv_gen_king_moves(const struct position *pos, const enum colour side_to_move, struct move_list *mvl);
-void mv_gen_white_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl);
-void mv_gen_black_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl);
-void mv_gen_bishop_moves(const struct board *brd, const enum colour side_to_move,  struct move_list *mvl);
-void mv_gen_rook_moves(const struct board *brd, const enum colour side_to_move,  struct move_list *mvl);
-void mv_gen_queen_moves(const struct board *brd, const enum colour side_to_move,  struct move_list *mvl);
+void mv_gen_all_moves(const struct position* pos, struct move_list* mvl);
+void mv_gen_knight_moves(const struct board* brd, const enum colour side_to_move, struct move_list* mvl);
+void mv_gen_king_moves(const struct position* pos, const enum colour side_to_move, struct move_list* mvl);
+void mv_gen_white_pawn_moves(const struct position* pos, const struct board* brd, struct move_list* mvl);
+void mv_gen_black_pawn_moves(const struct position* pos, const struct board* brd, struct move_list* mvl);
+void mv_gen_bishop_moves(const struct board* brd, const enum colour side_to_move, struct move_list* mvl);
+void mv_gen_rook_moves(const struct board* brd, const enum colour side_to_move, struct move_list* mvl);
+void mv_gen_queen_moves(const struct board* brd, const enum colour side_to_move, struct move_list* mvl);

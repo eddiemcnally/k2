@@ -21,26 +21,25 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <ctype.h>
-#include "board.h"
 #include "bitboard.h"
+#include "board.h"
 #include "piece.h"
 #include "square.h"
+#include <ctype.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void occ_mask_gen_ranks_files(void);
-void occ_mask_gen_king(uint64_t * occ_mask_array);
-void occ_mask_gen_knight(uint64_t * occ_mask_array);
-void occ_mask_gen_rook(uint64_t * occ_mask_array);
-void occ_mask_gen_bishop(uint64_t * occ_mask_array);
-void occ_mask_gen_queen(uint64_t * occ_mask_array);
-void occ_mask_gen_white_pawn_capture_non_first_double_move(uint64_t * occ_mask_array);
-void occ_mask_gen_black_pawn_capture_non_first_double_move(uint64_t * occ_mask_array);
+void occ_mask_gen_king(uint64_t* occ_mask_array);
+void occ_mask_gen_knight(uint64_t* occ_mask_array);
+void occ_mask_gen_rook(uint64_t* occ_mask_array);
+void occ_mask_gen_bishop(uint64_t* occ_mask_array);
+void occ_mask_gen_queen(uint64_t* occ_mask_array);
+void occ_mask_gen_white_pawn_capture_non_first_double_move(uint64_t* occ_mask_array);
+void occ_mask_gen_black_pawn_capture_non_first_double_move(uint64_t* occ_mask_array);
 void occ_mask_gen_print_as_board(const uint64_t mask);
 void occ_mask_gen_print_all_as_hex(const uint64_t masks[], const uint8_t size);
 void occ_mask_gen_print_as_hex(const uint64_t mask);
 void occ_mask_gen_diagonal_occupancy_masks(void);
-

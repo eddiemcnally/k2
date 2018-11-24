@@ -20,7 +20,9 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
+#pragma once
 
+#include <stdint.h>
 
 void set_priority_and_affinity(void);
 void print_stacktrace(void);

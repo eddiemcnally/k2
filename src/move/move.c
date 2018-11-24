@@ -21,14 +21,10 @@
  *  SOFTWARE.
  */
 
-#include <assert.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include "move.h"
 #include "piece.h"
 #include "square.h"
-
+#include <assert.h>
 
 /**
  * bitmap for move
@@ -53,41 +49,41 @@
  */
 
 enum move_bits_masks {
-        MV_MASK_TO_SQ   = 0x003F,
-        MV_MASK_FROM_SQ = 0x0FC0,
-        MV_MASK_FLAGS   = 0xF000,
+    MV_MASK_TO_SQ = 0x003F,
+    MV_MASK_FROM_SQ = 0x0FC0,
+    MV_MASK_FLAGS = 0xF000,
 };
 
 enum move_bits_shifts {
-        MV_SHFT_TO_SQ   = 0,
-        MV_SHFT_FROM_SQ = 6,
+    MV_SHFT_TO_SQ = 0,
+    MV_SHFT_FROM_SQ = 6,
 };
 
 enum move_flags {
-        MV_FLG_QUIET                    = 0x0000,
-        MV_FLG_DOUBLE_PAWN              = 0x1000,
-        MV_FLG_KING_CASTLE              = 0x2000,
-        MV_FLG_QUEEN_CASTLE             = 0x3000,
-        MV_FLG_CAPTURE                  = 0x4000,
-        MV_FLG_EN_PASS                  = 0x5000,
-        MV_FLG_PROMOTE_KNIGHT           = 0x8000,
-        MV_FLG_PROMOTE_BISHOP           = 0x9000,
-        MV_FLG_PROMOTE_ROOK             = 0xA000,
-        MV_FLG_PROMOTE_QUEEN            = 0xB000,
-        MV_FLG_PROMOTE_KNIGHT_CAPTURE   = 0xC000,
-        MV_FLG_PROMOTE_BISHOP_CAPTURE   = 0xD000,
-        MV_FLG_PROMOTE_ROOK_CAPTURE     = 0xE000,
-        MV_FLG_PROMOTE_QUEEN_CAPTURE    = 0xF000,
+    MV_FLG_QUIET = 0x0000,
+    MV_FLG_DOUBLE_PAWN = 0x1000,
+    MV_FLG_KING_CASTLE = 0x2000,
+    MV_FLG_QUEEN_CASTLE = 0x3000,
+    MV_FLG_CAPTURE = 0x4000,
+    MV_FLG_EN_PASS = 0x5000,
+    MV_FLG_PROMOTE_KNIGHT = 0x8000,
+    MV_FLG_PROMOTE_BISHOP = 0x9000,
+    MV_FLG_PROMOTE_ROOK = 0xA000,
+    MV_FLG_PROMOTE_QUEEN = 0xB000,
+    MV_FLG_PROMOTE_KNIGHT_CAPTURE = 0xC000,
+    MV_FLG_PROMOTE_BISHOP_CAPTURE = 0xD000,
+    MV_FLG_PROMOTE_ROOK_CAPTURE = 0xE000,
+    MV_FLG_PROMOTE_QUEEN_CAPTURE = 0xF000,
 };
 
 enum move_flag_bits {
-        MV_FLG_BIT_PROMOTE = 0x8000,
-        MV_FLG_BIT_CAPTURE = 0x4000,
+    MV_FLG_BIT_PROMOTE = 0x8000,
+    MV_FLG_BIT_CAPTURE = 0x4000,
 };
 
-static void set_flag(uint16_t *mv, const uint16_t flag);
+static void set_flag(uint16_t* mv, const uint16_t flag);
 static struct move encode_to_from(const enum square from_sq,
-                                  const enum square to_sq);
+    const enum square to_sq);
 
 // ==================================================================
 //
@@ -104,10 +100,10 @@ static struct move encode_to_from(const enum square from_sq,
  */
 struct move move_encode_quiet(const enum square from_sq, const enum square to_sq)
 {
-        assert(validate_square(from_sq));
-        assert(validate_square(to_sq));
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
 
-        return encode_to_from(from_sq, to_sq);
+    return encode_to_from(from_sq, to_sq);
 }
 
 /**
@@ -120,55 +116,54 @@ struct move move_encode_quiet(const enum square from_sq, const enum square to_sq
  * @return The encoded move
  */
 struct move move_encode_promoted(const enum square from_sq, const enum square to_sq,
-                                 const enum piece promoted_piece,
-                                 const bool is_capture)
+    const enum piece promoted_piece,
+    const bool is_capture)
 {
-        assert(validate_square(from_sq));
-        assert(validate_square(to_sq));
-        assert(validate_piece(promoted_piece));
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
+    assert(validate_piece(promoted_piece));
 
-        struct move mv = encode_to_from(from_sq, to_sq);
+    struct move mv = encode_to_from(from_sq, to_sq);
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
-        // TODO : benchmark this switch statement. Possibly replace with an
-        // array lookup of the flag
-        switch (promoted_piece) {
-        case WKNIGHT:
-        case BKNIGHT:
-                mv.val |= MV_FLG_PROMOTE_KNIGHT;
-                break;
+    // TODO : benchmark this switch statement. Possibly replace with an
+    // array lookup of the flag
+    switch (promoted_piece) {
+    case WKNIGHT:
+    case BKNIGHT:
+        mv.val |= MV_FLG_PROMOTE_KNIGHT;
+        break;
 
-        case WBISHOP:
-        case BBISHOP:
-                mv.val |= MV_FLG_PROMOTE_BISHOP;
-                break;
+    case WBISHOP:
+    case BBISHOP:
+        mv.val |= MV_FLG_PROMOTE_BISHOP;
+        break;
 
-        case WROOK:
-        case BROOK:
-                mv.val |= MV_FLG_PROMOTE_ROOK;
-                break;
+    case WROOK:
+    case BROOK:
+        mv.val |= MV_FLG_PROMOTE_ROOK;
+        break;
 
-        case WQUEEN:
-        case BQUEEN:
-                mv.val |= MV_FLG_PROMOTE_QUEEN;
-                break;
+    case WQUEEN:
+    case BQUEEN:
+        mv.val |= MV_FLG_PROMOTE_QUEEN;
+        break;
 
-        default:
-                assert(false);
-                break;
-        }
+    default:
+        assert(false);
+        break;
+    }
 
 #pragma GCC diagnostic pop
 
-        if (is_capture) {
-                set_flag(&mv.val, MV_FLG_BIT_CAPTURE);
-        }
+    if (is_capture) {
+        set_flag(&mv.val, MV_FLG_BIT_CAPTURE);
+    }
 
-        return mv;
+    return mv;
 }
-
 
 /**
  * @brief       Extracts the piece class from a promotion move
@@ -178,33 +173,35 @@ struct move move_encode_promoted(const enum square from_sq, const enum square to
  */
 enum piece move_decode_promotion_piece(const struct move mv, const enum colour side)
 {
-        assert(validate_move(mv));
+    assert(validate_move(mv));
 
-        const uint16_t m = mv.val & MV_MASK_FLAGS;
+    const uint16_t m = mv.val & MV_MASK_FLAGS;
 
-        switch (m) {
-        case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
-        case MV_FLG_PROMOTE_KNIGHT:
-                if (side == WHITE)return WKNIGHT;
-                return BKNIGHT;
-        case MV_FLG_PROMOTE_BISHOP_CAPTURE:
-        case MV_FLG_PROMOTE_BISHOP:
-                if (side == WHITE)return WBISHOP;
-                return BBISHOP;
-        case MV_FLG_PROMOTE_QUEEN_CAPTURE:
-        case MV_FLG_PROMOTE_QUEEN:
-                if (side == WHITE)return WQUEEN;
-                return BQUEEN;
-        case MV_FLG_PROMOTE_ROOK_CAPTURE:
-        case MV_FLG_PROMOTE_ROOK:
-                if (side == WHITE)return WROOK;
-                return BROOK;
-        default:
-                assert(false);
-        }
+    switch (m) {
+    case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
+    case MV_FLG_PROMOTE_KNIGHT:
+        if (side == WHITE)
+            return WKNIGHT;
+        return BKNIGHT;
+    case MV_FLG_PROMOTE_BISHOP_CAPTURE:
+    case MV_FLG_PROMOTE_BISHOP:
+        if (side == WHITE)
+            return WBISHOP;
+        return BBISHOP;
+    case MV_FLG_PROMOTE_QUEEN_CAPTURE:
+    case MV_FLG_PROMOTE_QUEEN:
+        if (side == WHITE)
+            return WQUEEN;
+        return BQUEEN;
+    case MV_FLG_PROMOTE_ROOK_CAPTURE:
+    case MV_FLG_PROMOTE_ROOK:
+        if (side == WHITE)
+            return WROOK;
+        return BROOK;
+    default:
+        assert(false);
+    }
 }
-
-
 
 /**
  * @brief       Encodes a capture move using the given squares
@@ -215,12 +212,12 @@ enum piece move_decode_promotion_piece(const struct move mv, const enum colour s
  */
 struct move move_encode_capture(const enum square from_sq, const enum square to_sq)
 {
-        assert(validate_square(from_sq));
-        assert(validate_square(to_sq));
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
 
-        struct move mv = encode_to_from(from_sq, to_sq);
-        set_flag(&mv.val, MV_FLG_CAPTURE);
-        return mv;
+    struct move mv = encode_to_from(from_sq, to_sq);
+    set_flag(&mv.val, MV_FLG_CAPTURE);
+    return mv;
 }
 
 /**
@@ -230,9 +227,9 @@ struct move move_encode_capture(const enum square from_sq, const enum square to_
  */
 struct move move_encode_castle_kingside_white(void)
 {
-        struct move mv = encode_to_from(e1, g1);
-        set_flag(&mv.val, MV_FLG_KING_CASTLE);
-        return mv;
+    struct move mv = encode_to_from(e1, g1);
+    set_flag(&mv.val, MV_FLG_KING_CASTLE);
+    return mv;
 }
 
 /**
@@ -242,9 +239,9 @@ struct move move_encode_castle_kingside_white(void)
  */
 struct move move_encode_castle_kingside_black(void)
 {
-        struct move mv = encode_to_from(e8, g8);
-        set_flag(&mv.val, MV_FLG_KING_CASTLE);
-        return mv;
+    struct move mv = encode_to_from(e8, g8);
+    set_flag(&mv.val, MV_FLG_KING_CASTLE);
+    return mv;
 }
 
 /**
@@ -254,9 +251,9 @@ struct move move_encode_castle_kingside_black(void)
  */
 struct move move_encode_castle_queenside_white(void)
 {
-        struct move mv = encode_to_from(e1, c1);
-        set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
-        return mv;
+    struct move mv = encode_to_from(e1, c1);
+    set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
+    return mv;
 }
 
 /**
@@ -266,13 +263,10 @@ struct move move_encode_castle_queenside_white(void)
  */
 struct move move_encode_castle_queenside_black(void)
 {
-        struct move mv = encode_to_from(e8, c8);
-        set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
-        return mv;
+    struct move mv = encode_to_from(e8, c8);
+    set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
+    return mv;
 }
-
-
-
 
 /**
  * @brief       Encodes a double first move for a pawn
@@ -282,14 +276,13 @@ struct move move_encode_castle_queenside_black(void)
  */
 struct move move_encode_pawn_double_first(const enum square from_sq, const enum square to_sq)
 {
-        assert(validate_square(from_sq));
-        assert(validate_square(to_sq));
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
 
-        struct move mv = encode_to_from(from_sq, to_sq);
-        set_flag(&mv.val, MV_FLG_DOUBLE_PAWN);
-        return mv;
+    struct move mv = encode_to_from(from_sq, to_sq);
+    set_flag(&mv.val, MV_FLG_DOUBLE_PAWN);
+    return mv;
 }
-
 
 /**
  * @brief       Encodes an En Passant move using the given squares
@@ -299,14 +292,14 @@ struct move move_encode_pawn_double_first(const enum square from_sq, const enum 
  * @return The encoded move
  */
 struct move move_encode_enpassant(const enum square from_sq,
-                                  const enum square to_sq)
+    const enum square to_sq)
 {
-        assert(validate_square(from_sq));
-        assert(validate_square(to_sq));
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
 
-        struct move mv = encode_to_from(from_sq, to_sq);
-        set_flag(&mv.val, MV_FLG_EN_PASS);
-        return mv;
+    struct move mv = encode_to_from(from_sq, to_sq);
+    set_flag(&mv.val, MV_FLG_EN_PASS);
+    return mv;
 }
 
 /**
@@ -317,7 +310,7 @@ struct move move_encode_enpassant(const enum square from_sq,
  */
 enum square move_decode_from_sq(const struct move mv)
 {
-        return (enum square)(( mv.val & MV_MASK_FROM_SQ) >> MV_SHFT_FROM_SQ);
+    return (enum square)((mv.val & MV_MASK_FROM_SQ) >> MV_SHFT_FROM_SQ);
 }
 
 /**
@@ -328,9 +321,8 @@ enum square move_decode_from_sq(const struct move mv)
  */
 enum square move_decode_to_sq(const struct move mv)
 {
-        return (enum square)(( mv.val & MV_MASK_TO_SQ) >> MV_SHFT_TO_SQ);
+    return (enum square)((mv.val & MV_MASK_TO_SQ) >> MV_SHFT_TO_SQ);
 }
-
 
 /**
  * @brief       Tests the given uint16_t, returns true if Quiet, false otherwise
@@ -340,8 +332,8 @@ enum square move_decode_to_sq(const struct move mv)
  */
 bool move_is_quiet(const struct move mv)
 {
-        uint16_t m = (( uint16_t)mv.val)& MV_MASK_FLAGS;
-        return m == MV_FLG_QUIET;
+    uint16_t m = ((uint16_t)mv.val) & MV_MASK_FLAGS;
+    return m == MV_FLG_QUIET;
 }
 
 /**
@@ -352,10 +344,9 @@ bool move_is_quiet(const struct move mv)
  */
 bool move_is_double_pawn(const struct move mv)
 {
-        uint16_t m = (( uint16_t)mv.val)& MV_MASK_FLAGS;
-        return m == MV_FLG_DOUBLE_PAWN;
+    uint16_t m = ((uint16_t)mv.val) & MV_MASK_FLAGS;
+    return m == MV_FLG_DOUBLE_PAWN;
 }
-
 
 /**
  * @brief       Tests the given uint16_t, returns true if King Castle move, false otherwise
@@ -365,10 +356,9 @@ bool move_is_double_pawn(const struct move mv)
  */
 bool move_is_king_castle(const struct move mv)
 {
-        uint16_t m = (( uint16_t)mv.val)& MV_MASK_FLAGS;
-        return m == MV_FLG_KING_CASTLE;
+    uint16_t m = ((uint16_t)mv.val) & MV_MASK_FLAGS;
+    return m == MV_FLG_KING_CASTLE;
 }
-
 
 /**
  * @brief       Tests the given uint16_t, returns true if Queen Castle move, false otherwise
@@ -378,10 +368,9 @@ bool move_is_king_castle(const struct move mv)
  */
 bool move_is_queen_castle(const struct move mv)
 {
-        uint16_t m = (( uint16_t)mv.val)& MV_MASK_FLAGS;
-        return m == MV_FLG_QUEEN_CASTLE;
+    uint16_t m = ((uint16_t)mv.val) & MV_MASK_FLAGS;
+    return m == MV_FLG_QUEEN_CASTLE;
 }
-
 
 /**
  * @brief       Returns the promotion piece encoded in the move
@@ -392,46 +381,44 @@ bool move_is_queen_castle(const struct move mv)
  */
 enum piece move_get_promote_piece(const struct move mv, const enum colour side_being_moved)
 {
-        uint16_t m = (( uint16_t)mv.val)& MV_MASK_FLAGS;
+    uint16_t m = ((uint16_t)mv.val) & MV_MASK_FLAGS;
 
-        assert(( m & MV_FLG_BIT_PROMOTE) != 0);
+    assert((m & MV_FLG_BIT_PROMOTE) != 0);
 
-        switch (m) {
-        case MV_FLG_PROMOTE_KNIGHT:
-        case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
-                if (side_being_moved == WHITE) {
-                        return WKNIGHT;
-                }
-                return BKNIGHT;
-                break;
-        case MV_FLG_PROMOTE_BISHOP:
-        case MV_FLG_PROMOTE_BISHOP_CAPTURE:
-                if (side_being_moved == WHITE) {
-                        return WBISHOP;
-                }
-                return BBISHOP;
-                break;
-
-        case MV_FLG_PROMOTE_ROOK:
-        case MV_FLG_PROMOTE_ROOK_CAPTURE:
-                if (side_being_moved == WHITE) {
-                        return WROOK;
-                }
-                return BROOK;
-                break;
-        case MV_FLG_PROMOTE_QUEEN:
-        case MV_FLG_PROMOTE_QUEEN_CAPTURE:
-                if (side_being_moved == WHITE) {
-                        return WQUEEN;
-                }
-                return BQUEEN;
-                break;
-        default:
-                assert(false);
+    switch (m) {
+    case MV_FLG_PROMOTE_KNIGHT:
+    case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
+        if (side_being_moved == WHITE) {
+            return WKNIGHT;
         }
+        return BKNIGHT;
+        break;
+    case MV_FLG_PROMOTE_BISHOP:
+    case MV_FLG_PROMOTE_BISHOP_CAPTURE:
+        if (side_being_moved == WHITE) {
+            return WBISHOP;
+        }
+        return BBISHOP;
+        break;
+
+    case MV_FLG_PROMOTE_ROOK:
+    case MV_FLG_PROMOTE_ROOK_CAPTURE:
+        if (side_being_moved == WHITE) {
+            return WROOK;
+        }
+        return BROOK;
+        break;
+    case MV_FLG_PROMOTE_QUEEN:
+    case MV_FLG_PROMOTE_QUEEN_CAPTURE:
+        if (side_being_moved == WHITE) {
+            return WQUEEN;
+        }
+        return BQUEEN;
+        break;
+    default:
+        assert(false);
+    }
 }
-
-
 
 /**
  * @brief       Tests the given move, returns true if a Capture move, false
@@ -442,9 +429,9 @@ enum piece move_get_promote_piece(const struct move mv, const enum colour side_b
  */
 bool move_is_capture(const struct move mv)
 {
-        assert(validate_move(mv));
+    assert(validate_move(mv));
 
-        return (mv.val & MV_FLG_BIT_CAPTURE) != 0;
+    return (mv.val & MV_FLG_BIT_CAPTURE) != 0;
 }
 
 /**
@@ -456,9 +443,9 @@ bool move_is_capture(const struct move mv)
  */
 bool move_is_promotion(const struct move mv)
 {
-        assert(validate_move(mv));
+    assert(validate_move(mv));
 
-        return (mv.val & MV_FLG_BIT_PROMOTE) != 0;
+    return (mv.val & MV_FLG_BIT_PROMOTE) != 0;
 }
 
 /**
@@ -470,9 +457,9 @@ bool move_is_promotion(const struct move mv)
  */
 bool move_is_en_passant(const struct move mv)
 {
-        assert(validate_move(mv));
+    assert(validate_move(mv));
 
-        return (mv.val & MV_FLG_EN_PASS) != 0;
+    return (mv.val & MV_FLG_EN_PASS) != 0;
 }
 
 /**
@@ -484,10 +471,10 @@ bool move_is_en_passant(const struct move mv)
  */
 bool move_is_castle(const struct move mv)
 {
-        assert(validate_move(mv));
+    assert(validate_move(mv));
 
-        return (((mv.val & MV_FLG_KING_CASTLE) != 0)
-                || (( mv.val & MV_FLG_QUEEN_CASTLE) != 0));
+    return (((mv.val & MV_FLG_KING_CASTLE) != 0)
+        || ((mv.val & MV_FLG_QUEEN_CASTLE) != 0));
 }
 
 /**
@@ -500,10 +487,8 @@ bool move_is_castle(const struct move mv)
 
 bool move_compare(const struct move mv1, const struct move mv2)
 {
-        return mv1.val == mv2.val;
+    return mv1.val == mv2.val;
 }
-
-
 
 /**
  * @brief       Prints a move
@@ -511,36 +496,35 @@ bool move_compare(const struct move mv1, const struct move mv2)
  * @param mv The move print
  * @return The move in test
  */
-char *move_print(const struct move mv)
+char* move_print(const struct move mv)
 {
-        assert(validate_move(mv));
+    assert(validate_move(mv));
 
-        static char move_string[6];
+    static char move_string[6];
 
-        const enum square from_sq = move_decode_from_sq(mv);
-        const enum square to_sq = move_decode_to_sq(mv);
+    const enum square from_sq = move_decode_from_sq(mv);
+    const enum square to_sq = move_decode_to_sq(mv);
 
-        const enum rank from_rank = sq_get_rank(from_sq);
-        const enum file from_file = sq_get_file(from_sq);
+    const enum rank from_rank = sq_get_rank(from_sq);
+    const enum file from_file = sq_get_file(from_sq);
 
-        const enum rank to_rank = sq_get_rank(to_sq);
-        const enum file to_file = sq_get_file(to_sq);
+    const enum rank to_rank = sq_get_rank(to_sq);
+    const enum file to_file = sq_get_file(to_sq);
 
-        sprintf(move_string, "%c%c%c%c", ('a' + from_file),
-                ('1' + from_rank), ('a' + to_file), ('1' + to_rank));
+    sprintf(move_string, "%c%c%c%c", ('a' + from_file),
+        ('1' + from_rank), ('a' + to_file), ('1' + to_rank));
 
-        return move_string;
+    return move_string;
 }
-
 
 bool validate_move(const struct move mv)
 {
-        const enum square from = move_decode_from_sq(mv);
-        const enum square to = move_decode_to_sq(mv);
-        const bool from_ok = validate_square(from);
-        const bool to_ok = validate_square(to);
+    const enum square from = move_decode_from_sq(mv);
+    const enum square to = move_decode_to_sq(mv);
+    const bool from_ok = validate_square(from);
+    const bool to_ok = validate_square(to);
 
-        return from_ok && to_ok;
+    return from_ok && to_ok;
 }
 
 // ==================================================================
@@ -550,23 +534,21 @@ bool validate_move(const struct move mv)
 // ==================================================================
 
 static struct move encode_to_from(const enum square from_sq,
-                                  const enum square to_sq)
+    const enum square to_sq)
 {
-        uint16_t mv = 0;
+    uint16_t mv = 0;
 
-        uint16_t m = (uint16_t)(from_sq << MV_SHFT_FROM_SQ);
-        mv |= (uint16_t)(m & MV_MASK_FROM_SQ);
+    uint16_t m = (uint16_t)(from_sq << MV_SHFT_FROM_SQ);
+    mv |= (uint16_t)(m & MV_MASK_FROM_SQ);
 
-        m = (uint16_t)(to_sq << MV_SHFT_TO_SQ);
-        mv |= (uint16_t)(m & MV_MASK_TO_SQ);
+    m = (uint16_t)(to_sq << MV_SHFT_TO_SQ);
+    mv |= (uint16_t)(m & MV_MASK_TO_SQ);
 
-        struct move mov = {.val = mv};
-        return mov;
+    struct move mov = { .val = mv };
+    return mov;
 }
 
-static void set_flag(uint16_t *mv, const uint16_t flag_bit)
+static void set_flag(uint16_t* mv, const uint16_t flag_bit)
 {
-        *mv |= flag_bit;
+    *mv |= flag_bit;
 }
-
-

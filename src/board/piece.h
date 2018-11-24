@@ -21,41 +21,38 @@
  *  SOFTWARE.
  */
 
-
 #pragma once
 
-#include <stdint.h>
-#include <stdbool.h>
 #include "piece.h"
-
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 
 // enum value : zero = WHITE (to match lsb of piece)
 enum colour {
-        // colours
-        WHITE = 0,
-        BLACK,
+    // colours
+    WHITE = 0,
+    BLACK,
 };
-
 
 // lsb is colour, 0 = WHITE
 enum piece {
-        WPAWN = 0,
-        BPAWN,
-        WBISHOP,
-        BBISHOP,
-        WKNIGHT,
-        BKNIGHT,
-        WROOK,
-        BROOK,
-        WQUEEN,
-        BQUEEN,
-        WKING,
-        BKING
+    WPAWN = 0,
+    BPAWN,
+    WBISHOP,
+    BBISHOP,
+    WKNIGHT,
+    BKNIGHT,
+    WROOK,
+    BROOK,
+    WQUEEN,
+    BQUEEN,
+    WKING,
+    BKING
 };
 
-#define         NUM_COLOURS     2
-#define         NUM_PIECES      12
-
+#define NUM_COLOURS 2
+#define NUM_PIECES 12
 
 bool pce_is_white(const enum piece pce);
 bool pce_is_black(const enum piece pce);

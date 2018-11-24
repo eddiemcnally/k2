@@ -21,8 +21,9 @@
  *  SOFTWARE.
  */
 
-
 #pragma once
+#include "square.h"
+#include <stdint.h>
 
 uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq);
 uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq);
@@ -35,4 +36,3 @@ uint64_t occ_mask_get_positive_diagonal(const enum square sq);
 uint64_t occ_mask_get_negative_diagonal(const enum square sq);
 uint64_t occ_mask_get_vertical(const enum square sq);
 uint64_t occ_mask_get_horizontal(const enum square sq);
-
