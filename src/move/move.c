@@ -473,8 +473,7 @@ bool move_is_castle(const struct move mv)
 {
     assert(validate_move(mv));
 
-    return (((mv.val & MV_FLG_KING_CASTLE) != 0)
-        || ((mv.val & MV_FLG_QUEEN_CASTLE) != 0));
+    return move_is_king_castle(mv) || move_is_queen_castle(mv);
 }
 
 /**

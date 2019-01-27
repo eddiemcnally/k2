@@ -92,7 +92,7 @@ void test_position_white_double_first_move(void** state)
         { .from_sq = h2, .to_sq = h4 }
     };
 
-    struct move quiet_move = move_encode_quiet(a1, a3);
+    struct move quiet_move = move_encode_quiet(a2, a3);
     
     for (int i = 0; i < 8; i++) {
         struct position* pos = pos_create();
@@ -110,17 +110,79 @@ void test_position_white_double_first_move(void** state)
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_true(found);
 
-        enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);
+        const enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);
         assert_true(expected_enp_sq == enp_sq);
 
-        // make a normal move, verifyen passant square no longer active
-        //pos_try_make_move(pos, quiet_move);
-        //found = pos_try_get_en_pass_sq(pos, &enp_sq);
-        //assert_false(found);
+        // make a normal move, verify en passant square no longer active
+        pos_try_make_move(pos, quiet_move);
+        found = pos_try_get_en_pass_sq(pos, &enp_sq);
+        assert_false(found);
         
         pos_destroy(pos);
     }
 }
+
+
+
+void test_position_black_double_first_move(void** state)
+{
+    struct mv_from_to moves[8] = {
+        { .from_sq = a7, .to_sq = a5 },
+        { .from_sq = b7, .to_sq = b5 },
+        { .from_sq = c7, .to_sq = c5 },
+        { .from_sq = d7, .to_sq = d5 },
+        { .from_sq = e7, .to_sq = e5 },
+        { .from_sq = f7, .to_sq = f5 },
+        { .from_sq = g7, .to_sq = g5 },
+        { .from_sq = h7, .to_sq = h5 }
+    };
+
+    struct move quiet_move = move_encode_quiet(a7, a6);
+    
+    for (int i = 0; i < 8; i++) {
+        struct position* pos = pos_create();
+        pos_initialise(INITIAL_FEN, pos);
+
+        struct move mv = move_encode_pawn_double_first(moves[i].from_sq, moves[i].to_sq);
+
+        // baseline, not set
+        enum square enp_sq;
+        bool found = pos_try_get_en_pass_sq(pos, &enp_sq);
+        assert_false(found);
+
+        // make move and check en passant square
+        pos_try_make_move(pos, mv);
+        found = pos_try_get_en_pass_sq(pos, &enp_sq);
+        assert_true(found);
+
+        const enum square expected_enp_sq = sq_get_square_minus_1_rank(moves[i].from_sq);
+        assert_true(expected_enp_sq == enp_sq);
+
+        // make a normal move, verify en passant square no longer active
+        pos_try_make_move(pos, quiet_move);
+        found = pos_try_get_en_pass_sq(pos, &enp_sq);
+        assert_false(found);
+        
+        pos_destroy(pos);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void test_position_brd_is_sq_occupied(void** state)
 {
