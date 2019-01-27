@@ -126,6 +126,8 @@ void test_position_white_double_first_move(void** state)
 
 void test_position_black_double_first_move(void** state)
 {
+    #define INITIAL_FEN_BLACK_TO_MOVE "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
+    
     struct mv_from_to moves[8] = {
         { .from_sq = a7, .to_sq = a5 },
         { .from_sq = b7, .to_sq = b5 },
@@ -141,7 +143,7 @@ void test_position_black_double_first_move(void** state)
     
     for (int i = 0; i < 8; i++) {
         struct position* pos = pos_create();
-        pos_initialise(INITIAL_FEN, pos);
+        pos_initialise(INITIAL_FEN_BLACK_TO_MOVE, pos);
 
         struct move mv = move_encode_pawn_double_first(moves[i].from_sq, moves[i].to_sq);
 
@@ -166,20 +168,6 @@ void test_position_black_double_first_move(void** state)
         pos_destroy(pos);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

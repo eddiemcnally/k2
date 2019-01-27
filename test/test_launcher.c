@@ -90,6 +90,7 @@ int main(void)
         cmocka_unit_test(test_position_brd_is_sq_occupied),
         cmocka_unit_test(test_position_compare),
         cmocka_unit_test(test_position_white_double_first_move),
+        cmocka_unit_test(test_position_black_double_first_move),
 
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),
