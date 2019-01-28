@@ -543,7 +543,7 @@ static struct move encode_to_from(const enum square from_sq,
     m = (uint16_t)(to_sq << MV_SHFT_TO_SQ);
     mv |= (uint16_t)(m & MV_MASK_TO_SQ);
 
-    struct move mov = { .val = mv };
+    struct move mov = {.val = mv };
     return mov;
 }
 

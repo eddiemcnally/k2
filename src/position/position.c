@@ -253,7 +253,7 @@ struct move pos_take_move(struct position* pos)
 {
     assert(validate_position(pos));
 
-    struct move mv = { .val = 0 };
+    struct move mv = {.val = 0 };
     return mv;
 }
 
@@ -455,7 +455,7 @@ static enum square get_en_pass_sq(const enum colour side, const enum square from
     enum square retval;
     if (side == WHITE) {
         retval = sq_get_square_plus_1_rank(from_sq);
-    } else{
+    } else {
         retval = sq_get_square_minus_1_rank(from_sq);
     }
     assert(validate_en_pass_sq(retval));

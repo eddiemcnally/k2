@@ -64,8 +64,6 @@ int main(void)
         cmocka_unit_test(test_black_king_castle_encode_and_test),
         cmocka_unit_test(test_white_queen_castle_encode_and_test),
         cmocka_unit_test(test_black_queen_castle_encode_and_test),
-        
-        
 
         // move list
         cmocka_unit_test(test_move_list_init),

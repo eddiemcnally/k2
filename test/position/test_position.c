@@ -35,7 +35,7 @@ struct mv_from_to {
 
 void test_position_get_set_castle_permissions(void** state)
 {
-    struct cast_perm cp = { .val = 0 };
+    struct cast_perm cp = {.val = 0 };
     cast_perm_set_WK(&cp, true);
     struct position* pos = pos_create();
 
@@ -82,18 +82,18 @@ void test_position_compare(void** state)
 void test_position_white_double_first_move(void** state)
 {
     struct mv_from_to moves[8] = {
-        { .from_sq = a2, .to_sq = a4 },
-        { .from_sq = b2, .to_sq = b4 },
-        { .from_sq = c2, .to_sq = c4 },
-        { .from_sq = d2, .to_sq = d4 },
-        { .from_sq = e2, .to_sq = e4 },
-        { .from_sq = f2, .to_sq = f4 },
-        { .from_sq = g2, .to_sq = g4 },
-        { .from_sq = h2, .to_sq = h4 }
+        {.from_sq = a2, .to_sq = a4 },
+        {.from_sq = b2, .to_sq = b4 },
+        {.from_sq = c2, .to_sq = c4 },
+        {.from_sq = d2, .to_sq = d4 },
+        {.from_sq = e2, .to_sq = e4 },
+        {.from_sq = f2, .to_sq = f4 },
+        {.from_sq = g2, .to_sq = g4 },
+        {.from_sq = h2, .to_sq = h4 }
     };
 
     struct move quiet_move = move_encode_quiet(a2, a3);
-    
+
     for (int i = 0; i < 8; i++) {
         struct position* pos = pos_create();
         pos_initialise(INITIAL_FEN, pos);
@@ -117,30 +117,28 @@ void test_position_white_double_first_move(void** state)
         pos_try_make_move(pos, quiet_move);
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_false(found);
-        
+
         pos_destroy(pos);
     }
 }
 
-
-
 void test_position_black_double_first_move(void** state)
 {
-    #define INITIAL_FEN_BLACK_TO_MOVE "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
-    
+#define INITIAL_FEN_BLACK_TO_MOVE "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
+
     struct mv_from_to moves[8] = {
-        { .from_sq = a7, .to_sq = a5 },
-        { .from_sq = b7, .to_sq = b5 },
-        { .from_sq = c7, .to_sq = c5 },
-        { .from_sq = d7, .to_sq = d5 },
-        { .from_sq = e7, .to_sq = e5 },
-        { .from_sq = f7, .to_sq = f5 },
-        { .from_sq = g7, .to_sq = g5 },
-        { .from_sq = h7, .to_sq = h5 }
+        {.from_sq = a7, .to_sq = a5 },
+        {.from_sq = b7, .to_sq = b5 },
+        {.from_sq = c7, .to_sq = c5 },
+        {.from_sq = d7, .to_sq = d5 },
+        {.from_sq = e7, .to_sq = e5 },
+        {.from_sq = f7, .to_sq = f5 },
+        {.from_sq = g7, .to_sq = g5 },
+        {.from_sq = h7, .to_sq = h5 }
     };
 
     struct move quiet_move = move_encode_quiet(a7, a6);
-    
+
     for (int i = 0; i < 8; i++) {
         struct position* pos = pos_create();
         pos_initialise(INITIAL_FEN_BLACK_TO_MOVE, pos);
@@ -164,13 +162,10 @@ void test_position_black_double_first_move(void** state)
         pos_try_make_move(pos, quiet_move);
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_false(found);
-        
+
         pos_destroy(pos);
     }
 }
-
-
-
 
 void test_position_brd_is_sq_occupied(void** state)
 {

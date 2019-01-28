@@ -222,30 +222,30 @@ void test_move_get_promote_piece_black(void** state)
     }
 }
 
-
-void test_white_king_castle_encode_and_test(void ** state){
+void test_white_king_castle_encode_and_test(void** state)
+{
     struct move mv = move_encode_castle_kingside_white();
     assert_true(move_is_castle(mv));
     assert_true(move_is_king_castle(mv));
 }
 
-
-void test_black_king_castle_encode_and_test(void ** state){
+void test_black_king_castle_encode_and_test(void** state)
+{
     struct move mv = move_encode_castle_kingside_black();
     assert_true(move_is_castle(mv));
     assert_true(move_is_king_castle(mv));
 }
 
-void test_white_queen_castle_encode_and_test(void ** state){
+void test_white_queen_castle_encode_and_test(void** state)
+{
     struct move mv = move_encode_castle_queenside_white();
     assert_true(move_is_castle(mv));
     assert_true(move_is_queen_castle(mv));
 }
 
-
-void test_black_queen_castle_encode_and_test(void ** state){
+void test_black_queen_castle_encode_and_test(void** state)
+{
     struct move mv = move_encode_castle_queenside_black();
     assert_true(move_is_castle(mv));
     assert_true(move_is_queen_castle(mv));
 }
-

@@ -29,7 +29,7 @@
 
 void test_castle_permissions_get_set(void** state)
 {
-    struct cast_perm cp = { .val = 0 };
+    struct cast_perm cp = {.val = 0 };
 
     cast_perm_set_WK(&cp, true);
     assert_true(cast_perm_has_WK(cp));
@@ -55,7 +55,7 @@ void test_castle_permissions_get_set(void** state)
 void test_castle_permissions_no_perms_get_set(void** state)
 {
 
-    struct cast_perm cp = { .val = 0 };
+    struct cast_perm cp = {.val = 0 };
 
     cast_perm_set_no_perms(&cp);
     assert_false(cast_perm_has_WK(cp));
