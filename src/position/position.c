@@ -210,13 +210,15 @@ bool pos_try_make_move(struct position* pos, const struct move mv)
     const enum square to_sq = move_decode_to_sq(mv);
     enum piece pce_to_move;
 
-    const bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
+    bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
     assert(found == true);
     assert(validate_piece(pce_to_move));
 
     if (move_is_double_pawn(mv)) {
         pos->en_passant = get_en_pass_sq(pos->side_to_move, from_sq);
         pos->en_passant_set = true;
+        
+        brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
     } else {
         pos->en_passant_set = false;
     }

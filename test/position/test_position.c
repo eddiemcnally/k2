@@ -92,13 +92,17 @@ void test_position_white_double_first_move(void** state)
         {.from_sq = h2, .to_sq = h4 }
     };
 
-    struct move quiet_move = move_encode_quiet(a2, a3);
+    struct move quiet_move = move_encode_quiet(a7, a6);
 
     for (int i = 0; i < 8; i++) {
+        
+        const enum square from_sq = moves[i].from_sq;
+        const enum square to_sq = moves[i].to_sq;
+        
         struct position* pos = pos_create();
         pos_initialise(INITIAL_FEN, pos);
 
-        struct move mv = move_encode_pawn_double_first(moves[i].from_sq, moves[i].to_sq);
+        struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
 
         // baseline, not set
         enum square enp_sq;
@@ -107,13 +111,24 @@ void test_position_white_double_first_move(void** state)
 
         // make move and check en passant square
         pos_try_make_move(pos, mv);
+        
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_true(found);
 
-        const enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);
+        enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);
         assert_true(expected_enp_sq == enp_sq);
 
-        // make a normal move, verify en passant square no longer active
+        // check the pawn piece has moved
+        bool is_from_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), from_sq);
+        assert_false(is_from_sq_occupied);
+        bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
+        assert_true(is_to_sq_occupied);
+        
+        // check the side has swapped
+        enum colour side_to_move = pos_get_side_to_move(pos);
+        assert_true(side_to_move == BLACK);
+               
+        // make move quiet move and check en passent square is cleared
         pos_try_make_move(pos, quiet_move);
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_false(found);
@@ -137,13 +152,16 @@ void test_position_black_double_first_move(void** state)
         {.from_sq = h7, .to_sq = h5 }
     };
 
-    struct move quiet_move = move_encode_quiet(a7, a6);
+    struct move quiet_move = move_encode_quiet(a2, a3);
 
     for (int i = 0; i < 8; i++) {
         struct position* pos = pos_create();
         pos_initialise(INITIAL_FEN_BLACK_TO_MOVE, pos);
 
-        struct move mv = move_encode_pawn_double_first(moves[i].from_sq, moves[i].to_sq);
+        const enum square from_sq = moves[i].from_sq;
+        const enum square to_sq = moves[i].to_sq;
+        
+        struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
 
         // baseline, not set
         enum square enp_sq;
@@ -155,8 +173,18 @@ void test_position_black_double_first_move(void** state)
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_true(found);
 
-        const enum square expected_enp_sq = sq_get_square_minus_1_rank(moves[i].from_sq);
+        const enum square expected_enp_sq = sq_get_square_minus_1_rank(from_sq);
         assert_true(expected_enp_sq == enp_sq);
+
+        // check the pawn piece has moved
+        bool is_from_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), from_sq);
+        assert_false(is_from_sq_occupied);
+        bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
+        assert_true(is_to_sq_occupied);
+        
+        // check the side has swapped
+        enum colour side_to_move = pos_get_side_to_move(pos);
+        assert_true(side_to_move == WHITE);
 
         // make a normal move, verify en passant square no longer active
         pos_try_make_move(pos, quiet_move);
