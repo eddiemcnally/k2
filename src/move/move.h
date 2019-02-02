@@ -39,10 +39,8 @@ struct move move_encode_promoted(const enum square from_sq, const enum square to
 struct move move_encode_capture(const enum square from_sq, const enum square to_sq);
 struct move move_encode_enpassant(const enum square from_sq, const enum square to_sq);
 struct move move_encode_pawn_double_first(const enum square from_sq, const enum square to_sq);
-struct move move_encode_castle_kingside_white(void);
-struct move move_encode_castle_kingside_black(void);
-struct move move_encode_castle_queenside_white(void);
-struct move move_encode_castle_queenside_black(void);
+struct move move_encode_castle_kingside(void);
+struct move move_encode_castle_queenside(void);
 
 bool move_compare(const struct move mv1, const struct move mv2);
 

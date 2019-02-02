@@ -606,12 +606,7 @@ static void mv_gen_black_castle_moves(const struct position* pos, struct move_li
 static void add_kingside_move_if_no_blockers(const uint64_t brd_bb, const uint64_t blocking_pce_mask, const enum colour side_to_move, struct move_list* mvl)
 {
     if ((brd_bb & blocking_pce_mask) == 0) {
-        struct move mv;
-        if (side_to_move == WHITE) {
-            mv = move_encode_castle_kingside_white();
-        } else {
-            mv = move_encode_castle_kingside_black();
-        }
+        struct move mv = move_encode_castle_kingside();
         mvl_add(mvl, mv);
     }
 }
@@ -619,12 +614,7 @@ static void add_kingside_move_if_no_blockers(const uint64_t brd_bb, const uint64
 static void add_queenside_move_if_no_blockers(const uint64_t brd_bb, const uint64_t blocking_pce_mask, const enum colour side_to_move, struct move_list* mvl)
 {
     if ((brd_bb & blocking_pce_mask) == 0) {
-        struct move mv;
-        if (side_to_move == WHITE) {
-            mv = move_encode_castle_queenside_white();
-        } else {
-            mv = move_encode_castle_queenside_black();
-        }
+        struct move mv = move_encode_castle_queenside();
         mvl_add(mvl, mv);
     }
 }

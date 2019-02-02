@@ -95,10 +95,10 @@ void test_position_white_double_first_move(void** state)
     struct move quiet_move = move_encode_quiet(a7, a6);
 
     for (int i = 0; i < 8; i++) {
-        
+
         const enum square from_sq = moves[i].from_sq;
         const enum square to_sq = moves[i].to_sq;
-        
+
         struct position* pos = pos_create();
         pos_initialise(INITIAL_FEN, pos);
 
@@ -111,7 +111,7 @@ void test_position_white_double_first_move(void** state)
 
         // make move and check en passant square
         pos_try_make_move(pos, mv);
-        
+
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_true(found);
 
@@ -123,11 +123,11 @@ void test_position_white_double_first_move(void** state)
         assert_false(is_from_sq_occupied);
         bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
         assert_true(is_to_sq_occupied);
-        
+
         // check the side has swapped
         enum colour side_to_move = pos_get_side_to_move(pos);
         assert_true(side_to_move == BLACK);
-               
+
         // make move quiet move and check en passent square is cleared
         pos_try_make_move(pos, quiet_move);
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
@@ -160,7 +160,7 @@ void test_position_black_double_first_move(void** state)
 
         const enum square from_sq = moves[i].from_sq;
         const enum square to_sq = moves[i].to_sq;
-        
+
         struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
 
         // baseline, not set
@@ -181,7 +181,7 @@ void test_position_black_double_first_move(void** state)
         assert_false(is_from_sq_occupied);
         bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
         assert_true(is_to_sq_occupied);
-        
+
         // check the side has swapped
         enum colour side_to_move = pos_get_side_to_move(pos);
         assert_true(side_to_move == WHITE);
@@ -193,6 +193,58 @@ void test_position_black_double_first_move(void** state)
 
         pos_destroy(pos);
     }
+}
+
+void test_castle_white_kingside_move_valid_position_updated(void** state)
+{
+    const char* FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1P1BPPP/R2QK2R w KQkq - 0 1\n";
+
+    struct position* pos = pos_create();
+    pos_initialise(FEN, pos);
+    enum piece pce;
+
+    const enum square start_rook_sq = h1;
+    const enum square start_king_sq = e1;
+    const enum square end_rook_sq = f1;
+    const enum square end_king_sq = g1;
+
+    // validate the starting position
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    assert_true(is_start_king_found);
+    assert_true(pce == WKING);
+
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    assert_true(is_start_rook_found);
+    assert_true(pce == WROOK);
+
+    // validate initial castling permissions
+    struct cast_perm start_cp = pos_get_cast_perm(pos);
+    assert_true(cast_perm_has_WK(start_cp));
+    assert_true(cast_perm_has_WQ(start_cp));
+    assert_true(cast_perm_has_BK(start_cp));
+    assert_true(cast_perm_has_BQ(start_cp));
+
+    struct move wk_castle = move_encode_castle_kingside();
+
+    // make move
+    bool move_made = pos_try_make_move(pos, wk_castle);
+    assert_true(move_made);
+
+    // verify end squares are as expected
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    assert_true(is_end_rook_found);
+    assert_true(pce == WROOK);
+
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    assert_true(is_end_king_found);
+    assert_true(pce == WKING);
+
+    // check castle permissions are updated
+    struct cast_perm cp = pos_get_cast_perm(pos);
+    assert_false(cast_perm_has_WK(cp));
+    assert_true(cast_perm_has_WQ(cp));
+    assert_true(cast_perm_has_BK(cp));
+    assert_true(cast_perm_has_BQ(cp));
 }
 
 void test_position_brd_is_sq_occupied(void** state)
@@ -276,3 +328,12 @@ void test_position_brd_is_sq_occupied(void** state)
     assert_false(brd_is_sq_occupied(brd, h7));
     assert_false(brd_is_sq_occupied(brd, h8));
 }
+
+// to test
+// - castle permissions available, but castle move not possible (sliding blocked, king crosses check)
+// - castle permissions not valid, but a castle move is rejected
+// - knight
+// - bishop
+// - queen
+// - king
+// - move leave king in check

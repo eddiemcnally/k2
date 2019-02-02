@@ -221,49 +221,25 @@ struct move move_encode_capture(const enum square from_sq, const enum square to_
 }
 
 /**
- * @brief       Encodes a WK castle move
+ * @brief       Encodes a King-side castle move
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_kingside_white(void)
+struct move move_encode_castle_kingside(void)
 {
-    struct move mv = encode_to_from(e1, g1);
+    struct move mv = { 0 };
     set_flag(&mv.val, MV_FLG_KING_CASTLE);
     return mv;
 }
 
 /**
- * @brief       Encodes a BK castle move
+ * @brief       Encodes a Queen-side castle move
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_kingside_black(void)
+struct move move_encode_castle_queenside(void)
 {
-    struct move mv = encode_to_from(e8, g8);
-    set_flag(&mv.val, MV_FLG_KING_CASTLE);
-    return mv;
-}
-
-/**
- * @brief       Encodes a WQ castle move
- *
- * @return      The encoded move
- */
-struct move move_encode_castle_queenside_white(void)
-{
-    struct move mv = encode_to_from(e1, c1);
-    set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
-    return mv;
-}
-
-/**
- * @brief       Encodes a BQ castle move
- *
- * @return      The encoded move
- */
-struct move move_encode_castle_queenside_black(void)
-{
-    struct move mv = encode_to_from(e8, c8);
+    struct move mv = { 0 };
     set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
     return mv;
 }

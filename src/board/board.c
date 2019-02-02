@@ -202,41 +202,6 @@ void brd_move_piece(struct board* brd, const enum piece pce, const enum square f
     populate_square(brd, pce, to_sq, SET_SQ);
 }
 
-/**
- * @brief       Make a castle move from the "From" square to the "To" square
- *
- * @param brd   The board
- * @param pce   The piece to move
- * @param from_sq The From square
- * @param to_sq The To square
- */
-void brd_make_castle_move(struct board* brd, const enum square from_sq, const enum square to_sq)
-{
-    assert(validate_board(brd));
-    assert(validate_square(from_sq));
-    assert(validate_square(to_sq));
-    assert(validate_castle_squares(brd, from_sq, to_sq));
-
-    enum piece king;
-    enum piece rook;
-
-    if (from_sq == e1) {
-        king = WKING;
-        rook = WROOK;
-    } else if (from_sq == e8) {
-        king = BKING;
-        rook = BROOK;
-    } else {
-        assert(false);
-    }
-
-    brd_remove_piece(brd, king, from_sq);
-    brd_remove_piece(brd, rook, to_sq);
-
-    brd_add_piece(brd, king, to_sq);
-    brd_remove_piece(brd, rook, from_sq);
-}
-
 void brd_print_size()
 {
     printf("size of board struct : %d\n", (int)(sizeof(struct board)));
@@ -488,27 +453,32 @@ static void populate_square(struct board* brd, const enum piece pce,
 
 static bool validate_castle_squares(struct board* brd, const enum square from_sq, const enum square to_sq)
 {
-
     switch (from_sq) {
     case e1:
-        if (to_sq != c1 || to_sq != g1) {
+        if (to_sq != c1 && to_sq != g1) {
+            assert(false);
             return false;
         }
         if (brd->pce_square[from_sq] != WKING) {
+            assert(false);
             return false;
         }
         if (brd->pce_square[to_sq] != WROOK) {
+            assert(false);
             return false;
         }
         return true;
     case e8:
-        if (to_sq != c8 || to_sq != g8) {
+        if (to_sq != c8 && to_sq != g8) {
+            assert(false);
             return false;
         }
         if (brd->pce_square[from_sq] != BKING) {
+            assert(false);
             return false;
         }
         if (brd->pce_square[to_sq] != BROOK) {
+            assert(false);
             return false;
         }
         return true;
