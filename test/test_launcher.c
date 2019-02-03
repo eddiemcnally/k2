@@ -88,6 +88,10 @@ int main(void)
         cmocka_unit_test(test_position_white_double_first_move),
         cmocka_unit_test(test_position_black_double_first_move),
         cmocka_unit_test(test_castle_white_kingside_move_valid_position_updated),
+        cmocka_unit_test(test_castle_white_queenside_move_valid_position_updated),
+        cmocka_unit_test(test_castle_black_kingside_move_valid_position_updated),
+        cmocka_unit_test(test_castle_black_queenside_move_valid_position_updated),
+
 
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),

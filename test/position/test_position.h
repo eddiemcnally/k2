@@ -35,3 +35,6 @@ void test_position_compare(void** state);
 void test_position_white_double_first_move(void** state);
 void test_position_black_double_first_move(void** state);
 void test_castle_white_kingside_move_valid_position_updated(void** state);
+void test_castle_white_queenside_move_valid_position_updated(void** state);
+void test_castle_black_kingside_move_valid_position_updated(void** state);
+void test_castle_black_queenside_move_valid_position_updated(void** state);

@@ -247,6 +247,171 @@ void test_castle_white_kingside_move_valid_position_updated(void** state)
     assert_true(cast_perm_has_BQ(cp));
 }
 
+
+void test_castle_white_queenside_move_valid_position_updated(void** state)
+{
+    const char* FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R w KQkq - 0 1\n";
+
+    struct position* pos = pos_create();
+    pos_initialise(FEN, pos);
+    enum piece pce;
+
+    const enum square start_rook_sq = a1;
+    const enum square start_king_sq = e1;
+    const enum square end_rook_sq = d1;
+    const enum square end_king_sq = c1;
+
+    // validate the starting position
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    assert_true(is_start_king_found);
+    assert_true(pce == WKING);
+
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    assert_true(is_start_rook_found);
+    assert_true(pce == WROOK);
+
+    // validate initial castling permissions
+    struct cast_perm start_cp = pos_get_cast_perm(pos);
+    assert_true(cast_perm_has_WK(start_cp));
+    assert_true(cast_perm_has_WQ(start_cp));
+    assert_true(cast_perm_has_BK(start_cp));
+    assert_true(cast_perm_has_BQ(start_cp));
+
+    struct move wk_castle = move_encode_castle_queenside();
+
+    // make move
+    bool move_made = pos_try_make_move(pos, wk_castle);
+    assert_true(move_made);
+
+    // verify end squares are as expected
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    assert_true(is_end_rook_found);
+    assert_true(pce == WROOK);
+
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    assert_true(is_end_king_found);
+    assert_true(pce == WKING);
+
+    // check castle permissions are updated
+    struct cast_perm cp = pos_get_cast_perm(pos);
+    assert_true(cast_perm_has_WK(cp));
+    assert_false(cast_perm_has_WQ(cp));
+    assert_true(cast_perm_has_BK(cp));
+    assert_true(cast_perm_has_BQ(cp));
+}
+
+
+void test_castle_black_queenside_move_valid_position_updated(void** state)
+{
+    const char* FEN = "r3k2r/p1pp1p1p/bpn1qnp1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
+
+    struct position* pos = pos_create();
+    pos_initialise(FEN, pos);
+    enum piece pce;
+
+    const enum square start_rook_sq = a8;
+    const enum square start_king_sq = e8;
+    const enum square end_rook_sq = d8;
+    const enum square end_king_sq = c8;
+
+    // validate the starting position
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    assert_true(is_start_king_found);
+    assert_true(pce == BKING);
+
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    assert_true(is_start_rook_found);
+    assert_true(pce == BROOK);
+
+    // validate initial castling permissions
+    struct cast_perm start_cp = pos_get_cast_perm(pos);
+    assert_true(cast_perm_has_WK(start_cp));
+    assert_true(cast_perm_has_WQ(start_cp));
+    assert_true(cast_perm_has_BK(start_cp));
+    assert_true(cast_perm_has_BQ(start_cp));
+
+    struct move bq_castle = move_encode_castle_queenside();
+
+    // make move
+    bool move_made = pos_try_make_move(pos, bq_castle);
+    assert_true(move_made);
+
+    // verify end squares are as expected
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    assert_true(is_end_rook_found);
+    assert_true(pce == BROOK);
+
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    assert_true(is_end_king_found);
+    assert_true(pce == BKING);
+
+    // check castle permissions are updated
+    struct cast_perm cp = pos_get_cast_perm(pos);
+    assert_true(cast_perm_has_WK(cp));
+    assert_true(cast_perm_has_WQ(cp));
+    assert_true(cast_perm_has_BK(cp));
+    assert_false(cast_perm_has_BQ(cp));
+}
+
+
+
+
+
+void test_castle_black_kingside_move_valid_position_updated(void** state)
+{
+    const char* FEN = "r3k2r/p1ppqp1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
+
+    struct position* pos = pos_create();
+    pos_initialise(FEN, pos);
+    enum piece pce;
+
+    const enum square start_rook_sq = h8;
+    const enum square start_king_sq = e8;
+    const enum square end_rook_sq = f8;
+    const enum square end_king_sq = g8;
+
+    // validate the starting position
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    assert_true(is_start_king_found);
+    assert_true(pce == BKING);
+
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    assert_true(is_start_rook_found);
+    assert_true(pce == BROOK);
+
+    // validate initial castling permissions
+    struct cast_perm start_cp = pos_get_cast_perm(pos);
+    assert_true(cast_perm_has_WK(start_cp));
+    assert_true(cast_perm_has_WQ(start_cp));
+    assert_true(cast_perm_has_BK(start_cp));
+    assert_true(cast_perm_has_BQ(start_cp));
+
+    struct move bk_castle = move_encode_castle_kingside();
+
+    // make move
+    bool move_made = pos_try_make_move(pos, bk_castle);
+    assert_true(move_made);
+
+    // verify end squares are as expected
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    assert_true(is_end_rook_found);
+    assert_true(pce == BROOK);
+
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    assert_true(is_end_king_found);
+    assert_true(pce == BKING);
+
+    // check castle permissions are updated
+    struct cast_perm cp = pos_get_cast_perm(pos);
+    assert_true(cast_perm_has_WK(cp));
+    assert_true(cast_perm_has_WQ(cp));
+    assert_false(cast_perm_has_BK(cp));
+    assert_true(cast_perm_has_BQ(cp));
+}
+
+
+
+
 void test_position_brd_is_sq_occupied(void** state)
 {
     const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";

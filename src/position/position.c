@@ -77,12 +77,7 @@ static struct move pop_position(struct position* pos);
 static bool mv_state_compare(const struct mv_state* first, const struct mv_state* second);
 static enum square get_en_pass_sq(const enum colour side, const enum square from_sq);
 static void do_capture_move(struct position* pos, const struct move mv, const enum square from_sq, const enum square to_sq, const enum piece pce_to_move);
-
 static void make_castle_piece_moves(struct position* pos, const struct move castle_move);
-static void make_king_side_castle_white_move(struct board* brd);
-static void make_king_side_castle_black_move(struct board* brd);
-static void make_queen_side_castle_white_move(struct board* brd);
-static void make_queen_side_castle_black_move(struct board* brd);
 
 /**
  * @brief       Create and initialise an empty instance of the Position struct
@@ -369,86 +364,47 @@ static void do_capture_move(struct position* pos, const struct move mv,
 
 static void make_castle_piece_moves(struct position* pos, const struct move castle_move)
 {
-
     assert(move_is_castle(castle_move));
 
     struct board* brd = pos_get_board(pos);
-    if (move_is_king_castle(castle_move)) {
-        switch (pos->side_to_move) {
+    
+    const bool is_king_side = move_is_king_castle(castle_move);
+    const bool is_queen_side = move_is_queen_castle(castle_move);
+    const enum colour side = pos->side_to_move;
+    
+    switch(side){
         case WHITE:
-            make_king_side_castle_white_move(brd);
-            cast_perm_set_WK(&pos->castle_perm, false);
+            if (is_king_side){
+                brd_move_piece(brd, WKING, e1, g1);
+                brd_move_piece(brd, WROOK, h1, f1);
+                cast_perm_set_WK(&pos->castle_perm, false);
+            } else if (is_queen_side){
+                brd_move_piece(brd, WKING, e1, c1);
+                brd_move_piece(brd, WROOK, a1, d1);
+                cast_perm_set_WQ(&pos->castle_perm, false);
+            } else{
+                assert(false);
+            }
             break;
         case BLACK:
-            make_king_side_castle_black_move(brd);
-            cast_perm_set_BK(&pos->castle_perm, false);
+            if (is_king_side){
+                brd_move_piece(brd, BKING, e8, g8);
+                brd_move_piece(brd, BROOK, h8, f8);        
+                cast_perm_set_BK(&pos->castle_perm, false);
+            } else if (is_queen_side){
+                brd_move_piece(brd, BKING, e8, c8);
+                brd_move_piece(brd, BROOK, a8, d8);
+                cast_perm_set_BQ(&pos->castle_perm, false);
+            } else{
+                assert(false);
+            }
             break;
         default:
-            assert(false);
-        }
-    } else if (move_is_queen_castle) {
-        switch (pos->side_to_move) {
-        case WHITE:
-            make_queen_side_castle_white_move(brd);
-            cast_perm_set_WQ(&pos->castle_perm, false);
-            break;
-        case BLACK:
-            make_queen_side_castle_black_move(brd);
-            cast_perm_set_BQ(&pos->castle_perm, false);
-            break;
-        default:
-            assert(false);
-        }
+        assert(false);
+        
     }
 }
 
-static void make_king_side_castle_white_move(struct board* brd)
-{
-
-    const enum square WK_KING_FROM_SQ = e1;
-    const enum square WK_KING_TO_SQ = g1;
-    const enum square WK_ROOK_FROM_SQ = h1;
-    const enum square WK_ROOK_TO_SQ = f1;
-
-    brd_move_piece(brd, WKING, WK_KING_FROM_SQ, WK_KING_TO_SQ);
-    brd_move_piece(brd, WROOK, WK_ROOK_FROM_SQ, WK_ROOK_TO_SQ);
-}
-
-static void make_king_side_castle_black_move(struct board* brd)
-{
-
-    const enum square BK_KING_FROM_SQ = e8;
-    const enum square BK_KING_TO_SQ = g8;
-    const enum square BK_ROOK_FROM_SQ = h8;
-    const enum square BK_ROOK_TO_SQ = f8;
-
-    brd_move_piece(brd, WKING, BK_KING_FROM_SQ, BK_KING_TO_SQ);
-    brd_move_piece(brd, WROOK, BK_ROOK_FROM_SQ, BK_ROOK_TO_SQ);
-}
-
-static void make_queen_side_castle_white_move(struct board* brd)
-{
-
-    const enum square WK_KING_FROM_SQ = e1;
-    const enum square WK_KING_TO_SQ = c1;
-    const enum square WK_ROOK_FROM_SQ = a1;
-    const enum square WK_ROOK_TO_SQ = d1;
-
-    brd_move_piece(brd, WKING, WK_KING_FROM_SQ, WK_KING_TO_SQ);
-    brd_move_piece(brd, WROOK, WK_ROOK_FROM_SQ, WK_ROOK_TO_SQ);
-}
-
-static void make_queen_side_castle_black_move(struct board* brd)
-{
-
-    const enum square BK_KING_FROM_SQ = e8;
-    const enum square BK_KING_TO_SQ = c8;
-    const enum square BK_ROOK_FROM_SQ = a8;
-    const enum square BK_ROOK_TO_SQ = d8;
-
-    brd_move_piece(brd, WKING, BK_KING_FROM_SQ, BK_KING_TO_SQ);
-    brd_move_piece(brd, WROOK, BK_ROOK_FROM_SQ, BK_ROOK_TO_SQ);
-}
 
 static void populate_position_from_fen(struct position* pos, const struct parsed_fen* fen)
 {
