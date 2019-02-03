@@ -2,22 +2,25 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
@@ -35,8 +38,7 @@
 #include <cmocka.h>
 #include <setjmp.h>
 
-int main(void)
-{
+int main(void) {
 
     const struct CMUnitTest tests[] = {
         // FEN Testing
@@ -87,11 +89,14 @@ int main(void)
         cmocka_unit_test(test_position_compare),
         cmocka_unit_test(test_position_white_double_first_move),
         cmocka_unit_test(test_position_black_double_first_move),
-        cmocka_unit_test(test_castle_white_kingside_move_valid_position_updated),
-        cmocka_unit_test(test_castle_white_queenside_move_valid_position_updated),
-        cmocka_unit_test(test_castle_black_kingside_move_valid_position_updated),
-        cmocka_unit_test(test_castle_black_queenside_move_valid_position_updated),
-
+        cmocka_unit_test(
+            test_castle_white_kingside_move_valid_position_updated),
+        cmocka_unit_test(
+            test_castle_white_queenside_move_valid_position_updated),
+        cmocka_unit_test(
+            test_castle_black_kingside_move_valid_position_updated),
+        cmocka_unit_test(
+            test_castle_black_queenside_move_valid_position_updated),
 
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),

@@ -2,22 +2,25 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
@@ -48,9 +51,9 @@ struct move_list {
  *
  * @return      A ptr to a new move_list instance
  */
-struct move_list* mvl_allocate(void)
-{
-    struct move_list* retval = (struct move_list*)malloc(sizeof(struct move_list));
+struct move_list *mvl_allocate(void) {
+    struct move_list *retval =
+        (struct move_list *)malloc(sizeof(struct move_list));
     memset(retval, 0, sizeof(struct move_list));
     retval->struct_init_key = MOVE_LIST_INIT_KEY;
 
@@ -62,8 +65,7 @@ struct move_list* mvl_allocate(void)
  *
  * @param mvl   A ptr to the move_list to free up.
  */
-void mvl_deallocate(struct move_list* mvl)
-{
+void mvl_deallocate(struct move_list *mvl) {
     assert(validate_move_list(mvl));
     memset(mvl, 0, sizeof(struct move_list));
     free(mvl);
@@ -75,8 +77,7 @@ void mvl_deallocate(struct move_list* mvl)
  * @param mvl   Pointer to move_list
  * @return              Number of moves in the move list
  */
-uint16_t mvl_get_move_count(const struct move_list* mvl)
-{
+uint16_t mvl_get_move_count(const struct move_list *mvl) {
     assert(validate_move_list(mvl));
     return mvl->move_count;
 }
@@ -88,8 +89,8 @@ uint16_t mvl_get_move_count(const struct move_list* mvl)
  * @param offset The move offset in the move list
  * @return      The move at the move list offset
  */
-struct move mvl_get_move_at_offset(const struct move_list* mvl, uint16_t offset)
-{
+struct move mvl_get_move_at_offset(const struct move_list *mvl,
+                                   uint16_t offset) {
     assert(validate_move_list(mvl));
     assert(offset <= mvl->move_count - 1);
 
@@ -102,8 +103,7 @@ struct move mvl_get_move_at_offset(const struct move_list* mvl, uint16_t offset)
  * @param mvl   The move_list instance
  * @param mv    The move to add
  */
-void mvl_add(struct move_list* mvl, const struct move mv)
-{
+void mvl_add(struct move_list *mvl, const struct move mv) {
     assert(validate_move_list(mvl));
     assert(validate_move(mv));
 
@@ -116,8 +116,7 @@ void mvl_add(struct move_list* mvl, const struct move mv)
  *
  * @param mvl   Pointer to the move list
  */
-void mvl_reset(struct move_list* mvl)
-{
+void mvl_reset(struct move_list *mvl) {
     assert(validate_move_list(mvl));
 
     mvl->move_count = 0;
@@ -130,8 +129,7 @@ void mvl_reset(struct move_list* mvl)
  * @param mv    The move to search for
  * @return true if move is in list, false otherwise
  */
-bool mvl_contains_move(const struct move_list* mvl, const struct move mv)
-{
+bool mvl_contains_move(const struct move_list *mvl, const struct move mv) {
     assert(validate_move_list(mvl));
     assert(validate_move(mv));
 
@@ -148,8 +146,7 @@ bool mvl_contains_move(const struct move_list* mvl, const struct move mv)
  *
  * @param mvl   Pointer to the move list
  */
-void mvl_print(const struct move_list* mvl)
-{
+void mvl_print(const struct move_list *mvl) {
     assert(validate_move_list(mvl));
 
     uint16_t move_count = mvl_get_move_count(mvl);
@@ -164,8 +161,7 @@ void mvl_print(const struct move_list* mvl)
  * @brief       Validates move list and contained moves
  * @param mvl   Pointer to the move list
  */
-bool validate_move_list(const struct move_list* mvl)
-{
+bool validate_move_list(const struct move_list *mvl) {
     if (mvl->struct_init_key != MOVE_LIST_INIT_KEY) {
         assert(false);
     }
@@ -182,10 +178,7 @@ bool validate_move_list(const struct move_list* mvl)
  *
  * @return      The max size
  */
-uint16_t mvl_get_mvl_max_size(void)
-{
-    return MOVE_LIST_MAX_LEN;
-}
+uint16_t mvl_get_mvl_max_size(void) { return MOVE_LIST_MAX_LEN; }
 
 /**
  * @brief               Compares 2 move lists for equivalency
@@ -193,8 +186,8 @@ uint16_t mvl_get_mvl_max_size(void)
  * @param second        Pointer to the second move list
  * @return              True if the lists are the same, false otherwise
  */
-bool mvl_compare(const struct move_list* first, const struct move_list* second)
-{
+bool mvl_compare(const struct move_list *first,
+                 const struct move_list *second) {
     assert(validate_move_list(first));
     assert(validate_move_list(second));
 

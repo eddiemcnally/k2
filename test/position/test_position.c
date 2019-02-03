@@ -2,22 +2,25 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
@@ -33,11 +36,10 @@ struct mv_from_to {
     enum square to_sq;
 };
 
-void test_position_get_set_castle_permissions(void** state)
-{
-    struct cast_perm cp = {.val = 0 };
+void test_position_get_set_castle_permissions(void **state) {
+    struct cast_perm cp = {.val = 0};
     cast_perm_set_WK(&cp, true);
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
 
     pos_set_cast_perm(pos, cp);
     struct cast_perm retrieved_cp = pos_get_cast_perm(pos);
@@ -59,15 +61,14 @@ void test_position_get_set_castle_permissions(void** state)
     assert_true(cast_compare_perms(cp, retrieved_cp));
 }
 
-void test_position_compare(void** state)
-{
-    const char* FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
+void test_position_compare(void **state) {
+    const char *FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
 
-    struct position* pos1 = pos_create();
+    struct position *pos1 = pos_create();
     pos_initialise(FEN, pos1);
-    struct board* brd1 = pos_get_board(pos1);
+    struct board *brd1 = pos_get_board(pos1);
 
-    struct position* pos2 = pos_create();
+    struct position *pos2 = pos_create();
     pos_initialise(FEN, pos2);
 
     assert_true(pos_compare(pos1, pos2));
@@ -79,18 +80,12 @@ void test_position_compare(void** state)
     assert_true(pos_compare(pos1, pos2));
 }
 
-void test_position_white_double_first_move(void** state)
-{
+void test_position_white_double_first_move(void **state) {
     struct mv_from_to moves[8] = {
-        {.from_sq = a2, .to_sq = a4 },
-        {.from_sq = b2, .to_sq = b4 },
-        {.from_sq = c2, .to_sq = c4 },
-        {.from_sq = d2, .to_sq = d4 },
-        {.from_sq = e2, .to_sq = e4 },
-        {.from_sq = f2, .to_sq = f4 },
-        {.from_sq = g2, .to_sq = g4 },
-        {.from_sq = h2, .to_sq = h4 }
-    };
+        {.from_sq = a2, .to_sq = a4}, {.from_sq = b2, .to_sq = b4},
+        {.from_sq = c2, .to_sq = c4}, {.from_sq = d2, .to_sq = d4},
+        {.from_sq = e2, .to_sq = e4}, {.from_sq = f2, .to_sq = f4},
+        {.from_sq = g2, .to_sq = g4}, {.from_sq = h2, .to_sq = h4}};
 
     struct move quiet_move = move_encode_quiet(a7, a6);
 
@@ -99,7 +94,7 @@ void test_position_white_double_first_move(void** state)
         const enum square from_sq = moves[i].from_sq;
         const enum square to_sq = moves[i].to_sq;
 
-        struct position* pos = pos_create();
+        struct position *pos = pos_create();
         pos_initialise(INITIAL_FEN, pos);
 
         struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
@@ -115,11 +110,13 @@ void test_position_white_double_first_move(void** state)
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_true(found);
 
-        enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);
+        enum square expected_enp_sq =
+            sq_get_square_plus_1_rank(moves[i].from_sq);
         assert_true(expected_enp_sq == enp_sq);
 
         // check the pawn piece has moved
-        bool is_from_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), from_sq);
+        bool is_from_sq_occupied =
+            brd_is_sq_occupied(pos_get_board(pos), from_sq);
         assert_false(is_from_sq_occupied);
         bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
         assert_true(is_to_sq_occupied);
@@ -137,25 +134,20 @@ void test_position_white_double_first_move(void** state)
     }
 }
 
-void test_position_black_double_first_move(void** state)
-{
-#define INITIAL_FEN_BLACK_TO_MOVE "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
+void test_position_black_double_first_move(void **state) {
+#define INITIAL_FEN_BLACK_TO_MOVE                                              \
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
 
     struct mv_from_to moves[8] = {
-        {.from_sq = a7, .to_sq = a5 },
-        {.from_sq = b7, .to_sq = b5 },
-        {.from_sq = c7, .to_sq = c5 },
-        {.from_sq = d7, .to_sq = d5 },
-        {.from_sq = e7, .to_sq = e5 },
-        {.from_sq = f7, .to_sq = f5 },
-        {.from_sq = g7, .to_sq = g5 },
-        {.from_sq = h7, .to_sq = h5 }
-    };
+        {.from_sq = a7, .to_sq = a5}, {.from_sq = b7, .to_sq = b5},
+        {.from_sq = c7, .to_sq = c5}, {.from_sq = d7, .to_sq = d5},
+        {.from_sq = e7, .to_sq = e5}, {.from_sq = f7, .to_sq = f5},
+        {.from_sq = g7, .to_sq = g5}, {.from_sq = h7, .to_sq = h5}};
 
     struct move quiet_move = move_encode_quiet(a2, a3);
 
     for (int i = 0; i < 8; i++) {
-        struct position* pos = pos_create();
+        struct position *pos = pos_create();
         pos_initialise(INITIAL_FEN_BLACK_TO_MOVE, pos);
 
         const enum square from_sq = moves[i].from_sq;
@@ -177,7 +169,8 @@ void test_position_black_double_first_move(void** state)
         assert_true(expected_enp_sq == enp_sq);
 
         // check the pawn piece has moved
-        bool is_from_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), from_sq);
+        bool is_from_sq_occupied =
+            brd_is_sq_occupied(pos_get_board(pos), from_sq);
         assert_false(is_from_sq_occupied);
         bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
         assert_true(is_to_sq_occupied);
@@ -195,11 +188,11 @@ void test_position_black_double_first_move(void** state)
     }
 }
 
-void test_castle_white_kingside_move_valid_position_updated(void** state)
-{
-    const char* FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1P1BPPP/R2QK2R w KQkq - 0 1\n";
+void test_castle_white_kingside_move_valid_position_updated(void **state) {
+    const char *FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1P1BPPP/"
+                      "R2QK2R w KQkq - 0 1\n";
 
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
     enum piece pce;
 
@@ -209,11 +202,13 @@ void test_castle_white_kingside_move_valid_position_updated(void** state)
     const enum square end_king_sq = g1;
 
     // validate the starting position
-    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce == WKING);
 
-    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce == WROOK);
 
@@ -231,11 +226,13 @@ void test_castle_white_kingside_move_valid_position_updated(void** state)
     assert_true(move_made);
 
     // verify end squares are as expected
-    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce == WROOK);
 
-    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce == WKING);
 
@@ -247,12 +244,11 @@ void test_castle_white_kingside_move_valid_position_updated(void** state)
     assert_true(cast_perm_has_BQ(cp));
 }
 
+void test_castle_white_queenside_move_valid_position_updated(void **state) {
+    const char *FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/"
+                      "R3K2R w KQkq - 0 1\n";
 
-void test_castle_white_queenside_move_valid_position_updated(void** state)
-{
-    const char* FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R w KQkq - 0 1\n";
-
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
     enum piece pce;
 
@@ -262,11 +258,13 @@ void test_castle_white_queenside_move_valid_position_updated(void** state)
     const enum square end_king_sq = c1;
 
     // validate the starting position
-    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce == WKING);
 
-    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce == WROOK);
 
@@ -284,11 +282,13 @@ void test_castle_white_queenside_move_valid_position_updated(void** state)
     assert_true(move_made);
 
     // verify end squares are as expected
-    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce == WROOK);
 
-    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce == WKING);
 
@@ -300,12 +300,11 @@ void test_castle_white_queenside_move_valid_position_updated(void** state)
     assert_true(cast_perm_has_BQ(cp));
 }
 
+void test_castle_black_queenside_move_valid_position_updated(void **state) {
+    const char *FEN = "r3k2r/p1pp1p1p/bpn1qnp1/2b1p3/4P3/1PNPBN2/P1PQBPPP/"
+                      "R3K2R b KQkq - 0 1\n";
 
-void test_castle_black_queenside_move_valid_position_updated(void** state)
-{
-    const char* FEN = "r3k2r/p1pp1p1p/bpn1qnp1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
-
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
     enum piece pce;
 
@@ -315,11 +314,13 @@ void test_castle_black_queenside_move_valid_position_updated(void** state)
     const enum square end_king_sq = c8;
 
     // validate the starting position
-    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce == BKING);
 
-    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce == BROOK);
 
@@ -337,11 +338,13 @@ void test_castle_black_queenside_move_valid_position_updated(void** state)
     assert_true(move_made);
 
     // verify end squares are as expected
-    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce == BROOK);
 
-    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce == BKING);
 
@@ -353,15 +356,11 @@ void test_castle_black_queenside_move_valid_position_updated(void** state)
     assert_false(cast_perm_has_BQ(cp));
 }
 
+void test_castle_black_kingside_move_valid_position_updated(void **state) {
+    const char *FEN = "r3k2r/p1ppqp1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R "
+                      "b KQkq - 0 1\n";
 
-
-
-
-void test_castle_black_kingside_move_valid_position_updated(void** state)
-{
-    const char* FEN = "r3k2r/p1ppqp1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
-
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
     enum piece pce;
 
@@ -371,11 +370,13 @@ void test_castle_black_kingside_move_valid_position_updated(void** state)
     const enum square end_king_sq = g8;
 
     // validate the starting position
-    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce == BKING);
 
-    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce == BROOK);
 
@@ -393,11 +394,13 @@ void test_castle_black_kingside_move_valid_position_updated(void** state)
     assert_true(move_made);
 
     // verify end squares are as expected
-    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce == BROOK);
 
-    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found =
+        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce == BKING);
 
@@ -409,17 +412,14 @@ void test_castle_black_kingside_move_valid_position_updated(void** state)
     assert_true(cast_perm_has_BQ(cp));
 }
 
+void test_position_brd_is_sq_occupied(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
 
-
-
-void test_position_brd_is_sq_occupied(void** state)
-{
-    const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
-
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    struct board* brd = pos_get_board(pos);
+    struct board *brd = pos_get_board(pos);
 
     assert_false(brd_is_sq_occupied(brd, a1));
     assert_false(brd_is_sq_occupied(brd, a2));

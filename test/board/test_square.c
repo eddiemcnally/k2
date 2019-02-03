@@ -2,22 +2,25 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
@@ -27,8 +30,7 @@
 #include "square.h"
 #include <cmocka.h>
 
-void test_square_sq_get_rank(void** state)
-{
+void test_square_sq_get_rank(void **state) {
     assert_true(sq_get_rank(a1) == RANK_1);
     assert_true(sq_get_rank(b1) == RANK_1);
     assert_true(sq_get_rank(c1) == RANK_1);
@@ -102,8 +104,7 @@ void test_square_sq_get_rank(void** state)
     assert_true(sq_get_rank(h8) == RANK_8);
 }
 
-void test_square_sq_get_file(void** state)
-{
+void test_square_sq_get_file(void **state) {
     assert_true(sq_get_file(a1) == FILE_A);
     assert_true(sq_get_file(b1) == FILE_B);
     assert_true(sq_get_file(c1) == FILE_C);
@@ -177,8 +178,7 @@ void test_square_sq_get_file(void** state)
     assert_true(sq_get_file(h8) == FILE_H);
 }
 
-void test_square_gen_from_rank_file(void** state)
-{
+void test_square_gen_from_rank_file(void **state) {
     assert_true(sq_gen_from_rank_file(RANK_1, FILE_A) == a1);
     assert_true(sq_gen_from_rank_file(RANK_1, FILE_B) == b1);
     assert_true(sq_gen_from_rank_file(RANK_1, FILE_C) == c1);
@@ -252,8 +252,7 @@ void test_square_gen_from_rank_file(void** state)
     assert_true(sq_gen_from_rank_file(RANK_8, FILE_H) == h8);
 }
 
-void test_sq_get_square_plus_1_rank(void** state)
-{
+void test_sq_get_square_plus_1_rank(void **state) {
     assert_true(a2 == sq_get_square_plus_1_rank(a1));
     assert_true(a3 == sq_get_square_plus_1_rank(a2));
     assert_true(h2 == sq_get_square_plus_1_rank(h1));
@@ -265,8 +264,7 @@ void test_sq_get_square_plus_1_rank(void** state)
     assert_true(h6 == sq_get_square_plus_1_rank(h5));
 }
 
-void test_sq_get_square_minus_1_rank(void** state)
-{
+void test_sq_get_square_minus_1_rank(void **state) {
     assert_true(a6 == sq_get_square_minus_1_rank(a7));
     assert_true(a5 == sq_get_square_minus_1_rank(a6));
     assert_true(h6 == sq_get_square_minus_1_rank(h7));

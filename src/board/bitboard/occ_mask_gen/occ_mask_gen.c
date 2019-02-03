@@ -2,22 +2,25 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
@@ -28,16 +31,15 @@
 #include "square.h"
 #include <assert.h>
 
-void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t* brd);
+void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t *brd);
 uint64_t get_occupancy_mask(enum piece pce, enum square sq);
 bool IS_VALID_FILE(enum file f);
 bool IS_VALID_RANK(enum rank r);
 
-void occ_mask_gen_ranks_files(void)
-{
+void occ_mask_gen_ranks_files(void) {
 
-    uint64_t r_masks[8] = { 0 };
-    uint64_t f_masks[8] = { 0 };
+    uint64_t r_masks[8] = {0};
+    uint64_t f_masks[8] = {0};
 
     for (uint8_t i = RANK_1; i <= RANK_8; i++) {
         uint64_t mask = 0;
@@ -77,8 +79,7 @@ void occ_mask_gen_ranks_files(void)
  * @return      filled out array.
  *
  */
-void occ_mask_gen_king(uint64_t* occ_mask_array)
-{
+void occ_mask_gen_king(uint64_t *occ_mask_array) {
     for (enum square sq = a1; sq <= h8; sq++) {
         // valid king moves, and resulting distance vector
         // +7, +8, +9
@@ -152,8 +153,7 @@ void occ_mask_gen_king(uint64_t* occ_mask_array)
  * @return      filled out array.
  *
  */
-void occ_mask_gen_knight(uint64_t* occ_mask_array)
-{
+void occ_mask_gen_knight(uint64_t *occ_mask_array) {
 
     //              56 57 58 59 60 61 62 63
     //              48 49 50 51 52 53 54 55
@@ -244,8 +244,8 @@ void occ_mask_gen_knight(uint64_t* occ_mask_array)
     }
 }
 
-void occ_mask_gen_white_pawn_capture_non_first_double_move(uint64_t* occ_mask_array)
-{
+void occ_mask_gen_white_pawn_capture_non_first_double_move(
+    uint64_t *occ_mask_array) {
 
     //              56 57 58 59 60 61 62 63
     //              48 49 50 51 52 53 54 55
@@ -269,12 +269,14 @@ void occ_mask_gen_white_pawn_capture_non_first_double_move(uint64_t* occ_mask_ar
             // up and left
             dest_rank = rank + 1;
             dest_file = file - 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file, &b);
+            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
+                                 &b);
 
             // up and right
             dest_rank = rank + 1;
             dest_file = file + 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file, &b);
+            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
+                                 &b);
         }
         occ_mask_array[sq] = b;
     }
@@ -288,8 +290,8 @@ void occ_mask_gen_white_pawn_capture_non_first_double_move(uint64_t* occ_mask_ar
  * @return      filled out array.
  *
  */
-void occ_mask_gen_black_pawn_capture_non_first_double_move(uint64_t* occ_mask_array)
-{
+void occ_mask_gen_black_pawn_capture_non_first_double_move(
+    uint64_t *occ_mask_array) {
 
     //              56 57 58 59 60 61 62 63
     //              48 49 50 51 52 53 54 55
@@ -312,19 +314,20 @@ void occ_mask_gen_black_pawn_capture_non_first_double_move(uint64_t* occ_mask_ar
             // up and left
             dest_rank = rank - 1;
             dest_file = file - 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file, &b);
+            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
+                                 &b);
 
             // up and right
             dest_rank = rank - 1;
             dest_file = file + 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file, &b);
+            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
+                                 &b);
         }
         occ_mask_array[sq] = b;
     }
 }
 
-void occ_mask_gen_rook(uint64_t* occ_mask_array)
-{
+void occ_mask_gen_rook(uint64_t *occ_mask_array) {
 
     //              56 57 58 59 60 61 62 63
     //              48 49 50 51 52 53 54 55
@@ -359,11 +362,10 @@ void occ_mask_gen_rook(uint64_t* occ_mask_array)
     }
 }
 
-void occ_mask_gen_queen(uint64_t* occ_mask_array)
-{
+void occ_mask_gen_queen(uint64_t *occ_mask_array) {
     // a queen is a rook + bishop, so create a temp mask array
-    uint64_t temp_bishop_mask[NUM_SQUARES] = { 0 };
-    uint64_t temp_rook_mask[NUM_SQUARES] = { 0 };
+    uint64_t temp_bishop_mask[NUM_SQUARES] = {0};
+    uint64_t temp_rook_mask[NUM_SQUARES] = {0};
 
     occ_mask_gen_bishop(temp_bishop_mask);
     occ_mask_gen_rook(temp_rook_mask);
@@ -374,8 +376,7 @@ void occ_mask_gen_queen(uint64_t* occ_mask_array)
     }
 }
 
-void occ_mask_gen_bishop(uint64_t* occ_mask_array)
-{
+void occ_mask_gen_bishop(uint64_t *occ_mask_array) {
 
     //              56 57 58 59 60 61 62 63
     //              48 49 50 51 52 53 54 55
@@ -440,8 +441,7 @@ void occ_mask_gen_bishop(uint64_t* occ_mask_array)
     }
 }
 
-void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t* bb)
-{
+void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t *bb) {
     if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
         enum square dest_sq = sq_gen_from_rank_file(rank, file);
         *bb = bb_set_square(*bb, (enum square)dest_sq);
@@ -453,11 +453,10 @@ void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t* bb)
 
 // when checking to see if a queen or bishop can attack a
 // square, having a localised occupancy mask can be useful
-void occ_mask_gen_diagonal_occupancy_masks(void)
-{
+void occ_mask_gen_diagonal_occupancy_masks(void) {
 
-    uint64_t diagonal[NUM_SQUARES] = { 0 }; // bottom left to upper right
-    uint64_t antidiagonal[NUM_SQUARES] = { 0 }; // top left to bottom right
+    uint64_t diagonal[NUM_SQUARES] = {0};     // bottom left to upper right
+    uint64_t antidiagonal[NUM_SQUARES] = {0}; // top left to bottom right
 
     for (enum square sq = a1; sq < h8; sq++) {
 
@@ -523,17 +522,10 @@ void occ_mask_gen_diagonal_occupancy_masks(void)
     }
 }
 
-bool IS_VALID_FILE(enum file f)
-{
-    return f >= FILE_A && f <= FILE_H;
-}
-bool IS_VALID_RANK(enum rank r)
-{
-    return r >= RANK_1 && r <= RANK_8;
-}
+bool IS_VALID_FILE(enum file f) { return f >= FILE_A && f <= FILE_H; }
+bool IS_VALID_RANK(enum rank r) { return r >= RANK_1 && r <= RANK_8; }
 
-void occ_mask_gen_print_as_board(const uint64_t mask)
-{
+void occ_mask_gen_print_as_board(const uint64_t mask) {
     for (uint8_t rank = RANK_8; rank >= RANK_1; rank--) {
         printf("%d  ", rank + 1); // enum is zero-based
         for (uint8_t file = FILE_A; file <= FILE_H; file++) {
@@ -555,8 +547,7 @@ void occ_mask_gen_print_as_board(const uint64_t mask)
     printf("\n\n");
 }
 
-void occ_mask_gen_print_all_as_hex(const uint64_t masks[], const uint8_t size)
-{
+void occ_mask_gen_print_all_as_hex(const uint64_t masks[], const uint8_t size) {
     assert(size <= NUM_SQUARES);
 
     for (int i = 0; i < size; i++) {
@@ -564,7 +555,6 @@ void occ_mask_gen_print_all_as_hex(const uint64_t masks[], const uint8_t size)
     }
 }
 
-void occ_mask_gen_print_as_hex(const uint64_t mask)
-{
+void occ_mask_gen_print_as_hex(const uint64_t mask) {
     printf("%#018lx\n", mask);
 }

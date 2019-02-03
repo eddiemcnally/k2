@@ -2,22 +2,25 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
@@ -27,8 +30,7 @@
 #include "piece.h"
 #include <cmocka.h>
 
-void test_piece_get_piece_from_label(void** state)
-{
+void test_piece_get_piece_from_label(void **state) {
     assert_true(pce_get_from_label('P') == WPAWN);
     assert_true(pce_get_from_label('B') == WBISHOP);
     assert_true(pce_get_from_label('N') == WKNIGHT);
@@ -44,8 +46,7 @@ void test_piece_get_piece_from_label(void** state)
     assert_true(pce_get_from_label('k') == BKING);
 }
 
-void test_piece_get_piece_label(void** state)
-{
+void test_piece_get_piece_label(void **state) {
     assert_true(pce_get_label(WPAWN) == 'P');
     assert_true(pce_get_label(BPAWN) == 'p');
     assert_true(pce_get_label(WBISHOP) == 'B');
@@ -60,8 +61,7 @@ void test_piece_get_piece_label(void** state)
     assert_true(pce_get_label(BKING) == 'k');
 }
 
-void test_piece_values(void** state)
-{
+void test_piece_values(void **state) {
     assert_true(pce_get_value(WPAWN) == 100);
     assert_true(pce_get_value(BPAWN) == 100);
 
@@ -81,8 +81,7 @@ void test_piece_values(void** state)
     assert_true(pce_get_value(BKING) == 50000);
 }
 
-void test_piece_get_colour_white_pieces(void** state)
-{
+void test_piece_get_colour_white_pieces(void **state) {
     assert_true(pce_get_colour(WPAWN) == WHITE);
     assert_true(pce_get_colour(WBISHOP) == WHITE);
     assert_true(pce_get_colour(WKNIGHT) == WHITE);
@@ -91,8 +90,7 @@ void test_piece_get_colour_white_pieces(void** state)
     assert_true(pce_get_colour(WKING) == WHITE);
 }
 
-void test_piece_get_colour_black_pieces(void** state)
-{
+void test_piece_get_colour_black_pieces(void **state) {
     assert_true(pce_get_colour(BPAWN) == BLACK);
     assert_true(pce_get_colour(BBISHOP) == BLACK);
     assert_true(pce_get_colour(BKNIGHT) == BLACK);
@@ -101,8 +99,7 @@ void test_piece_get_colour_black_pieces(void** state)
     assert_true(pce_get_colour(BKING) == BLACK);
 }
 
-void test_piece_get_array_idx(void** state)
-{
+void test_piece_get_array_idx(void **state) {
     assert_true(pce_get_array_idx(WPAWN) == 0);
     assert_true(pce_get_array_idx(BPAWN) == 1);
 
@@ -122,14 +119,12 @@ void test_piece_get_array_idx(void** state)
     assert_true(pce_get_array_idx(BKING) == 11);
 }
 
-void test_piece_swap_side(void** state)
-{
+void test_piece_swap_side(void **state) {
     assert_true(pce_swap_side(WHITE) == BLACK);
     assert_true(pce_swap_side(BLACK) == WHITE);
 }
 
-void test_piece_is_white(void** state)
-{
+void test_piece_is_white(void **state) {
     assert_true(pce_is_white(WPAWN));
     assert_true(pce_is_white(WBISHOP));
     assert_true(pce_is_white(WKNIGHT));
@@ -138,8 +133,7 @@ void test_piece_is_white(void** state)
     assert_true(pce_is_white(WKING));
 }
 
-void test_piece_is_black(void** state)
-{
+void test_piece_is_black(void **state) {
     assert_true(pce_is_black(BPAWN));
     assert_true(pce_is_black(BBISHOP));
     assert_true(pce_is_black(BKNIGHT));

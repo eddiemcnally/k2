@@ -2,24 +2,28 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
+
 #define _GNU_SOURCE
 #include "utils.h"
 #include <ctype.h>
@@ -35,8 +39,7 @@
 /**
  * @brief       Sets CPU affinity to CPU 1, and sets pririty to max
  */
-void set_priority_and_affinity(void)
-{
+void set_priority_and_affinity(void) {
     // set up CPU affinity
     cpu_set_t my_set;
     CPU_ZERO(&my_set);
@@ -55,11 +58,10 @@ void set_priority_and_affinity(void)
 /**
  * @brief       Prints the current stack to STD_OUT
  */
-void print_stacktrace(void)
-{
-    void* array[10];
+void print_stacktrace(void) {
+    void *array[10];
     size_t size;
-    char** strings;
+    char **strings;
     size_t i;
 
     size = (size_t)backtrace(array, 10);
@@ -78,8 +80,7 @@ void print_stacktrace(void)
  * @brief       Returns the current time of day in milliseconds
  * @return      Time of day in millis
  */
-uint64_t get_time_of_day_in_millis(void)
-{
+uint64_t get_time_of_day_in_millis(void) {
     struct timeval tp;
 
     int errno = gettimeofday(&tp, NULL);
@@ -95,8 +96,7 @@ uint64_t get_time_of_day_in_millis(void)
  * @brief       Returns elapsed time between the given time and now, in milliseconds.
  * @return      Elapsed time in milliseconds
  */
-uint64_t get_elapsed_time_in_millis(uint64_t start_time)
-{
+uint64_t get_elapsed_time_in_millis(uint64_t start_time) {
     uint64_t now_in_millis = get_time_of_day_in_millis();
     return (now_in_millis - start_time);
 }

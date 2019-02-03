@@ -2,22 +2,25 @@
  *
  *  Copyright (c) 2017 Eddie McNally
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person 
+ *  obtaining a copy of this software and associated documentation 
+ *  files (the "Software"), to deal in the Software without 
+ *  restriction, including without limitation the rights to use, 
+ *  copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the 
+ *  Software is furnished to do so, subject to the following 
+ *  conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be 
+ *  included in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+ *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+ *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+ *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
+ *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
@@ -30,19 +33,18 @@
 #include "square.h"
 #include <cmocka.h>
 
-static enum piece pce_list[NUM_PIECES] = { WPAWN, WBISHOP, WKNIGHT, WROOK, WQUEEN, WKING,
-    BPAWN, BBISHOP, BKNIGHT, BROOK, BQUEEN, BKING };
+static enum piece pce_list[NUM_PIECES] = {WPAWN,   WBISHOP, WKNIGHT, WROOK,
+                                          WQUEEN,  WKING,   BPAWN,   BBISHOP,
+                                          BKNIGHT, BROOK,   BQUEEN,  BKING};
 
-void test_board_brd_allocate_deallocate(void** state)
-{
-    struct board* brd = brd_allocate();
+void test_board_brd_allocate_deallocate(void **state) {
+    struct board *brd = brd_allocate();
     validate_board(brd);
     brd_deallocate(brd);
 }
 
-void test_board_brd_bulk_add_remove_piece(void** state)
-{
-    struct board* brd = brd_allocate();
+void test_board_brd_bulk_add_remove_piece(void **state) {
+    struct board *brd = brd_allocate();
 
     for (int i = 0; i < NUM_PIECES; i++) {
         for (enum square sq = a1; sq <= h8; sq++) {
@@ -72,9 +74,8 @@ void test_board_brd_bulk_add_remove_piece(void** state)
     brd_deallocate(brd);
 }
 
-void test_board_brd_move_piece(void** state)
-{
-    struct board* brd = brd_allocate();
+void test_board_brd_move_piece(void **state) {
+    struct board *brd = brd_allocate();
 
     for (int i = 0; i < NUM_PIECES; i++) {
         enum piece pce = pce_list[i];
@@ -88,7 +89,8 @@ void test_board_brd_move_piece(void** state)
 
                 // verify it's there
                 enum piece found_pce;
-                bool found = brd_try_get_piece_on_square(brd, from_sq, &found_pce);
+                bool found =
+                    brd_try_get_piece_on_square(brd, from_sq, &found_pce);
                 assert_true(found);
                 assert_true(found_pce == pce);
                 bool is_occupied = brd_is_sq_occupied(brd, from_sq);
@@ -117,14 +119,14 @@ void test_board_brd_move_piece(void** state)
     brd_deallocate(brd);
 }
 
-void test_board_brd_get_piece_bb(void** state)
-{
-    const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+void test_board_brd_get_piece_bb(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
 
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    struct board* brd = pos_get_board(pos);
+    struct board *brd = pos_get_board(pos);
 
     uint64_t bb = brd_get_piece_bb(brd, WPAWN);
     assert_true(bb_is_set(bb, b2));
@@ -179,14 +181,14 @@ void test_board_brd_get_piece_bb(void** state)
     pos_destroy(pos);
 }
 
-void test_board_brd_get_colour_bb_black(void** state)
-{
-    const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+void test_board_brd_get_colour_bb_black(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
 
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    struct board* brd = pos_get_board(pos);
+    struct board *brd = pos_get_board(pos);
 
     uint64_t bb = brd_get_colour_bb(brd, BLACK);
     assert_true(bb_is_set(bb, c3));
@@ -212,14 +214,14 @@ void test_board_brd_get_colour_bb_black(void** state)
     pos_destroy(pos);
 }
 
-void test_board_brd_get_colour_bb_white(void** state)
-{
-    const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+void test_board_brd_get_colour_bb_white(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
 
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    struct board* brd = pos_get_board(pos);
+    struct board *brd = pos_get_board(pos);
 
     uint64_t bb = brd_get_colour_bb(brd, WHITE);
 
@@ -246,11 +248,11 @@ void test_board_brd_get_colour_bb_white(void** state)
     pos_destroy(pos);
 }
 
-void test_board_brd_get_board_bb(void** state)
-{
-    const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+void test_board_brd_get_board_bb(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
 
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
     uint64_t bb = brd_get_board_bb(pos_get_board(pos));
@@ -328,14 +330,14 @@ void test_board_brd_get_board_bb(void** state)
     assert_false(bb_is_set(bb, h8));
 }
 
-void test_board_brd_is_sq_occupied(void** state)
-{
-    const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+void test_board_brd_is_sq_occupied(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
 
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    struct board* brd = pos_get_board(pos);
+    struct board *brd = pos_get_board(pos);
 
     assert_false(brd_is_sq_occupied(brd, a1));
     assert_false(brd_is_sq_occupied(brd, a2));
@@ -410,14 +412,14 @@ void test_board_brd_is_sq_occupied(void** state)
     assert_false(brd_is_sq_occupied(brd, h8));
 }
 
-void test_board_brd_try_get_piece_on_square(void** state)
-{
-    const char* FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+void test_board_brd_try_get_piece_on_square(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
 
-    struct position* pos = pos_create();
+    struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    struct board* brd = pos_get_board(pos);
+    struct board *brd = pos_get_board(pos);
 
     enum piece pce;
 
@@ -526,17 +528,16 @@ void test_board_brd_try_get_piece_on_square(void** state)
     assert_false(brd_try_get_piece_on_square(brd, h8, &pce));
 }
 
-void test_board_compare(void** state)
-{
-    const char* FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
+void test_board_compare(void **state) {
+    const char *FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
 
-    struct position* pos1 = pos_create();
+    struct position *pos1 = pos_create();
     pos_initialise(FEN, pos1);
-    struct board* brd1 = pos_get_board(pos1);
+    struct board *brd1 = pos_get_board(pos1);
 
-    struct position* pos2 = pos_create();
+    struct position *pos2 = pos_create();
     pos_initialise(FEN, pos2);
-    struct board* brd2 = pos_get_board(pos2);
+    struct board *brd2 = pos_get_board(pos2);
 
     assert_true(brd_compare(brd1, brd2));
 
@@ -551,20 +552,20 @@ void test_board_compare(void** state)
     assert_true(brd_compare(brd1, brd2));
 }
 
-void test_board_snapshot(void** state)
-{
-    const char* FEN1 = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
-    const char* FEN2 = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/1bNnrQ2 w - - 0 1\n";
+void test_board_snapshot(void **state) {
+    const char *FEN1 = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
+    const char *FEN2 = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                       "1bNnrQ2 w - - 0 1\n";
 
     // first board
-    struct position* pos1 = pos_create();
+    struct position *pos1 = pos_create();
     pos_initialise(FEN1, pos1);
-    struct board* brd1 = pos_get_board(pos1);
+    struct board *brd1 = pos_get_board(pos1);
 
     // second board
-    struct position* pos2 = pos_create();
+    struct position *pos2 = pos_create();
     pos_initialise(FEN2, pos2);
-    struct board* brd2 = pos_get_board(pos2);
+    struct board *brd2 = pos_get_board(pos2);
 
     assert_false(brd_compare(brd1, brd2));
 
