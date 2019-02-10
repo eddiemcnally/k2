@@ -68,9 +68,8 @@ int main(void) {
         cmocka_unit_test(test_move_capture_encode_decode),
         cmocka_unit_test(test_move_queen_castle_encode_decode),
         cmocka_unit_test(test_move_king_castle_encode_decode),
-        
-        
-        
+        cmocka_unit_test(test_move_double_pawn_move_encode_decode),
+
         // move list
         cmocka_unit_test(test_move_list_init),
         cmocka_unit_test(test_move_list_bulk_add_moves),

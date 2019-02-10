@@ -48,3 +48,4 @@ void test_move_quiet_encode_decode(void **state);
 void test_move_capture_encode_decode(void **state);
 void test_move_king_castle_encode_decode(void **state);
 void test_move_queen_castle_encode_decode(void **state);
+void test_move_double_pawn_move_encode_decode(void **state);
