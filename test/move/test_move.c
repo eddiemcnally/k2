@@ -227,3 +227,54 @@ void test_queen_castle_encode_and_test(void **state) {
     assert_true(move_is_castle(mv));
     assert_true(move_is_queen_castle(mv));
 }
+
+
+void test_move_quiet_encode_decode(void **state){
+    const enum square from_sq = d4;
+    const enum square to_sq = d5;
+    
+    const struct move mv = move_encode_quiet(from_sq, to_sq);
+    
+    assert_false(move_is_capture(mv));
+    assert_false(move_is_castle(mv));
+    assert_false(move_is_double_pawn(mv));
+    assert_false(move_is_en_passant(mv));
+    assert_false(move_is_king_castle(mv));
+    assert_false(move_is_promotion(mv));
+    assert_false(move_is_queen_castle(mv));    
+}
+
+void test_move_capture_encode_decode(void **state){
+    const enum square from_sq = d4;
+    const enum square to_sq = d5;
+    
+    const struct move mv = move_encode_capture(from_sq, to_sq);
+    
+    assert_false(move_is_quiet(mv));
+    assert_false(move_is_castle(mv));
+    assert_false(move_is_double_pawn(mv));
+    assert_false(move_is_en_passant(mv));
+    assert_false(move_is_king_castle(mv));
+    assert_false(move_is_promotion(mv));
+    assert_false(move_is_queen_castle(mv));    
+}
+
+void test_move_king_castle_encode_decode(void **state){
+    const struct move mv = move_encode_castle_kingside();
+    
+    assert_false(move_is_quiet(mv));
+    assert_false(move_is_double_pawn(mv));
+    assert_false(move_is_en_passant(mv));
+    assert_false(move_is_promotion(mv));
+    assert_false(move_is_queen_castle(mv));    
+}
+
+void test_move_queen_castle_encode_decode(void **state){
+    const struct move mv = move_encode_castle_queenside();
+    
+    assert_false(move_is_quiet(mv));
+    assert_false(move_is_double_pawn(mv));
+    assert_false(move_is_en_passant(mv));
+    assert_false(move_is_promotion(mv));
+    assert_false(move_is_king_castle(mv));    
+}

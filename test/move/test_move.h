@@ -44,3 +44,7 @@ void test_move_get_promote_piece_white(void **state);
 void test_move_get_promote_piece_black(void **state);
 void test_king_castle_encode_and_test(void **state);
 void test_queen_castle_encode_and_test(void **state);
+void test_move_quiet_encode_decode(void **state);
+void test_move_capture_encode_decode(void **state);
+void test_move_king_castle_encode_decode(void **state);
+void test_move_queen_castle_encode_decode(void **state);

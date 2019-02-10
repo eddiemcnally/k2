@@ -64,7 +64,13 @@ int main(void) {
         cmocka_unit_test(test_move_get_promote_piece_black),
         cmocka_unit_test(test_king_castle_encode_and_test),
         cmocka_unit_test(test_queen_castle_encode_and_test),
-
+        cmocka_unit_test(test_move_quiet_encode_decode),
+        cmocka_unit_test(test_move_capture_encode_decode),
+        cmocka_unit_test(test_move_queen_castle_encode_decode),
+        cmocka_unit_test(test_move_king_castle_encode_decode),
+        
+        
+        
         // move list
         cmocka_unit_test(test_move_list_init),
         cmocka_unit_test(test_move_list_bulk_add_moves),
