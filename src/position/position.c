@@ -88,6 +88,7 @@ static void do_capture_move(struct position *pos, const struct move mv,
                             const enum piece pce_to_move);
 static void make_castle_piece_moves(struct position *pos,
                                     const struct move castle_move);
+static void make_en_passant_move(struct position *pos, const struct move en_pass_mv);
 
 /**
  * @brief       Create and initialise an empty instance of the Position struct
@@ -225,6 +226,12 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
         pos->en_passant_set = false;
     }
 
+    if(move_is_en_passant(mv)){
+        pos->en_passant_set = false;
+        make_en_passant_move(pos, mv);
+    }
+    
+    
     if (move_is_quiet(mv)) {
         if (move_is_promotion(mv)) {
             // quiet promotion
@@ -403,6 +410,41 @@ static void make_castle_piece_moves(struct position *pos,
         assert(false);
     }
 }
+
+
+static void make_en_passant_move(struct position *pos, const struct move en_pass_mv){
+    
+    assert(move_is_en_passant(en_pass_mv));
+    
+    const enum square from_sq = move_decode_from_sq(en_pass_mv);
+    const enum square to_sq = move_decode_to_sq(en_pass_mv);
+        
+    struct board *brd = pos_get_board(pos);
+    
+    enum piece pce_to_move;
+    bool found = brd_try_get_piece_on_square(brd, from_sq, &pce_to_move);
+    assert(found);
+        
+    enum square sq_with_piece;
+    if (pos->side_to_move == WHITE){
+        sq_with_piece = sq_get_square_minus_1_rank(to_sq);
+    } else if (pos->side_to_move == BLACK){
+        sq_with_piece = sq_get_square_plus_1_rank(to_sq);
+    } else{
+        assert(false);
+    }
+    
+    assert(brd_is_sq_occupied(brd, sq_with_piece));
+    
+    enum piece pce_to_remove;
+    found = brd_try_get_piece_on_square(brd, sq_with_piece, &pce_to_remove);
+    
+    brd_remove_piece(brd, pce_to_remove, sq_with_piece);
+    brd_move_piece(brd, pce_to_move, from_sq, to_sq);
+    
+}
+
+
 
 static void populate_position_from_fen(struct position *pos,
                                        const struct parsed_fen *fen) {

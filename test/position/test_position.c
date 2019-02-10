@@ -412,6 +412,8 @@ void test_castle_black_kingside_move_valid_position_updated(void **state) {
     assert_true(cast_perm_has_BQ(cp));
 }
 
+
+
 void test_position_brd_is_sq_occupied(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 w - - 0 1\n";

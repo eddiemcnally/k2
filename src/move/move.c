@@ -426,7 +426,8 @@ bool move_is_promotion(const struct move mv) {
 bool move_is_en_passant(const struct move mv) {
     assert(validate_move(mv));
 
-    return (mv.val & MV_FLG_EN_PASS) != 0;
+    uint16_t m = ((uint16_t)mv.val) & MV_MASK_FLAGS;
+    return m == MV_FLG_EN_PASS;
 }
 
 /**
