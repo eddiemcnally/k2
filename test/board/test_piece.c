@@ -222,7 +222,7 @@ static void piece_create_validate(const enum piece_type pt,
     enum colour found_col = pce_get_colour(pce);
     assert_true(found_col == col);
     enum piece_type found_pt = pce_get_piece_type(pce);
-    assert_true(found_pt = pt);
+    assert_true(found_pt == pt);
 }
 
 static void label_piece_colour_validate(const char label,

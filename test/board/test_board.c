@@ -166,7 +166,7 @@ void test_board_brd_get_piece_bb(void **state) {
     bb = brd_get_piece_bb(brd, QUEEN, WHITE);
     assert_true(bb_is_set(bb, f1));
 
-    bb = brd_get_piece_bb(brd, PAWN, WHITE);
+    bb = brd_get_piece_bb(brd, PAWN, BLACK);
     assert_true(bb_is_set(bb, c3));
     assert_true(bb_is_set(bb, c4));
     assert_true(bb_is_set(bb, d5));
@@ -475,7 +475,7 @@ void test_board_brd_try_get_piece_on_square(void **state) {
 
     assert_true(brd_try_get_piece_on_square(brd, b7, &pce));
     assert_true(pce_get_piece_type(pce) == BISHOP);
-    assert_true(pce_get_colour(pce) == BLACK);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     assert_true(brd_try_get_piece_on_square(brd, b8, &pce));
     assert_true(pce_get_piece_type(pce) == KNIGHT);

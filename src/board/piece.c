@@ -411,5 +411,5 @@ static enum colour extract_colour(const struct piece pce) {
 }
 
 static enum piece_type extract_piece_type(const struct piece pce) {
-    return (enum piece_type)(pce.pce_val & ~COLOUR_MASK);
+    return (enum piece_type)(pce.pce_val & (uint8_t)~COLOUR_MASK);
 }

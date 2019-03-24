@@ -122,9 +122,11 @@ void test_move_en_passant_move_encode_decode(void **state) {
 void test_move_decode_promotion_piece_white(void **state) {
     const enum square from_sq = a7;
     const enum square to_sq = a8;
+    struct move mv;
+    struct piece pce;
 
-    struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
-    struct piece pce = move_decode_promotion_piece(mv, WHITE);
+    mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
+    pce = move_decode_promotion_piece(mv, WHITE);
     assert_true(pce_get_piece_type(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == WHITE);
 

@@ -188,6 +188,7 @@ struct piece move_decode_promotion_piece(const struct move mv,
     case MV_FLG_PROMOTE_QUEEN_CAPTURE:
     case MV_FLG_PROMOTE_QUEEN:
         pt = QUEEN;
+        break;
     case MV_FLG_PROMOTE_ROOK_CAPTURE:
     case MV_FLG_PROMOTE_ROOK:
         pt = ROOK;
