@@ -73,10 +73,10 @@ void test_position_compare(void **state) {
 
     assert_true(pos_compare(pos1, pos2));
 
-    brd_add_piece(brd1, WPAWN, a1);
+    brd_add_piece(brd1, pce_create(PAWN, WHITE), a1);
     assert_false(pos_compare(pos1, pos2));
 
-    brd_remove_piece(brd1, WPAWN, a1);
+    brd_remove_piece(brd1, pce_create(PAWN, WHITE), a1);
     assert_true(pos_compare(pos1, pos2));
 }
 
@@ -194,7 +194,7 @@ void test_castle_white_kingside_move_valid_position_updated(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    enum piece pce;
+    struct piece pce;
 
     const enum square start_rook_sq = h1;
     const enum square start_king_sq = e1;
@@ -205,12 +205,14 @@ void test_castle_white_kingside_move_valid_position_updated(void **state) {
     bool is_start_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
-    assert_true(pce == WKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     bool is_start_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
-    assert_true(pce == WROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     // validate initial castling permissions
     struct cast_perm start_cp = pos_get_cast_perm(pos);
@@ -229,12 +231,14 @@ void test_castle_white_kingside_move_valid_position_updated(void **state) {
     bool is_end_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
-    assert_true(pce == WROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     bool is_end_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
-    assert_true(pce == WKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     // check castle permissions are updated
     struct cast_perm cp = pos_get_cast_perm(pos);
@@ -250,7 +254,7 @@ void test_castle_white_queenside_move_valid_position_updated(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    enum piece pce;
+    struct piece pce;
 
     const enum square start_rook_sq = a1;
     const enum square start_king_sq = e1;
@@ -261,12 +265,14 @@ void test_castle_white_queenside_move_valid_position_updated(void **state) {
     bool is_start_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
-    assert_true(pce == WKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     bool is_start_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
-    assert_true(pce == WROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     // validate initial castling permissions
     struct cast_perm start_cp = pos_get_cast_perm(pos);
@@ -285,12 +291,14 @@ void test_castle_white_queenside_move_valid_position_updated(void **state) {
     bool is_end_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
-    assert_true(pce == WROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     bool is_end_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
-    assert_true(pce == WKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == WHITE);
 
     // check castle permissions are updated
     struct cast_perm cp = pos_get_cast_perm(pos);
@@ -306,7 +314,7 @@ void test_castle_black_queenside_move_valid_position_updated(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    enum piece pce;
+    struct piece pce;
 
     const enum square start_rook_sq = a8;
     const enum square start_king_sq = e8;
@@ -317,12 +325,14 @@ void test_castle_black_queenside_move_valid_position_updated(void **state) {
     bool is_start_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
-    assert_true(pce == BKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     bool is_start_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
-    assert_true(pce == BROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     // validate initial castling permissions
     struct cast_perm start_cp = pos_get_cast_perm(pos);
@@ -341,12 +351,14 @@ void test_castle_black_queenside_move_valid_position_updated(void **state) {
     bool is_end_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
-    assert_true(pce == BROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     bool is_end_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
-    assert_true(pce == BKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     // check castle permissions are updated
     struct cast_perm cp = pos_get_cast_perm(pos);
@@ -362,7 +374,7 @@ void test_castle_black_kingside_move_valid_position_updated(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    enum piece pce;
+    struct piece pce;
 
     const enum square start_rook_sq = h8;
     const enum square start_king_sq = e8;
@@ -373,12 +385,14 @@ void test_castle_black_kingside_move_valid_position_updated(void **state) {
     bool is_start_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
-    assert_true(pce == BKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     bool is_start_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
-    assert_true(pce == BROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     // validate initial castling permissions
     struct cast_perm start_cp = pos_get_cast_perm(pos);
@@ -397,12 +411,14 @@ void test_castle_black_kingside_move_valid_position_updated(void **state) {
     bool is_end_rook_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
-    assert_true(pce == BROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     bool is_end_king_found =
         brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
-    assert_true(pce == BKING);
+    assert_true(pce_get_piece_type(pce) == KING);
+    assert_true(pce_get_colour(pce) == BLACK);
 
     // check castle permissions are updated
     struct cast_perm cp = pos_get_cast_perm(pos);

@@ -465,19 +465,19 @@ static bool contains_all_4_promotion_moves(const enum square from_sq,
                                            const enum square to_sq,
                                            struct move_list *mvl,
                                            const bool is_capture) {
-    struct move mv = move_encode_promoted(from_sq, to_sq, WKNIGHT, is_capture);
+    struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, is_capture);
     if (mvl_contains_move(mvl, mv) == false) {
         return false;
     }
-    mv = move_encode_promoted(from_sq, to_sq, WBISHOP, is_capture);
+    mv = move_encode_promoted(from_sq, to_sq, BISHOP, is_capture);
     if (mvl_contains_move(mvl, mv) == false) {
         return false;
     }
-    mv = move_encode_promoted(from_sq, to_sq, WROOK, is_capture);
+    mv = move_encode_promoted(from_sq, to_sq, ROOK, is_capture);
     if (mvl_contains_move(mvl, mv) == false) {
         return false;
     }
-    mv = move_encode_promoted(from_sq, to_sq, WQUEEN, is_capture);
+    mv = move_encode_promoted(from_sq, to_sq, QUEEN, is_capture);
     if (mvl_contains_move(mvl, mv) == false) {
         return false;
     }

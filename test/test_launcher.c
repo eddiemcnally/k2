@@ -83,10 +83,10 @@ int main(void) {
         cmocka_unit_test(test_piece_get_colour_white_pieces),
         cmocka_unit_test(test_piece_get_colour_black_pieces),
         cmocka_unit_test(test_piece_swap_side),
-        cmocka_unit_test(test_piece_get_piece_label),
         cmocka_unit_test(test_piece_values),
         cmocka_unit_test(test_piece_get_piece_from_label),
         cmocka_unit_test(test_piece_get_array_idx),
+        cmocka_unit_test(test_piece_create),
 
         // Position
         cmocka_unit_test(test_position_get_set_castle_permissions),

@@ -60,7 +60,7 @@ void test_move_promoted_capture_move_encode_decode(void **state) {
                 continue;
             }
 
-            struct move mv = move_encode_promoted(from_sq, to_sq, WQUEEN, true);
+            struct move mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
 
             enum square decoded_from = move_decode_from_sq(mv);
             enum square decoded_to = move_decode_to_sq(mv);
@@ -81,8 +81,7 @@ void test_move_promoted_non_capture_move_encode_decode(void **state) {
                 continue;
             }
 
-            struct move mv =
-                move_encode_promoted(from_sq, to_sq, WQUEEN, false);
+            struct move mv = move_encode_promoted(from_sq, to_sq, QUEEN, false);
 
             enum square decoded_from = move_decode_from_sq(mv);
             enum square decoded_to = move_decode_to_sq(mv);
@@ -124,42 +123,50 @@ void test_move_decode_promotion_piece_white(void **state) {
     const enum square from_sq = a7;
     const enum square to_sq = a8;
 
-    struct move mv = move_encode_promoted(from_sq, to_sq, WKNIGHT, true);
-    enum piece pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce == WKNIGHT);
+    struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
+    struct piece pce = move_decode_promotion_piece(mv, WHITE);
+    assert_true(pce_get_piece_type(pce) == KNIGHT);
+    assert_true(pce_get_colour(pce) == WHITE);
 
-    mv = move_encode_promoted(from_sq, to_sq, WBISHOP, true);
+    mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
     pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce == WBISHOP);
+    assert_true(pce_get_piece_type(pce) == BISHOP);
+    assert_true(pce_get_colour(pce) == WHITE);
 
-    mv = move_encode_promoted(from_sq, to_sq, WROOK, true);
+    mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
     pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce == WROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == WHITE);
 
-    mv = move_encode_promoted(from_sq, to_sq, WQUEEN, true);
+    mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
     pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce == WQUEEN);
+    assert_true(pce_get_piece_type(pce) == QUEEN);
+    assert_true(pce_get_colour(pce) == WHITE);
 }
 
 void test_move_decode_promotion_piece_black(void **state) {
     const enum square from_sq = a7;
     const enum square to_sq = a8;
 
-    struct move mv = move_encode_promoted(from_sq, to_sq, BKNIGHT, true);
-    enum piece pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce == BKNIGHT);
+    struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
+    struct piece pce = move_decode_promotion_piece(mv, BLACK);
+    assert_true(pce_get_piece_type(pce) == KNIGHT);
+    assert_true(pce_get_colour(pce) == BLACK);
 
-    mv = move_encode_promoted(from_sq, to_sq, BBISHOP, true);
+    mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
     pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce == BBISHOP);
+    assert_true(pce_get_piece_type(pce) == BISHOP);
+    assert_true(pce_get_colour(pce) == BLACK);
 
-    mv = move_encode_promoted(from_sq, to_sq, BROOK, true);
+    mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
     pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce == BROOK);
+    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_colour(pce) == BLACK);
 
-    mv = move_encode_promoted(from_sq, to_sq, BQUEEN, true);
+    mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
     pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce == BQUEEN);
+    assert_true(pce_get_piece_type(pce) == QUEEN);
+    assert_true(pce_get_colour(pce) == BLACK);
 }
 
 void test_move_is_double_pawn_white(void **state) {
@@ -186,16 +193,19 @@ void test_move_get_promote_piece_white(void **state) {
     const enum square from_sq = e7;
     const enum square to_sq = e8;
 
-    enum piece test_pieces[4] = {WKNIGHT, WBISHOP, WROOK, WQUEEN};
+    enum piece_type test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
 
     for (int i = 0; i < 4; i++) {
-        enum piece pce = test_pieces[i];
+        enum piece_type pt = (enum piece_type)test_pieces[i];
+        struct piece pce = pce_create(pt, WHITE);
 
-        struct move mv = move_encode_promoted(from_sq, to_sq, pce, true);
-        assert_true(move_get_promote_piece(mv, WHITE) == pce);
+        struct move mv = move_encode_promoted(from_sq, to_sq, pt, true);
+        struct piece promoted_pce = move_get_promote_piece(mv, WHITE);
+        assert_true(pce_are_equal(promoted_pce, pce));
 
-        mv = move_encode_promoted(from_sq, to_sq, pce, false);
-        assert_true(move_get_promote_piece(mv, WHITE) == pce);
+        mv = move_encode_promoted(from_sq, to_sq, pt, false);
+        promoted_pce = move_get_promote_piece(mv, WHITE);
+        assert_true(pce_are_equal(promoted_pce, pce));
     }
 }
 
@@ -203,16 +213,19 @@ void test_move_get_promote_piece_black(void **state) {
     const enum square from_sq = e2;
     const enum square to_sq = e1;
 
-    enum piece test_pieces[4] = {BKNIGHT, BBISHOP, BROOK, BQUEEN};
+    enum piece_type test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
 
     for (int i = 0; i < 4; i++) {
-        enum piece pce = test_pieces[i];
+        enum piece_type pt = (enum piece_type)test_pieces[i];
+        struct piece pce = pce_create(pt, BLACK);
 
-        struct move mv = move_encode_promoted(from_sq, to_sq, pce, true);
-        assert_true(move_get_promote_piece(mv, BLACK) == pce);
+        struct move mv = move_encode_promoted(from_sq, to_sq, pt, true);
+        struct piece promoted_pce = move_get_promote_piece(mv, BLACK);
+        assert_true(pce_are_equal(promoted_pce, pce));
 
-        mv = move_encode_promoted(from_sq, to_sq, pce, false);
-        assert_true(move_get_promote_piece(mv, BLACK) == pce);
+        mv = move_encode_promoted(from_sq, to_sq, pt, false);
+        promoted_pce = move_get_promote_piece(mv, BLACK);
+        assert_true(pce_are_equal(promoted_pce, pce));
     }
 }
 

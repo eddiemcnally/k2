@@ -32,7 +32,7 @@
 #include <assert.h>
 
 void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t *brd);
-uint64_t get_occupancy_mask(enum piece pce, enum square sq);
+uint64_t get_occupancy_mask(struct piece pce, enum square sq);
 bool IS_VALID_FILE(enum file f);
 bool IS_VALID_RANK(enum rank r);
 

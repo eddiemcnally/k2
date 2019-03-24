@@ -34,7 +34,7 @@
 #include <cmocka.h>
 
 struct sq_pce {
-    enum piece piece;
+    struct piece piece;
     bool has_piece;
 };
 
@@ -48,56 +48,56 @@ void test_fen_pieces_init_position(void **state) {
     }
 
     data[a1].has_piece = true;
-    data[a1].piece = WROOK;
+    data[a1].piece = pce_create(ROOK, WHITE);
     data[b1].has_piece = true;
-    data[b1].piece = WKNIGHT;
+    data[b1].piece = pce_create(KNIGHT, WHITE);
     data[c1].has_piece = true;
-    data[c1].piece = WBISHOP;
+    data[c1].piece = pce_create(BISHOP, WHITE);
     data[d1].has_piece = true;
-    data[d1].piece = WQUEEN;
+    data[d1].piece = pce_create(QUEEN, WHITE);
     data[e1].has_piece = true;
-    data[e1].piece = WKING;
+    data[e1].piece = pce_create(KING, WHITE);
     data[f1].has_piece = true;
-    data[f1].piece = WBISHOP;
+    data[f1].piece = pce_create(BISHOP, WHITE);
     data[g1].has_piece = true;
-    data[g1].piece = WKNIGHT;
+    data[g1].piece = pce_create(KNIGHT, WHITE);
     data[h1].has_piece = true;
-    data[h1].piece = WROOK;
+    data[h1].piece = pce_create(ROOK, WHITE);
     for (int i = a2; i <= h2; i++) {
         data[i].has_piece = true;
-        data[i].piece = WPAWN;
+        data[i].piece = pce_create(PAWN, WHITE);
     }
 
     data[a8].has_piece = true;
-    data[a8].piece = BROOK;
+    data[a8].piece = pce_create(ROOK, BLACK);
     data[b8].has_piece = true;
-    data[b8].piece = BKNIGHT;
+    data[b8].piece = pce_create(KNIGHT, BLACK);
     data[c8].has_piece = true;
-    data[c8].piece = BBISHOP;
+    data[c8].piece = pce_create(BISHOP, BLACK);
     data[d8].has_piece = true;
-    data[d8].piece = BQUEEN;
+    data[d8].piece = pce_create(QUEEN, BLACK);
     data[e8].has_piece = true;
-    data[e8].piece = BKING;
+    data[e8].piece = pce_create(KING, BLACK);
     data[f8].has_piece = true;
-    data[f8].piece = BBISHOP;
+    data[f8].piece = pce_create(BISHOP, BLACK);
     data[g8].has_piece = true;
-    data[g8].piece = BKNIGHT;
+    data[g8].piece = pce_create(KNIGHT, BLACK);
     data[h8].has_piece = true;
-    data[h8].piece = BROOK;
+    data[h8].piece = pce_create(ROOK, BLACK);
     for (int i = a7; i <= h7; i++) {
         data[i].has_piece = true;
-        data[i].piece = BPAWN;
+        data[i].piece = pce_create(PAWN, BLACK);
     }
 
     bool found = false;
-    enum piece pce;
+    struct piece pce;
     for (int s = a1; s <= h8; s++) {
         struct sq_pce d = data[s];
 
         bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
 
         if (b == true) {
-            assert_true(pce == d.piece);
+            assert_true(pce_are_equal(pce, d.piece));
         }
     }
 
@@ -125,92 +125,92 @@ void test_fen_pieces_random_position(void **state) {
 
     // RANK 1
     data[a1].has_piece = true;
-    data[a1].piece = WROOK;
+    data[a1].piece = pce_create(ROOK, WHITE);
     data[f1].has_piece = true;
-    data[f1].piece = WROOK;
+    data[f1].piece = pce_create(ROOK, WHITE);
     data[g1].has_piece = true;
-    data[g1].piece = WKING;
+    data[g1].piece = pce_create(KING, WHITE);
 
     // RANK 2
     data[b2].has_piece = true;
-    data[b2].piece = WBISHOP;
+    data[b2].piece = pce_create(BISHOP, WHITE);
     data[d2].has_piece = true;
-    data[d2].piece = WPAWN;
+    data[d2].piece = pce_create(PAWN, WHITE);
     data[e2].has_piece = true;
-    data[e2].piece = WQUEEN;
+    data[e2].piece = pce_create(QUEEN, WHITE);
     data[f2].has_piece = true;
-    data[f2].piece = WPAWN;
+    data[f2].piece = pce_create(PAWN, WHITE);
     data[h2].has_piece = true;
-    data[h2].piece = WPAWN;
+    data[h2].piece = pce_create(PAWN, WHITE);
 
     // RANK 3
     data[a3].has_piece = true;
-    data[a3].piece = WPAWN;
+    data[a3].piece = pce_create(PAWN, WHITE);
     data[b3].has_piece = true;
-    data[b3].piece = WPAWN;
+    data[b3].piece = pce_create(PAWN, WHITE);
     data[c3].has_piece = true;
-    data[c3].piece = WKNIGHT;
+    data[c3].piece = pce_create(KNIGHT, WHITE);
     data[d3].has_piece = true;
-    data[d3].piece = WBISHOP;
+    data[d3].piece = pce_create(BISHOP, WHITE);
     data[f3].has_piece = true;
-    data[f3].piece = WKNIGHT;
+    data[f3].piece = pce_create(KNIGHT, WHITE);
     data[g3].has_piece = true;
-    data[g3].piece = WPAWN;
+    data[g3].piece = pce_create(PAWN, WHITE);
     data[h3].has_piece = true;
-    data[h3].piece = BBISHOP;
+    data[h3].piece = pce_create(BISHOP, BLACK);
 
     // RANK 4
     data[b4].has_piece = true;
-    data[b4].piece = BBISHOP;
+    data[b4].piece = pce_create(BISHOP, BLACK);
     data[c4].has_piece = true;
-    data[c4].piece = WPAWN;
+    data[c4].piece = pce_create(PAWN, WHITE);
     data[e4].has_piece = true;
-    data[e4].piece = WPAWN;
+    data[e4].piece = pce_create(PAWN, WHITE);
 
     // RANK 5
     data[a5].has_piece = true;
-    data[a5].piece = BKNIGHT;
+    data[a5].piece = pce_create(KNIGHT, BLACK);
     data[b5].has_piece = true;
-    data[b5].piece = BPAWN;
+    data[b5].piece = pce_create(PAWN, BLACK);
     data[d5].has_piece = true;
-    data[d5].piece = BPAWN;
+    data[d5].piece = pce_create(PAWN, BLACK);
     data[e5].has_piece = true;
-    data[e5].piece = BPAWN;
+    data[e5].piece = pce_create(PAWN, BLACK);
     data[g5].has_piece = true;
-    data[g5].piece = BPAWN;
+    data[g5].piece = pce_create(PAWN, BLACK);
 
     // RANK 6
     data[f6].has_piece = true;
-    data[f6].piece = BKNIGHT;
+    data[f6].piece = pce_create(KNIGHT, BLACK);
 
     // RANK 7
     data[a7].has_piece = true;
-    data[a7].piece = BPAWN;
+    data[a7].piece = pce_create(PAWN, BLACK);
     data[c7].has_piece = true;
-    data[c7].piece = BPAWN;
+    data[c7].piece = pce_create(PAWN, BLACK);
     data[d7].has_piece = true;
-    data[d7].piece = BKING;
+    data[d7].piece = pce_create(KING, BLACK);
     data[e7].has_piece = true;
-    data[e7].piece = BQUEEN;
+    data[e7].piece = pce_create(QUEEN, BLACK);
     data[f7].has_piece = true;
-    data[f7].piece = BPAWN;
+    data[f7].piece = pce_create(PAWN, BLACK);
     data[h7].has_piece = true;
-    data[h7].piece = BPAWN;
+    data[h7].piece = pce_create(PAWN, BLACK);
 
     // RANK 8
     data[a8].has_piece = true;
-    data[a8].piece = BROOK;
+    data[a8].piece = pce_create(ROOK, BLACK);
     data[h8].has_piece = true;
-    data[h8].piece = BROOK;
+    data[h8].piece = pce_create(ROOK, BLACK);
 
-    enum piece pce;
+    struct piece pce;
     for (int s = a1; s <= h8; s++) {
         struct sq_pce d = data[s];
 
         bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
 
         if (b == true) {
-            assert_true(pce == d.piece);
+            assert_true(pce_are_equal(pce, d.piece));
         }
     }
 }

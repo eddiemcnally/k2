@@ -31,42 +31,34 @@
 #include <stdint.h>
 #include <stdio.h>
 
-// enum value : zero = WHITE (to match lsb of piece)
 enum colour {
-    // colours
     WHITE = 0,
     BLACK,
 };
 
-// lsb is colour, 0 = WHITE
-enum piece {
-    WPAWN = 0,
-    BPAWN,
-    WBISHOP,
-    BBISHOP,
-    WKNIGHT,
-    BKNIGHT,
-    WROOK,
-    BROOK,
-    WQUEEN,
-    BQUEEN,
-    WKING,
-    BKING
+struct piece {
+    uint8_t pce_val;
 };
 
-#define NUM_COLOURS 2
-#define NUM_PIECES 12
+enum piece_type { PAWN = 0, BISHOP, KNIGHT, ROOK, QUEEN, KING };
 
-bool pce_is_white(const enum piece pce);
-bool pce_is_black(const enum piece pce);
+#define NUM_COLOURS 2
+#define NUM_PIECE_TYPES 6
+
+struct piece pce_create(const enum piece_type pce_type, const enum colour col);
+enum piece_type pce_get_piece_type(const struct piece pce);
+bool pce_are_equal(const struct piece pce1, const struct piece pce2);
+bool pce_is_white(const struct piece pce);
+bool pce_is_black(const struct piece pce);
 enum colour pce_swap_side(const enum colour side);
-enum colour pce_get_colour(const enum piece pce);
-uint32_t pce_get_value(const enum piece pce);
-char pce_get_label(const enum piece pce);
-enum piece pce_get_from_label(const char c);
-uint8_t pce_get_array_idx(const enum piece pce);
+enum colour pce_get_colour(const struct piece pce);
+uint32_t pce_get_value(const enum piece_type pt);
+char pce_get_label(const struct piece pce);
+struct piece pce_get_from_label(const char c);
+uint8_t pce_get_array_idx(const enum piece_type pt);
 uint8_t pce_col_get_array_idx(const enum colour col);
-enum piece pce_get_no_piece(void);
-bool validate_piece(const enum piece pce);
+struct piece pce_get_no_piece(void);
+bool validate_piece(const struct piece pce);
+bool validate_piece_type(const enum piece_type pt);
 bool validate_colour(const enum colour col);
 bool validate_label(const char c);
