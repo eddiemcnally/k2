@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.0)
 
 message("*** Setting up K2 Chess Engine Binary build environment ***'")
 
-set(K2_PROJECT_SOURCE_DIR 	${PROJECT_SOURCE_DIR}/src)
+set(K2_PROJECT_SOURCE_DIR   ${PROJECT_SOURCE_DIR}/src)
 
 message("Setting K2 Engine root directory to '${K2_PROJECT_SOURCE_DIR}'")
 
@@ -27,17 +27,19 @@ message("Setting up K2 Engine source files...")
 set (SOURCES 
         ${BB_DIR}/bitboard.c 
         ${BB_DIR}/occupancy_mask.c
-        ${OCC_GEN_DIR}/occ_mask_gen.c	
+        ${OCC_GEN_DIR}/occ_mask_gen.c   
         ${BRD_DIR}/board.c 
         ${BRD_DIR}/piece.c
         ${BRD_DIR}/square.c
         ${FEN_DIR}/fen.c
         ${POSN_DIR}/position.c
+        ${POSN_DIR}/hashkeys.c
         ${POSN_DIR}/castle_perms.c
         ${MOVE_DIR}/move.c
         ${MOVE_DIR}/move_list.c
         ${MOVE_DIR}/move_gen.c
         ${UTILS_DIR}/utils.c
+        ${UTILS_DIR}/rand.c
         )
 
 message("Setting up K2 Engine include files...")
@@ -68,6 +70,7 @@ set (ENGINE_COMPILER_WARNS "-std=c11 \
         -fshort-enums \
         -Wpedantic \
         -Wall \
+        -Werror \
         -Wextra \
         -Wold-style-definition \
         -Wredundant-decls \

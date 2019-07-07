@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2019 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -24,12 +24,33 @@
  *  SOFTWARE.
  */
 
-#pragma once
-#include <setjmp.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
+#include "hashkeys.h"
+#include "castle_perms.h"
+#include "piece.h"
+#include "rand.h"
+#include "square.h"
 
-void test_castle_permissions_get_set(void **state);
-void test_castle_permissions_no_perms_get_set(void **state);
-void test_castle_permissions_offsets(void **state);
+static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES];
+static uint64_t side_key;
+static uint64_t castle_keys[NUM_CASTLE_PERMS];
+
+/**
+ * @brief       Initialises the position hashkeys
+ *
+ */
+void init_key_mgmt(void) {
+    // init the prng
+    init_prng();
+
+    for (int num_pces = 0; num_pces < NUM_PIECES; num_pces++) {
+        for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
+            piece_keys[num_pces][num_sq] = genrand64_int64();
+        }
+    }
+
+    side_key = genrand64_int64();
+
+    for (int i = 0; i < NUM_CASTLE_PERMS; i++) {
+        castle_keys[i] = genrand64_int64();
+    }
+}

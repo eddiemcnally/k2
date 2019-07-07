@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2019 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -24,12 +24,4 @@
  *  SOFTWARE.
  */
 
-#pragma once
-#include <setjmp.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
-
-void test_castle_permissions_get_set(void **state);
-void test_castle_permissions_no_perms_get_set(void **state);
-void test_castle_permissions_offsets(void **state);
+void init_key_mgmt(void);

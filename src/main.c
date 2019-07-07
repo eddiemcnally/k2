@@ -54,4 +54,5 @@ int main(void) {
     mv_gen_bishop_moves(brd, BLACK, mvl);
 
     struct move mv = move_encode_quiet(e2, d1);
+    printf("Move : %s", move_print(mv));
 }

@@ -205,6 +205,36 @@ bool validate_position(const struct position *pos) {
     return true;
 }
 
+/* to do
+ * =====
+ * 
+ * save current position (->history)
+ *      current hash
+ *      move being made
+ *      current castle permissions
+ *      en passant square
+ *      current value of  "50-move rule" counter
+ * incr history pointer
+ * extract top/from squares, capture move
+ * if capture move, 
+ *      save capture piece (->history)
+ *      remove piece from board
+ * move piece from->to
+ * update 50 move rule 
+ *      increment counter
+ *      reset if capture or pawn move
+ *      if limit reached, declare draw.
+ * handle promotion
+ *      remove pawn (plus material)
+ *      add promoted piece to board (increase material)
+ * handle En passant capture
+ *      remove pawn that was captured
+ * Set En passant if double pawn move
+ * update hashkey
+ * adjust castle permissions based on move made
+ * change side, incr ply and history ply        
+ */
+
 bool pos_try_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
 
@@ -263,6 +293,7 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
 struct move pos_take_move(struct position *pos) {
     assert(validate_position(pos));
 
+    pop_position(pos);
     struct move mv = {.val = 0};
     return mv;
 }

@@ -75,9 +75,6 @@ static void remove_material(struct board *brd, struct piece pce);
 static void init_struct(struct board *brd);
 static void populate_square(struct board *brd, const struct piece pce,
                             const enum square sq, const enum sq_op operation);
-static bool validate_castle_squares(struct board *brd,
-                                    const enum square from_sq,
-                                    const enum square to_sq);
 
 // ==================================================================
 //
@@ -460,36 +457,6 @@ static void populate_square(struct board *brd, const struct piece pce,
     brd->piece_bb[col][pce_off] = pce_bb;
     brd->bb_board = brd_bb;
     brd->bb_colour[col_off] = col_bb;
-}
-
-static bool validate_castle_squares(struct board *brd,
-                                    const enum square from_sq,
-                                    const enum square to_sq) {
-
-    const struct piece pce_from_sq = brd->pce_square[from_sq];
-    const enum piece_type pt_from_sq = pce_get_piece_type(pce_from_sq);
-    const struct piece pce_to_sq = brd->pce_square[to_sq];
-    const enum piece_type pt_to_sq = pce_get_piece_type(pce_to_sq);
-
-    if (pt_from_sq != KING && pt_to_sq != ROOK) {
-        return false;
-    }
-
-    switch (from_sq) {
-    case e1:
-        if (to_sq != c1 && to_sq != g1) {
-            return false;
-        }
-        return true;
-    case e8:
-        if (to_sq != c8 && to_sq != g8) {
-            assert(false);
-            return false;
-        }
-        return true;
-    default:
-        return false;
-    }
 }
 
 static bool validate_struct_init(const struct board *brd) {

@@ -35,6 +35,13 @@ enum castle_perm {
     CAST_PERM_BQ = 0x01 << 3,
 };
 
+enum cast_perm_array_offsets {
+    OFFSET_CAST_PERM_WK = 0,
+    OFFSET_CAST_PERM_WQ = 1,
+    OFFSET_CAST_PERM_BK = 2,
+    OFFSET_CAST_PERM_BQ = 3,
+};
+
 static void set_perm_state(struct cast_perm *cp, const enum castle_perm perm,
                            const bool state);
 static void set_perm(struct cast_perm *cp, const enum castle_perm perm);
@@ -72,6 +79,12 @@ bool cast_compare_perms(const struct cast_perm cp1,
                         const struct cast_perm cp2) {
     return cp1.val == cp2.val;
 }
+
+uint8_t cast_perm_get_offset_WK(void) { return OFFSET_CAST_PERM_WK; }
+
+uint8_t cast_perm_get_offset_WQ(void) { return OFFSET_CAST_PERM_WQ; }
+uint8_t cast_perm_get_offset_BQ(void) { return OFFSET_CAST_PERM_BQ; }
+uint8_t cast_perm_get_offset_BK(void) { return OFFSET_CAST_PERM_BK; }
 
 static void set_perm_state(struct cast_perm *cp, const enum castle_perm perm,
                            const bool state) {

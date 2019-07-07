@@ -44,6 +44,7 @@ enum piece_type { PAWN = 0, BISHOP, KNIGHT, ROOK, QUEEN, KING };
 
 #define NUM_COLOURS 2
 #define NUM_PIECE_TYPES 6
+#define NUM_PIECES (NUM_PIECE_TYPES * NUM_COLOURS)
 
 struct piece pce_create(const enum piece_type pce_type, const enum colour col);
 enum piece_type pce_get_piece_type(const struct piece pce);

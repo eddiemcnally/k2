@@ -66,11 +66,9 @@ static void mv_gen_white_castle_moves(const struct position *pos,
                                       struct move_list *mvl);
 static void add_kingside_move_if_no_blockers(const uint64_t brd_bb,
                                              const uint64_t blocking_pce_mask,
-                                             const enum colour side_to_move,
                                              struct move_list *mvl);
 static void add_queenside_move_if_no_blockers(const uint64_t brd_bb,
                                               const uint64_t blocking_pce_mask,
-                                              const enum colour side_to_move,
                                               struct move_list *mvl);
 static void gen_promotions(const enum square from_sq, const enum square to_sq,
                            struct move_list *mvl, const bool is_capture,
@@ -641,12 +639,10 @@ static void mv_gen_white_castle_moves(const struct position *pos,
     const uint64_t occupied_bb = brd_get_board_bb(brd);
 
     if (cast_perm_has_WK(cp)) {
-        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WK, WHITE,
-                                         mvl);
+        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WK, mvl);
     }
     if (cast_perm_has_WQ(cp)) {
-        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WQ, WHITE,
-                                          mvl);
+        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WQ, mvl);
     }
 }
 
@@ -657,18 +653,15 @@ static void mv_gen_black_castle_moves(const struct position *pos,
     const uint64_t occupied_bb = brd_get_board_bb(brd);
 
     if (cast_perm_has_BK(cp)) {
-        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BK, BLACK,
-                                         mvl);
+        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BK, mvl);
     }
     if (cast_perm_has_BQ(cp)) {
-        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BQ, BLACK,
-                                          mvl);
+        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BQ, mvl);
     }
 }
 
 static void add_kingside_move_if_no_blockers(const uint64_t brd_bb,
                                              const uint64_t blocking_pce_mask,
-                                             const enum colour side_to_move,
                                              struct move_list *mvl) {
     if ((brd_bb & blocking_pce_mask) == 0) {
         struct move mv = move_encode_castle_kingside();
@@ -678,7 +671,6 @@ static void add_kingside_move_if_no_blockers(const uint64_t brd_bb,
 
 static void add_queenside_move_if_no_blockers(const uint64_t brd_bb,
                                               const uint64_t blocking_pce_mask,
-                                              const enum colour side_to_move,
                                               struct move_list *mvl) {
     if ((brd_bb & blocking_pce_mask) == 0) {
         struct move mv = move_encode_castle_queenside();

@@ -102,6 +102,7 @@ int main(void) {
             test_castle_black_kingside_move_valid_position_updated),
         cmocka_unit_test(
             test_castle_black_queenside_move_valid_position_updated),
+        cmocka_unit_test(test_castle_permissions_offsets),
 
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),

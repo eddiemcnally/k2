@@ -66,3 +66,17 @@ void test_castle_permissions_no_perms_get_set(void **state) {
 
     assert_false(cast_perm_has_perms(cp));
 }
+
+void test_castle_permissions_offsets(void **state) {
+
+    uint8_t wk = cast_perm_get_offset_WK();
+    uint8_t wq = cast_perm_get_offset_WQ();
+    uint8_t bq = cast_perm_get_offset_BQ();
+    uint8_t bk = cast_perm_get_offset_BK();
+
+    assert_true(wk != wq != bq != bk);
+    assert_true(wk < 4);
+    assert_true(wq < 4);
+    assert_true(bk < 4);
+    assert_true(bq < 4);
+}
