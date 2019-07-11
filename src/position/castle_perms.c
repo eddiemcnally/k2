@@ -27,7 +27,7 @@
 #include "castle_perms.h"
 #include <assert.h>
 
-enum castle_perm {
+enum cast_perm_bitmap {
     CAST_PERM_NONE = 0,
     CAST_PERM_WK = 0x01 << 0,
     CAST_PERM_WQ = 0x01 << 1,
@@ -35,58 +35,97 @@ enum castle_perm {
     CAST_PERM_BQ = 0x01 << 3,
 };
 
+
+
 enum cast_perm_array_offsets {
-    OFFSET_CAST_PERM_WK = 0,
-    OFFSET_CAST_PERM_WQ = 1,
-    OFFSET_CAST_PERM_BK = 2,
-    OFFSET_CAST_PERM_BQ = 3,
+    OFFSET_CAST_PERM_NONE = 0,
+    OFFSET_CAST_PERM_WK = 1,
+    OFFSET_CAST_PERM_WQ = 2,
+    OFFSET_CAST_PERM_BK = 3,
+    OFFSET_CAST_PERM_BQ = 4,
 };
 
-static void set_perm_state(struct cast_perm *cp, const enum castle_perm perm,
+static void set_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm,
                            const bool state);
-static void set_perm(struct cast_perm *cp, const enum castle_perm perm);
-static void clear_perm(struct cast_perm *cp, const enum castle_perm perm);
+static void set_perm(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
+static void clear_perm(struct cast_perm_container*cp_cont, const enum cast_perm_bitmap perm);
 
-bool cast_perm_has_WK(const struct cast_perm cp) {
-    return (cp.val & CAST_PERM_WK) != 0;
+struct cast_perm_container cast_perm_init(void) {
+    struct cast_perm_container p = {0};
+    return p;
 }
-bool cast_perm_has_WQ(const struct cast_perm cp) {
-    return (cp.val & CAST_PERM_WQ) != 0;
-}
-bool cast_perm_has_BK(const struct cast_perm cp) {
-    return (cp.val & CAST_PERM_BK) != 0;
-}
-bool cast_perm_has_BQ(const struct cast_perm cp) {
-    return (cp.val & CAST_PERM_BQ) != 0;
-}
-bool cast_perm_has_perms(const struct cast_perm cp) { return cp.val != 0; }
 
-void cast_perm_set_WK(struct cast_perm *cp, const bool enabled) {
-    set_perm_state(cp, CAST_PERM_WK, enabled);
+bool cast_perm_has_permission(const enum castle_permission cp,
+                              const struct cast_perm_container cp_cont) {
+    switch (cp) {
+    case CP_NONE:
+        return cp_cont.val == 0;
+    case CP_WQ:
+        return (cp_cont.val & CAST_PERM_WQ) != 0;
+    case CP_WK:
+        return (cp_cont.val & CAST_PERM_WK) != 0;
+    case CP_BQ:
+        return (cp_cont.val & CAST_PERM_BQ) != 0;
+    case CP_BK:
+        return (cp_cont.val & CAST_PERM_BK) != 0;
+    default:
+        assert(false);
+    }
 }
-void cast_perm_set_WQ(struct cast_perm *cp, const bool enabled) {
-    set_perm_state(cp, CAST_PERM_WQ, enabled);
-}
-void cast_perm_set_BK(struct cast_perm *cp, const bool enabled) {
-    set_perm_state(cp, CAST_PERM_BK, enabled);
-}
-void cast_perm_set_BQ(struct cast_perm *cp, const bool enabled) {
-    set_perm_state(cp, CAST_PERM_BQ, enabled);
-}
-void cast_perm_set_no_perms(struct cast_perm *cp) { cp->val = 0; }
 
-bool cast_compare_perms(const struct cast_perm cp1,
-                        const struct cast_perm cp2) {
+void cast_perm_set_permission(const enum castle_permission cp,
+                              struct cast_perm_container *cp_cont,
+                              const bool state) {
+    switch (cp) {
+    case CP_NONE:
+        cp_cont->val = 0;
+        break;
+    case CP_WQ:
+        set_perm_state(cp_cont, CAST_PERM_WQ, state);
+        break;
+    case CP_WK:
+        set_perm_state(cp_cont, CAST_PERM_WK, state);
+        break;
+    case CP_BQ:
+        set_perm_state(cp_cont, CAST_PERM_BQ, state);
+        break;
+    case CP_BK:
+        set_perm_state(cp_cont, CAST_PERM_BK, state);
+        break;
+    default:
+        assert(false);
+    }
+}
+
+uint8_t cast_perm_get_offset(const enum castle_permission cp) {
+    switch (cp) {
+    case CP_NONE:
+        return OFFSET_CAST_PERM_NONE;
+    case CP_WQ:
+        return OFFSET_CAST_PERM_WQ;
+    case CP_WK:
+        return OFFSET_CAST_PERM_WK;
+    case CP_BQ:
+        return OFFSET_CAST_PERM_BQ;
+    case CP_BK:
+        return OFFSET_CAST_PERM_BK;
+    default:
+        assert(false);
+    }
+}
+
+bool cast_compare_perms(const struct cast_perm_container cp1,
+                        const struct cast_perm_container cp2) {
     return cp1.val == cp2.val;
 }
 
-uint8_t cast_perm_get_offset_WK(void) { return OFFSET_CAST_PERM_WK; }
+bool validate_castle_permissions(const struct cast_perm_container cp) {
+    uint8_t val = cp.val;
+    val = val >> 3; // everything above this it must be zero
+    return val == 0;
+}
 
-uint8_t cast_perm_get_offset_WQ(void) { return OFFSET_CAST_PERM_WQ; }
-uint8_t cast_perm_get_offset_BQ(void) { return OFFSET_CAST_PERM_BQ; }
-uint8_t cast_perm_get_offset_BK(void) { return OFFSET_CAST_PERM_BK; }
-
-static void set_perm_state(struct cast_perm *cp, const enum castle_perm perm,
+static void set_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm,
                            const bool state) {
     if (state) {
         set_perm(cp, perm);
@@ -95,10 +134,10 @@ static void set_perm_state(struct cast_perm *cp, const enum castle_perm perm,
     }
 }
 
-static void set_perm(struct cast_perm *cp, const enum castle_perm perm) {
+static void set_perm(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
     cp->val |= perm;
 }
 
-static void clear_perm(struct cast_perm *cp, const enum castle_perm perm) {
+static void clear_perm(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
     cp->val &= ~perm;
 }

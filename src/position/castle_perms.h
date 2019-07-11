@@ -32,26 +32,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct cast_perm {
+struct cast_perm_container {
     uint8_t val;
 };
 
-#define NUM_CASTLE_PERMS 4
-bool cast_perm_has_WK(const struct cast_perm cp);
-bool cast_perm_has_WQ(const struct cast_perm cp);
-bool cast_perm_has_BK(const struct cast_perm cp);
-bool cast_perm_has_BQ(const struct cast_perm cp);
-bool cast_perm_has_perms(const struct cast_perm cp);
+enum castle_permission {
+    CP_NONE = 0,
+    CP_WQ,
+    CP_WK,
+    CP_BQ,
+    CP_BK,
+};
 
-void cast_perm_set_WK(struct cast_perm *cp, const bool enabled);
-void cast_perm_set_WQ(struct cast_perm *cp, const bool enabled);
-void cast_perm_set_BK(struct cast_perm *cp, const bool enabled);
-void cast_perm_set_BQ(struct cast_perm *cp, const bool enabled);
-void cast_perm_set_no_perms(struct cast_perm *cp);
+// include the "no-permisisons" state
+#define NUM_CASTLE_PERMS 5
 
-bool cast_compare_perms(const struct cast_perm cp1, const struct cast_perm cp2);
+struct cast_perm_container cast_perm_init(void);
 
-uint8_t cast_perm_get_offset_WK(void);
-uint8_t cast_perm_get_offset_WQ(void);
-uint8_t cast_perm_get_offset_BQ(void);
-uint8_t cast_perm_get_offset_BK(void);
+bool cast_perm_has_permission(const enum castle_permission cp, const struct cast_perm_container cp_cont);
+void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *cp_cont,
+                                          const bool state);
+bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2);
+uint8_t cast_perm_get_offset(const enum castle_permission cp);
+bool validate_castle_permissions(const struct cast_perm_container cp);
+

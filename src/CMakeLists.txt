@@ -86,7 +86,8 @@ set (ENGINE_COMPILER_WARNS "-std=c11 \
         -Wcast-qual \
         -Wcast-align \
         -Wmissing-include-dirs \
-        -Wpointer-arith"
+        -Wpointer-arith \
+        -Wno-comment"
         )
 
 

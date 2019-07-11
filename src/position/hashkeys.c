@@ -34,6 +34,9 @@ static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES];
 static uint64_t side_key;
 static uint64_t castle_keys[NUM_CASTLE_PERMS];
 
+static uint64_t hashkey;
+
+
 /**
  * @brief       Initialises the position hashkeys
  *
@@ -45,12 +48,43 @@ void init_key_mgmt(void) {
     for (int num_pces = 0; num_pces < NUM_PIECES; num_pces++) {
         for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
             piece_keys[num_pces][num_sq] = genrand64_int64();
+            
+            hashkey ^= piece_keys[num_pces][num_sq];
         }
     }
 
     side_key = genrand64_int64();
+    hashkey ^= side_key;
+
 
     for (int i = 0; i < NUM_CASTLE_PERMS; i++) {
         castle_keys[i] = genrand64_int64();
+        
+        hashkey ^= castle_keys[i];
     }
+    
 }
+
+uint64_t hash_piece_update(const struct piece pce, const enum square sq) {
+    enum piece_type pt = pce_get_piece_type(pce);
+    uint8_t pce_off = pce_get_array_idx(pt);
+    
+    hashkey ^= piece_keys[pce_off][sq];
+    return hashkey;
+}
+
+uint64_t hash_side_update(void) {
+    hashkey ^= side_key;
+    return hashkey;
+}
+
+
+uint64_t hash_castle_perm(const enum castle_permission cp){
+    uint8_t cp_off = cast_perm_get_offset(cp);
+    hashkey ^= castle_keys[cp_off];
+    return hashkey;
+}
+uint64_t hash_get_current_val(void){
+    return hashkey;
+}
+
