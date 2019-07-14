@@ -48,7 +48,7 @@
 // target promotion pieces
 #define NUM_PROMOTION_PIECES 4
 
-static const enum piece_type PROMOTION_PIECES[NUM_PROMOTION_PIECES] = {
+static const enum piece_role PROMOTION_PIECES[NUM_PROMOTION_PIECES] = {
     KNIGHT, BISHOP, ROOK, QUEEN};
 
 static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq,
@@ -57,7 +57,7 @@ static void mv_gen_encode_multiple_capture(uint64_t bb,
                                            const enum square from_sq,
                                            struct move_list *mvl);
 static void mv_gen_king_knight_moves(const struct board *brd,
-                                     const enum piece_type pce_to_move,
+                                     const enum piece_role pce_to_move,
                                      const enum colour side_to_move,
                                      struct move_list *mvl);
 static void mv_gen_black_castle_moves(const struct position *pos,
@@ -72,7 +72,7 @@ static void add_queenside_move_if_no_blockers(const uint64_t brd_bb,
                                               struct move_list *mvl);
 static void gen_promotions(const enum square from_sq, const enum square to_sq,
                            struct move_list *mvl, const bool is_capture,
-                           const enum piece_type *promotion_pieces);
+                           const enum piece_role *promotion_pieces);
 static void gen_white_pawn_moves_excl_first_double_move(
     const struct position *pos, const struct board *brd, struct move_list *mvl);
 static void gen_black_pawn_moves_excl_first_double_move(
@@ -87,10 +87,10 @@ static void try_encode_double_pawn_move(const struct board *brd,
                                         const enum square plus_2,
                                         struct move_list *mvl);
 static void get_sliding_diagonal_antidiagonal_moves(
-    const struct board *brd, const enum piece_type pce_type_to_move,
+    const struct board *brd, const enum piece_role pce_type_to_move,
     const enum colour side_to_move, struct move_list *mvl);
 static void get_sliding_rank_file_moves(const struct board *brd,
-                                        const enum piece_type pce_to_move,
+                                        const enum piece_role pce_to_move,
                                         const enum colour side_to_move,
                                         struct move_list *mvl);
 static void encode_quiet_or_capt_move(const struct board *brd,
@@ -250,7 +250,7 @@ void mv_gen_king_moves(const struct position *pos,
  * @param mvl           The move list to which new moves are appended
  */
 static void get_sliding_diagonal_antidiagonal_moves(
-    const struct board *brd, const enum piece_type pce_type_to_move,
+    const struct board *brd, const enum piece_role pce_type_to_move,
     const enum colour side_to_move, struct move_list *mvl) {
 
     uint64_t pce_to_move_bb =
@@ -305,7 +305,7 @@ static void get_sliding_diagonal_antidiagonal_moves(
  * @param mvl           The move list to which new moves are appended
  */
 static void get_sliding_rank_file_moves(const struct board *brd,
-                                        const enum piece_type pce_to_move,
+                                        const enum piece_role pce_to_move,
                                         const enum colour side_to_move,
                                         struct move_list *mvl) {
     // taken from https://chessprogramming.wikispaces.com/Hyperbola+Quintessence
@@ -538,7 +538,7 @@ gen_black_pawn_moves_excl_first_double_move(const struct position *pos,
 
 static void gen_promotions(const enum square from_sq, const enum square to_sq,
                            struct move_list *mvl, const bool is_capture,
-                           const enum piece_type *promotion_pieces) {
+                           const enum piece_role *promotion_pieces) {
     for (int i = 0; i < NUM_PROMOTION_PIECES; i++) {
         struct move mv = move_encode_promoted(from_sq, to_sq,
                                               *promotion_pieces++, is_capture);
@@ -555,7 +555,7 @@ static void gen_promotions(const enum square from_sq, const enum square to_sq,
  * @param mvl A pointer to the move List, to which the moves are appended.
  */
 static void mv_gen_king_knight_moves(const struct board *brd,
-                                     const enum piece_type pce_to_move,
+                                     const enum piece_role pce_to_move,
                                      const enum colour side_to_move,
                                      struct move_list *mvl) {
     // bitboard representing squares containing all pieces for the given colour

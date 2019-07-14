@@ -378,7 +378,7 @@ static void do_capture_move(struct position *pos, const struct move mv,
         // flip the flag
         pos->en_passant_set = false;
 
-        enum piece_type pt;
+        enum piece_role pt;
         if (pos->side_to_move == WHITE) {
             pt = PAWN;
             en_pass_pce_sq = sq_get_square_minus_1_rank(to_sq);
@@ -520,7 +520,7 @@ static bool validate_en_passant_pce_and_sq(const struct position *pos) {
         brd_try_get_piece_on_square(pos->brd, pos->en_passant, &en_pass_pce);
     assert(found == true);
 
-    enum piece_type pt = pce_get_piece_type(en_pass_pce);
+    enum piece_role pt = pce_get_piece_type(en_pass_pce);
     assert(pt == PAWN);
     return true;
 }

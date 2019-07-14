@@ -234,7 +234,7 @@ uint64_t brd_get_colour_bb(const struct board *brd, const enum colour colour) {
  * @return A bitboard for that piece
  */
 uint64_t brd_get_piece_bb(const struct board *brd,
-                          const enum piece_type pce_type,
+                          const enum piece_role pce_type,
                           const enum colour col) {
     assert(validate_piece_type(pce_type));
     assert(validate_board(brd));
@@ -411,7 +411,7 @@ static void init_struct(struct board *brd) {
 }
 
 static void add_material(struct board *brd, struct piece pce) {
-    const enum piece_type pt = pce_get_piece_type(pce);
+    const enum piece_role pt = pce_get_piece_type(pce);
     const uint32_t material = pce_get_value(pt);
     const enum colour col = pce_get_colour(pce);
     const uint8_t offset = pce_col_get_array_idx(col);
@@ -419,7 +419,7 @@ static void add_material(struct board *brd, struct piece pce) {
 }
 
 static void remove_material(struct board *brd, struct piece pce) {
-    const enum piece_type pt = pce_get_piece_type(pce);
+    const enum piece_role pt = pce_get_piece_type(pce);
     const uint32_t material = pce_get_value(pt);
     const enum colour col = pce_get_colour(pce);
     const uint8_t offset = pce_col_get_array_idx(col);
@@ -429,7 +429,7 @@ static void remove_material(struct board *brd, struct piece pce) {
 static void populate_square(struct board *brd, const struct piece pce,
                             const enum square sq, const enum sq_op operation) {
     const enum colour col = pce_get_colour(pce);
-    const enum piece_type pt = pce_get_piece_type(pce);
+    const enum piece_role pt = pce_get_piece_type(pce);
     const uint8_t pce_off = pce_get_array_idx(pt);
     const uint8_t col_off = pce_col_get_array_idx(col);
 

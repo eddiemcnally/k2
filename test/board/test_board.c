@@ -33,7 +33,7 @@
 #include "square.h"
 #include <cmocka.h>
 
-static enum piece_type pce_list[NUM_PIECE_TYPES] = {PAWN, BISHOP, KNIGHT,
+static enum piece_role pce_list[NUM_PIECE_TYPES] = {PAWN, BISHOP, KNIGHT,
                                                     ROOK, QUEEN,  KING};
 static enum colour col_list[NUM_COLOURS] = {WHITE, BLACK};
 
@@ -50,7 +50,7 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
         for (int i = 0; i < NUM_PIECE_TYPES; i++) {
 
             const enum colour col = (enum colour)col_list[c];
-            const enum piece_type pt = (enum piece_type)pce_list[i];
+            const enum piece_role pt = (enum piece_role)pce_list[i];
 
             struct piece pce = pce_create(pt, col);
             for (enum square sq = a1; sq <= h8; sq++) {
@@ -87,7 +87,7 @@ void test_board_brd_move_piece(void **state) {
         for (int i = 0; i < NUM_PIECE_TYPES; i++) {
 
             const enum colour col = (enum colour)col_list[c];
-            const enum piece_type pt = (enum piece_type)pce_list[i];
+            const enum piece_role pt = (enum piece_role)pce_list[i];
 
             struct piece pce = pce_create(pt, col);
             for (enum square from_sq = a1; from_sq <= h8; from_sq++) {

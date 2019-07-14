@@ -41,7 +41,7 @@ struct move move_encode_quiet(const enum square from_sq,
                               const enum square to_sq);
 struct move move_encode_promoted(const enum square from_sq,
                                  const enum square to_sq,
-                                 const enum piece_type promoted_piece,
+                                 const enum piece_role promoted_piece,
                                  const bool is_capture);
 struct move move_encode_capture(const enum square from_sq,
                                 const enum square to_sq);

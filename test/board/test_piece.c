@@ -30,10 +30,10 @@
 #include "piece.h"
 #include <cmocka.h>
 
-static void piece_create_validate(const enum piece_type pt,
+static void piece_create_validate(const enum piece_role pt,
                                   const enum colour col);
 static void label_piece_colour_validate(const char label,
-                                        const enum piece_type pt,
+                                        const enum piece_role pt,
                                         const enum colour col);
 
 void test_piece_get_piece_from_label(void **state) {
@@ -216,17 +216,17 @@ void test_piece_create(void **state) {
     piece_create_validate(KING, BLACK);
 }
 
-static void piece_create_validate(const enum piece_type pt,
+static void piece_create_validate(const enum piece_role pt,
                                   const enum colour col) {
     struct piece pce = pce_create(pt, col);
     enum colour found_col = pce_get_colour(pce);
     assert_true(found_col == col);
-    enum piece_type found_pt = pce_get_piece_type(pce);
+    enum piece_role found_pt = pce_get_piece_type(pce);
     assert_true(found_pt == pt);
 }
 
 static void label_piece_colour_validate(const char label,
-                                        const enum piece_type pt,
+                                        const enum piece_role pt,
                                         const enum colour col) {
     struct piece pce = pce_get_from_label(label);
     assert_true(pce_get_piece_type(pce) == pt);

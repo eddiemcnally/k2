@@ -120,7 +120,7 @@ struct move move_encode_quiet(const enum square from_sq,
  */
 struct move move_encode_promoted(const enum square from_sq,
                                  const enum square to_sq,
-                                 const enum piece_type promoted_piece,
+                                 const enum piece_role promoted_piece,
                                  const bool is_capture) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
@@ -174,7 +174,7 @@ struct piece move_decode_promotion_piece(const struct move mv,
 
     const uint16_t m = mv.val & MV_MASK_FLAGS;
 
-    enum piece_type pt;
+    enum piece_role pt;
 
     switch (m) {
     case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
@@ -349,7 +349,7 @@ struct piece move_get_promote_piece(const struct move mv,
 
     assert((m & MV_FLG_BIT_PROMOTE) != 0);
 
-    enum piece_type pt;
+    enum piece_role pt;
 
     switch (m) {
     case MV_FLG_PROMOTE_KNIGHT:

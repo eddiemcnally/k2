@@ -195,10 +195,10 @@ void test_move_get_promote_piece_white(void **state) {
     const enum square from_sq = e7;
     const enum square to_sq = e8;
 
-    enum piece_type test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
+    enum piece_role test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
 
     for (int i = 0; i < 4; i++) {
-        enum piece_type pt = (enum piece_type)test_pieces[i];
+        enum piece_role pt = (enum piece_role)test_pieces[i];
         struct piece pce = pce_create(pt, WHITE);
 
         struct move mv = move_encode_promoted(from_sq, to_sq, pt, true);
@@ -215,10 +215,10 @@ void test_move_get_promote_piece_black(void **state) {
     const enum square from_sq = e2;
     const enum square to_sq = e1;
 
-    enum piece_type test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
+    enum piece_role test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
 
     for (int i = 0; i < 4; i++) {
-        enum piece_type pt = (enum piece_type)test_pieces[i];
+        enum piece_role pt = (enum piece_role)test_pieces[i];
         struct piece pce = pce_create(pt, BLACK);
 
         struct move mv = move_encode_promoted(from_sq, to_sq, pt, true);
