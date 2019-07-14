@@ -42,7 +42,6 @@ static uint64_t hashkey;
  *
  */
 void init_key_mgmt(void) {
-    // init the prng
     init_prng();
 
     for (int num_pces = 0; num_pces < NUM_PIECES; num_pces++) {
@@ -56,14 +55,13 @@ void init_key_mgmt(void) {
     side_key = genrand64_int64();
     hashkey ^= side_key;
 
-
     for (int i = 0; i < NUM_CASTLE_PERMS; i++) {
         castle_keys[i] = genrand64_int64();
         
         hashkey ^= castle_keys[i];
-    }
-    
+    }    
 }
+
 
 uint64_t hash_piece_update(const struct piece pce, const enum square sq) {
     enum piece_type pt = pce_get_piece_type(pce);

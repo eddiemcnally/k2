@@ -28,7 +28,6 @@
 #include <assert.h>
 
 enum cast_perm_bitmap {
-    CAST_PERM_NONE = 0,
     CAST_PERM_WK = 0x01 << 0,
     CAST_PERM_WQ = 0x01 << 1,
     CAST_PERM_BK = 0x01 << 2,
@@ -55,6 +54,12 @@ struct cast_perm_container cast_perm_init(void) {
     return p;
 }
 
+/**
+ * @brief               Tests if a given Castle permission is available
+ * @param cp            The Castle Permission to test for
+ * @param cp_cont       The Castle permission container
+ * @return              True if castle permission is available, false otherwise
+ */
 bool cast_perm_has_permission(const enum castle_permission cp,
                               const struct cast_perm_container cp_cont) {
     switch (cp) {
@@ -73,6 +78,11 @@ bool cast_perm_has_permission(const enum castle_permission cp,
     }
 }
 
+/**
+ * @brief               Set the given Castle Permission to the given state
+ * @param cp            The Castle Permission to set
+ * @param cp_cont       The Castle permission container
+ */
 void cast_perm_set_permission(const enum castle_permission cp,
                               struct cast_perm_container *cp_cont,
                               const bool state) {
@@ -97,6 +107,11 @@ void cast_perm_set_permission(const enum castle_permission cp,
     }
 }
 
+/**
+ * @brief               Converts the Castle Permission to an array offset
+ * @param               The Castle permission to convert
+ * @return              Array offset
+ */
 uint8_t cast_perm_get_offset(const enum castle_permission cp) {
     switch (cp) {
     case CP_NONE:

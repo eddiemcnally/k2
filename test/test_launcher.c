@@ -87,6 +87,7 @@ int main(void) {
         cmocka_unit_test(test_piece_get_piece_from_label),
         cmocka_unit_test(test_piece_get_array_idx),
         cmocka_unit_test(test_piece_create),
+        cmocka_unit_test(test_piece_get_piece_label), 
 
         // Position
         cmocka_unit_test(test_position_get_set_castle_permissions),
@@ -102,7 +103,6 @@ int main(void) {
             test_castle_black_kingside_move_valid_position_updated),
         cmocka_unit_test(
             test_castle_black_queenside_move_valid_position_updated),
-        cmocka_unit_test(test_castle_permissions_offsets),
 
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),

@@ -36,6 +36,7 @@ const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
 #define MAX_GAME_MOVES (1024)
 
+
 // represents board state *before* the move was made
 struct mv_state {
     struct move mv; // TODO: is this needed?
@@ -414,6 +415,7 @@ static void make_castle_piece_moves(struct position *pos,
     const bool is_king_side = move_is_king_castle(castle_move);
     const bool is_queen_side = move_is_queen_castle(castle_move);
     const enum colour side = pos->side_to_move;
+    
     const struct piece pce_wk = pce_create(KING, WHITE);
     const struct piece pce_wr = pce_create(ROOK, WHITE);
     const struct piece pce_bk = pce_create(KING, BLACK);
@@ -421,7 +423,6 @@ static void make_castle_piece_moves(struct position *pos,
 
     switch (side) {
     case WHITE:
-
         if (is_king_side) {
             brd_move_piece(brd, pce_wk, e1, g1);
             brd_move_piece(brd, pce_wr, h1, f1);
@@ -435,7 +436,6 @@ static void make_castle_piece_moves(struct position *pos,
         }
         break;
     case BLACK:
-
         if (is_king_side) {
             brd_move_piece(brd, pce_bk, e8, g8);
             brd_move_piece(brd, pce_br, h8, f8);
@@ -443,7 +443,7 @@ static void make_castle_piece_moves(struct position *pos,
         } else if (is_queen_side) {
             brd_move_piece(brd, pce_bk, e8, c8);
             brd_move_piece(brd, pce_br, a8, d8);
-            cast_perm_set_permission(CP_WK, &pos->castle_perm_container, false);
+            cast_perm_set_permission(CP_BQ, &pos->castle_perm_container, false);
         } else {
             assert(false);
         }

@@ -32,4 +32,4 @@
 
 void test_castle_permissions_get_set(void **state);
 void test_castle_permissions_no_perms_get_set(void **state);
-void test_castle_permissions_offsets(void **state);
+
