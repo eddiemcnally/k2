@@ -49,7 +49,7 @@ struct board {
     struct piece pce_square[NUM_SQUARES];
 
     // bitboard for each piece
-    uint64_t piece_bb[NUM_COLOURS][NUM_PIECE_TYPES];
+    uint64_t piece_bb[NUM_COLOURS][NUM_PIECE_ROLES];
 };
 
 static_assert((int)(sizeof(struct board)) <= 200,
@@ -234,13 +234,13 @@ uint64_t brd_get_colour_bb(const struct board *brd, const enum colour colour) {
  * @return A bitboard for that piece
  */
 uint64_t brd_get_piece_bb(const struct board *brd,
-                          const enum piece_role pce_type,
+                          const enum piece_role pce_role,
                           const enum colour col) {
-    assert(validate_piece_type(pce_type));
+    assert(validate_piece_role(pce_role));
     assert(validate_board(brd));
     assert(validate_colour(col));
 
-    const uint8_t pce_off = pce_get_array_idx(pce_type);
+    const uint8_t pce_off = pce_get_array_idx(pce_role);
     const uint8_t col_off = pce_col_get_array_idx(col);
 
     return brd->piece_bb[col_off][pce_off];
@@ -307,7 +307,7 @@ bool validate_board(const struct board *brd) {
     uint64_t conflated_pce_bb = 0;
     uint8_t total_bit_count = 0;
     for (int c = 0; c < NUM_COLOURS; c++) {
-        for (int i = 0; i < NUM_PIECE_TYPES; i++) {
+        for (int i = 0; i < NUM_PIECE_ROLES; i++) {
             conflated_pce_bb |= brd->piece_bb[c][i];
             total_bit_count +=
                 (uint8_t)__builtin_popcountll(brd->piece_bb[c][i]);
@@ -352,7 +352,7 @@ bool brd_compare(const struct board *first, const struct board *second) {
     }
 
     for (int c = 0; c < NUM_COLOURS; c++) {
-        for (int i = 0; i < NUM_PIECE_TYPES; i++) {
+        for (int i = 0; i < NUM_PIECE_ROLES; i++) {
             if (first->piece_bb[c][i] != second->piece_bb[c][i]) {
                 return false;
             }
@@ -411,7 +411,7 @@ static void init_struct(struct board *brd) {
 }
 
 static void add_material(struct board *brd, struct piece pce) {
-    const enum piece_role pt = pce_get_piece_type(pce);
+    const enum piece_role pt = pce_get_piece_role(pce);
     const uint32_t material = pce_get_value(pt);
     const enum colour col = pce_get_colour(pce);
     const uint8_t offset = pce_col_get_array_idx(col);
@@ -419,7 +419,7 @@ static void add_material(struct board *brd, struct piece pce) {
 }
 
 static void remove_material(struct board *brd, struct piece pce) {
-    const enum piece_role pt = pce_get_piece_type(pce);
+    const enum piece_role pt = pce_get_piece_role(pce);
     const uint32_t material = pce_get_value(pt);
     const enum colour col = pce_get_colour(pce);
     const uint8_t offset = pce_col_get_array_idx(col);
@@ -429,7 +429,7 @@ static void remove_material(struct board *brd, struct piece pce) {
 static void populate_square(struct board *brd, const struct piece pce,
                             const enum square sq, const enum sq_op operation) {
     const enum colour col = pce_get_colour(pce);
-    const enum piece_role pt = pce_get_piece_type(pce);
+    const enum piece_role pt = pce_get_piece_role(pce);
     const uint8_t pce_off = pce_get_array_idx(pt);
     const uint8_t col_off = pce_col_get_array_idx(col);
 

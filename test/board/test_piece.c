@@ -221,7 +221,7 @@ static void piece_create_validate(const enum piece_role pt,
     struct piece pce = pce_create(pt, col);
     enum colour found_col = pce_get_colour(pce);
     assert_true(found_col == col);
-    enum piece_role found_pt = pce_get_piece_type(pce);
+    enum piece_role found_pt = pce_get_piece_role(pce);
     assert_true(found_pt == pt);
 }
 
@@ -229,6 +229,6 @@ static void label_piece_colour_validate(const char label,
                                         const enum piece_role pt,
                                         const enum colour col) {
     struct piece pce = pce_get_from_label(label);
-    assert_true(pce_get_piece_type(pce) == pt);
+    assert_true(pce_get_piece_role(pce) == pt);
     assert_true(pce_get_colour(pce) == col);
 }

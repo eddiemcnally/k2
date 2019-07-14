@@ -520,14 +520,10 @@ static bool validate_en_passant_pce_and_sq(const struct position *pos) {
         brd_try_get_piece_on_square(pos->brd, pos->en_passant, &en_pass_pce);
     assert(found == true);
 
-    enum piece_role pt = pce_get_piece_type(en_pass_pce);
+    enum piece_role pt = pce_get_piece_role(en_pass_pce);
     assert(pt == PAWN);
     return true;
 }
-/*
-void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *cp_cont,
-                                          const bool state);
-*/
 
 static void set_up_castle_permissions(struct position *pos,
                                       const struct parsed_fen *fen) {

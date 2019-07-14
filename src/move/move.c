@@ -124,7 +124,7 @@ struct move move_encode_promoted(const enum square from_sq,
                                  const bool is_capture) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
-    assert(validate_piece_type(promoted_piece));
+    assert(validate_piece_role(promoted_piece));
 
     struct move mv = encode_to_from(from_sq, to_sq);
 

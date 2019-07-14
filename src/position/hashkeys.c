@@ -75,7 +75,7 @@ uint64_t hash_piece_update(const struct piece pce, const enum square sq) {
     assert(validate_piece(pce));
     assert(validate_square(sq));
 
-    enum piece_role pt = pce_get_piece_type(pce);
+    enum piece_role pt = pce_get_piece_role(pce);
     uint8_t pce_off = pce_get_array_idx(pt);
 
     hashkey ^= piece_keys[pce_off][sq];

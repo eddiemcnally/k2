@@ -127,22 +127,22 @@ void test_move_decode_promotion_piece_white(void **state) {
 
     mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
     pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce_get_piece_type(pce) == KNIGHT);
+    assert_true(pce_get_piece_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == WHITE);
 
     mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
     pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce_get_piece_type(pce) == BISHOP);
+    assert_true(pce_get_piece_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == WHITE);
 
     mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
     pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
     mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
     pce = move_decode_promotion_piece(mv, WHITE);
-    assert_true(pce_get_piece_type(pce) == QUEEN);
+    assert_true(pce_get_piece_role(pce) == QUEEN);
     assert_true(pce_get_colour(pce) == WHITE);
 }
 
@@ -152,22 +152,22 @@ void test_move_decode_promotion_piece_black(void **state) {
 
     struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
     struct piece pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce_get_piece_type(pce) == KNIGHT);
+    assert_true(pce_get_piece_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == BLACK);
 
     mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
     pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce_get_piece_type(pce) == BISHOP);
+    assert_true(pce_get_piece_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == BLACK);
 
     mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
     pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce_get_piece_type(pce) == ROOK);
+    assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
     mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
     pce = move_decode_promotion_piece(mv, BLACK);
-    assert_true(pce_get_piece_type(pce) == QUEEN);
+    assert_true(pce_get_piece_role(pce) == QUEEN);
     assert_true(pce_get_colour(pce) == BLACK);
 }
 

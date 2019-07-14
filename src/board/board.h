@@ -47,7 +47,7 @@ void brd_add_piece(struct board *brd, const struct piece pce,
                    const enum square sq);
 uint64_t brd_get_board_bb(const struct board *brd);
 uint64_t brd_get_piece_bb(const struct board *brd,
-                          const enum piece_role pce_type,
+                          const enum piece_role pce_role,
                           const enum colour col);
 void brd_remove_piece(struct board *brd, const struct piece pce,
                       const enum square sq);

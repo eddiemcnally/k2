@@ -83,13 +83,11 @@ set (ENGINE_COMPILER_WARNS "-std=c11 \
         -Wconversion \
         -Wsign-conversion \
         -Wshadow \
-        -Wchar-subscripts \
         -Wcast-qual \
         -Wcast-align \
-        -Wchar-subscripts \
         -Wmissing-include-dirs \
-        -Wcomment \
-        -Wpointer-arith"
+        -Wpointer-arith \
+        -Wunused"
         )
 
 

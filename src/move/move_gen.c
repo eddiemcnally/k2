@@ -87,7 +87,7 @@ static void try_encode_double_pawn_move(const struct board *brd,
                                         const enum square plus_2,
                                         struct move_list *mvl);
 static void get_sliding_diagonal_antidiagonal_moves(
-    const struct board *brd, const enum piece_role pce_type_to_move,
+    const struct board *brd, const enum piece_role pce_role_to_move,
     const enum colour side_to_move, struct move_list *mvl);
 static void get_sliding_rank_file_moves(const struct board *brd,
                                         const enum piece_role pce_to_move,
@@ -250,11 +250,11 @@ void mv_gen_king_moves(const struct position *pos,
  * @param mvl           The move list to which new moves are appended
  */
 static void get_sliding_diagonal_antidiagonal_moves(
-    const struct board *brd, const enum piece_role pce_type_to_move,
+    const struct board *brd, const enum piece_role pce_role_to_move,
     const enum colour side_to_move, struct move_list *mvl) {
 
     uint64_t pce_to_move_bb =
-        brd_get_piece_bb(brd, pce_type_to_move, side_to_move);
+        brd_get_piece_bb(brd, pce_role_to_move, side_to_move);
 
     const uint64_t all_occupied_sq_bb = brd_get_board_bb(brd);
     const uint64_t col_occupied = brd_get_colour_bb(brd, side_to_move);
