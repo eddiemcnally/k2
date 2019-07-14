@@ -29,6 +29,7 @@
 #include "piece.h"
 #include "rand.h"
 #include "square.h"
+#include <assert.h>
 
 static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES];
 static uint64_t side_key;
@@ -63,7 +64,17 @@ void init_key_mgmt(void) {
     }
 }
 
+/**
+ * @brief       Flips the hash based on the piece and square
+ * @param pce   The piece 
+ * @param sq    The square
+ * @return      The updated hash key
+ */
 uint64_t hash_piece_update(const struct piece pce, const enum square sq) {
+
+    assert(validate_piece(pce));
+    assert(validate_square(sq));
+
     enum piece_type pt = pce_get_piece_type(pce);
     uint8_t pce_off = pce_get_array_idx(pt);
 
@@ -71,14 +82,32 @@ uint64_t hash_piece_update(const struct piece pce, const enum square sq) {
     return hashkey;
 }
 
+/**
+ * @brief       Flips the hash for the side
+ * @return      The updated hash key
+ */
 uint64_t hash_side_update(void) {
     hashkey ^= side_key;
     return hashkey;
 }
 
+/**
+ * @brief       Flips the hash based on the castle permissions
+ * @param pce   The piece 
+ * @param sq    The square
+ * @return      The updated hash key
+ */
 uint64_t hash_castle_perm(const enum castle_permission cp) {
+
+    assert(validate_castle_permission(cp));
+
     uint8_t cp_off = cast_perm_get_offset(cp);
     hashkey ^= castle_keys[cp_off];
     return hashkey;
 }
+
+/**
+ * @brief       Returns the current hash key
+ * @return      The current hash key
+ */
 uint64_t hash_get_current_val(void) { return hashkey; }

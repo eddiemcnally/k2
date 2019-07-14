@@ -58,3 +58,4 @@ bool cast_compare_perms(const struct cast_perm_container cp1,
                         const struct cast_perm_container cp2);
 uint8_t cast_perm_get_offset(const enum castle_permission cp);
 bool validate_castle_permissions(const struct cast_perm_container cp);
+bool validate_castle_permission(const enum castle_permission cp);

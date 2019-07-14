@@ -140,6 +140,19 @@ bool validate_castle_permissions(const struct cast_perm_container cp) {
     return val == 0;
 }
 
+bool validate_castle_permission(const enum castle_permission cp) {
+    switch (cp) {
+    case CP_NONE:
+    case CP_WK:
+    case CP_WQ:
+    case CP_BK:
+    case CP_BQ:
+        return true;
+    default:
+        return false;
+    }
+}
+
 static void set_perm_state(struct cast_perm_container *cp,
                            const enum cast_perm_bitmap perm, const bool state) {
     if (state) {

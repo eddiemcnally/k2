@@ -72,6 +72,7 @@ set (ENGINE_COMPILER_WARNS "-std=c11 \
         -Wall \
         -Werror \
         -Wextra \
+        -Wformat-security \
         -Wold-style-definition \
         -Wredundant-decls \
         -Wnested-externs \
@@ -79,15 +80,16 @@ set (ENGINE_COMPILER_WARNS "-std=c11 \
         -Wmissing-prototypes \
         -Wswitch-default \
         -Wunused-macros \
-        -Wextra \
         -Wconversion \
         -Wsign-conversion \
         -Wshadow \
+        -Wchar-subscripts \
         -Wcast-qual \
         -Wcast-align \
+        -Wchar-subscripts \
         -Wmissing-include-dirs \
-        -Wpointer-arith \
-        -Wno-comment"
+        -Wcomment \
+        -Wpointer-arith"
         )
 
 
