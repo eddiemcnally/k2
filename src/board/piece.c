@@ -227,6 +227,29 @@ uint8_t pce_col_get_array_idx(const enum colour col) {
 }
 
 /**
+* @brief        Populates an array of all pieces.
+* @param        Pointer to array that is populated
+* @return       The array
+*/
+void pce_get_all_pieces(struct piece *pce_array) {
+    int i = 0;
+
+    pce_array[i++] = pce_create(PAWN, WHITE);
+    pce_array[i++] = pce_create(BISHOP, WHITE);
+    pce_array[i++] = pce_create(KNIGHT, WHITE);
+    pce_array[i++] = pce_create(ROOK, WHITE);
+    pce_array[i++] = pce_create(QUEEN, WHITE);
+    pce_array[i++] = pce_create(KING, WHITE);
+
+    pce_array[i++] = pce_create(PAWN, BLACK);
+    pce_array[i++] = pce_create(BISHOP, BLACK);
+    pce_array[i++] = pce_create(KNIGHT, BLACK);
+    pce_array[i++] = pce_create(ROOK, BLACK);
+    pce_array[i++] = pce_create(QUEEN, BLACK);
+    pce_array[i++] = pce_create(KING, BLACK);
+}
+
+/**
  * @brief       Gets the piece lable for the given piece (eg, 'P' for white pawn, 'k' for black king)
  *
  * @param pce The piece

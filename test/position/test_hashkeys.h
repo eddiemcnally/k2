@@ -24,15 +24,13 @@
  *  SOFTWARE.
  */
 
-#include "castle_perms.h"
-#include "piece.h"
-#include "square.h"
-#include <stdint.h>
-
 #pragma once
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
 
-void init_key_mgmt(void);
-uint64_t hash_piece_update(const struct piece pce, const enum square sq);
-uint64_t hash_side_update(void);
-uint64_t hash_castle_perm(const enum castle_permission cp);
-uint64_t hash_get_current_val(void);
+void test_hashkeys_init_to_non_zero_value(void **state);
+void test_hashkeys_all_pieces_all_squares_before_after_same(void **state);
+void test_hashkeys_update_side(void **state);
+void test_hashkeys_update_castle_permissions(void **state);

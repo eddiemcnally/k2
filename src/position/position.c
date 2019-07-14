@@ -36,7 +36,6 @@ const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
 #define MAX_GAME_MOVES (1024)
 
-
 // represents board state *before* the move was made
 struct mv_state {
     struct move mv; // TODO: is this needed?
@@ -187,7 +186,8 @@ bool pos_try_get_en_pass_sq(const struct position *pos,
  * @param pos           The position
  * @param perms         Castle permissions to set
  */
-void pos_set_cast_perm(struct position *pos, const struct cast_perm_container perms) {
+void pos_set_cast_perm(struct position *pos,
+                       const struct cast_perm_container perms) {
     pos->castle_perm_container = perms;
 }
 
@@ -328,7 +328,8 @@ bool pos_compare(const struct position *first, const struct position *second) {
     if (first->fifty_move_counter != second->fifty_move_counter) {
         return false;
     }
-    if (cast_compare_perms(first->castle_perm_container, second->castle_perm_container) == false) {
+    if (cast_compare_perms(first->castle_perm_container,
+                           second->castle_perm_container) == false) {
         return false;
     }
 
@@ -360,8 +361,8 @@ bool pos_compare(const struct position *first, const struct position *second) {
 static void init_pos_struct(struct position *pos) {
     memset(pos, 0, sizeof(struct position));
     pos->struct_init_key = STRUCT_INIT_KEY;
-    
-    pos->castle_perm_container = cast_perm_init();    
+
+    pos->castle_perm_container = cast_perm_init();
 }
 
 static void do_capture_move(struct position *pos, const struct move mv,
@@ -415,7 +416,7 @@ static void make_castle_piece_moves(struct position *pos,
     const bool is_king_side = move_is_king_castle(castle_move);
     const bool is_queen_side = move_is_queen_castle(castle_move);
     const enum colour side = pos->side_to_move;
-    
+
     const struct piece pce_wk = pce_create(KING, WHITE);
     const struct piece pce_wr = pce_create(ROOK, WHITE);
     const struct piece pce_bk = pce_create(KING, BLACK);
@@ -528,10 +529,11 @@ void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_
                                           const bool state);
 */
 
-static void set_up_castle_permissions(struct position *pos, const struct parsed_fen *fen) {
-                                          
+static void set_up_castle_permissions(struct position *pos,
+                                      const struct parsed_fen *fen) {
+
     struct cast_perm_container *cp = &pos->castle_perm_container;
-    
+
     cast_perm_set_permission(CP_NONE, cp, true);
 
     if (fen_has_wk_castle_perms(fen)) {
@@ -546,7 +548,6 @@ static void set_up_castle_permissions(struct position *pos, const struct parsed_
     if (fen_has_bq_castle_perms(fen)) {
         cast_perm_set_permission(CP_BQ, cp, true);
     }
-
 }
 
 static enum square get_en_pass_sq(const enum colour side,
@@ -598,7 +599,8 @@ static struct move pop_position(struct position *pos) {
 
 static bool mv_state_compare(const struct mv_state *first,
                              const struct mv_state *second) {
-    if (cast_compare_perms(first->castle_perm_container, second->castle_perm_container) == false) {
+    if (cast_compare_perms(first->castle_perm_container,
+                           second->castle_perm_container) == false) {
         return false;
     }
     if (move_compare(first->mv, second->mv) == false) {

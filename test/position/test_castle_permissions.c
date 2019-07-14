@@ -66,4 +66,3 @@ void test_castle_permissions_no_perms_get_set(void **state) {
 
     assert_true(cast_perm_has_permission(CP_NONE, cp));
 }
-

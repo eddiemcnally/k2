@@ -49,10 +49,12 @@ enum castle_permission {
 
 struct cast_perm_container cast_perm_init(void);
 
-bool cast_perm_has_permission(const enum castle_permission cp, const struct cast_perm_container cp_cont);
-void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *cp_cont,
-                                          const bool state);
-bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2);
+bool cast_perm_has_permission(const enum castle_permission cp,
+                              const struct cast_perm_container cp_cont);
+void cast_perm_set_permission(const enum castle_permission cp,
+                              struct cast_perm_container *cp_cont,
+                              const bool state);
+bool cast_compare_perms(const struct cast_perm_container cp1,
+                        const struct cast_perm_container cp2);
 uint8_t cast_perm_get_offset(const enum castle_permission cp);
 bool validate_castle_permissions(const struct cast_perm_container cp);
-

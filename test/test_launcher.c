@@ -29,6 +29,7 @@
 #include "test_board.h"
 #include "test_castle_permissions.h"
 #include "test_fen.h"
+#include "test_hashkeys.h"
 #include "test_move.h"
 #include "test_move_gen.h"
 #include "test_move_list.h"
@@ -87,7 +88,7 @@ int main(void) {
         cmocka_unit_test(test_piece_get_piece_from_label),
         cmocka_unit_test(test_piece_get_array_idx),
         cmocka_unit_test(test_piece_create),
-        cmocka_unit_test(test_piece_get_piece_label), 
+        cmocka_unit_test(test_piece_get_piece_label),
 
         // Position
         cmocka_unit_test(test_position_get_set_castle_permissions),
@@ -103,6 +104,13 @@ int main(void) {
             test_castle_black_kingside_move_valid_position_updated),
         cmocka_unit_test(
             test_castle_black_queenside_move_valid_position_updated),
+
+        // hashkey mgmt
+        cmocka_unit_test(test_hashkeys_init_to_non_zero_value),
+        cmocka_unit_test(
+            test_hashkeys_all_pieces_all_squares_before_after_same),
+        cmocka_unit_test(test_hashkeys_update_side),
+        cmocka_unit_test(test_hashkeys_update_castle_permissions),
 
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),

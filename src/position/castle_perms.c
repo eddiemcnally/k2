@@ -34,8 +34,6 @@ enum cast_perm_bitmap {
     CAST_PERM_BQ = 0x01 << 3,
 };
 
-
-
 enum cast_perm_array_offsets {
     OFFSET_CAST_PERM_NONE = 0,
     OFFSET_CAST_PERM_WK = 1,
@@ -44,10 +42,12 @@ enum cast_perm_array_offsets {
     OFFSET_CAST_PERM_BQ = 4,
 };
 
-static void set_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm,
-                           const bool state);
-static void set_perm(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
-static void clear_perm(struct cast_perm_container*cp_cont, const enum cast_perm_bitmap perm);
+static void set_perm_state(struct cast_perm_container *cp_cont,
+                           const enum cast_perm_bitmap perm, const bool state);
+static void set_perm(struct cast_perm_container *cp_cont,
+                     const enum cast_perm_bitmap perm);
+static void clear_perm(struct cast_perm_container *cp_cont,
+                       const enum cast_perm_bitmap perm);
 
 struct cast_perm_container cast_perm_init(void) {
     struct cast_perm_container p = {0};
@@ -140,8 +140,8 @@ bool validate_castle_permissions(const struct cast_perm_container cp) {
     return val == 0;
 }
 
-static void set_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm,
-                           const bool state) {
+static void set_perm_state(struct cast_perm_container *cp,
+                           const enum cast_perm_bitmap perm, const bool state) {
     if (state) {
         set_perm(cp, perm);
     } else {
@@ -149,10 +149,12 @@ static void set_perm_state(struct cast_perm_container *cp, const enum cast_perm_
     }
 }
 
-static void set_perm(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
+static void set_perm(struct cast_perm_container *cp,
+                     const enum cast_perm_bitmap perm) {
     cp->val |= perm;
 }
 
-static void clear_perm(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
+static void clear_perm(struct cast_perm_container *cp,
+                       const enum cast_perm_bitmap perm) {
     cp->val &= ~perm;
 }

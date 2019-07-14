@@ -63,3 +63,4 @@ bool validate_piece(const struct piece pce);
 bool validate_piece_type(const enum piece_type pt);
 bool validate_colour(const enum colour col);
 bool validate_label(const char c);
+void pce_get_all_pieces(struct piece *pce_array);
