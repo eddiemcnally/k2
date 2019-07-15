@@ -34,7 +34,7 @@
 static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES];
 static uint64_t side_key;
 static uint64_t castle_keys[NUM_CASTLE_PERMS];
-
+static uint64_t en_passant_sq_keys[NUM_SQUARES];
 static uint64_t hashkey;
 
 /**
@@ -56,6 +56,12 @@ void init_key_mgmt(void) {
 
     side_key = genrand64_int64();
     hashkey ^= side_key;
+
+    for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
+        en_passant_sq_keys[num_sq] = genrand64_int64();
+
+        hashkey ^= en_passant_sq_keys[num_sq];
+    }
 
     for (int i = 0; i < NUM_CASTLE_PERMS; i++) {
         castle_keys[i] = genrand64_int64();
@@ -88,6 +94,17 @@ uint64_t hash_piece_update(const struct piece pce, const enum square sq) {
  */
 uint64_t hash_side_update(void) {
     hashkey ^= side_key;
+    return hashkey;
+}
+
+/**
+ * @brief       Flips the hash for the en passant square
+ * @return      The updated hash key
+ */
+uint64_t hash_en_passant(const enum square sq) {
+    assert(validate_square(sq));
+
+    hashkey ^= en_passant_sq_keys[sq];
     return hashkey;
 }
 

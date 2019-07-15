@@ -104,3 +104,24 @@ void test_hashkeys_update_castle_permissions(void **state) {
         assert_true(init_hash == after_second_flip);
     }
 }
+
+void test_hashkeys_all_en_passant_squares_before_after_same(void **state) {
+
+    for (enum square sq = a1; sq < h8; sq++) {
+
+        // hash before
+        uint64_t before_hash = hash_get_current_val();
+        assert_true(before_hash != 0);
+
+        // flip the hash for the square
+        uint64_t after_init_flip_hash = hash_en_passant(sq);
+        assert_true(before_hash != after_init_flip_hash);
+
+        // flip again
+        uint64_t after_second_flip_hash = hash_en_passant(sq);
+        assert_true(after_init_flip_hash != after_second_flip_hash);
+
+        // same as orig hash
+        assert_true(before_hash == after_second_flip_hash);
+    }
+}

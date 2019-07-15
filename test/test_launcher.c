@@ -111,6 +111,8 @@ int main(void) {
             test_hashkeys_all_pieces_all_squares_before_after_same),
         cmocka_unit_test(test_hashkeys_update_side),
         cmocka_unit_test(test_hashkeys_update_castle_permissions),
+        cmocka_unit_test(
+            test_hashkeys_all_en_passant_squares_before_after_same),
 
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),

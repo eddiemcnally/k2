@@ -34,3 +34,4 @@ void test_hashkeys_init_to_non_zero_value(void **state);
 void test_hashkeys_all_pieces_all_squares_before_after_same(void **state);
 void test_hashkeys_update_side(void **state);
 void test_hashkeys_update_castle_permissions(void **state);
+void test_hashkeys_all_en_passant_squares_before_after_same(void **state);
