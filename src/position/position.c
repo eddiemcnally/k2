@@ -36,19 +36,32 @@ const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
 #define MAX_GAME_MOVES (1024)
 
-// represents board state *before* the move was made
-struct mv_state {
-    struct move mv; // TODO: is this needed?
-    uint8_t fifty_move_counter;
-    enum square en_passant;
-    bool en_pass_set;
-
-    struct cast_perm_container castle_perm_container;
-    // TODO add board hash
+// container for en passant state
+struct en_pass_active {
+    enum square sq;
+    bool is_active;
 };
 
+// represents board state *before* the move was made
+struct mv_state {
+    // the move being made
+    struct move mv;
+    // current 50-rule counter
+    uint8_t fifty_move_counter;
+    // active/inactive en passant
+    struct en_pass_active en_passant;
+    //position hash
+    uint64_t hashkey;
+    // active castle permissions
+    struct cast_perm_container castle_perm_container;
+};
+
+// represents the current game position
 struct position {
     uint16_t struct_init_key;
+
+    // position hash
+    uint64_t hashkey;
 
     // current board representation
     struct board *brd;
@@ -60,14 +73,14 @@ struct position {
     uint16_t ply;         // half-moves
     uint16_t history_ply; // full move count
 
-    // state
     uint8_t fifty_move_counter;
-    enum square en_passant;
-    bool en_passant_set;
+
+    struct en_pass_active en_passant;
 
     // move history
     struct mv_state history[MAX_GAME_MOVES];
 
+    // active catle permissions
     struct cast_perm_container castle_perm_container;
 };
 
@@ -173,8 +186,8 @@ struct cast_perm_container pos_get_cast_perm(const struct position *pos) {
  */
 bool pos_try_get_en_pass_sq(const struct position *pos,
                             enum square *en_pass_sq) {
-    if (pos->en_passant_set) {
-        *en_pass_sq = pos->en_passant;
+    if (pos->en_passant.is_active) {
+        *en_pass_sq = pos->en_passant.sq;
         return true;
     }
     return false;
@@ -250,16 +263,16 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
     assert(validate_piece(pce_to_move));
 
     if (move_is_double_pawn(mv)) {
-        pos->en_passant = get_en_pass_sq(pos->side_to_move, from_sq);
-        pos->en_passant_set = true;
+        pos->en_passant.sq = get_en_pass_sq(pos->side_to_move, from_sq);
+        pos->en_passant.is_active = true;
 
         brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
     } else {
-        pos->en_passant_set = false;
+        pos->en_passant.is_active = false;
     }
 
     if (move_is_en_passant(mv)) {
-        pos->en_passant_set = false;
+        pos->en_passant.is_active = false;
         make_en_passant_move(pos, mv);
     }
 
@@ -333,11 +346,14 @@ bool pos_compare(const struct position *first, const struct position *second) {
         return false;
     }
 
-    if (first->en_passant != second->en_passant) {
+    if (first->en_passant.is_active != second->en_passant.is_active) {
         return false;
     }
-    if (first->en_passant_set != second->en_passant_set) {
-        return false;
+
+    if (first->en_passant.is_active) {
+        if (first->en_passant.sq != second->en_passant.sq) {
+            return false;
+        }
     }
 
     for (int i = 0; i < MAX_GAME_MOVES; i++) {
@@ -376,7 +392,7 @@ static void do_capture_move(struct position *pos, const struct move mv,
         enum square en_pass_pce_sq;
 
         // flip the flag
-        pos->en_passant_set = false;
+        pos->en_passant.is_active = false;
 
         enum piece_role pt;
         if (pos->side_to_move == WHITE) {
@@ -493,10 +509,10 @@ static void populate_position_from_fen(struct position *pos,
     enum square en_pass;
     bool found_en_pass = fen_try_get_en_pass_sq(fen, &en_pass);
     if (found_en_pass) {
-        pos->en_passant_set = true;
-        pos->en_passant = en_pass;
+        pos->en_passant.is_active = true;
+        pos->en_passant.sq = en_pass;
     } else {
-        pos->en_passant_set = false;
+        pos->en_passant.is_active = false;
     }
 
     pos->fifty_move_counter = 0;
@@ -514,10 +530,10 @@ static void populate_position_from_fen(struct position *pos,
 }
 
 static bool validate_en_passant_pce_and_sq(const struct position *pos) {
-    assert(pos->en_passant_set == true);
+    assert(pos->en_passant.is_active == true);
     struct piece en_pass_pce;
     bool found =
-        brd_try_get_piece_on_square(pos->brd, pos->en_passant, &en_pass_pce);
+        brd_try_get_piece_on_square(pos->brd, pos->en_passant.sq, &en_pass_pce);
     assert(found == true);
 
     enum piece_role pt = pce_get_piece_role(en_pass_pce);
@@ -567,28 +583,20 @@ static void push_position(struct position *pos, const struct move mv) {
 
     undo->castle_perm_container = pos->castle_perm_container;
     undo->mv = mv;
-    undo->en_pass_set = pos->en_passant_set;
     undo->en_passant = pos->en_passant;
     undo->fifty_move_counter = pos->fifty_move_counter;
-
-    // backup the board
-    brd_snaphot_make(pos->brd);
+    undo->hashkey = pos->hashkey;
 }
 
 static struct move pop_position(struct position *pos) {
-
     struct mv_state *undo = &pos->history[pos->ply];
 
     pos->castle_perm_container = undo->castle_perm_container;
     struct move mv = undo->mv;
-    pos->en_passant_set = undo->en_pass_set;
     pos->en_passant = undo->en_passant;
     pos->fifty_move_counter = undo->fifty_move_counter;
-
+    pos->hashkey = undo->hashkey;
     pos->ply--;
-
-    // revert to previous board
-    brd_snaphot_extract(pos->brd);
 
     return mv;
 }
@@ -602,12 +610,15 @@ static bool mv_state_compare(const struct mv_state *first,
     if (move_compare(first->mv, second->mv) == false) {
         return false;
     }
-    if (first->en_pass_set != second->en_pass_set) {
+    if (first->en_passant.is_active != second->en_passant.is_active) {
         return false;
     }
-    if (first->en_passant != second->en_passant) {
-        return false;
+    if (first->en_passant.is_active) {
+        if (first->en_passant.sq != second->en_passant.sq) {
+            return false;
+        }
     }
+
     if (first->fifty_move_counter != second->fifty_move_counter) {
         return false;
     }
