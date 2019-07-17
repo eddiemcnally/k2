@@ -23,16 +23,24 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
+
 #pragma once
 
-#include "castle_perms.h"
-#include "piece.h"
-#include "square.h"
-#include <stdint.h>
+#include "position.h"
 
-void init_key_mgmt(void);
-uint64_t hash_piece_update(const struct piece pce, const enum square sq);
-uint64_t hash_side_update(void);
-uint64_t hash_castle_perm(const enum castle_permission cp);
-uint64_t hash_en_passant(const enum square sq);
-uint64_t hash_get_current_val(void);
+struct move_hist;
+
+struct move_hist *move_hist_init(void);
+
+void move_hist_push(struct move_hist *move_history, const struct move mv,
+                    const uint8_t fifty_move_counter,
+                    const struct en_pass_active en_passant,
+                    const uint64_t hashkey,
+                    const struct cast_perm_container castle_perm_container);
+
+void move_hist_pop(struct move_hist *move_history, struct move *mv,
+                   uint8_t *fifty_move_counter,
+                   struct en_pass_active *en_passant, uint64_t *hashkey,
+                   struct cast_perm_container *castle_perm_container);
+
+bool move_hist_compare(struct move_hist *hist1, struct move_hist *hist2);

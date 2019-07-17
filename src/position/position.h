@@ -38,6 +38,14 @@
 
 struct position;
 
+#define MAX_GAME_MOVES (1024)
+
+// container for en passant state
+struct en_pass_active {
+    enum square sq;
+    bool is_active;
+};
+
 #define INITIAL_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
 
 struct cast_perm_container pos_get_cast_perm(const struct position *pos);

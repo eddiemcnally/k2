@@ -29,32 +29,11 @@
 #include "castle_perms.h"
 #include "fen.h"
 #include "move.h"
+#include "move_hist.h"
 #include <assert.h>
 
 // key used to verify struct has been initialised
 const static uint16_t STRUCT_INIT_KEY = 0xdead;
-
-#define MAX_GAME_MOVES (1024)
-
-// container for en passant state
-struct en_pass_active {
-    enum square sq;
-    bool is_active;
-};
-
-// represents board state *before* the move was made
-struct mv_state {
-    // the move being made
-    struct move mv;
-    // current 50-rule counter
-    uint8_t fifty_move_counter;
-    // active/inactive en passant
-    struct en_pass_active en_passant;
-    //position hash
-    uint64_t hashkey;
-    // active castle permissions
-    struct cast_perm_container castle_perm_container;
-};
 
 // represents the current game position
 struct position {
@@ -77,11 +56,11 @@ struct position {
 
     struct en_pass_active en_passant;
 
-    // move history
-    struct mv_state history[MAX_GAME_MOVES];
-
     // active catle permissions
     struct cast_perm_container castle_perm_container;
+
+    // move history
+    struct move_hist *move_history;
 };
 
 static void init_pos_struct(struct position *pos);
@@ -90,10 +69,6 @@ static void populate_position_from_fen(struct position *pos,
 static void set_up_castle_permissions(struct position *pos,
                                       const struct parsed_fen *fen);
 static bool validate_en_passant_pce_and_sq(const struct position *pos);
-static void push_position(struct position *pos, const struct move move);
-static struct move pop_position(struct position *pos);
-static bool mv_state_compare(const struct mv_state *first,
-                             const struct mv_state *second);
 static enum square get_en_pass_sq(const enum colour side,
                                   const enum square from_sq);
 static void do_capture_move(struct position *pos, const struct move mv,
@@ -252,7 +227,8 @@ bool validate_position(const struct position *pos) {
 bool pos_try_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
 
-    push_position(pos, mv);
+    move_hist_push(pos->move_history, mv, pos->fifty_move_counter,
+                   pos->en_passant, pos->hashkey, pos->castle_perm_container);
 
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
@@ -307,7 +283,6 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
 struct move pos_take_move(struct position *pos) {
     assert(validate_position(pos));
 
-    pop_position(pos);
     struct move mv = {.val = 0};
     return mv;
 }
@@ -356,13 +331,10 @@ bool pos_compare(const struct position *first, const struct position *second) {
         }
     }
 
-    for (int i = 0; i < MAX_GAME_MOVES; i++) {
-        const struct mv_state *mv1 = &first->history[i];
-        const struct mv_state *mv2 = &second->history[i];
-
-        if (mv_state_compare(mv1, mv2) == false) {
-            return false;
-        }
+    bool same_hist =
+        move_hist_compare(first->move_history, second->move_history);
+    if (same_hist == false) {
+        return false;
     }
 
     return true;
@@ -379,6 +351,8 @@ static void init_pos_struct(struct position *pos) {
     pos->struct_init_key = STRUCT_INIT_KEY;
 
     pos->castle_perm_container = cast_perm_init();
+
+    pos->move_history = move_hist_init();
 }
 
 static void do_capture_move(struct position *pos, const struct move mv,
@@ -574,54 +548,4 @@ static enum square get_en_pass_sq(const enum colour side,
     assert(validate_en_pass_sq(retval));
 
     return retval;
-}
-
-static void push_position(struct position *pos, const struct move mv) {
-    pos->ply++;
-
-    struct mv_state *undo = &pos->history[pos->ply];
-
-    undo->castle_perm_container = pos->castle_perm_container;
-    undo->mv = mv;
-    undo->en_passant = pos->en_passant;
-    undo->fifty_move_counter = pos->fifty_move_counter;
-    undo->hashkey = pos->hashkey;
-}
-
-static struct move pop_position(struct position *pos) {
-    struct mv_state *undo = &pos->history[pos->ply];
-
-    pos->castle_perm_container = undo->castle_perm_container;
-    struct move mv = undo->mv;
-    pos->en_passant = undo->en_passant;
-    pos->fifty_move_counter = undo->fifty_move_counter;
-    pos->hashkey = undo->hashkey;
-    pos->ply--;
-
-    return mv;
-}
-
-static bool mv_state_compare(const struct mv_state *first,
-                             const struct mv_state *second) {
-    if (cast_compare_perms(first->castle_perm_container,
-                           second->castle_perm_container) == false) {
-        return false;
-    }
-    if (move_compare(first->mv, second->mv) == false) {
-        return false;
-    }
-    if (first->en_passant.is_active != second->en_passant.is_active) {
-        return false;
-    }
-    if (first->en_passant.is_active) {
-        if (first->en_passant.sq != second->en_passant.sq) {
-            return false;
-        }
-    }
-
-    if (first->fifty_move_counter != second->fifty_move_counter) {
-        return false;
-    }
-
-    return true;
 }
