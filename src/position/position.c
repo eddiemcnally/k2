@@ -290,7 +290,7 @@ struct move pos_take_move(struct position *pos) {
 /**
  * @brief               Compares 2 positions for equivalency
  * @param first         The first position
- * @paran second        The second position
+ * @param second        The second position
  * @return              True if the positions are the same, false otherwise
  */
 bool pos_compare(const struct position *first, const struct position *second) {

@@ -24,30 +24,42 @@
  *  SOFTWARE.
  */
 
-#pragma once
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
-#include "castle_perms.h"
-#include "move.h"
-#include "position.h"
-#include <stdint.h>
+#include "test_move_hist.h"
+#include "move_hist.h"
+#include <assert.h>
+#include <cmocka.h>
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stddef.h>
 
-struct move_hist;
+struct hist_data {
+    struct move mv;
+    struct en_pass_active en_passant;
+    uint64_t hashkey;
+    struct cast_perm_container castle_perm_container;
+    uint8_t fifty_move_counter;
+};
 
-struct move_hist *move_hist_init(void);
-void move_hist_release_memory(struct move_hist *mh);
+void test_move_history_push_multiple_moves_used_slots_as_expected(
+    void **state) {
+    struct move_hist *mh = move_hist_init();
 
-void move_hist_push(struct move_hist *move_history, const struct move mv,
-                    const uint8_t fifty_move_counter,
-                    const struct en_pass_active en_passant,
-                    const uint64_t hashkey,
-                    const struct cast_perm_container castle_perm_container);
+    const uint16_t NUM_TO_TEST = MAX_GAME_MOVES - 1;
 
-void move_hist_pop(struct move_hist *move_history, struct move *mv,
-                   uint8_t *fifty_move_counter,
-                   struct en_pass_active *en_passant, uint64_t *hashkey,
-                   struct cast_perm_container *castle_perm_container);
+    for (int i = 0; i < NUM_TO_TEST; i++) {
+        // set up some test data
+        struct move mv = move_encode_quiet(a1, a3);
+        struct en_pass_active en_pass = {.is_active = false};
+        struct cast_perm_container cp;
+        cast_perm_set_permission(CP_WK, &cp, true);
 
-bool move_hist_compare(const struct move_hist *hist1,
-                       const struct move_hist *hist2);
+        move_hist_push(mh, mv, (uint8_t)i, en_pass, (uint64_t)(i * i), cp);
 
-uint16_t move_hist_get_num(const struct move_hist *mh);
+        assert_true(move_hist_get_num(mh) == i + 1);
+    }
+    assert_true(move_hist_get_num(mh) == NUM_TO_TEST);
+
+    move_hist_release_memory(mh);
+}

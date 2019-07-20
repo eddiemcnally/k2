@@ -32,6 +32,7 @@
 #include "test_hashkeys.h"
 #include "test_move.h"
 #include "test_move_gen.h"
+#include "test_move_hist.h"
 #include "test_move_list.h"
 #include "test_piece.h"
 #include "test_position.h"
@@ -104,6 +105,8 @@ int main(void) {
             test_castle_black_kingside_move_valid_position_updated),
         cmocka_unit_test(
             test_castle_black_queenside_move_valid_position_updated),
+        cmocka_unit_test(
+            test_move_history_push_multiple_moves_used_slots_as_expected),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),

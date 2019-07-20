@@ -25,29 +25,11 @@
  */
 
 #pragma once
-
-#include "castle_perms.h"
-#include "move.h"
-#include "position.h"
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
-struct move_hist;
+void test_move_history_push_multiple_moves_used_slots_as_expected(void **state);
 
-struct move_hist *move_hist_init(void);
-void move_hist_release_memory(struct move_hist *mh);
-
-void move_hist_push(struct move_hist *move_history, const struct move mv,
-                    const uint8_t fifty_move_counter,
-                    const struct en_pass_active en_passant,
-                    const uint64_t hashkey,
-                    const struct cast_perm_container castle_perm_container);
-
-void move_hist_pop(struct move_hist *move_history, struct move *mv,
-                   uint8_t *fifty_move_counter,
-                   struct en_pass_active *en_passant, uint64_t *hashkey,
-                   struct cast_perm_container *castle_perm_container);
-
-bool move_hist_compare(const struct move_hist *hist1,
-                       const struct move_hist *hist2);
-
-uint16_t move_hist_get_num(const struct move_hist *mh);
