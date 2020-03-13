@@ -34,3 +34,5 @@ void test_square_sq_get_file(void **state);
 void test_square_gen_from_rank_file(void **state);
 void test_sq_get_square_plus_1_rank(void **state);
 void test_sq_get_square_minus_1_rank(void **state);
+void test_sq_try_get_sq_rank_and_file_invalid_returns_false(void **state);
+void test_sq_try_get_sq_rank_and_file_valid_returns_true(void **state);

@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2020 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -24,26 +24,14 @@
  *  SOFTWARE.
  */
 
+
 #pragma once
 
-#include <setjmp.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 
-void test_position_get_set_castle_permissions(void **state);
-void test_position_brd_is_sq_occupied(void **state);
-void test_position_compare(void **state);
-void test_position_white_double_first_move(void **state);
-void test_position_black_double_first_move(void **state);
-void test_position_make_move_castle_white_kingside_move_valid_position_updated(
-    void **state);
-void test_position_make_move_castle_white_queenside_move_valid_position_updated(
-    void **state);
-void test_position_make_move_castle_black_kingside_move_valid_position_updated(
-    void **state);
-void test_position_make_move_castle_black_queenside_move_valid_position_updated(
-    void **state);
-void test_position_make_move_castle_white_kingside_move_invalid(void **state);
+#include "square.h"
+#include "board.h"
+#include <stdbool.h>
+
+
+bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const enum colour attacking_side);
 

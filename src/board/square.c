@@ -154,3 +154,16 @@ bool validate_en_pass_sq(const enum square sq_to_check) {
         return false;
     }
 }
+
+
+
+bool sq_try_get_sq(const enum rank r, const enum file f, enum square *sq){
+
+    if (validate_rank(r) && validate_file(f)){
+        *sq = sq_gen_from_rank_file(r, f);
+        return true; 
+    }
+
+    return false;
+}
+

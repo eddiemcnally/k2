@@ -106,6 +106,8 @@ int main(void) {
             test_position_make_move_castle_black_queenside_move_valid_position_updated),
         cmocka_unit_test(
             test_move_history_push_multiple_moves_used_slots_as_expected),
+        cmocka_unit_test(test_position_make_move_castle_white_kingside_move_invalid),
+
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),
@@ -143,6 +145,9 @@ int main(void) {
         cmocka_unit_test(test_square_gen_from_rank_file),
         cmocka_unit_test(test_sq_get_square_plus_1_rank),
         cmocka_unit_test(test_sq_get_square_minus_1_rank),
+        cmocka_unit_test(test_sq_try_get_sq_rank_and_file_invalid_returns_false),
+        cmocka_unit_test(test_sq_try_get_sq_rank_and_file_valid_returns_true),
+
 
         // move generation
         cmocka_unit_test(test_move_gen_knight_white_1),

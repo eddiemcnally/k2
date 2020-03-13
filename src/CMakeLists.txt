@@ -36,6 +36,7 @@ set (SOURCES
         ${POSN_DIR}/hashkeys.c
         ${POSN_DIR}/move_hist.c
         ${POSN_DIR}/castle_perms.c
+        ${POSN_DIR}/attack_checker.c
         ${MOVE_DIR}/move.c
         ${MOVE_DIR}/move_list.c
         ${MOVE_DIR}/move_gen.c
