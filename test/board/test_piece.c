@@ -30,8 +30,6 @@
 #include "piece.h"
 #include <cmocka.h>
 
-static void piece_create_validate(const enum piece_role pt,
-                                  const enum colour col);
 static void label_piece_colour_validate(const char label,
                                         const enum piece_role pt,
                                         const enum colour col);
@@ -55,40 +53,40 @@ void test_piece_get_piece_from_label(void **state) {
 
 void test_piece_get_piece_label(void **state) {
 
-    struct piece pce = pce_create(PAWN, WHITE);
+    struct piece pce = WHITE_PAWN;
     assert_true(pce_get_label(pce) == 'P');
 
-    pce = pce_create(BISHOP, WHITE);
+    pce = WHITE_BISHOP;
     assert_true(pce_get_label(pce) == 'B');
 
-    pce = pce_create(KNIGHT, WHITE);
+    pce = WHITE_KNIGHT;
     assert_true(pce_get_label(pce) == 'N');
 
-    pce = pce_create(ROOK, WHITE);
+    pce = WHITE_ROOK;
     assert_true(pce_get_label(pce) == 'R');
 
-    pce = pce_create(QUEEN, WHITE);
+    pce = WHITE_QUEEN;
     assert_true(pce_get_label(pce) == 'Q');
 
-    pce = pce_create(KING, WHITE);
+    pce = WHITE_KING;
     assert_true(pce_get_label(pce) == 'K');
 
-    pce = pce_create(PAWN, BLACK);
+    pce = BLACK_PAWN;
     assert_true(pce_get_label(pce) == 'p');
 
-    pce = pce_create(BISHOP, BLACK);
+    pce = BLACK_BISHOP;
     assert_true(pce_get_label(pce) == 'b');
 
-    pce = pce_create(KNIGHT, BLACK);
+    pce = BLACK_KNIGHT;
     assert_true(pce_get_label(pce) == 'n');
 
-    pce = pce_create(ROOK, BLACK);
+    pce = BLACK_ROOK;
     assert_true(pce_get_label(pce) == 'r');
 
-    pce = pce_create(QUEEN, BLACK);
+    pce = BLACK_QUEEN;
     assert_true(pce_get_label(pce) == 'q');
 
-    pce = pce_create(KING, BLACK);
+    pce = BLACK_KING;
     assert_true(pce_get_label(pce) == 'k');
 }
 
@@ -103,43 +101,43 @@ void test_piece_values(void **state) {
 
 void test_piece_get_colour_white_pieces(void **state) {
 
-    struct piece pce = pce_create(PAWN, WHITE);
+    struct piece pce = WHITE_PAWN;
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = pce_create(BISHOP, WHITE);
+    pce = WHITE_BISHOP;
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = pce_create(KNIGHT, WHITE);
+    pce = WHITE_KNIGHT;
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = pce_create(ROOK, WHITE);
+    pce = WHITE_ROOK;
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = pce_create(QUEEN, WHITE);
+    pce = WHITE_QUEEN;
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = pce_create(KING, WHITE);
+    pce = WHITE_KING;
     assert_true(pce_get_colour(pce) == WHITE);
 }
 
 void test_piece_get_colour_black_pieces(void **state) {
 
-    struct piece pce = pce_create(PAWN, BLACK);
+    struct piece pce = BLACK_PAWN;
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = pce_create(BISHOP, BLACK);
+    pce = BLACK_BISHOP;
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = pce_create(KNIGHT, BLACK);
+    pce = BLACK_KNIGHT;
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = pce_create(ROOK, BLACK);
+    pce = BLACK_ROOK;
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = pce_create(QUEEN, BLACK);
+    pce = BLACK_QUEEN;
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = pce_create(KING, BLACK);
+    pce = BLACK_KING;
     assert_true(pce_get_colour(pce) == BLACK);
 }
 
@@ -159,70 +157,44 @@ void test_piece_swap_side(void **state) {
 
 void test_piece_is_white(void **state) {
 
-    struct piece pce = pce_create(PAWN, WHITE);
+    struct piece pce = WHITE_PAWN;
     assert_true(pce_is_white(pce));
 
-    pce = pce_create(BISHOP, WHITE);
+    pce = WHITE_BISHOP;
     assert_true(pce_is_white(pce));
 
-    pce = pce_create(KNIGHT, WHITE);
+    pce = WHITE_KNIGHT;
     assert_true(pce_is_white(pce));
 
-    pce = pce_create(ROOK, WHITE);
+    pce = WHITE_ROOK;
     assert_true(pce_is_white(pce));
 
-    pce = pce_create(QUEEN, WHITE);
+    pce = WHITE_QUEEN;
     assert_true(pce_is_white(pce));
 
-    pce = pce_create(KING, WHITE);
+    pce = WHITE_KING;
     assert_true(pce_is_white(pce));
 }
 
 void test_piece_is_black(void **state) {
 
-    struct piece pce = pce_create(PAWN, BLACK);
+    struct piece pce = BLACK_PAWN;
     assert_true(pce_is_black(pce));
 
-    pce = pce_create(BISHOP, BLACK);
+    pce = BLACK_BISHOP;
     assert_true(pce_is_black(pce));
 
-    pce = pce_create(KNIGHT, BLACK);
+    pce = BLACK_KNIGHT;
     assert_true(pce_is_black(pce));
 
-    pce = pce_create(ROOK, BLACK);
+    pce = BLACK_ROOK;
     assert_true(pce_is_black(pce));
 
-    pce = pce_create(QUEEN, BLACK);
+    pce = BLACK_QUEEN;
     assert_true(pce_is_black(pce));
 
-    pce = pce_create(KING, BLACK);
+    pce = BLACK_KING;
     assert_true(pce_is_black(pce));
-}
-
-void test_piece_create(void **state) {
-
-    piece_create_validate(PAWN, WHITE);
-    piece_create_validate(BISHOP, WHITE);
-    piece_create_validate(KNIGHT, WHITE);
-    piece_create_validate(ROOK, WHITE);
-    piece_create_validate(QUEEN, WHITE);
-    piece_create_validate(KING, WHITE);
-
-    piece_create_validate(PAWN, BLACK);
-    piece_create_validate(BISHOP, BLACK);
-    piece_create_validate(KNIGHT, BLACK);
-    piece_create_validate(ROOK, BLACK);
-    piece_create_validate(QUEEN, BLACK);
-    piece_create_validate(KING, BLACK);
-}
-
-static void piece_create_validate(const enum piece_role pt,
-                                  const enum colour col) {
-    struct piece pce = pce_create(pt, col);
-    enum colour found_col = pce_get_colour(pce);
-    assert_true(found_col == col);
-    enum piece_role found_pt = pce_get_piece_role(pce);
-    assert_true(found_pt == pt);
 }
 
 static void label_piece_colour_validate(const char label,

@@ -195,17 +195,19 @@ void test_move_get_promote_piece_white(void **state) {
     const enum square from_sq = e7;
     const enum square to_sq = e8;
 
-    enum piece_role test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
+    struct piece test_pieces[4] = {WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK,
+                                   WHITE_QUEEN};
 
     for (int i = 0; i < 4; i++) {
-        enum piece_role pt = (enum piece_role)test_pieces[i];
-        struct piece pce = pce_create(pt, WHITE);
+        const struct piece pce = test_pieces[i];
 
-        struct move mv = move_encode_promoted(from_sq, to_sq, pt, true);
+        struct move mv =
+            move_encode_promoted(from_sq, to_sq, pce_get_piece_role(pce), true);
         struct piece promoted_pce = move_get_promote_piece(mv, WHITE);
         assert_true(pce_are_equal(promoted_pce, pce));
 
-        mv = move_encode_promoted(from_sq, to_sq, pt, false);
+        mv = move_encode_promoted(from_sq, to_sq, pce_get_piece_role(pce),
+                                  false);
         promoted_pce = move_get_promote_piece(mv, WHITE);
         assert_true(pce_are_equal(promoted_pce, pce));
     }
@@ -215,17 +217,19 @@ void test_move_get_promote_piece_black(void **state) {
     const enum square from_sq = e2;
     const enum square to_sq = e1;
 
-    enum piece_role test_pieces[4] = {KNIGHT, BISHOP, ROOK, QUEEN};
+    struct piece test_pieces[4] = {BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK,
+                                   BLACK_QUEEN};
 
     for (int i = 0; i < 4; i++) {
-        enum piece_role pt = (enum piece_role)test_pieces[i];
-        struct piece pce = pce_create(pt, BLACK);
+        const struct piece pce = test_pieces[i];
 
-        struct move mv = move_encode_promoted(from_sq, to_sq, pt, true);
+        struct move mv =
+            move_encode_promoted(from_sq, to_sq, pce_get_piece_role(pce), true);
         struct piece promoted_pce = move_get_promote_piece(mv, BLACK);
         assert_true(pce_are_equal(promoted_pce, pce));
 
-        mv = move_encode_promoted(from_sq, to_sq, pt, false);
+        mv = move_encode_promoted(from_sq, to_sq, pce_get_piece_role(pce),
+                                  false);
         promoted_pce = move_get_promote_piece(mv, BLACK);
         assert_true(pce_are_equal(promoted_pce, pce));
     }

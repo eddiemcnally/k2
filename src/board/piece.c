@@ -45,6 +45,20 @@ enum piece_values {
 #define COLOUR_SHIFT 7
 #define NO_PIECE 0xFF
 
+struct piece WHITE_PAWN = {.pce_val = (uint8_t)(PAWN)};
+struct piece WHITE_BISHOP = {.pce_val = (uint8_t)(BISHOP)};
+struct piece WHITE_KNIGHT = {.pce_val = (uint8_t)(KNIGHT)};
+struct piece WHITE_ROOK = {.pce_val = (uint8_t)(ROOK)};
+struct piece WHITE_QUEEN = {.pce_val = (uint8_t)(QUEEN)};
+struct piece WHITE_KING = {.pce_val = (uint8_t)(KING)};
+
+struct piece BLACK_PAWN = {.pce_val = (uint8_t)(PAWN | 0x80)};
+struct piece BLACK_BISHOP = {.pce_val = (uint8_t)(BISHOP | 0x80)};
+struct piece BLACK_KNIGHT = {.pce_val = (uint8_t)(KNIGHT | 0x80)};
+struct piece BLACK_ROOK = {.pce_val = (uint8_t)(ROOK | 0x80)};
+struct piece BLACK_QUEEN = {.pce_val = (uint8_t)(QUEEN | 0x80)};
+struct piece BLACK_KING = {.pce_val = (uint8_t)(KING | 0x80)};
+
 static enum colour extract_colour(const struct piece pce);
 static enum piece_role extract_piece_role(const struct piece pce);
 
@@ -53,32 +67,6 @@ static enum piece_role extract_piece_role(const struct piece pce);
 // public functions
 //
 // ==================================================================
-
-/**
- * @brief           Creates a piece 
- *
- * @param pce_type  The piece
- * @param col       The colour
- * 
- * @return          the constructed piece
- */
-struct piece pce_create(const enum piece_role pce_role, const enum colour col) {
-    uint8_t p = pce_role;
-
-    switch (col) {
-    case WHITE:
-        break;
-    case BLACK:
-        p = (uint8_t)(p | COLOUR_MASK);
-        break;
-    default:
-        assert(false);
-    }
-
-    struct piece retval = {.pce_val = p};
-
-    return retval;
-}
 
 /**
  * @brief           Returns the piece_role  
@@ -231,22 +219,22 @@ uint8_t pce_col_get_array_idx(const enum colour col) {
 * @param        Pointer to array that is populated
 * @return       The array
 */
-void pce_get_all_pieces(struct piece *pce_array) {
+void pce_get_all_pieces(struct piece pce_array[NUM_PIECES]) {
     int i = 0;
 
-    pce_array[i++] = pce_create(PAWN, WHITE);
-    pce_array[i++] = pce_create(BISHOP, WHITE);
-    pce_array[i++] = pce_create(KNIGHT, WHITE);
-    pce_array[i++] = pce_create(ROOK, WHITE);
-    pce_array[i++] = pce_create(QUEEN, WHITE);
-    pce_array[i++] = pce_create(KING, WHITE);
+    pce_array[i++] = WHITE_PAWN;
+    pce_array[i++] = WHITE_BISHOP;
+    pce_array[i++] = WHITE_KNIGHT;
+    pce_array[i++] = WHITE_ROOK;
+    pce_array[i++] = WHITE_QUEEN;
+    pce_array[i++] = WHITE_KING;
 
-    pce_array[i++] = pce_create(PAWN, BLACK);
-    pce_array[i++] = pce_create(BISHOP, BLACK);
-    pce_array[i++] = pce_create(KNIGHT, BLACK);
-    pce_array[i++] = pce_create(ROOK, BLACK);
-    pce_array[i++] = pce_create(QUEEN, BLACK);
-    pce_array[i++] = pce_create(KING, BLACK);
+    pce_array[i++] = BLACK_PAWN;
+    pce_array[i++] = BLACK_BISHOP;
+    pce_array[i++] = BLACK_KNIGHT;
+    pce_array[i++] = BLACK_ROOK;
+    pce_array[i++] = BLACK_QUEEN;
+    pce_array[i++] = BLACK_KING;
 }
 
 /**
@@ -306,42 +294,34 @@ struct piece pce_get_from_label(const char c) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
-    enum colour col;
-    enum piece_role pt;
-
-    if (islower(c)) {
-        col = BLACK;
-    } else {
-        col = WHITE;
-    }
-
-    char cu = (char)toupper(c);
-
-    switch (cu) {
+    switch (c) {
     case 'P':
-        pt = PAWN;
-        break;
+        return WHITE_PAWN;
     case 'R':
-        pt = ROOK;
-        break;
+        return WHITE_ROOK;
     case 'N':
-        pt = KNIGHT;
-        break;
+        return WHITE_KNIGHT;
     case 'B':
-        pt = BISHOP;
-        break;
+        return WHITE_BISHOP;
     case 'Q':
-        pt = QUEEN;
-        break;
+        return WHITE_QUEEN;
     case 'K':
-        pt = KING;
-        break;
+        return WHITE_KING;
+    case 'p':
+        return BLACK_PAWN;
+    case 'r':
+        return BLACK_ROOK;
+    case 'n':
+        return BLACK_KNIGHT;
+    case 'b':
+        return BLACK_BISHOP;
+    case 'q':
+        return BLACK_QUEEN;
+    case 'k':
+        return BLACK_KING;
     default:
         assert(false);
     }
-#pragma GCC diagnostic pop
-
-    return pce_create(pt, col);
 }
 
 /**

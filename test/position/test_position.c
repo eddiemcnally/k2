@@ -73,10 +73,10 @@ void test_position_compare(void **state) {
 
     assert_true(pos_compare(pos1, pos2));
 
-    brd_add_piece(brd1, pce_create(PAWN, WHITE), a1);
+    brd_add_piece(brd1, WHITE_PAWN, a1);
     assert_false(pos_compare(pos1, pos2));
 
-    brd_remove_piece(brd1, pce_create(PAWN, WHITE), a1);
+    brd_remove_piece(brd1, WHITE_PAWN, a1);
     assert_true(pos_compare(pos1, pos2));
 }
 
@@ -188,7 +188,8 @@ void test_position_black_double_first_move(void **state) {
     }
 }
 
-void test_castle_white_kingside_move_valid_position_updated(void **state) {
+void test_position_make_move_castle_white_kingside_move_valid_position_updated(
+    void **state) {
     const char *FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1P1BPPP/"
                       "R2QK2R w KQkq - 0 1\n";
 
@@ -248,7 +249,8 @@ void test_castle_white_kingside_move_valid_position_updated(void **state) {
     assert_true(cast_perm_has_permission(CP_BQ, cp));
 }
 
-void test_castle_white_queenside_move_valid_position_updated(void **state) {
+void test_position_make_move_castle_white_queenside_move_valid_position_updated(
+    void **state) {
     const char *FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/"
                       "R3K2R w KQkq - 0 1\n";
 
@@ -308,7 +310,8 @@ void test_castle_white_queenside_move_valid_position_updated(void **state) {
     assert_true(cast_perm_has_permission(CP_BQ, cp));
 }
 
-void test_castle_black_queenside_move_valid_position_updated(void **state) {
+void test_position_make_move_castle_black_queenside_move_valid_position_updated(
+    void **state) {
     const char *FEN = "r3k2r/p1pp1p1p/bpn1qnp1/2b1p3/4P3/1PNPBN2/P1PQBPPP/"
                       "R3K2R b KQkq - 0 1\n";
 
@@ -370,7 +373,8 @@ void test_castle_black_queenside_move_valid_position_updated(void **state) {
     assert_false(cast_perm_has_permission(CP_BQ, cp));
 }
 
-void test_castle_black_kingside_move_valid_position_updated(void **state) {
+void test_position_make_move_castle_black_kingside_move_valid_position_updated(
+    void **state) {
     const char *FEN = "r3k2r/p1ppqp1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R "
                       "b KQkq - 0 1\n";
 

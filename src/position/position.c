@@ -368,16 +368,14 @@ static void do_capture_move(struct position *pos, const struct move mv,
         // flip the flag
         pos->en_passant.is_active = false;
 
-        enum piece_role pt;
         if (pos->side_to_move == WHITE) {
-            pt = PAWN;
+            pce_capt = BLACK_PAWN;
             en_pass_pce_sq = sq_get_square_minus_1_rank(to_sq);
         } else {
-            pt = PAWN;
+            pce_capt = WHITE_PAWN;
             en_pass_pce_sq = sq_get_square_plus_1_rank(to_sq);
         }
 
-        pce_capt = pce_create(pt, pos->side_to_move);
         brd_remove_piece(pos->brd, pce_capt, en_pass_pce_sq);
         brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
 
@@ -407,10 +405,10 @@ static void make_castle_piece_moves(struct position *pos,
     const bool is_queen_side = move_is_queen_castle(castle_move);
     const enum colour side = pos->side_to_move;
 
-    const struct piece pce_wk = pce_create(KING, WHITE);
-    const struct piece pce_wr = pce_create(ROOK, WHITE);
-    const struct piece pce_bk = pce_create(KING, BLACK);
-    const struct piece pce_br = pce_create(ROOK, BLACK);
+    const struct piece pce_wk = WHITE_KING;
+    const struct piece pce_wr = WHITE_ROOK;
+    const struct piece pce_bk = BLACK_KING;
+    const struct piece pce_br = BLACK_ROOK;
 
     switch (side) {
     case WHITE:

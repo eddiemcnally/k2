@@ -33,7 +33,7 @@
 
 enum colour {
     WHITE = 0,
-    BLACK,
+    BLACK = 0x01,
 };
 
 struct piece {
@@ -42,11 +42,24 @@ struct piece {
 
 enum piece_role { PAWN = 0, BISHOP, KNIGHT, ROOK, QUEEN, KING };
 
+extern struct piece WHITE_PAWN;
+extern struct piece WHITE_BISHOP;
+extern struct piece WHITE_KNIGHT;
+extern struct piece WHITE_ROOK;
+extern struct piece WHITE_QUEEN;
+extern struct piece WHITE_KING;
+
+extern struct piece BLACK_PAWN;
+extern struct piece BLACK_BISHOP;
+extern struct piece BLACK_KNIGHT;
+extern struct piece BLACK_ROOK;
+extern struct piece BLACK_QUEEN;
+extern struct piece BLACK_KING;
+
 #define NUM_COLOURS 2
 #define NUM_PIECE_ROLES 6
 #define NUM_PIECES (NUM_PIECE_ROLES * NUM_COLOURS)
 
-struct piece pce_create(const enum piece_role pce_role, const enum colour col);
 enum piece_role pce_get_piece_role(const struct piece pce);
 bool pce_are_equal(const struct piece pce1, const struct piece pce2);
 bool pce_is_white(const struct piece pce);
@@ -63,4 +76,4 @@ bool validate_piece(const struct piece pce);
 bool validate_piece_role(const enum piece_role pt);
 bool validate_colour(const enum colour col);
 bool validate_label(const char c);
-void pce_get_all_pieces(struct piece *pce_array);
+void pce_get_all_pieces(struct piece pce_array[NUM_PIECES]);

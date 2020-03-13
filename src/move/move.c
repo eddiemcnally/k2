@@ -174,30 +174,34 @@ struct piece move_decode_promotion_piece(const struct move mv,
 
     const uint16_t m = mv.val & MV_MASK_FLAGS;
 
-    enum piece_role pt;
-
     switch (m) {
     case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
     case MV_FLG_PROMOTE_KNIGHT:
-        pt = KNIGHT;
-        break;
+        if (side == WHITE) {
+            return WHITE_KNIGHT;
+        }
+        return BLACK_KNIGHT;
     case MV_FLG_PROMOTE_BISHOP_CAPTURE:
     case MV_FLG_PROMOTE_BISHOP:
-        pt = BISHOP;
-        break;
+        if (side == WHITE) {
+            return WHITE_BISHOP;
+        }
+        return BLACK_BISHOP;
     case MV_FLG_PROMOTE_QUEEN_CAPTURE:
     case MV_FLG_PROMOTE_QUEEN:
-        pt = QUEEN;
-        break;
+        if (side == WHITE) {
+            return WHITE_QUEEN;
+        }
+        return BLACK_QUEEN;
     case MV_FLG_PROMOTE_ROOK_CAPTURE:
     case MV_FLG_PROMOTE_ROOK:
-        pt = ROOK;
-        break;
+        if (side == WHITE) {
+            return WHITE_ROOK;
+        }
+        return BLACK_ROOK;
     default:
         assert(false);
     }
-
-    return pce_create(pt, side);
 }
 
 /**
@@ -349,30 +353,34 @@ struct piece move_get_promote_piece(const struct move mv,
 
     assert((m & MV_FLG_BIT_PROMOTE) != 0);
 
-    enum piece_role pt;
-
     switch (m) {
     case MV_FLG_PROMOTE_KNIGHT:
     case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
-        pt = KNIGHT;
-        break;
+        if (side_being_moved == WHITE) {
+            return WHITE_KNIGHT;
+        }
+        return BLACK_KNIGHT;
     case MV_FLG_PROMOTE_BISHOP:
     case MV_FLG_PROMOTE_BISHOP_CAPTURE:
-        pt = BISHOP;
-        break;
-
+        if (side_being_moved == WHITE) {
+            return WHITE_BISHOP;
+        }
+        return BLACK_BISHOP;
     case MV_FLG_PROMOTE_ROOK:
     case MV_FLG_PROMOTE_ROOK_CAPTURE:
-        pt = ROOK;
-        break;
+        if (side_being_moved == WHITE) {
+            return WHITE_ROOK;
+        }
+        return BLACK_ROOK;
     case MV_FLG_PROMOTE_QUEEN:
     case MV_FLG_PROMOTE_QUEEN_CAPTURE:
-        pt = QUEEN;
-        break;
+        if (side_being_moved == WHITE) {
+            return WHITE_QUEEN;
+        }
+        return BLACK_QUEEN;
     default:
         assert(false);
     }
-    return pce_create(pt, side_being_moved);
 }
 
 /**

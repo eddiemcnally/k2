@@ -33,10 +33,6 @@
 #include "square.h"
 #include <cmocka.h>
 
-static enum piece_role pce_list[NUM_PIECE_ROLES] = {PAWN, BISHOP, KNIGHT,
-                                                    ROOK, QUEEN,  KING};
-static enum colour col_list[NUM_COLOURS] = {WHITE, BLACK};
-
 void test_board_brd_allocate_deallocate(void **state) {
     struct board *brd = brd_allocate();
     validate_board(brd);
@@ -46,35 +42,33 @@ void test_board_brd_allocate_deallocate(void **state) {
 void test_board_brd_bulk_add_remove_piece(void **state) {
     struct board *brd = brd_allocate();
 
-    for (int c = 0; c < NUM_COLOURS; c++) {
-        for (int i = 0; i < NUM_PIECE_ROLES; i++) {
+    struct piece all_pieces[NUM_PIECES];
+    pce_get_all_pieces(all_pieces);
 
-            const enum colour col = (enum colour)col_list[c];
-            const enum piece_role pt = (enum piece_role)pce_list[i];
+    for (int i = 0; i < NUM_PIECES; i++) {
 
-            struct piece pce = pce_create(pt, col);
-            for (enum square sq = a1; sq <= h8; sq++) {
-                // add piece
-                brd_add_piece(brd, pce, sq);
+        struct piece pce = all_pieces[i];
+        for (enum square sq = a1; sq <= h8; sq++) {
+            // add piece
+            brd_add_piece(brd, pce, sq);
 
-                // verify it's there
-                struct piece found_pce;
-                bool found = brd_try_get_piece_on_square(brd, sq, &found_pce);
+            // verify it's there
+            struct piece found_pce;
+            bool found = brd_try_get_piece_on_square(brd, sq, &found_pce);
 
-                assert_true(found);
-                assert_true(pce_are_equal(found_pce, pce));
-                bool is_occupied = brd_is_sq_occupied(brd, sq);
-                assert_true(is_occupied);
+            assert_true(found);
+            assert_true(pce_are_equal(found_pce, pce));
+            bool is_occupied = brd_is_sq_occupied(brd, sq);
+            assert_true(is_occupied);
 
-                // remove piece
-                brd_remove_piece(brd, pce, sq);
+            // remove piece
+            brd_remove_piece(brd, pce, sq);
 
-                // verify it's gone
-                found = brd_try_get_piece_on_square(brd, sq, &found_pce);
-                assert_false(found);
-                is_occupied = brd_is_sq_occupied(brd, sq);
-                assert_false(is_occupied);
-            }
+            // verify it's gone
+            found = brd_try_get_piece_on_square(brd, sq, &found_pce);
+            assert_false(found);
+            is_occupied = brd_is_sq_occupied(brd, sq);
+            assert_false(is_occupied);
         }
     }
     brd_deallocate(brd);
@@ -82,49 +76,45 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
 
 void test_board_brd_move_piece(void **state) {
     struct board *brd = brd_allocate();
+    struct piece all_pieces[NUM_PIECES];
+    pce_get_all_pieces(all_pieces);
 
-    for (int c = 0; c < NUM_COLOURS; c++) {
-        for (int i = 0; i < NUM_PIECE_ROLES; i++) {
+    for (int i = 0; i < NUM_PIECES; i++) {
 
-            const enum colour col = (enum colour)col_list[c];
-            const enum piece_role pt = (enum piece_role)pce_list[i];
-
-            struct piece pce = pce_create(pt, col);
-            for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
-                for (enum square to_sq = a1; to_sq <= h8; to_sq++) {
-                    if (from_sq == to_sq) {
-                        continue;
-                    }
-                    // add piece
-                    brd_add_piece(brd, pce, from_sq);
-
-                    // verify it's there
-                    struct piece found_pce;
-                    bool found =
-                        brd_try_get_piece_on_square(brd, from_sq, &found_pce);
-                    assert_true(found);
-                    assert_true(pce_are_equal(found_pce, pce));
-                    bool is_occupied = brd_is_sq_occupied(brd, from_sq);
-                    assert_true(is_occupied);
-
-                    // move it
-                    brd_move_piece(brd, pce, from_sq, to_sq);
-
-                    // verify it's not on the from_sq
-                    found =
-                        brd_try_get_piece_on_square(brd, from_sq, &found_pce);
-                    assert_false(found);
-                    is_occupied = brd_is_sq_occupied(brd, from_sq);
-                    assert_false(is_occupied);
-                    // verify it's now on the to_sq
-                    found = brd_try_get_piece_on_square(brd, to_sq, &found_pce);
-                    assert_true(found);
-                    is_occupied = brd_is_sq_occupied(brd, to_sq);
-                    assert_true(is_occupied);
-
-                    // remove piece
-                    brd_remove_piece(brd, pce, to_sq);
+        struct piece pce = all_pieces[i];
+        for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
+            for (enum square to_sq = a1; to_sq <= h8; to_sq++) {
+                if (from_sq == to_sq) {
+                    continue;
                 }
+                // add piece
+                brd_add_piece(brd, pce, from_sq);
+
+                // verify it's there
+                struct piece found_pce;
+                bool found =
+                    brd_try_get_piece_on_square(brd, from_sq, &found_pce);
+                assert_true(found);
+                assert_true(pce_are_equal(found_pce, pce));
+                bool is_occupied = brd_is_sq_occupied(brd, from_sq);
+                assert_true(is_occupied);
+
+                // move it
+                brd_move_piece(brd, pce, from_sq, to_sq);
+
+                // verify it's not on the from_sq
+                found = brd_try_get_piece_on_square(brd, from_sq, &found_pce);
+                assert_false(found);
+                is_occupied = brd_is_sq_occupied(brd, from_sq);
+                assert_false(is_occupied);
+                // verify it's now on the to_sq
+                found = brd_try_get_piece_on_square(brd, to_sq, &found_pce);
+                assert_true(found);
+                is_occupied = brd_is_sq_occupied(brd, to_sq);
+                assert_true(is_occupied);
+
+                // remove piece
+                brd_remove_piece(brd, pce, to_sq);
             }
         }
     }
@@ -628,16 +618,14 @@ void test_board_compare(void **state) {
 
     assert_true(brd_compare(brd1, brd2));
 
-    struct piece bpawn = pce_create(PAWN, BLACK);
-    brd_add_piece(brd1, bpawn, a1);
+    brd_add_piece(brd1, BLACK_PAWN, a1);
     assert_false(brd_compare(brd1, brd2));
-    brd_remove_piece(brd1, bpawn, a1);
+    brd_remove_piece(brd1, BLACK_PAWN, a1);
     assert_true(brd_compare(brd1, brd2));
 
-    struct piece wpawn = pce_create(PAWN, WHITE);
-    brd_move_piece(brd1, wpawn, a5, a6);
+    brd_move_piece(brd1, WHITE_PAWN, a5, a6);
     assert_false(brd_compare(brd1, brd2));
-    brd_move_piece(brd1, wpawn, a6, a5);
+    brd_move_piece(brd1, WHITE_PAWN, a6, a5);
     assert_true(brd_compare(brd1, brd2));
 }
 

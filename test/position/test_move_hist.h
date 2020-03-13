@@ -32,4 +32,3 @@
 #include <stdint.h>
 
 void test_move_history_push_multiple_moves_used_slots_as_expected(void **state);
-
