@@ -95,6 +95,7 @@ set(TEST_SRCS
         ${TEST_POSN_DIR}/test_hashkeys.c
         ${TEST_POSN_DIR}/test_move_hist.c
         ${TEST_POSN_DIR}/test_castle_permissions.c
+        ${TEST_POSN_DIR}/test_attack_checker.c
         ${TEST_MOVE_DIR}/test_move.c
         ${TEST_MOVE_DIR}/test_move_list.c
         ${TEST_MOVE_DIR}/test_move_gen.c

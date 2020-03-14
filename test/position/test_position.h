@@ -46,4 +46,3 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
 void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     void **state);
 void test_position_make_move_castle_white_kingside_move_invalid(void **state);
-

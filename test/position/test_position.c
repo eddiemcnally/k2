@@ -434,27 +434,23 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_BQ, cp));
 }
 
-
 void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
 
-    const char *fen_list[] ={
-        "4k3/4q3/8/8/8/8/8/R3K2R w K - 0 1",
-        "4k3/5q2/8/8/8/8/8/R3K2R w K - 0 1",
-        "4k3/6q1/8/8/8/8/8/R3K2R w K - 0 1",
-        "4k3/8/8/8/8/3q4/8/R3K2R w K - 0 1",
-        "4k3/8/8/8/8/7q/8/R3K2R w K - 0 1",
-        "4k3/8/8/8/8/8/3q4/R3K2R w K - 0 1"
-    };
+    const char *fen_list[] = {"4k3/4q3/8/8/8/8/8/R3K2R w K - 0 1",
+                              "4k3/5q2/8/8/8/8/8/R3K2R w K - 0 1",
+                              "4k3/6q1/8/8/8/8/8/R3K2R w K - 0 1",
+                              "4k3/8/8/8/8/3q4/8/R3K2R w K - 0 1",
+                              "4k3/8/8/8/8/7q/8/R3K2R w K - 0 1",
+                              "4k3/8/8/8/8/8/3q4/R3K2R w K - 0 1"};
 
-    uint8_t fen_sz = (sizeof (fen_list) / sizeof (const char *));
+    uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
 
     struct move wk_castle = move_encode_castle_kingside();
 
-    for(int i = 0; i < fen_sz; i++){
+    for (int i = 0; i < fen_sz; i++) {
 
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
-       
 
         bool is_valid = pos_try_make_move(pos, wk_castle);
 
@@ -463,9 +459,6 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
         pos_destroy(pos);
     }
 }
-
-
-
 
 void test_position_brd_is_sq_occupied(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"

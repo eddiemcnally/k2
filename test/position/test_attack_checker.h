@@ -25,10 +25,10 @@
  */
 
 #pragma once
-
-#include "board.h"
-#include "square.h"
+#include <setjmp.h>
+#include <stdarg.h>
 #include <stdbool.h>
+#include <stddef.h>
 
-bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq,
-                            const enum colour attacking_side);
+void test_att_chk_is_white_pawn_attacking(void **state);
+void test_att_chk_is_black_pawn_attacking(void **state);
