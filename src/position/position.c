@@ -27,6 +27,7 @@
 #include "position.h"
 #include "board.h"
 #include "castle_perms.h"
+#include "attack_checker.h"
 #include "fen.h"
 #include "move.h"
 #include "move_hist.h"
@@ -78,6 +79,13 @@ static void make_castle_piece_moves(struct position *pos,
                                     const struct move castle_move);
 static void make_en_passant_move(struct position *pos,
                                  const struct move en_pass_mv);
+static bool is_move_legal(const struct position *pos, const struct move mov);
+static bool is_castle_move_legal(const struct position *pos, const struct move mov);
+static bool is_move_legal(const struct position *pos, const struct move mov);
+static void populate_target_sq(const struct move mv, const enum colour size_to_move, enum square *sq_list);
+
+
+
 
 /**
  * @brief       Create and initialise an empty instance of the Position struct
@@ -194,36 +202,6 @@ bool validate_position(const struct position *pos) {
     return true;
 }
 
-/* to do
- * =====
- * 
- * save current position (->history)
- *      current hash
- *      move being made
- *      current castle permissions
- *      en passant square
- *      current value of  "50-move rule" counter
- * incr history pointer
- * extract top/from squares, capture move
- * if capture move, 
- *      save capture piece (->history)
- *      remove piece from board
- * move piece from->to
- * update 50 move rule 
- *      increment counter
- *      reset if capture or pawn move
- *      if limit reached, declare draw.
- * handle promotion
- *      remove pawn (plus material)
- *      add promoted piece to board (increase material)
- * handle En passant capture
- *      remove pawn that was captured
- * Set En passant if double pawn move
- * update hashkey
- * adjust castle permissions based on move made
- * change side, incr ply and history ply        
- */
-
 bool pos_try_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
 
@@ -274,10 +252,12 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
         make_castle_piece_moves(pos, mv);
     }
 
+    bool move_legal = is_move_legal(pos, mv);
+
     // swap sides
     pos->side_to_move = pce_swap_side(pos->side_to_move);
 
-    return true;
+    return move_legal;
 }
 
 struct move pos_take_move(struct position *pos) {
@@ -394,6 +374,78 @@ static void do_capture_move(struct position *pos, const struct move mv,
         }
     }
 }
+
+
+static bool is_move_legal(const struct position *pos, const struct move mov){
+
+    const enum colour side_to_move = pos_get_side_to_move(pos);
+    const enum colour attacking_side = pce_swap_side(side_to_move);
+    const struct board *brd = pos_get_board(pos);
+    uint64_t king_bb = brd_get_piece_bb(brd, KING, side_to_move);
+    const enum square king_sq = bb_pop_1st_bit(&king_bb);
+
+
+    if (att_chk_is_sq_attacked(brd, king_sq, attacking_side)){
+        // square attacked, move not legal
+        return false;
+    }
+
+    if (move_is_castle(mov)){
+        // check that the castle wasn't done through attacked squares
+        if (is_castle_move_legal(pos, mov) == false){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+static bool is_castle_move_legal(const struct position *pos, const struct move mov){
+    const enum colour side_to_move = pos_get_side_to_move(pos);
+    const enum colour attacking_side = pce_swap_side(side_to_move);
+    const struct board *brd = pos_get_board(pos);
+    enum square sq_list[3];
+
+    populate_target_sq(mov, side_to_move, sq_list);   
+
+    for (int i = 0; i < 3; i++){
+        if (att_chk_is_sq_attacked(brd, sq_list[i], attacking_side)){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+static void populate_target_sq(const struct move mv, const enum colour side_to_move, enum square *sq_list){
+    if (move_is_king_castle(mv)){
+        if (side_to_move == WHITE){
+             sq_list[0] = e1;
+             sq_list[1] = f1;
+             sq_list[2] = g1;
+        } else{
+             sq_list[0] = e8;
+             sq_list[1] = f8;
+             sq_list[2] = g8;
+        }
+    } else if (move_is_queen_castle(mv)){
+        if (side_to_move == WHITE){
+             sq_list[0] = c1;
+             sq_list[1] = d1;
+             sq_list[2] = e1;
+        } else{
+             sq_list[0] = c8;
+             sq_list[1] = d8;
+             sq_list[2] = e8;
+        }
+    }
+}
+
+
+
+
 
 static void make_castle_piece_moves(struct position *pos,
                                     const struct move castle_move) {
