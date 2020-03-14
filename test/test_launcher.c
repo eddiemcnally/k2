@@ -214,6 +214,16 @@ int main(void) {
         // attack checker
         cmocka_unit_test(test_att_chk_is_white_pawn_attacking),
         cmocka_unit_test(test_att_chk_is_black_pawn_attacking),
+        cmocka_unit_test(test_att_chk_is_white_knight_attacking),
+        cmocka_unit_test(test_att_chk_is_black_knight_attacking),
+        cmocka_unit_test(test_att_chk_is_white_king_attacking),
+        cmocka_unit_test(test_att_chk_is_black_king_attacking),
+        cmocka_unit_test(
+            test_att_chk_is_white_horizontal_and_vertical_attacking),
+        cmocka_unit_test(
+            test_att_chk_is_black_horizontal_and_vertical_attacking),
+        cmocka_unit_test(test_att_chk_is_white_diagonal_attacking),
+        cmocka_unit_test(test_att_chk_is_black_diagonal_attacking),
 
         // castle permissions
         cmocka_unit_test(test_castle_permissions_get_set),

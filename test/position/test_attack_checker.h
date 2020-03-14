@@ -26,9 +26,14 @@
 
 #pragma once
 #include <setjmp.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
 
 void test_att_chk_is_white_pawn_attacking(void **state);
 void test_att_chk_is_black_pawn_attacking(void **state);
+void test_att_chk_is_white_knight_attacking(void **state);
+void test_att_chk_is_black_knight_attacking(void **state);
+void test_att_chk_is_white_king_attacking(void **state);
+void test_att_chk_is_black_king_attacking(void **state);
+void test_att_chk_is_white_horizontal_and_vertical_attacking(void **state);
+void test_att_chk_is_black_horizontal_and_vertical_attacking(void **state);
+void test_att_chk_is_white_diagonal_attacking(void **state);
+void test_att_chk_is_black_diagonal_attacking(void **state);
