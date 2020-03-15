@@ -80,7 +80,7 @@ void test_position_compare(void **state) {
     assert_true(pos_compare(pos1, pos2));
 }
 
-void test_position_white_double_first_move(void **state) {
+void test_position_make_move_white_double_first_move(void **state) {
     struct mv_from_to moves[8] = {
         {.from_sq = a2, .to_sq = a4}, {.from_sq = b2, .to_sq = b4},
         {.from_sq = c2, .to_sq = c4}, {.from_sq = d2, .to_sq = d4},
@@ -134,7 +134,7 @@ void test_position_white_double_first_move(void **state) {
     }
 }
 
-void test_position_black_double_first_move(void **state) {
+void test_position_make_move_black_double_first_move(void **state) {
 #define INITIAL_FEN_BLACK_TO_MOVE                                              \
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
 
@@ -454,8 +454,19 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
 
+        struct board *brd = pos_get_board(pos);
+
+        uint32_t w_material_before = brd_get_material(brd, WHITE);
+        uint32_t b_material_before = brd_get_material(brd, BLACK);
+        
         bool is_valid = pos_try_make_move(pos, wk_castle);
 
+        uint32_t w_material_after = brd_get_material(brd, WHITE);
+        uint32_t b_material_after = brd_get_material(brd, BLACK);
+
+        assert_int_equal(w_material_before, w_material_after);
+        assert_int_equal(b_material_before, b_material_after);
+        
         assert_false(is_valid);
 
         pos_destroy(pos);
@@ -481,8 +492,18 @@ void test_position_make_move_castle_black_kingside_move_invalid(void **state) {
 
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
+        const struct board *brd = pos_get_board(pos); 
+
+        uint32_t w_material_before = brd_get_material(brd, WHITE);
+        uint32_t b_material_before = brd_get_material(brd, BLACK);
 
         bool is_valid = pos_try_make_move(pos, bk_castle);
+
+        uint32_t w_material_after = brd_get_material(brd, WHITE);
+        uint32_t b_material_after = brd_get_material(brd, BLACK);
+
+        assert_int_equal(w_material_before, w_material_after);
+        assert_int_equal(b_material_before, b_material_after);
 
         assert_false(is_valid);
 
@@ -510,10 +531,19 @@ void test_position_make_move_castle_white_queenside_move_invalid(void **state) {
 
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
+        const struct board *brd = pos_get_board(pos); 
+
+        uint32_t w_material_before = brd_get_material(brd, WHITE);
+        uint32_t b_material_before = brd_get_material(brd, BLACK);
 
         bool is_valid = pos_try_make_move(pos, wq_castle);
 
         assert_false(is_valid);
+        uint32_t w_material_after = brd_get_material(brd, WHITE);
+        uint32_t b_material_after = brd_get_material(brd, BLACK);
+
+        assert_int_equal(w_material_before, w_material_after);
+        assert_int_equal(b_material_before, b_material_after);
 
         pos_destroy(pos);
     }
@@ -536,14 +566,26 @@ void test_position_make_move_castle_black_queenside_move_invalid(void **state) {
 
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
+        const struct board *brd = pos_get_board(pos); 
+
+        uint32_t w_material_before = brd_get_material(brd, WHITE);
+        uint32_t b_material_before = brd_get_material(brd, BLACK);
 
         bool is_valid = pos_try_make_move(pos, bq_castle);
 
         assert_false(is_valid);
+        uint32_t w_material_after = brd_get_material(brd, WHITE);
+        uint32_t b_material_after = brd_get_material(brd, BLACK);
+
+        assert_int_equal(w_material_before, w_material_after);
+        assert_int_equal(b_material_before, b_material_after);
 
         pos_destroy(pos);
     }
 }
+
+
+
 
 void test_position_brd_is_sq_occupied(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
@@ -628,8 +670,6 @@ void test_position_brd_is_sq_occupied(void **state) {
 }
 
 // to test
-// - castle permissions available, but castle move not possible (sliding blocked, king crosses check)
-// - castle permissions not valid, but a castle move is rejected
 // - knight
 // - bishop
 // - queen

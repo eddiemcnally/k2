@@ -38,6 +38,7 @@ set (TEST_RUNNER_COMPILER_WARNS "-std=c11 \
         -fsanitize=undefined \
         -fno-omit-frame-pointer \
         -fshort-enums \
+        -fno-common \
         -Wpedantic \
         -Wall \
         -Waggregate-return \
@@ -53,7 +54,7 @@ set (TEST_RUNNER_COMPILER_WARNS "-std=c11 \
         -Wstrict-aliasing \
         -Wmissing-declarations \
         -Wmissing-include-dirs \
-        -Wno-unused-parameter \
+        -Wunused-parameter \
         -Wuninitialized \
         -Wmissing-prototypes \
         -Wswitch-default \

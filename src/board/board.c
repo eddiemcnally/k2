@@ -167,6 +167,22 @@ void brd_add_piece(struct board *brd, const struct piece pce,
 }
 
 /**
+ * @brief Returns the material value for the given side/colour 
+ * 
+ * @param brd           The board
+ * @param side          The side 
+ * @return uint32_t     The current material value
+ */
+uint32_t brd_get_material(const struct board *brd, const enum colour side){
+    assert(validate_board(brd));
+    assert(validate_colour(side));
+
+    uint8_t idx = pce_col_get_array_idx(side);
+    return brd->material[idx];
+}
+
+
+/**
  * @brief       Removes a piece from the specified square
  *
  * @param brd   The board
