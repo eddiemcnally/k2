@@ -49,8 +49,8 @@ struct move move_encode_enpassant(const enum square from_sq,
                                   const enum square to_sq);
 struct move move_encode_pawn_double_first(const enum square from_sq,
                                           const enum square to_sq);
-struct move move_encode_castle_kingside(void);
-struct move move_encode_castle_queenside(void);
+struct move move_encode_castle_kingside(const enum colour side);
+struct move move_encode_castle_queenside(const enum colour side);
 
 bool move_compare(const struct move mv1, const struct move mv2);
 

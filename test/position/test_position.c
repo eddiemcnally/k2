@@ -222,7 +222,7 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_BK, start_cp));
     assert_true(cast_perm_has_permission(CP_BQ, start_cp));
 
-    struct move wk_castle = move_encode_castle_kingside();
+    struct move wk_castle = move_encode_castle_kingside(WHITE);
 
     // make move
     bool move_made = pos_try_make_move(pos, wk_castle);
@@ -283,7 +283,7 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_BK, start_cp));
     assert_true(cast_perm_has_permission(CP_BQ, start_cp));
 
-    struct move wk_castle = move_encode_castle_queenside();
+    struct move wk_castle = move_encode_castle_queenside(WHITE);
 
     // make move
     bool move_made = pos_try_make_move(pos, wk_castle);
@@ -346,7 +346,7 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_BK, start_cp));
     assert_true(cast_perm_has_permission(CP_BQ, start_cp));
 
-    struct move bq_castle = move_encode_castle_queenside();
+    struct move bq_castle = move_encode_castle_queenside(BLACK);
 
     // make move
     bool move_made = pos_try_make_move(pos, bq_castle);
@@ -407,7 +407,7 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_BK, start_cp));
     assert_true(cast_perm_has_permission(CP_BQ, start_cp));
 
-    struct move bk_castle = move_encode_castle_kingside();
+    struct move bk_castle = move_encode_castle_kingside(BLACK);
 
     // make move
     bool move_made = pos_try_make_move(pos, bk_castle);
@@ -441,11 +441,13 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
                               "4k3/6q1/8/8/8/8/8/R3K2R w K - 0 1",
                               "4k3/8/8/8/8/3q4/8/R3K2R w K - 0 1",
                               "4k3/8/8/8/8/7q/8/R3K2R w K - 0 1",
-                              "4k3/8/8/8/8/8/3q4/R3K2R w K - 0 1"};
+                              "4k3/8/8/8/8/8/3q4/R3K2R w K - 0 1",
+                              "4k3/8/q7/8/8/8/8/R3K2R w K - 0 1",
+                              "4k3/8/8/q7/8/8/8/R3K2R w K - 0 1",
+                              "4k3/q7/8/8/8/8/8/R3K2R w K - 0 1"};
 
-    uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
-
-    struct move wk_castle = move_encode_castle_kingside();
+    const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
+    struct move wk_castle = move_encode_castle_kingside(WHITE);
 
     for (int i = 0; i < fen_sz; i++) {
 
@@ -453,6 +455,89 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
         pos_initialise(fen_list[i], pos);
 
         bool is_valid = pos_try_make_move(pos, wk_castle);
+
+        assert_false(is_valid);
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_make_move_castle_black_kingside_move_invalid(void **state) {
+    const char *fen_list[] = {"r3k2r/8/8/8/Q7/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/8/8/1Q6/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/8/8/2Q5/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/8/8/4Q3/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/8/8/5Q2/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/8/8/6Q1/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/6Q1/8/8/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/7Q/8/8/8/8/4K3 b k - 0 1",
+                              "r3k2r/7Q/8/8/8/8/8/4K3 b k - 0 1",
+                              "r3k2r/6Q1/8/8/8/8/8/4K3 b k - 0 1"};
+
+    const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
+    struct move bk_castle = move_encode_castle_kingside(BLACK);
+
+    for (int i = 0; i < fen_sz; i++) {
+
+        struct position *pos = pos_create();
+        pos_initialise(fen_list[i], pos);
+
+        bool is_valid = pos_try_make_move(pos, bk_castle);
+
+        assert_false(is_valid);
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_make_move_castle_white_queenside_move_invalid(void **state) {
+    const char *fen_list[] = {
+        "4k3/4q3/8/8/8/8/8/R3K2R w Q - 0 1",
+        "4k3/8/3q4/8/8/8/8/R3K2R w Q - 0 1",
+        "4k3/8/2q5/8/8/8/8/R3K2R w Q - 0 1",
+        "4k3/8/8/8/8/1q6/8/R3K2R w Q - 0 1",
+        "4k3/8/8/8/8/8/1q6/R3K2R w Q - 0 1",
+        "4k3/8/8/8/8/5q2/8/R3K2R w Q - 0 1",
+        "4k3/8/8/8/5q2/8/8/R3K2R w Q - 0 1",
+        "4k3/8/8/7q/8/8/8/R3K2R w Q - 0 1",
+        "4k3/8/8/8/8/4q3/8/R3K2R w Q - 0 1",
+    };
+
+    const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
+    struct move wq_castle = move_encode_castle_queenside(WHITE);
+
+    for (int i = 0; i < fen_sz; i++) {
+
+        struct position *pos = pos_create();
+        pos_initialise(fen_list[i], pos);
+
+        bool is_valid = pos_try_make_move(pos, wq_castle);
+
+        assert_false(is_valid);
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_make_move_castle_black_queenside_move_invalid(void **state) {
+
+    const char *fen_list[] = {"r3k2r/8/8/8/Q7/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/8/8/2Q5/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/8/8/3Q4/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/8/8/4Q3/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/6Q1/8/8/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/5Q2/8/8/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/3Q4/8/8/8/8/4K3 b q - 0 1"};
+
+    const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
+    struct move bq_castle = move_encode_castle_queenside(BLACK);
+
+    for (int i = 0; i < fen_sz; i++) {
+
+        struct position *pos = pos_create();
+        pos_initialise(fen_list[i], pos);
+
+        bool is_valid = pos_try_make_move(pos, bq_castle);
 
         assert_false(is_valid);
 

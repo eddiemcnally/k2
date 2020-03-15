@@ -226,8 +226,24 @@ struct move move_encode_capture(const enum square from_sq,
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_kingside(void) {
-    struct move mv = {0};
+struct move move_encode_castle_kingside(const enum colour side) {
+    enum square from_sq;
+    enum square to_sq;
+
+    switch (side) {
+    case WHITE:
+        from_sq = e1;
+        to_sq = g1;
+        break;
+    case BLACK:
+        from_sq = e8;
+        to_sq = g8;
+        break;
+    default:
+        assert(false);
+    }
+
+    struct move mv = encode_to_from(from_sq, to_sq);
     set_flag(&mv.val, MV_FLG_KING_CASTLE);
     return mv;
 }
@@ -237,8 +253,24 @@ struct move move_encode_castle_kingside(void) {
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_queenside(void) {
-    struct move mv = {0};
+struct move move_encode_castle_queenside(const enum colour side) {
+    enum square from_sq;
+    enum square to_sq;
+
+    switch (side) {
+    case WHITE:
+        from_sq = e1;
+        to_sq = c1;
+        break;
+    case BLACK:
+        from_sq = e8;
+        to_sq = c8;
+        break;
+    default:
+        assert(false);
+    }
+
+    struct move mv = encode_to_from(from_sq, to_sq);
     set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
     return mv;
 }

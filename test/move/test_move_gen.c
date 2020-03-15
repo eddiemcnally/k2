@@ -290,10 +290,10 @@ void test_move_white_castling_WK_WQ(void **state) {
 
     mv_gen_king_moves(pos, WHITE, mvl);
 
-    struct move wk_cast = move_encode_castle_kingside();
+    struct move wk_cast = move_encode_castle_kingside(WHITE);
     assert_true(mvl_contains_move(mvl, wk_cast));
 
-    struct move wq_cast = move_encode_castle_queenside();
+    struct move wq_cast = move_encode_castle_queenside(WHITE);
     assert_true(mvl_contains_move(mvl, wq_cast));
 }
 
@@ -307,10 +307,10 @@ void test_move_white_castling_WK_only(void **state) {
 
     mv_gen_king_moves(pos, WHITE, mvl);
 
-    struct move wk_cast = move_encode_castle_kingside();
+    struct move wk_cast = move_encode_castle_kingside(WHITE);
     assert_true(mvl_contains_move(mvl, wk_cast));
 
-    struct move wq_cast = move_encode_castle_queenside();
+    struct move wq_cast = move_encode_castle_queenside(WHITE);
     assert_false(mvl_contains_move(mvl, wq_cast));
 }
 
@@ -324,10 +324,10 @@ void test_move_white_castling_WQ_only(void **state) {
 
     mv_gen_king_moves(pos, WHITE, mvl);
 
-    struct move wk_cast = move_encode_castle_kingside();
+    struct move wk_cast = move_encode_castle_kingside(WHITE);
     assert_false(mvl_contains_move(mvl, wk_cast));
 
-    struct move wq_cast = move_encode_castle_queenside();
+    struct move wq_cast = move_encode_castle_queenside(WHITE);
     assert_true(mvl_contains_move(mvl, wq_cast));
 }
 
@@ -404,10 +404,10 @@ void test_move_black_castling_BK_BQ(void **state) {
 
     mv_gen_king_moves(pos, BLACK, mvl);
 
-    struct move bk_cast = move_encode_castle_kingside();
+    struct move bk_cast = move_encode_castle_kingside(BLACK);
     assert_true(mvl_contains_move(mvl, bk_cast));
 
-    struct move bq_cast = move_encode_castle_queenside();
+    struct move bq_cast = move_encode_castle_queenside(BLACK);
     assert_true(mvl_contains_move(mvl, bq_cast));
 }
 
@@ -421,10 +421,10 @@ void test_move_black_castling_BK_only(void **state) {
 
     mv_gen_king_moves(pos, BLACK, mvl);
 
-    struct move bk_cast = move_encode_castle_kingside();
+    struct move bk_cast = move_encode_castle_kingside(BLACK);
     assert_true(mvl_contains_move(mvl, bk_cast));
 
-    struct move bq_cast = move_encode_castle_queenside();
+    struct move bq_cast = move_encode_castle_queenside(BLACK);
     assert_false(mvl_contains_move(mvl, bq_cast));
 }
 
@@ -438,10 +438,10 @@ void test_move_black_castling_BQ_only(void **state) {
 
     mv_gen_king_moves(pos, BLACK, mvl);
 
-    struct move bk_cast = move_encode_castle_kingside();
+    struct move bk_cast = move_encode_castle_kingside(BLACK);
     assert_false(mvl_contains_move(mvl, bk_cast));
 
-    struct move bq_cast = move_encode_castle_queenside();
+    struct move bq_cast = move_encode_castle_queenside(BLACK);
     assert_true(mvl_contains_move(mvl, bq_cast));
 }
 

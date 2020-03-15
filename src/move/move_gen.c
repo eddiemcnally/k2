@@ -66,10 +66,12 @@ static void mv_gen_white_castle_moves(const struct position *pos,
                                       struct move_list *mvl);
 static void add_kingside_move_if_no_blockers(const uint64_t brd_bb,
                                              const uint64_t blocking_pce_mask,
-                                             struct move_list *mvl);
+                                             struct move_list *mvl,
+                                             const enum colour side_to_move);
 static void add_queenside_move_if_no_blockers(const uint64_t brd_bb,
                                               const uint64_t blocking_pce_mask,
-                                              struct move_list *mvl);
+                                              struct move_list *mvl,
+                                              const enum colour side_to_move);
 static void gen_promotions(const enum square from_sq, const enum square to_sq,
                            struct move_list *mvl, const bool is_capture,
                            const enum piece_role *promotion_pieces);
@@ -639,10 +641,12 @@ static void mv_gen_white_castle_moves(const struct position *pos,
     const uint64_t occupied_bb = brd_get_board_bb(brd);
 
     if (cast_perm_has_permission(CP_WK, cp)) {
-        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WK, mvl);
+        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WK, mvl,
+                                         WHITE);
     }
     if (cast_perm_has_permission(CP_WQ, cp)) {
-        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WQ, mvl);
+        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_WQ, mvl,
+                                          WHITE);
     }
 }
 
@@ -653,27 +657,31 @@ static void mv_gen_black_castle_moves(const struct position *pos,
     const uint64_t occupied_bb = brd_get_board_bb(brd);
 
     if (cast_perm_has_permission(CP_BK, cp)) {
-        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BK, mvl);
+        add_kingside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BK, mvl,
+                                         BLACK);
     }
     if (cast_perm_has_permission(CP_BQ, cp)) {
-        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BQ, mvl);
+        add_queenside_move_if_no_blockers(occupied_bb, CASTLE_MASK_BQ, mvl,
+                                          BLACK);
     }
 }
 
 static void add_kingside_move_if_no_blockers(const uint64_t brd_bb,
                                              const uint64_t blocking_pce_mask,
-                                             struct move_list *mvl) {
+                                             struct move_list *mvl,
+                                             const enum colour side_to_move) {
     if ((brd_bb & blocking_pce_mask) == 0) {
-        struct move mv = move_encode_castle_kingside();
+        struct move mv = move_encode_castle_kingside(side_to_move);
         mvl_add(mvl, mv);
     }
 }
 
 static void add_queenside_move_if_no_blockers(const uint64_t brd_bb,
                                               const uint64_t blocking_pce_mask,
-                                              struct move_list *mvl) {
+                                              struct move_list *mvl,
+                                              const enum colour side_to_move) {
     if ((brd_bb & blocking_pce_mask) == 0) {
-        struct move mv = move_encode_castle_queenside();
+        struct move mv = move_encode_castle_queenside(side_to_move);
         mvl_add(mvl, mv);
     }
 }

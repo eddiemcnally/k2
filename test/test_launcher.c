@@ -65,12 +65,17 @@ int main(void) {
         cmocka_unit_test(test_move_is_double_pawn_black),
         cmocka_unit_test(test_move_get_promote_piece_white),
         cmocka_unit_test(test_move_get_promote_piece_black),
-        cmocka_unit_test(test_king_castle_encode_and_test),
-        cmocka_unit_test(test_queen_castle_encode_and_test),
+        cmocka_unit_test(test_white_king_castle_encode_and_test),
+        cmocka_unit_test(test_white_queen_castle_encode_and_test),
+        cmocka_unit_test(test_black_king_castle_encode_and_test),
+        cmocka_unit_test(test_black_queen_castle_encode_and_test),
         cmocka_unit_test(test_move_quiet_encode_decode),
         cmocka_unit_test(test_move_capture_encode_decode),
-        cmocka_unit_test(test_move_queen_castle_encode_decode),
-        cmocka_unit_test(test_move_king_castle_encode_decode),
+        cmocka_unit_test(test_move_white_queen_castle_encode_decode),
+        cmocka_unit_test(test_move_white_king_castle_encode_decode),
+        cmocka_unit_test(test_move_black_queen_castle_encode_decode),
+        cmocka_unit_test(test_move_black_king_castle_encode_decode),
+
         cmocka_unit_test(test_move_double_pawn_move_encode_decode),
 
         // move list
@@ -109,6 +114,12 @@ int main(void) {
             test_move_history_push_multiple_moves_used_slots_as_expected),
         cmocka_unit_test(
             test_position_make_move_castle_white_kingside_move_invalid),
+        cmocka_unit_test(
+            test_position_make_move_castle_black_kingside_move_invalid),
+        cmocka_unit_test(
+            test_position_make_move_castle_white_queenside_move_invalid),
+        cmocka_unit_test(
+            test_position_make_move_castle_black_queenside_move_invalid),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),
