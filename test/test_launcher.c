@@ -134,6 +134,8 @@ int main(void) {
         cmocka_unit_test(test_position_make_move_white_king_invalid_moves),
         cmocka_unit_test(test_position_make_move_black_king_valid_moves),
         cmocka_unit_test(test_position_make_move_black_king_invalid_moves),
+        cmocka_unit_test(test_position_make_move_black_en_passant),
+        cmocka_unit_test(test_position_make_move_white_en_passant),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),

@@ -1113,6 +1113,80 @@ void test_position_make_move_white_king_invalid_moves(void **state) {
     }
 }
 
+void test_position_make_move_black_en_passant(void **state) {
+    const char *test_fen = "4k3/8/8/8/1p6/8/2P5/4K3 w - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+    struct board *brd = pos_get_board(pos);
+
+    // double first move
+    const struct move mv = move_encode_pawn_double_first(c2, c4);
+    bool move_is_valid = pos_try_make_move(pos, mv);
+
+    assert_true(move_is_valid);
+    enum square old_white_sq;
+    bool old_white_pawn_found =
+        brd_try_get_piece_on_square(brd, c4, &old_white_sq);
+    assert_true(old_white_pawn_found);
+    enum square enp_sq;
+    bool enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
+    assert_true(enp_found);
+    assert_true(enp_sq == c3);
+
+    // en passant move
+    const struct move en_pass_mv = move_encode_enpassant(b4, c3);
+    move_is_valid = pos_try_make_move(pos, en_pass_mv);
+
+    old_white_pawn_found = brd_try_get_piece_on_square(brd, c4, &old_white_sq);
+    assert_false(old_white_pawn_found);
+
+    struct piece blk_pawn;
+    bool blk_pawn_found = brd_try_get_piece_on_square(brd, c3, &blk_pawn);
+    assert_true(blk_pawn_found);
+    enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
+    assert_false(enp_found);
+
+    pos_destroy(pos);
+}
+
+void test_position_make_move_white_en_passant(void **state) {
+    const char *test_fen = "4k3/6p1/8/5P2/8/8/8/4K3 b - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+    struct board *brd = pos_get_board(pos);
+
+    // double first move
+    const struct move mv = move_encode_pawn_double_first(g7, g5);
+    bool move_is_valid = pos_try_make_move(pos, mv);
+
+    assert_true(move_is_valid);
+    enum square old_black_sq;
+    bool old_black_pawn_found =
+        brd_try_get_piece_on_square(brd, g5, &old_black_sq);
+    assert_true(old_black_pawn_found);
+    enum square enp_sq;
+    bool enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
+    assert_true(enp_found);
+    assert_true(enp_sq == g6);
+
+    // en passant move
+    const struct move en_pass_mv = move_encode_enpassant(f5, g6);
+    move_is_valid = pos_try_make_move(pos, en_pass_mv);
+
+    old_black_pawn_found = brd_try_get_piece_on_square(brd, g5, &old_black_sq);
+    assert_false(old_black_pawn_found);
+
+    struct piece white_pawn;
+    bool white_pawn_found = brd_try_get_piece_on_square(brd, g6, &white_pawn);
+    assert_true(white_pawn_found);
+    enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
+    assert_false(enp_found);
+
+    pos_destroy(pos);
+}
+
 // make move : to test
 // - en passant
 // - promotion

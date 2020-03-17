@@ -217,48 +217,43 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
     struct piece pce_to_move;
-
     bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
     assert(found == true);
     assert(validate_piece(pce_to_move));
 
-    if (move_is_double_pawn(mv)) {
+    if (move_is_quiet(mv)) {
+        // normal quiet move
+        brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
+    } else if (move_is_double_pawn(mv)) {
         pos->en_passant.sq = get_en_pass_sq(pos->side_to_move, from_sq);
         pos->en_passant.is_active = true;
 
         brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
-    } else {
-        pos->en_passant.is_active = false;
-    }
 
-    if (move_is_en_passant(mv)) {
+    } else if (move_is_castle(mv)) {
+        make_castle_piece_moves(pos, mv);
+    } else if (move_is_en_passant(mv)) {
         pos->en_passant.is_active = false;
         make_en_passant_move(pos, mv);
-    }
-
-    if (move_is_quiet(mv)) {
-        if (move_is_promotion(mv)) {
-            // quiet promotion
-            struct piece pce_prom =
-                move_decode_promotion_piece(mv, pos->side_to_move);
-            brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
+    } else if (move_is_promotion(mv)) {
+        if (move_is_capture(mv)) {
+            // promotion with capture, remove existing piece
             brd_remove_piece(pos->brd, pce_to_move, to_sq);
-            brd_add_piece(pos->brd, pce_prom, to_sq);
-        } else {
-            // normal quiet move
-            brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
         }
-    }
+        struct piece pce_prom =
+            move_decode_promotion_piece(mv, pos->side_to_move);
+        brd_remove_piece(pos->brd, pce_to_move, from_sq);
+        brd_add_piece(pos->brd, pce_prom, to_sq);
 
-    if (move_is_capture(mv)) {
+    } else if (move_is_capture(mv)) {
         do_capture_move(pos, mv, from_sq, to_sq, pce_to_move);
     }
 
-    if (move_is_castle(mv)) {
-        make_castle_piece_moves(pos, mv);
-    }
-
     bool move_legal = is_move_legal(pos, mv);
+
+    if (move_is_double_pawn(mv) == false) {
+        pos->en_passant.is_active = false;
+    }
 
     // swap sides
     pos->side_to_move = pce_swap_side(pos->side_to_move);

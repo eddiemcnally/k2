@@ -85,7 +85,7 @@ enum move_flag_bits {
 };
 
 static void set_flag(uint16_t *mv, const uint16_t flag);
-static struct move encode_to_from(const enum square from_sq,
+static struct move encode_from_to(const enum square from_sq,
                                   const enum square to_sq);
 
 // ==================================================================
@@ -106,7 +106,7 @@ struct move move_encode_quiet(const enum square from_sq,
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_to_from(from_sq, to_sq);
+    return encode_from_to(from_sq, to_sq);
 }
 
 /**
@@ -126,7 +126,7 @@ struct move move_encode_promoted(const enum square from_sq,
     assert(validate_square(to_sq));
     assert(validate_piece_role(promoted_piece));
 
-    struct move mv = encode_to_from(from_sq, to_sq);
+    struct move mv = encode_from_to(from_sq, to_sq);
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
@@ -216,7 +216,7 @@ struct move move_encode_capture(const enum square from_sq,
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    struct move mv = encode_to_from(from_sq, to_sq);
+    struct move mv = encode_from_to(from_sq, to_sq);
     set_flag(&mv.val, MV_FLG_CAPTURE);
     return mv;
 }
@@ -243,7 +243,7 @@ struct move move_encode_castle_kingside(const enum colour side) {
         assert(false);
     }
 
-    struct move mv = encode_to_from(from_sq, to_sq);
+    struct move mv = encode_from_to(from_sq, to_sq);
     set_flag(&mv.val, MV_FLG_KING_CASTLE);
     return mv;
 }
@@ -270,7 +270,7 @@ struct move move_encode_castle_queenside(const enum colour side) {
         assert(false);
     }
 
-    struct move mv = encode_to_from(from_sq, to_sq);
+    struct move mv = encode_from_to(from_sq, to_sq);
     set_flag(&mv.val, MV_FLG_QUEEN_CASTLE);
     return mv;
 }
@@ -286,7 +286,7 @@ struct move move_encode_pawn_double_first(const enum square from_sq,
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    struct move mv = encode_to_from(from_sq, to_sq);
+    struct move mv = encode_from_to(from_sq, to_sq);
     set_flag(&mv.val, MV_FLG_DOUBLE_PAWN);
     return mv;
 }
@@ -303,7 +303,7 @@ struct move move_encode_enpassant(const enum square from_sq,
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    struct move mv = encode_to_from(from_sq, to_sq);
+    struct move mv = encode_from_to(from_sq, to_sq);
     set_flag(&mv.val, MV_FLG_EN_PASS);
     return mv;
 }
@@ -521,7 +521,7 @@ bool validate_move(const struct move mv) {
 //
 // ==================================================================
 
-static struct move encode_to_from(const enum square from_sq,
+static struct move encode_from_to(const enum square from_sq,
                                   const enum square to_sq) {
     uint16_t mv = 0;
 
