@@ -53,3 +53,9 @@ void test_position_make_move_white_knight(void **state);
 void test_position_make_move_black_knight(void **state);
 void test_position_make_move_white_bishop(void **state);
 void test_position_make_move_black_bishop(void **state);
+void test_position_make_move_black_queen(void **state);
+void test_position_make_move_white_queen(void **state);
+void test_position_make_move_white_discovered_attack_on_king_invalid_move(
+    void **state);
+void test_position_make_move_black_discovered_attack_on_king_invalid_move(
+    void **state);

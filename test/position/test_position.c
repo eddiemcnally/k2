@@ -764,22 +764,15 @@ void test_position_make_move_white_knight(void **state) {
     }
 }
 
-
-
 void test_position_make_move_black_bishop(void **state) {
-    const char *test_fen =
-        "6K1/4k3/1Q6/p6B/P1P1BP2/1bp2p2/3b2pP/8 b - - 0 1\n";
+    const char *test_fen = "6K1/4k3/1Q6/p6B/P1P1BP2/1bp2p2/3b2pP/8 b - - 0 1\n";
 
     struct move mv_list[] = {
-        move_encode_quiet(b3, a2), 
-        move_encode_quiet(b3, c2),
-        move_encode_quiet(b3, d1),
-        move_encode_quiet(d2, e1),
-        move_encode_quiet(d2, e3),
-        move_encode_quiet(d2, c1),
-        
-        move_encode_capture(b3, a4),
-        move_encode_capture(b3, c4),
+        move_encode_quiet(b3, a2),   move_encode_quiet(b3, c2),
+        move_encode_quiet(b3, d1),   move_encode_quiet(d2, e1),
+        move_encode_quiet(d2, e3),   move_encode_quiet(d2, c1),
+
+        move_encode_capture(b3, a4), move_encode_capture(b3, c4),
         move_encode_capture(d2, f4),
     };
 
@@ -824,21 +817,14 @@ void test_position_make_move_white_bishop(void **state) {
         "6K1/8/1Q3k2/p6B/P1P1BP2/1b3p2/2p3pP/4b3 w - - 0 1\n";
 
     struct move mv_list[] = {
-        move_encode_quiet(e4, d3),   
-        move_encode_quiet(e4, d5),
-        move_encode_quiet(e4, d6),
-        move_encode_quiet(e4, b7),   
-        move_encode_quiet(e4, a8),   
-        move_encode_quiet(e4, f5),
-        move_encode_quiet(e4, g6),
-        move_encode_quiet(e4, h7),   
-        move_encode_quiet(h5, g4),   
-        move_encode_quiet(h5, g6),   
-        move_encode_quiet(h5, f7),   
-        move_encode_quiet(h5, e8), 
-   
-        move_encode_capture(e4, c2), 
-        move_encode_capture(e4, f3),
+        move_encode_quiet(e4, d3),   move_encode_quiet(e4, d5),
+        move_encode_quiet(e4, d6),   move_encode_quiet(e4, b7),
+        move_encode_quiet(e4, a8),   move_encode_quiet(e4, f5),
+        move_encode_quiet(e4, g6),   move_encode_quiet(e4, h7),
+        move_encode_quiet(h5, g4),   move_encode_quiet(h5, g6),
+        move_encode_quiet(h5, f7),   move_encode_quiet(h5, e8),
+
+        move_encode_capture(e4, c2), move_encode_capture(e4, f3),
         move_encode_capture(h5, f3),
     };
 
@@ -878,37 +864,147 @@ void test_position_make_move_white_bishop(void **state) {
     }
 }
 
+void test_position_make_move_black_queen(void **state) {
+    const char *test_fen = "7k/8/1Q5b/p4q1B/P1P1BP2/1bp2p2/6pP/2K5 b - - 0 1n";
 
+    struct move mv_list[] = {
+        move_encode_quiet(f5, g5),   move_encode_quiet(f5, e5),
 
+        move_encode_quiet(f5, d5),   move_encode_quiet(f5, c5),
+        move_encode_quiet(f5, b5),   move_encode_quiet(f5, g4),
+        move_encode_quiet(f5, h3),   move_encode_quiet(f5, g6),
 
+        move_encode_quiet(f5, h7),   move_encode_quiet(f5, f6),
+        move_encode_quiet(f5, f7),   move_encode_quiet(f5, f8),
 
+        move_encode_quiet(f5, e6),   move_encode_quiet(f5, d7),
+        move_encode_quiet(f5, c8),
 
+        move_encode_capture(f5, h5), move_encode_capture(f5, f4),
+        move_encode_capture(f5, e4),
+    };
 
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        const enum square from_sq = move_decode_from_sq(mv);
+        const enum square to_sq = move_decode_to_sq(mv);
 
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+        const struct board *brd = pos_get_board(pos);
 
+        const uint32_t white_material_before = brd_get_material(brd, WHITE);
+        const uint32_t black_material_before = brd_get_material(brd, BLACK);
 
+        bool move_is_valid = pos_try_make_move(pos, mv);
 
+        const uint32_t white_material_after = brd_get_material(brd, WHITE);
+        const uint32_t black_material_after = brd_get_material(brd, BLACK);
 
+        assert_true(move_is_valid);
+        if (move_is_quiet(mv)) {
+            assert_int_equal(white_material_before, white_material_after);
+            assert_int_equal(black_material_before, black_material_after);
+        } else if (move_is_capture(mv)) {
+            assert_int_equal(black_material_before, black_material_after);
+            assert_true(white_material_before > white_material_after);
+        }
 
+        struct piece pce;
+        assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
+        assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
+        assert_true(pce_are_equal(pce, BLACK_QUEEN));
 
+        pos_destroy(pos);
+    }
+}
 
+void test_position_make_move_white_queen(void **state) {
+    const char *test_fen = "7k/8/1Q5b/p4q1B/P1P1BP2/1bp2p2/6pP/2K5 w - - 0 1\n";
 
+    struct move mv_list[] = {
+        move_encode_quiet(b6, a6),   move_encode_quiet(b6, c6),
+        move_encode_quiet(b6, d6),   move_encode_quiet(b6, e6),
+        move_encode_quiet(b6, f6),   move_encode_quiet(b6, g6),
+        move_encode_quiet(b6, b5),   move_encode_quiet(b6, b4),
+        move_encode_quiet(b6, b7),   move_encode_quiet(b6, b8),
+        move_encode_quiet(b6, a7),   move_encode_quiet(b6, c7),
+        move_encode_quiet(b6, d8),   move_encode_quiet(b6, c5),
+        move_encode_quiet(b6, d4),   move_encode_quiet(b6, e3),
+        move_encode_quiet(b6, f2),   move_encode_quiet(b6, g1),
 
+        move_encode_capture(b6, a5), move_encode_capture(b6, h6),
+        move_encode_capture(b6, b3),
+    };
 
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        const enum square from_sq = move_decode_from_sq(mv);
+        const enum square to_sq = move_decode_to_sq(mv);
 
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+        const struct board *brd = pos_get_board(pos);
 
+        const uint32_t white_material_before = brd_get_material(brd, WHITE);
+        const uint32_t black_material_before = brd_get_material(brd, BLACK);
 
+        bool move_is_valid = pos_try_make_move(pos, mv);
 
+        const uint32_t white_material_after = brd_get_material(brd, WHITE);
+        const uint32_t black_material_after = brd_get_material(brd, BLACK);
 
+        assert_true(move_is_valid);
+        if (move_is_quiet(mv)) {
+            assert_int_equal(white_material_before, white_material_after);
+            assert_int_equal(black_material_before, black_material_after);
+        } else if (move_is_capture(mv)) {
+            assert_int_equal(white_material_before, white_material_after);
+            assert_true(black_material_before > black_material_after);
+        }
 
+        struct piece pce;
+        assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
+        assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
+        assert_true(pce_are_equal(pce, WHITE_QUEEN));
 
+        pos_destroy(pos);
+    }
+}
 
+void test_position_make_move_white_discovered_attack_on_king_invalid_move(
+    void **state) {
+    const char *test_fen =
+        "7k/8/1Q5b/p4q1B/P1P2P2/1bp2p2/2B3pP/3K4 w - - 0 1\n";
+
+    const struct move mv = move_encode_quiet(c2, b1);
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    bool move_is_valid = pos_try_make_move(pos, mv);
+    assert_false(move_is_valid);
+
+    pos_destroy(pos);
+}
+
+void test_position_make_move_black_discovered_attack_on_king_invalid_move(
+    void **state) {
+    const char *test_fen = "Q4b1k/8/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
+
+    const struct move mv = move_encode_quiet(f8, a3);
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    bool move_is_valid = pos_try_make_move(pos, mv);
+    assert_false(move_is_valid);
+
+    pos_destroy(pos);
+}
 
 // make move : to test
-// - bishop
-// - queen
 // - king
-// - discovered attack
 // - en passant
 // - promotion
 // - promotion + capture
