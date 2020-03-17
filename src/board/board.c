@@ -26,6 +26,7 @@
 
 #include "board.h"
 #include "bitboard.h"
+#include "move.h"
 #include "piece.h"
 #include "square.h"
 #include <assert.h>
@@ -173,14 +174,13 @@ void brd_add_piece(struct board *brd, const struct piece pce,
  * @param side          The side 
  * @return uint32_t     The current material value
  */
-uint32_t brd_get_material(const struct board *brd, const enum colour side){
+uint32_t brd_get_material(const struct board *brd, const enum colour side) {
     assert(validate_board(brd));
     assert(validate_colour(side));
 
     uint8_t idx = pce_col_get_array_idx(side);
     return brd->material[idx];
 }
-
 
 /**
  * @brief       Removes a piece from the specified square
@@ -191,6 +191,8 @@ uint32_t brd_get_material(const struct board *brd, const enum colour side){
  */
 void brd_remove_piece(struct board *brd, const struct piece pce,
                       const enum square sq) {
+
+    assert(brd_is_sq_occupied(brd, sq) == true);
     assert(validate_board(brd));
     assert(validate_square(sq));
     assert(validate_piece(pce));
@@ -205,17 +207,16 @@ void brd_remove_piece(struct board *brd, const struct piece pce,
  *
  * @param brd   The board
  * @param pce   The piece to move
- * @param from_sq The From square
- * @param to_sq The To square
+ * @param mv    The move
  */
 void brd_move_piece(struct board *brd, const struct piece pce,
                     const enum square from_sq, const enum square to_sq) {
+
     assert(validate_board(brd));
-    assert(validate_square(from_sq));
-    assert(validate_square(to_sq));
     assert(validate_piece(pce));
-    assert(validate_square_empty(brd, to_sq));
     assert(validate_pce_on_sq(brd, pce, from_sq));
+    assert(brd_is_sq_occupied(brd, to_sq) == false);
+    assert(brd_is_sq_occupied(brd, from_sq));
 
     populate_square(brd, pce, from_sq, CLEAR_SQ);
     populate_square(brd, pce, to_sq, SET_SQ);

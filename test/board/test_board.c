@@ -49,8 +49,13 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
 
         struct piece pce = all_pieces[i];
         for (enum square sq = a1; sq <= h8; sq++) {
+
+            const enum colour side = pce_get_colour(pce);
+            uint32_t material_before_add = brd_get_material(brd, side);
+
             // add piece
             brd_add_piece(brd, pce, sq);
+            uint32_t material_after_add = brd_get_material(brd, side);
 
             // verify it's there
             struct piece found_pce;
@@ -60,15 +65,18 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
             assert_true(pce_are_equal(found_pce, pce));
             bool is_occupied = brd_is_sq_occupied(brd, sq);
             assert_true(is_occupied);
+            assert_int_not_equal(material_before_add, material_after_add);
 
             // remove piece
             brd_remove_piece(brd, pce, sq);
+            uint32_t material_after_remove = brd_get_material(brd, side);
 
             // verify it's gone
             found = brd_try_get_piece_on_square(brd, sq, &found_pce);
             assert_false(found);
             is_occupied = brd_is_sq_occupied(brd, sq);
             assert_false(is_occupied);
+            assert_int_equal(material_before_add, material_after_remove);
         }
     }
     brd_deallocate(brd);
@@ -87,6 +95,8 @@ void test_board_brd_move_piece(void **state) {
                 if (from_sq == to_sq) {
                     continue;
                 }
+                enum colour side = pce_get_colour(pce);
+
                 // add piece
                 brd_add_piece(brd, pce, from_sq);
 
@@ -99,8 +109,12 @@ void test_board_brd_move_piece(void **state) {
                 bool is_occupied = brd_is_sq_occupied(brd, from_sq);
                 assert_true(is_occupied);
 
+                uint32_t material_before_move = brd_get_material(brd, side);
+
                 // move it
                 brd_move_piece(brd, pce, from_sq, to_sq);
+
+                uint32_t material_after_move = brd_get_material(brd, side);
 
                 // verify it's not on the from_sq
                 found = brd_try_get_piece_on_square(brd, from_sq, &found_pce);
@@ -113,6 +127,7 @@ void test_board_brd_move_piece(void **state) {
                 is_occupied = brd_is_sq_occupied(brd, to_sq);
                 assert_true(is_occupied);
 
+                assert_int_equal(material_before_move, material_after_move);
                 // remove piece
                 brd_remove_piece(brd, pce, to_sq);
             }
@@ -603,6 +618,40 @@ void test_board_brd_try_get_piece_on_square(void **state) {
 
     assert_false(brd_try_get_piece_on_square(brd, h7, &pce));
     assert_false(brd_try_get_piece_on_square(brd, h8, &pce));
+}
+
+void test_board_brd_try_get_piece_on_square_1(void **state) {
+    const char *FEN = "5N2/B7/5k2/pP1K3B/2P5/1b3pnP/n1p3pP/N1b5 w - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    struct board *brd = pos_get_board(pos);
+
+    struct piece pce;
+
+    assert_true(brd_try_get_piece_on_square(brd, a1, &pce));
+    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_get_colour(pce) == WHITE);
+
+    assert_true(brd_try_get_piece_on_square(brd, a2, &pce));
+    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_get_colour(pce) == BLACK);
+
+    assert_false(brd_try_get_piece_on_square(brd, a3, &pce));
+    assert_false(brd_try_get_piece_on_square(brd, a4, &pce));
+
+    assert_true(brd_try_get_piece_on_square(brd, a5, &pce));
+    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_get_colour(pce) == BLACK);
+
+    assert_false(brd_try_get_piece_on_square(brd, a6, &pce));
+
+    assert_true(brd_try_get_piece_on_square(brd, a7, &pce));
+    assert_true(pce_get_piece_role(pce) == BISHOP);
+    assert_true(pce_get_colour(pce) == WHITE);
+
+    assert_false(brd_try_get_piece_on_square(brd, a8, &pce));
 }
 
 void test_board_compare(void **state) {

@@ -458,7 +458,7 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
 
         uint32_t w_material_before = brd_get_material(brd, WHITE);
         uint32_t b_material_before = brd_get_material(brd, BLACK);
-        
+
         bool is_valid = pos_try_make_move(pos, wk_castle);
 
         uint32_t w_material_after = brd_get_material(brd, WHITE);
@@ -466,7 +466,7 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
 
         assert_int_equal(w_material_before, w_material_after);
         assert_int_equal(b_material_before, b_material_after);
-        
+
         assert_false(is_valid);
 
         pos_destroy(pos);
@@ -492,7 +492,7 @@ void test_position_make_move_castle_black_kingside_move_invalid(void **state) {
 
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
-        const struct board *brd = pos_get_board(pos); 
+        const struct board *brd = pos_get_board(pos);
 
         uint32_t w_material_before = brd_get_material(brd, WHITE);
         uint32_t b_material_before = brd_get_material(brd, BLACK);
@@ -531,7 +531,7 @@ void test_position_make_move_castle_white_queenside_move_invalid(void **state) {
 
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
-        const struct board *brd = pos_get_board(pos); 
+        const struct board *brd = pos_get_board(pos);
 
         uint32_t w_material_before = brd_get_material(brd, WHITE);
         uint32_t b_material_before = brd_get_material(brd, BLACK);
@@ -566,7 +566,7 @@ void test_position_make_move_castle_black_queenside_move_invalid(void **state) {
 
         struct position *pos = pos_create();
         pos_initialise(fen_list[i], pos);
-        const struct board *brd = pos_get_board(pos); 
+        const struct board *brd = pos_get_board(pos);
 
         uint32_t w_material_before = brd_get_material(brd, WHITE);
         uint32_t b_material_before = brd_get_material(brd, BLACK);
@@ -583,9 +583,6 @@ void test_position_make_move_castle_black_queenside_move_invalid(void **state) {
         pos_destroy(pos);
     }
 }
-
-
-
 
 void test_position_brd_is_sq_occupied(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
@@ -669,9 +666,109 @@ void test_position_brd_is_sq_occupied(void **state) {
     assert_false(brd_is_sq_occupied(brd, h8));
 }
 
-// to test
+void test_position_make_move_black_knight(void **state) {
+    const char *test_fen =
+        "5N2/B7/3n1k2/pP1K3B/2P5/1b3p1P/2p1n1pP/N1b5 b - - 0 1\n";
+
+    struct move mv_list[] = {
+        move_encode_quiet(e2, d4),   move_encode_quiet(e2, c3),
+        move_encode_quiet(e2, g1),   move_encode_quiet(e2, g3),
+        move_encode_quiet(e2, f4),
+
+        move_encode_quiet(d6, b7),   move_encode_quiet(d6, c8),
+        move_encode_quiet(d6, e8),   move_encode_quiet(d6, f7),
+        move_encode_quiet(d6, f5),   move_encode_quiet(d6, e4),
+
+        move_encode_capture(d6, b5), move_encode_capture(d6, c4),
+    };
+
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        const enum square from_sq = move_decode_from_sq(mv);
+        const enum square to_sq = move_decode_to_sq(mv);
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+        const struct board *brd = pos_get_board(pos);
+
+        const uint32_t white_material_before = brd_get_material(brd, WHITE);
+        const uint32_t black_material_before = brd_get_material(brd, BLACK);
+
+        bool move_is_valid = pos_try_make_move(pos, mv);
+
+        const uint32_t white_material_after = brd_get_material(brd, WHITE);
+        const uint32_t black_material_after = brd_get_material(brd, BLACK);
+
+        assert_true(move_is_valid);
+        if (move_is_quiet(mv)) {
+            assert_int_equal(white_material_before, white_material_after);
+            assert_int_equal(black_material_before, black_material_after);
+        } else if (move_is_capture(mv)) {
+            assert_int_equal(black_material_before, black_material_after);
+            assert_true(white_material_before > white_material_after);
+        }
+
+        struct piece pce;
+        assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
+        assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
+        assert_true(pce_are_equal(pce, BLACK_KNIGHT));
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_make_move_white_knight(void **state) {
+    const char *test_fen =
+        "5N2/B7/5k2/pP1K3B/2P5/1b3pnP/n1p3pP/N1b5 w - - 0 1\n";
+
+    struct move mv_list[] = {
+        move_encode_quiet(f8, d7),   move_encode_quiet(f8, e6),
+        move_encode_quiet(f8, g6),   move_encode_quiet(f8, h7),
+        move_encode_capture(a1, b3), move_encode_capture(a1, c2),
+    };
+
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        const enum square from_sq = move_decode_from_sq(mv);
+        const enum square to_sq = move_decode_to_sq(mv);
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+        const struct board *brd = pos_get_board(pos);
+
+        const uint32_t white_material_before = brd_get_material(brd, WHITE);
+        const uint32_t black_material_before = brd_get_material(brd, BLACK);
+
+        bool move_is_valid = pos_try_make_move(pos, mv);
+
+        const uint32_t white_material_after = brd_get_material(brd, WHITE);
+        const uint32_t black_material_after = brd_get_material(brd, BLACK);
+
+        assert_true(move_is_valid);
+        if (move_is_quiet(mv)) {
+            assert_int_equal(white_material_before, white_material_after);
+            assert_int_equal(black_material_before, black_material_after);
+        } else if (move_is_capture(mv)) {
+            assert_int_equal(white_material_before, white_material_after);
+            assert_true(black_material_before > black_material_after);
+        }
+
+        struct piece pce;
+        assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
+        assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
+        assert_true(pce_are_equal(pce, WHITE_KNIGHT));
+
+        pos_destroy(pos);
+    }
+}
+
+// make move : to test
 // - knight
 // - bishop
 // - queen
 // - king
-// - move leave king in check
+// - en passant
+// - promotion
+// - promotion + capture

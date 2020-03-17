@@ -46,7 +46,7 @@ int main(void) {
     const struct CMUnitTest tests[] = {
         // FEN Testing
         cmocka_unit_test(test_fen_pieces_init_position),
-        cmocka_unit_test(test_fen_pieces_random_position),
+        cmocka_unit_test(test_fen_pieces_random_position_1),
         cmocka_unit_test(test_fen_side_to_move),
         cmocka_unit_test(test_fen_castle_permissions_initial_fen),
         cmocka_unit_test(test_fen_castle_permissions_random_fen),
@@ -120,6 +120,8 @@ int main(void) {
             test_position_make_move_castle_white_queenside_move_invalid),
         cmocka_unit_test(
             test_position_make_move_castle_black_queenside_move_invalid),
+        cmocka_unit_test(test_position_make_move_white_knight),
+        cmocka_unit_test(test_position_make_move_black_knight),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),
@@ -147,6 +149,7 @@ int main(void) {
         cmocka_unit_test(test_board_brd_get_colour_bb_white),
         cmocka_unit_test(test_board_brd_is_sq_occupied),
         cmocka_unit_test(test_board_brd_try_get_piece_on_square),
+        cmocka_unit_test(test_board_brd_try_get_piece_on_square_1),
         cmocka_unit_test(test_board_brd_get_board_bb),
         cmocka_unit_test(test_board_compare),
         cmocka_unit_test(test_board_snapshot),

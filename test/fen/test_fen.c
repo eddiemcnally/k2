@@ -112,7 +112,7 @@ void test_fen_pieces_init_position(void **state) {
     }
 }
 
-void test_fen_pieces_random_position(void **state) {
+void test_fen_pieces_random_position_1(void **state) {
     const char *RANDOM_FEN_1 =
         "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/"
         "R4RK1 w Qkq - 1 4\n";

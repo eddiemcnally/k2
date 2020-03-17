@@ -373,9 +373,10 @@ static void do_capture_move(struct position *pos, const struct move mv,
             struct piece pce_prom =
                 move_decode_promotion_piece(mv, pos->side_to_move);
             brd_remove_piece(pos->brd, pce_to_move, from_sq);
+            brd_remove_piece(pos->brd, pce_to_move, to_sq);
             brd_add_piece(pos->brd, pce_prom, to_sq);
         } else {
-            brd_remove_piece(pos->brd, pce_to_move, from_sq);
+            brd_remove_piece(pos->brd, pce_capt, to_sq);
             brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
         }
     }

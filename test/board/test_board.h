@@ -39,6 +39,7 @@ void test_board_brd_get_colour_bb_black(void **state);
 void test_board_brd_get_colour_bb_white(void **state);
 void test_board_brd_is_sq_occupied(void **state);
 void test_board_brd_try_get_piece_on_square(void **state);
+void test_board_brd_try_get_piece_on_square_1(void **state);
 void test_board_brd_get_board_bb(void **state);
 void test_board_brd_is_sq_occupied(void **state);
 void test_board_compare(void **state);
