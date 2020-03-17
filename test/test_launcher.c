@@ -122,6 +122,8 @@ int main(void) {
             test_position_make_move_castle_black_queenside_move_invalid),
         cmocka_unit_test(test_position_make_move_white_knight),
         cmocka_unit_test(test_position_make_move_black_knight),
+        cmocka_unit_test(test_position_make_move_white_bishop),
+        cmocka_unit_test(test_position_make_move_black_bishop),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),

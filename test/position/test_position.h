@@ -51,3 +51,5 @@ void test_position_make_move_castle_black_kingside_move_invalid(void **state);
 void test_position_make_move_castle_black_queenside_move_invalid(void **state);
 void test_position_make_move_white_knight(void **state);
 void test_position_make_move_black_knight(void **state);
+void test_position_make_move_white_bishop(void **state);
+void test_position_make_move_black_bishop(void **state);

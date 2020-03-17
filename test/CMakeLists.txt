@@ -5,7 +5,7 @@
 #
 #
 #
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.9)
 
 message("*** Setting up Test Runner Binary build environment ***'")
 
@@ -39,6 +39,7 @@ set (TEST_RUNNER_COMPILER_WARNS "-std=c11 \
         -fno-omit-frame-pointer \
         -fshort-enums \
         -fno-common \
+        -Wno-dev \
         -Wpedantic \
         -Wall \
         -Waggregate-return \
@@ -114,6 +115,9 @@ set(TEST_SRCS
         )
 
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
+
+# Enable LTO
+set_property(TARGET ${TEST_BINARY_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 message("Setting up lib reference for cmocka...")
 target_link_libraries(${TEST_BINARY_NAME} cmocka)

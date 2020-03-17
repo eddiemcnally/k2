@@ -18,7 +18,7 @@ To install on Debian:
 
 
 ## CMake and CTest
-k2 uses CMake and CTest.
+k2 uses CMake (3.9 or later) and CTest.
 
 To build using Cmake:
 - cd ./k2
@@ -33,6 +33,8 @@ You can now build and run unit tests:
 - k2 is currently set up to use clang as the compiler.
 - However, the code uses various GCC built-in functions
 - The build process outputs 2 binaries: "k2" and "k2_test_runner". These can be found in the _build/bin directory.
+- Requires CMake 3.9 or greater
+- Enables LTO by default; has a dependency on binutils-gold and llvm9-gold
 
 
 # Engine Notes
