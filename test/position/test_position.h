@@ -59,3 +59,7 @@ void test_position_make_move_white_discovered_attack_on_king_invalid_move(
     void **state);
 void test_position_make_move_black_discovered_attack_on_king_invalid_move(
     void **state);
+void test_position_make_move_white_king_valid_moves(void **state);
+void test_position_make_move_white_king_invalid_moves(void **state);
+void test_position_make_move_black_king_valid_moves(void **state);
+void test_position_make_move_black_king_invalid_moves(void **state);

@@ -1003,8 +1003,117 @@ void test_position_make_move_black_discovered_attack_on_king_invalid_move(
     pos_destroy(pos);
 }
 
+void test_position_make_move_black_king_valid_moves(void **state) {
+    const char *test_fen =
+        "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
+
+    struct move mv_list[] = {
+        move_encode_quiet(g8, h8),
+        move_encode_quiet(g8, f8),
+    };
+
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        const enum square from_sq = move_decode_from_sq(mv);
+        const enum square to_sq = move_decode_to_sq(mv);
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+        const struct board *brd = pos_get_board(pos);
+
+        bool move_is_valid = pos_try_make_move(pos, mv);
+
+        assert_true(move_is_valid);
+
+        struct piece pce;
+        assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
+        assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
+        assert_true(pce_are_equal(pce, BLACK_KING));
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_make_move_black_king_invalid_moves(void **state) {
+    const char *test_fen =
+        "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
+
+    struct move mv_list[] = {
+        move_encode_quiet(g8, f7),
+        move_encode_quiet(g8, g7),
+        move_encode_quiet(g8, h7),
+    };
+
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+
+        bool move_is_valid = pos_try_make_move(pos, mv);
+
+        assert_false(move_is_valid);
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_make_move_white_king_valid_moves(void **state) {
+    const char *test_fen = "3b2K1/2q5/8/p6B/P1P1BQ2/1bp2p2/6pP/3k4 w - - 0 1\n";
+
+    struct move mv_list[] = {
+        move_encode_quiet(g8, h8),
+        move_encode_quiet(g8, f8),
+    };
+
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        const enum square from_sq = move_decode_from_sq(mv);
+        const enum square to_sq = move_decode_to_sq(mv);
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+        const struct board *brd = pos_get_board(pos);
+
+        bool move_is_valid = pos_try_make_move(pos, mv);
+
+        assert_true(move_is_valid);
+
+        struct piece pce;
+        assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
+        assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
+        assert_true(pce_are_equal(pce, WHITE_KING));
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_make_move_white_king_invalid_moves(void **state) {
+    const char *test_fen = "3b2K1/2q5/8/p6B/P1P1BQ2/1bp2p2/6pP/3k4 w - - 0 1\n";
+
+    struct move mv_list[] = {
+        move_encode_quiet(g8, f7),
+        move_encode_quiet(g8, g7),
+        move_encode_quiet(g8, h7),
+    };
+
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    for (int i = 0; i < mv_sz; i++) {
+        const struct move mv = mv_list[i];
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+
+        bool move_is_valid = pos_try_make_move(pos, mv);
+
+        assert_false(move_is_valid);
+
+        pos_destroy(pos);
+    }
+}
+
 // make move : to test
-// - king
 // - en passant
 // - promotion
 // - promotion + capture
