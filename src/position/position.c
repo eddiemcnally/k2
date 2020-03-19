@@ -83,15 +83,14 @@ static bool is_move_legal(const struct position *pos, const struct move mov);
 static bool is_castle_move_legal(const struct position *pos,
                                  const struct move mov);
 static bool is_move_legal(const struct position *pos, const struct move mov);
-static enum square *get_castle_square_list(const struct move mv,
-                                           const enum colour side_to_move);
+static struct castle_chk_sq
+get_castle_square_list(const struct move mv, const enum colour side_to_move);
 
-// squares that need to be checked when a castle move is being made
+// used to hold squares that need to be checked when a castle move is being made
 #define NUM_CASTLE_SQUARES 3
-static enum square white_king_sq_list[NUM_CASTLE_SQUARES] = {e1, f1, g1};
-static enum square white_queen_sq_list[NUM_CASTLE_SQUARES] = {c1, d1, e1};
-static enum square black_king_sq_list[NUM_CASTLE_SQUARES] = {e8, f8, g8};
-static enum square black_queen_sq_list[NUM_CASTLE_SQUARES] = {c8, d8, e8};
+struct castle_chk_sq {
+    enum square squares[NUM_CASTLE_SQUARES];
+};
 
 /**
  * @brief       Create and initialise an empty instance of the Position struct
@@ -409,10 +408,10 @@ static bool is_castle_move_legal(const struct position *pos,
     const enum colour side_to_move = pos_get_side_to_move(pos);
     const enum colour attacking_side = pce_swap_side(side_to_move);
     const struct board *brd = pos->brd;
-    enum square *sq_list = get_castle_square_list(mov, side_to_move);
+    struct castle_chk_sq chk = get_castle_square_list(mov, side_to_move);
 
     for (int i = 0; i < NUM_CASTLE_SQUARES; i++) {
-        if (att_chk_is_sq_attacked(brd, sq_list[i], attacking_side)) {
+        if (att_chk_is_sq_attacked(brd, chk.squares[i], attacking_side)) {
             return false;
         }
     }
@@ -420,23 +419,31 @@ static bool is_castle_move_legal(const struct position *pos,
     return true;
 }
 
-static enum square *get_castle_square_list(const struct move mv,
-                                           const enum colour side_to_move) {
+static struct castle_chk_sq
+get_castle_square_list(const struct move mv, const enum colour side_to_move) {
     if (move_is_king_castle(mv)) {
         switch (side_to_move) {
-        case WHITE:
-            return white_king_sq_list;
-        case BLACK:
-            return black_king_sq_list;
+        case WHITE: {
+            struct castle_chk_sq s = {e1, f1, g1};
+            return s;
+        }
+        case BLACK: {
+            struct castle_chk_sq s = {e8, f8, g8};
+            return s;
+        }
         default:
             assert(false);
         }
     } else if (move_is_queen_castle(mv)) {
         switch (side_to_move) {
-        case WHITE:
-            return white_queen_sq_list;
-        case BLACK:
-            return black_queen_sq_list;
+        case WHITE: {
+            struct castle_chk_sq s = {c1, d1, e1};
+            return s;
+        }
+        case BLACK: {
+            struct castle_chk_sq s = {c8, d8, e8};
+            return s;
+        }
         default:
             assert(false);
         }

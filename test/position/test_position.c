@@ -1334,7 +1334,3 @@ void test_position_make_move_black_promotion_capture(void **state) {
         pos_destroy(pos);
     }
 }
-
-// make move : to test
-// - promotion
-// - promotion + capture
