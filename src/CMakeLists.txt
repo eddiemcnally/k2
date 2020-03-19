@@ -65,31 +65,42 @@ message("Setting up K2 Engine build target compiler flags...")
 #//
         
 set (ENGINE_COMPILER_WARNS "-std=c11 \
-        -o2 \
-        -fsanitize=undefined \
-        -fsanitize=address \
+        -fno-common \
         -fno-omit-frame-pointer \
+        -fsanitize=undefined \
         -fshort-enums \
-        -Wpedantic \
+        -m64 \
+        -o3 \
+        -Waggregate-return \
         -Wall \
+        -Wcast-align \
+        -Wcast-qual \
+        -Wcomment \
+        -Wconversion \
         -Werror \
         -Wextra \
-        -Wformat-security \
-        -Wold-style-definition \
-        -Wredundant-decls \
-        -Wnested-externs \
-        -Wstrict-prototypes \
-        -Wmissing-prototypes \
-        -Wswitch-default \
-        -Wunused-macros \
-        -Wconversion \
-        -Wsign-conversion \
-        -Wshadow \
-        -Wcast-qual \
-        -Wcast-align \
+        -Wfloat-equal \
+        -Winit-self \
+        -Wmissing-declarations \
         -Wmissing-include-dirs \
+        -Wmissing-prototypes \
+        -Wnested-externs \
+        -Wold-style-definition \
+        -Wpedantic \
         -Wpointer-arith \
-        -Wunused"
+        -Wredundant-decls \
+        -Wshadow \
+        -Wsign-conversion \
+        -Wstrict-aliasing \
+        -Wstrict-overflow=5 \
+        -Wstrict-prototypes \
+        -Wswitch-default \
+        -Wundef \
+        -Wuninitialized \
+        -Wunreachable-code \
+        -Wunused-macros \
+        -Wunused-parameter \
+        -Wwrite-strings"
         )
 
 

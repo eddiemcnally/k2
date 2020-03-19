@@ -34,41 +34,42 @@ message("Setting up Test Runner build target compiler flags...")
 
 
 set (TEST_RUNNER_COMPILER_WARNS "-std=c11 \
-        -o3 \
-        -fsanitize=undefined \
-        -fno-omit-frame-pointer \
-        -fshort-enums \
         -fno-common \
-        -Wno-dev \
-        -Wpedantic \
-        -Wall \
+        -fno-omit-frame-pointer \
+        -fsanitize=undefined \
+        -fshort-enums \
+        -m64 \
+        -o3 \
         -Waggregate-return \
+        -Wall \
+        -Wcast-align \
+        -Wcast-qual \
+        -Wcomment \
+        -Wconversion \
+        -Werror \
         -Wextra \
         -Wfloat-equal \
-        -Wundef \
         -Winit-self \
-        -Wold-style-definition \
-        -Wredundant-decls \
-        -Wnested-externs \
-        -Wstrict-prototypes \
-        -Wstrict-overflow=5 \
-        -Wstrict-aliasing \
         -Wmissing-declarations \
         -Wmissing-include-dirs \
-        -Wunused-parameter \
-        -Wuninitialized \
         -Wmissing-prototypes \
-        -Wswitch-default \
-        -Wunused-macros \
-        -Wextra \
-        -Wconversion \
-        -Wsign-conversion \
+        -Wnested-externs \
+        -Wold-style-definition \
+        -Wpedantic \
+        -Wpointer-arith \
+        -Wredundant-decls \
         -Wshadow \
-        -Wcast-qual \
-        -Wcast-align \
-        -Wmissing-include-dirs \
-        -Wwrite-strings \
-        -Wpointer-arith"
+        -Wsign-conversion \
+        -Wstrict-aliasing \
+        -Wstrict-overflow=5 \
+        -Wstrict-prototypes \
+        -Wswitch-default \
+        -Wundef \
+        -Wuninitialized \
+        -Wunreachable-code \
+        -Wunused-macros \
+        -Wunused-parameter \
+        -Wwrite-strings"
         )
 
 
@@ -115,9 +116,6 @@ set(TEST_SRCS
         )
 
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
-
-# Enable LTO
-set_property(TARGET ${TEST_BINARY_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 message("Setting up lib reference for cmocka...")
 target_link_libraries(${TEST_BINARY_NAME} cmocka)

@@ -238,7 +238,11 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
     } else if (move_is_promotion(mv)) {
         if (move_is_capture(mv)) {
             // promotion with capture, remove existing piece
-            brd_remove_piece(pos->brd, pce_to_move, to_sq);
+            struct piece pce_being_captured;
+            bool can_be_removed = brd_try_get_piece_on_square(
+                pos->brd, to_sq, &pce_being_captured);
+            assert(can_be_removed == true);
+            brd_remove_piece(pos->brd, pce_being_captured, to_sq);
         }
         struct piece pce_prom =
             move_decode_promotion_piece(mv, pos->side_to_move);
@@ -381,7 +385,7 @@ static bool is_move_legal(const struct position *pos, const struct move mov) {
 
     const enum colour side_to_move = pos_get_side_to_move(pos);
     const enum colour attacking_side = pce_swap_side(side_to_move);
-    const struct board *brd = pos_get_board(pos);
+    const struct board *brd = pos->brd;
     uint64_t king_bb = brd_get_piece_bb(brd, KING, side_to_move);
     const enum square king_sq = bb_pop_1st_bit(&king_bb);
 
@@ -404,7 +408,7 @@ static bool is_castle_move_legal(const struct position *pos,
                                  const struct move mov) {
     const enum colour side_to_move = pos_get_side_to_move(pos);
     const enum colour attacking_side = pce_swap_side(side_to_move);
-    const struct board *brd = pos_get_board(pos);
+    const struct board *brd = pos->brd;
     enum square *sq_list = get_castle_square_list(mov, side_to_move);
 
     for (int i = 0; i < NUM_CASTLE_SQUARES; i++) {
@@ -445,7 +449,7 @@ static void make_castle_piece_moves(struct position *pos,
                                     const struct move castle_move) {
     assert(move_is_castle(castle_move));
 
-    struct board *brd = pos_get_board(pos);
+    struct board *brd = pos->brd;
 
     const bool is_king_side = move_is_king_castle(castle_move);
     const bool is_queen_side = move_is_queen_castle(castle_move);
@@ -496,7 +500,7 @@ static void make_en_passant_move(struct position *pos,
     const enum square from_sq = move_decode_from_sq(en_pass_mv);
     const enum square to_sq = move_decode_to_sq(en_pass_mv);
 
-    struct board *brd = pos_get_board(pos);
+    struct board *brd = pos->brd;
 
     struct piece pce_to_move;
     bool found = brd_try_get_piece_on_square(brd, from_sq, &pce_to_move);

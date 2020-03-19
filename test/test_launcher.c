@@ -136,6 +136,10 @@ int main(void) {
         cmocka_unit_test(test_position_make_move_black_king_invalid_moves),
         cmocka_unit_test(test_position_make_move_black_en_passant),
         cmocka_unit_test(test_position_make_move_white_en_passant),
+        cmocka_unit_test(test_position_make_move_white_promotion),
+        cmocka_unit_test(test_position_make_move_black_promotion),
+        cmocka_unit_test(test_position_make_move_white_promotion_capture),
+        cmocka_unit_test(test_position_make_move_black_promotion_capture),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),

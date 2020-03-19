@@ -65,3 +65,7 @@ void test_position_make_move_black_king_valid_moves(void **state);
 void test_position_make_move_black_king_invalid_moves(void **state);
 void test_position_make_move_black_en_passant(void **state);
 void test_position_make_move_white_en_passant(void **state);
+void test_position_make_move_white_promotion(void **state);
+void test_position_make_move_black_promotion(void **state);
+void test_position_make_move_black_promotion_capture(void **state);
+void test_position_make_move_white_promotion_capture(void **state);
