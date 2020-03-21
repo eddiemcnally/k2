@@ -74,8 +74,12 @@ static bool validate_pce_on_sq(const struct board *brd, const struct piece pce,
 static void add_material(struct board *brd, struct piece pce);
 static void remove_material(struct board *brd, struct piece pce);
 static void init_struct(struct board *brd);
-static void populate_square(struct board *brd, const struct piece pce,
-                            const enum square sq, const enum sq_op operation);
+static void clear_bitboards(struct board *brd, const struct piece pce,
+                            const enum square sq);
+static void set_bitboards(struct board *brd, const struct piece pce,
+                          const enum square sq);
+static void move_bitboards(struct board *brd, const struct piece pce,
+                           const enum square from_sq, const enum square to_sq);
 
 // ==================================================================
 //
@@ -163,7 +167,7 @@ void brd_add_piece(struct board *brd, const struct piece pce,
     assert(validate_piece(pce));
     assert(validate_square_empty(brd, sq));
 
-    populate_square(brd, pce, sq, SET_SQ);
+    set_bitboards(brd, pce, sq);
     add_material(brd, pce);
 }
 
@@ -198,7 +202,7 @@ void brd_remove_piece(struct board *brd, const struct piece pce,
     assert(validate_piece(pce));
     assert(validate_pce_on_sq(brd, pce, sq));
 
-    populate_square(brd, pce, sq, CLEAR_SQ);
+    clear_bitboards(brd, pce, sq);
     remove_material(brd, pce);
 }
 
@@ -218,8 +222,7 @@ void brd_move_piece(struct board *brd, const struct piece pce,
     assert(brd_is_sq_occupied(brd, to_sq) == false);
     assert(brd_is_sq_occupied(brd, from_sq));
 
-    populate_square(brd, pce, from_sq, CLEAR_SQ);
-    populate_square(brd, pce, to_sq, SET_SQ);
+    move_bitboards(brd, pce, from_sq, to_sq);
 }
 
 void brd_print_size() {
@@ -443,37 +446,54 @@ static void remove_material(struct board *brd, struct piece pce) {
     brd->material[offset] -= material;
 }
 
-static void populate_square(struct board *brd, const struct piece pce,
-                            const enum square sq, const enum sq_op operation) {
-    const enum colour col = pce_get_colour(pce);
-    const enum piece_role pt = pce_get_piece_role(pce);
-    const uint8_t pce_off = pce_get_array_idx(pt);
-    const uint8_t col_off = pce_col_get_array_idx(col);
+static void clear_bitboards(struct board *brd, const struct piece pce,
+                            const enum square sq) {
+    const uint8_t pce_off = pce_get_array_idx(pce_get_piece_role(pce));
+    const uint8_t col_off = pce_col_get_array_idx(pce_get_colour(pce));
 
-    uint64_t pce_bb = brd->piece_bb[col_off][pce_off];
-    uint64_t brd_bb = brd->bb_board;
-    uint64_t col_bb = brd->bb_colour[col_off];
+    uint64_t *p_pce_bb = &brd->piece_bb[col_off][pce_off];
+    uint64_t *p_brd_bb = &brd->bb_board;
+    uint64_t *p_col_bb = &brd->bb_colour[col_off];
 
-    switch (operation) {
-    case CLEAR_SQ:
-        pce_bb = bb_clear_square(pce_bb, sq);
-        brd_bb = bb_clear_square(brd_bb, sq);
-        col_bb = bb_clear_square(col_bb, sq);
-        brd->pce_square[sq] = pce_get_no_piece();
-        break;
-    case SET_SQ:
-        pce_bb = bb_set_square(pce_bb, sq);
-        brd_bb = bb_set_square(brd_bb, sq);
-        col_bb = bb_set_square(col_bb, sq);
-        brd->pce_square[sq] = pce;
-        break;
-    default:
-        assert(false);
-    }
+    bb_clear_square(p_pce_bb, sq);
+    bb_clear_square(p_brd_bb, sq);
+    bb_clear_square(p_col_bb, sq);
+    brd->pce_square[sq] = pce_get_no_piece();
+}
 
-    brd->piece_bb[col][pce_off] = pce_bb;
-    brd->bb_board = brd_bb;
-    brd->bb_colour[col_off] = col_bb;
+static void set_bitboards(struct board *brd, const struct piece pce,
+                          const enum square sq) {
+    const uint8_t pce_off = pce_get_array_idx(pce_get_piece_role(pce));
+    const uint8_t col_off = pce_col_get_array_idx(pce_get_colour(pce));
+
+    uint64_t *p_pce_bb = &brd->piece_bb[col_off][pce_off];
+    uint64_t *p_brd_bb = &brd->bb_board;
+    uint64_t *p_col_bb = &brd->bb_colour[col_off];
+
+    bb_set_square(p_pce_bb, sq);
+    bb_set_square(p_brd_bb, sq);
+    bb_set_square(p_col_bb, sq);
+    brd->pce_square[sq] = pce;
+}
+
+static void move_bitboards(struct board *brd, const struct piece pce,
+                           const enum square from_sq, const enum square to_sq) {
+    const uint8_t pce_off = pce_get_array_idx(pce_get_piece_role(pce));
+    const uint8_t col_off = pce_col_get_array_idx(pce_get_colour(pce));
+
+    uint64_t *p_pce_bb = &brd->piece_bb[col_off][pce_off];
+    uint64_t *p_brd_bb = &brd->bb_board;
+    uint64_t *p_col_bb = &brd->bb_colour[col_off];
+
+    bb_clear_square(p_pce_bb, from_sq);
+    bb_clear_square(p_brd_bb, from_sq);
+    bb_clear_square(p_col_bb, from_sq);
+    brd->pce_square[from_sq] = pce_get_no_piece();
+
+    bb_set_square(p_pce_bb, to_sq);
+    bb_set_square(p_brd_bb, to_sq);
+    bb_set_square(p_col_bb, to_sq);
+    brd->pce_square[to_sq] = pce;
 }
 
 static bool validate_struct_init(const struct board *brd) {

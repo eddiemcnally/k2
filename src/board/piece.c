@@ -116,15 +116,7 @@ bool pce_is_black(const struct piece pce) {
  */
 enum colour pce_swap_side(const enum colour col) {
     assert(validate_colour(col));
-
-    switch (col) {
-    case WHITE:
-        return BLACK;
-    case BLACK:
-        return WHITE;
-    default:
-        assert(false);
-    }
+    return col == WHITE ? BLACK : WHITE;
 }
 
 /**

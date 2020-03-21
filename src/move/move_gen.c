@@ -563,24 +563,12 @@ static void mv_gen_king_knight_moves(const struct board *brd,
     uint64_t bb = brd_get_piece_bb(brd, pce_to_move, side_to_move);
 
     // set up func ptr to the relevant mask function
-    uint64_t (*occ_mask_fn)(enum square);
-
-    switch (pce_to_move) {
-    case KNIGHT:
-        occ_mask_fn = &occ_mask_get_knight;
-        break;
-    case KING:
-        occ_mask_fn = &occ_mask_get_king;
-        break;
-    default:
-        assert(false);
-    }
+    uint64_t (*occ_mask_fn)(enum square) =
+        (pce_to_move == KNIGHT) ? &occ_mask_get_knight : &occ_mask_get_king;
 
     while (bb != 0) {
         const enum square from_sq = bb_pop_1st_bit(&bb);
-        uint64_t occ_mask = 0;
-
-        occ_mask = (*occ_mask_fn)(from_sq);
+        const uint64_t occ_mask = (*occ_mask_fn)(from_sq);
 
         // generate capture moves
         // ----------------------
