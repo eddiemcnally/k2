@@ -53,15 +53,10 @@ struct board {
     uint64_t piece_bb[NUM_COLOURS][NUM_PIECE_ROLES];
 };
 
-static_assert((int)(sizeof(struct board)) <= 200,
+static_assert((int)(sizeof(struct board)) == BOARD_SIZE_BYTES,
               "Board is copied, check for -fshort-enums compiler option is "
-              "enabled for efficiency");
-
-// square operations
-enum sq_op { SET_SQ, CLEAR_SQ };
-
-// snapshot board;
-static struct board snapshot_board;
+              "enabled for efficiency.");
+static_assert(BOARD_SIZE_BYTES == 200, "Incoreect value for BOARD_SIZE_BYTES");
 
 // used to check struct is populated when passed into public functions
 static const uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
@@ -225,10 +220,6 @@ void brd_move_piece(struct board *brd, const struct piece pce,
     move_bitboards(brd, pce, from_sq, to_sq);
 }
 
-void brd_print_size() {
-    printf("size of board struct : %d\n", (int)(sizeof(struct board)));
-}
-
 /**
  * @brief       Gets the bitboard representing all pieces of the given colour
  *
@@ -383,29 +374,15 @@ bool brd_compare(const struct board *first, const struct board *second) {
 }
 
 /**
- * @brief               Makes a snapshot of the given board
- *
- * @param brd           The board to snap
+ * @brief Clones the current board
+ * 
+ * @param source    The source board to clone
+ * @param dest      The target for the clone
  */
+void brd_clone(const struct board *source, struct board *dest) {
+    assert(validate_board(source));
 
-void brd_snaphot_make(const struct board *brd) {
-    validate_board(brd);
-
-    memcpy(&snapshot_board, brd, sizeof(struct board));
-}
-
-/**
- * @brief               Overwrites the given memory with the snapshotted board
- *
- * @param brd           The board to snap
- */
-
-void brd_snaphot_extract(struct board *brd) {
-    // expecting the incoming board to have been initialised already
-    validate_board(brd);
-    assert(validate_struct_init(&snapshot_board));
-
-    memcpy(brd, &snapshot_board, sizeof(struct board));
+    memcpy(dest, source, sizeof(struct board));
 }
 
 // ==================================================================

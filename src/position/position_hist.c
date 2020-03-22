@@ -24,7 +24,8 @@
  *  SOFTWARE.
  */
 
-#include "move_hist.h"
+#include "position_hist.h"
+#include "board.h"
 #include "castle_perms.h"
 #include "move.h"
 #include "position.h"
@@ -42,6 +43,8 @@ struct move_state {
     struct cast_perm_container castle_perm_container;
     // current 50-rule counter
     uint8_t fifty_move_counter;
+    // storage for cloned board
+    char board[BOARD_SIZE_BYTES];
 };
 
 static uint64_t INIT_TOKEN = 0xdeadbeefc0c0face;
@@ -94,20 +97,24 @@ void move_hist_release_memory(struct move_hist *mh) {
  * @param       The en passant state
  * @param       The current position hash key
  * @param       The current castle permissions
+ * @param       The current board
  */
 void move_hist_push(struct move_hist *move_history, const struct move mv,
                     const uint8_t fifty_move_counter,
                     const struct en_pass_active en_passant,
                     const uint64_t hashkey,
-                    const struct cast_perm_container castle_perm_cont) {
+                    const struct cast_perm_container castle_perm_cont,
+                    const struct board *brd) {
 
     assert(validate_move_history(move_history));
+    assert(validate_board(brd));
 
     move_history->free_slot->mv = mv;
     move_history->free_slot->fifty_move_counter = fifty_move_counter;
     move_history->free_slot->en_passant = en_passant;
     move_history->free_slot->hashkey = hashkey;
     move_history->free_slot->castle_perm_container = castle_perm_cont;
+    brd_clone(brd, (struct board *)move_history->free_slot->board);
 
     move_history->num_used_slots++;
     move_history->free_slot++;
@@ -122,11 +129,13 @@ void move_hist_push(struct move_hist *move_history, const struct move mv,
  * @param       The en passant state
  * @param       The current position hash key
  * @param       The current castle permissions
+ * @param       The dest for the cloned board
  */
 void move_hist_pop(struct move_hist *move_history, struct move *mv,
                    uint8_t *fifty_move_counter,
                    struct en_pass_active *en_passant, uint64_t *hashkey,
-                   struct cast_perm_container *castle_perm_container) {
+                   struct cast_perm_container *castle_perm_container,
+                   struct board *brd) {
 
     assert(validate_move_history(move_history));
 
@@ -135,6 +144,7 @@ void move_hist_pop(struct move_hist *move_history, struct move *mv,
     *en_passant = move_history->free_slot->en_passant;
     *hashkey = move_history->free_slot->hashkey;
     *castle_perm_container = move_history->free_slot->castle_perm_container;
+    brd_clone((struct board *)move_history->free_slot->board, brd);
 
     move_history->num_used_slots--;
     move_history->free_slot--;

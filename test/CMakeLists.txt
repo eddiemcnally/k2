@@ -107,7 +107,7 @@ set(TEST_SRCS
         ${TEST_FEN_DIR}/test_fen.c
         ${TEST_POSN_DIR}/test_position.c
         ${TEST_POSN_DIR}/test_hashkeys.c
-        ${TEST_POSN_DIR}/test_move_hist.c
+        ${TEST_POSN_DIR}/test_position_hist.c
         ${TEST_POSN_DIR}/test_castle_permissions.c
         ${TEST_POSN_DIR}/test_attack_checker.c
         ${TEST_MOVE_DIR}/test_move.c

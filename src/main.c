@@ -47,7 +47,6 @@ int main(void) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    brd_print_size();
     struct move_list *mvl = mvl_allocate();
 
     struct board *brd = pos_get_board(pos);

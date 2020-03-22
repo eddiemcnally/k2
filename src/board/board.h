@@ -36,6 +36,8 @@
 
 struct board;
 
+#define BOARD_SIZE_BYTES ((int)200)
+
 struct board *brd_allocate(void);
 void brd_deallocate(struct board *brd);
 bool validate_board(const struct board *brd);
@@ -55,7 +57,6 @@ void brd_move_piece(struct board *brd, const struct piece pce,
                     const enum square from_sq, const enum square to_sq);
 uint64_t brd_get_colour_bb(const struct board *brd, const enum colour colour);
 bool brd_compare(const struct board *first, const struct board *second);
-void brd_print_size(void);
-void brd_snaphot_make(const struct board *brd);
-void brd_snaphot_extract(struct board *brd);
 uint32_t brd_get_material(const struct board *brd, const enum colour side);
+
+void brd_clone(const struct board *source, struct board *dest);

@@ -30,7 +30,7 @@
 #include "castle_perms.h"
 #include "fen.h"
 #include "move.h"
-#include "move_hist.h"
+#include "position_hist.h"
 #include <assert.h>
 
 // key used to verify struct has been initialised
@@ -218,7 +218,8 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
 
     move_hist_push(pos->move_history, mv, pos->fifty_move_counter,
-                   pos->en_passant, pos->hashkey, pos->castle_perm_container);
+                   pos->en_passant, pos->hashkey, pos->castle_perm_container,
+                   pos->brd);
 
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);

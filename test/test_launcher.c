@@ -33,10 +33,10 @@
 #include "test_hashkeys.h"
 #include "test_move.h"
 #include "test_move_gen.h"
-#include "test_move_hist.h"
 #include "test_move_list.h"
 #include "test_piece.h"
 #include "test_position.h"
+#include "test_position_hist.h"
 #include "test_square.h"
 #include <cmocka.h>
 #include <setjmp.h>
@@ -170,7 +170,7 @@ int main(void) {
         cmocka_unit_test(test_board_brd_try_get_piece_on_square_1),
         cmocka_unit_test(test_board_brd_get_board_bb),
         cmocka_unit_test(test_board_compare),
-        cmocka_unit_test(test_board_snapshot),
+        cmocka_unit_test(test_board_clone),
 
         // square
         cmocka_unit_test(test_square_sq_get_rank),

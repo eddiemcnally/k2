@@ -678,25 +678,16 @@ void test_board_compare(void **state) {
     assert_true(brd_compare(brd1, brd2));
 }
 
-void test_board_snapshot(void **state) {
-    const char *FEN1 = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
-    const char *FEN2 = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
-                       "1bNnrQ2 w - - 0 1\n";
+void test_board_clone(void **state) {
+    const char *FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
 
-    // first board
     struct position *pos1 = pos_create();
-    pos_initialise(FEN1, pos1);
-    struct board *brd1 = pos_get_board(pos1);
+    pos_initialise(FEN, pos1);
+    struct board *brd = pos_get_board(pos1);
 
-    // second board
-    struct position *pos2 = pos_create();
-    pos_initialise(FEN2, pos2);
-    struct board *brd2 = pos_get_board(pos2);
+    char dest[BOARD_SIZE_BYTES] = {0};
 
-    assert_false(brd_compare(brd1, brd2));
+    brd_clone(brd, (struct board *)dest);
 
-    // snap brd1 and retrieve into brd2
-    brd_snaphot_make(brd1);
-    brd_snaphot_extract(brd2);
-    assert_true(brd_compare(brd1, brd2));
+    assert_true(brd_compare(brd, (struct board *)dest));
 }
