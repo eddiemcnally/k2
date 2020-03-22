@@ -140,6 +140,8 @@ int main(void) {
         cmocka_unit_test(test_position_make_move_black_promotion),
         cmocka_unit_test(test_position_make_move_white_promotion_capture),
         cmocka_unit_test(test_position_make_move_black_promotion_capture),
+        cmocka_unit_test(
+            test_position_make_move_then_take_move_positions_restored_as_expected),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),

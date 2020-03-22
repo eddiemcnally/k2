@@ -69,3 +69,5 @@ void test_position_make_move_white_promotion(void **state);
 void test_position_make_move_black_promotion(void **state);
 void test_position_make_move_black_promotion_capture(void **state);
 void test_position_make_move_white_promotion_capture(void **state);
+void test_position_make_move_then_take_move_positions_restored_as_expected(
+    void **state);

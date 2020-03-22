@@ -29,6 +29,7 @@
 #include "move.h"
 #include "piece.h"
 #include "square.h"
+#include "utils.h"
 #include <assert.h>
 
 /**
@@ -56,7 +57,7 @@ struct board {
 static_assert((int)(sizeof(struct board)) == BOARD_SIZE_BYTES,
               "Board is copied, check for -fshort-enums compiler option is "
               "enabled for efficiency.");
-static_assert(BOARD_SIZE_BYTES == 200, "Incoreect value for BOARD_SIZE_BYTES");
+static_assert(BOARD_SIZE_BYTES == 200, "Incorrect value for BOARD_SIZE_BYTES");
 
 // used to check struct is populated when passed into public functions
 static const uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
@@ -300,7 +301,8 @@ bool validate_board(const struct board *brd) {
     }
 
     // colour bitboards should AND to zero
-    assert((brd->bb_colour[WHITE] & brd->bb_colour[BLACK]) == 0);
+    assert((brd->bb_colour[WHITE] & brd->bb_colour[BLACK]) == 0 &&
+           "col bb not ANDing as zero");
 
     // can't be more bits set than max pieces on board
     const uint8_t num_bits_on_board =

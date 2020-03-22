@@ -70,7 +70,7 @@ set (ENGINE_COMPILER_WARNS "-std=c11 \
         -fsanitize=undefined \
         -fshort-enums \
         -m64 \
-        -o3 \
+        -g3 \
         -Waggregate-return \
         -Wall \
         -Wcast-align \

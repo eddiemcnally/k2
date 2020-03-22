@@ -52,7 +52,7 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(
     struct position *pos = pos_create();
     pos_initialise(INITIAL_FEN_BLACK_TO_MOVE, pos);
 
-    struct move_hist *mh = move_hist_init();
+    struct position_hist *mh = position_hist_init();
 
     const uint16_t NUM_TO_TEST = MAX_GAME_MOVES - 1;
 
@@ -63,12 +63,12 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(
         struct cast_perm_container cp;
         cast_perm_set_permission(CP_WK, &cp, true);
 
-        move_hist_push(mh, mv, (uint8_t)i, en_pass, (uint64_t)(i * i), cp,
-                       pos_get_board(pos));
+        position_hist_push(mh, mv, (uint8_t)i, en_pass, (uint64_t)(i * i), cp,
+                           pos_get_board(pos));
 
-        assert_true(move_hist_get_num(mh) == i + 1);
+        assert_true(position_hist_get_num(mh) == i + 1);
     }
-    assert_true(move_hist_get_num(mh) == NUM_TO_TEST);
+    assert_true(position_hist_get_num(mh) == NUM_TO_TEST);
 
-    move_hist_release_memory(mh);
+    position_hist_release_memory(mh);
 }

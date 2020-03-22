@@ -1334,3 +1334,30 @@ void test_position_make_move_black_promotion_capture(void **state) {
         pos_destroy(pos);
     }
 }
+
+void test_position_make_move_then_take_move_positions_restored_as_expected(
+    void **state) {
+    const char *test_fen = "4k3/6p1/8/5P2/8/8/8/4K3 b - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    // make a similar position for comparison
+    struct position *pos_original = pos_create();
+    pos_initialise(test_fen, pos_original);
+
+    // confirm they're the same before testing
+    assert_true(pos_compare(pos, pos_original));
+
+    const struct move mv = move_encode_pawn_double_first(g7, g5);
+    bool move_is_valid = pos_try_make_move(pos, mv);
+    assert_true(move_is_valid);
+
+    // revert the move
+    pos_take_move(pos);
+
+    assert_true(pos_compare(pos, pos_original));
+
+    pos_destroy(pos);
+    pos_destroy(pos_original);
+}

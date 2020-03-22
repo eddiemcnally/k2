@@ -75,7 +75,6 @@ static enum piece_role extract_piece_role(const struct piece pce);
  * 
  * @return          the piece_type
  */
-
 enum piece_role pce_get_piece_role(const struct piece pce) {
     assert(validate_piece(pce));
 

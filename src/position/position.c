@@ -60,8 +60,8 @@ struct position {
     // active catle permissions
     struct cast_perm_container castle_perm_container;
 
-    // move history
-    struct move_hist *move_history;
+    // position history
+    struct position_hist *position_history;
 };
 
 static void init_pos_struct(struct position *pos);
@@ -213,13 +213,20 @@ bool validate_position(const struct position *pos) {
 
     return true;
 }
-
+/**
+ * @brief Makes the given move and updates the position
+ * 
+ * @param pos       The position
+ * @param mv        The move to make
+ * @return true     Move is valid
+ * @return false    Move is invalid
+ */
 bool pos_try_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
 
-    move_hist_push(pos->move_history, mv, pos->fifty_move_counter,
-                   pos->en_passant, pos->hashkey, pos->castle_perm_container,
-                   pos->brd);
+    position_hist_push(pos->position_history, mv, pos->fifty_move_counter,
+                       pos->en_passant, pos->hashkey,
+                       pos->castle_perm_container, pos->brd);
 
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
@@ -276,7 +283,14 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
 struct move pos_take_move(struct position *pos) {
     assert(validate_position(pos));
 
-    struct move mv = {.val = 0};
+    struct move mv;
+    position_hist_pop(pos->position_history, &mv, &pos->fifty_move_counter,
+                      &pos->en_passant, &pos->hashkey,
+                      &pos->castle_perm_container, pos->brd);
+
+    // swap sides
+    pos->side_to_move = pce_swap_side(pos->side_to_move);
+
     return mv;
 }
 
@@ -291,42 +305,51 @@ bool pos_compare(const struct position *first, const struct position *second) {
     assert(validate_position(second));
 
     if (brd_compare(first->brd, second->brd) == false) {
+        printf("pos_compare: Board compare failed\n");
         return false;
     }
 
     if (first->side_to_move != second->side_to_move) {
+        printf("pos_compare: side to move is different\n");
         return false;
     }
 
     if (first->ply != second->ply) {
+        printf("pos_compare: ply is different\n");
         return false;
     }
 
     if (first->history_ply != second->history_ply) {
+        printf("pos_compare: history_ply is different\n");
         return false;
     }
 
     if (first->fifty_move_counter != second->fifty_move_counter) {
+        printf("pos_compare: 50 move counter is different\n");
         return false;
     }
     if (cast_compare_perms(first->castle_perm_container,
                            second->castle_perm_container) == false) {
+        printf("pos_compare: castle permissions are different\n");
         return false;
     }
 
     if (first->en_passant.is_active != second->en_passant.is_active) {
+        printf("pos_compare: en passant state is different\n");
         return false;
     }
 
     if (first->en_passant.is_active) {
         if (first->en_passant.sq != second->en_passant.sq) {
+            printf("pos_compare: en passant squares are different\n");
             return false;
         }
     }
 
-    bool same_hist =
-        move_hist_compare(first->move_history, second->move_history);
+    bool same_hist = position_hist_compare(first->position_history,
+                                           second->position_history);
     if (same_hist == false) {
+        printf("pos_compare: position history is different\n");
         return false;
     }
 
@@ -345,7 +368,7 @@ static void init_pos_struct(struct position *pos) {
 
     pos->castle_perm_container = cast_perm_init();
 
-    pos->move_history = move_hist_init();
+    pos->position_history = position_hist_init();
 }
 
 static void do_capture_move(struct position *pos, const struct move mv,

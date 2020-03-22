@@ -33,23 +33,25 @@
 #include <stdio.h>
 
 struct move_state {
+    //position hash
+    uint64_t hashkey;
+    // storage for cloned board
+    uint8_t board[BOARD_SIZE_BYTES];
     // the move being made
     struct move mv;
     // active/inactive en passant
     struct en_pass_active en_passant;
-    //position hash
-    uint64_t hashkey;
+    // side to move
+    enum colour side;
     // active castle permissions
     struct cast_perm_container castle_perm_container;
     // current 50-rule counter
     uint8_t fifty_move_counter;
-    // storage for cloned board
-    char board[BOARD_SIZE_BYTES];
 };
 
 static uint64_t INIT_TOKEN = 0xdeadbeefc0c0face;
 
-struct move_hist {
+struct position_hist {
     uint64_t init_key;
     // move history
     struct move_state history[MAX_GAME_MOVES];
@@ -59,15 +61,15 @@ struct move_hist {
 
 static bool compare_move_states(const struct move_state *ms1,
                                 const struct move_state *ms2);
-static bool validate_move_history(const struct move_hist *mh);
+static bool validate_move_history(const struct position_hist *mh);
 /**
  * @brief       Initialises the move history environment
  *
  * @return      Pointer to initialised struct
  */
-struct move_hist *move_hist_init(void) {
-    struct move_hist *retval =
-        (struct move_hist *)calloc(MAX_GAME_MOVES, sizeof(struct move_hist));
+struct position_hist *position_hist_init(void) {
+    struct position_hist *retval = (struct position_hist *)calloc(
+        MAX_GAME_MOVES, sizeof(struct position_hist));
 
     retval->free_slot = &retval->history[0];
     retval->num_used_slots = 0;
@@ -81,80 +83,63 @@ struct move_hist *move_hist_init(void) {
  *
  * @param       Pointer to move history struct
  */
-void move_hist_release_memory(struct move_hist *mh) {
+void position_hist_release_memory(struct position_hist *mh) {
     assert(validate_move_history(mh));
 
     mh->init_key = 0;
     free(mh);
 }
 
-/**
- * @brief       pushes the position state onto the stack
- *
- * @param       Pointer to move history struct
- * @param       The move about to be made
- * @param       The 50-move counter
- * @param       The en passant state
- * @param       The current position hash key
- * @param       The current castle permissions
- * @param       The current board
- */
-void move_hist_push(struct move_hist *move_history, const struct move mv,
-                    const uint8_t fifty_move_counter,
-                    const struct en_pass_active en_passant,
-                    const uint64_t hashkey,
-                    const struct cast_perm_container castle_perm_cont,
-                    const struct board *brd) {
+void position_hist_push(struct position_hist *pos_history, const struct move mv,
+                        const uint8_t fifty_move_counter,
+                        const struct en_pass_active en_passant,
+                        const uint64_t hashkey,
+                        const struct cast_perm_container castle_perm_cont,
+                        const struct board *brd) {
 
-    assert(validate_move_history(move_history));
+    assert(validate_move_history(pos_history));
     assert(validate_board(brd));
 
-    move_history->free_slot->mv = mv;
-    move_history->free_slot->fifty_move_counter = fifty_move_counter;
-    move_history->free_slot->en_passant = en_passant;
-    move_history->free_slot->hashkey = hashkey;
-    move_history->free_slot->castle_perm_container = castle_perm_cont;
-    brd_clone(brd, (struct board *)move_history->free_slot->board);
+    pos_history->free_slot->mv = mv;
+    pos_history->free_slot->fifty_move_counter = fifty_move_counter;
+    pos_history->free_slot->en_passant = en_passant;
+    pos_history->free_slot->hashkey = hashkey;
+    pos_history->free_slot->castle_perm_container = castle_perm_cont;
+    brd_clone(brd, (struct board *)(&pos_history->free_slot->board));
 
-    move_history->num_used_slots++;
-    move_history->free_slot++;
+    assert(validate_board((struct board *)(&pos_history->free_slot->board)));
+
+    pos_history->num_used_slots++;
+    pos_history->free_slot++;
 }
 
-/**
- * @brief       Pop the position info off the stack
- *
- * @param       Pointer to move history struct
- * @param       The move about to be made
- * @param       The 50-move counter
- * @param       The en passant state
- * @param       The current position hash key
- * @param       The current castle permissions
- * @param       The dest for the cloned board
- */
-void move_hist_pop(struct move_hist *move_history, struct move *mv,
-                   uint8_t *fifty_move_counter,
-                   struct en_pass_active *en_passant, uint64_t *hashkey,
-                   struct cast_perm_container *castle_perm_container,
-                   struct board *brd) {
+void position_hist_pop(struct position_hist *pos_history, struct move *mv,
+                       uint8_t *fifty_move_counter,
+                       struct en_pass_active *en_passant, uint64_t *hashkey,
+                       struct cast_perm_container *castle_perm_container,
+                       struct board *brd) {
 
-    assert(validate_move_history(move_history));
+    pos_history->num_used_slots--;
+    pos_history->free_slot--;
 
-    *mv = move_history->free_slot->mv;
-    *fifty_move_counter = move_history->free_slot->fifty_move_counter;
-    *en_passant = move_history->free_slot->en_passant;
-    *hashkey = move_history->free_slot->hashkey;
-    *castle_perm_container = move_history->free_slot->castle_perm_container;
-    brd_clone((struct board *)move_history->free_slot->board, brd);
+    assert(validate_move_history(pos_history));
 
-    move_history->num_used_slots--;
-    move_history->free_slot--;
+    *mv = pos_history->free_slot->mv;
+    *fifty_move_counter = pos_history->free_slot->fifty_move_counter;
+    *en_passant = pos_history->free_slot->en_passant;
+    *hashkey = pos_history->free_slot->hashkey;
+    *castle_perm_container = pos_history->free_slot->castle_perm_container;
+
+    assert(validate_board((struct board *)(&pos_history->free_slot->board)));
+
+    brd_clone((struct board *)(&pos_history->free_slot->board), brd);
 }
 
 /**
  * @brief   Returns the number of used stack slots
  * @param   Pointer to the move hist pory struct
  */
-uint16_t move_hist_get_num(const struct move_hist *mh) {
+uint16_t position_hist_get_num(const struct position_hist *mh) {
     return mh->num_used_slots;
 }
 
@@ -164,8 +149,8 @@ uint16_t move_hist_get_num(const struct move_hist *mh) {
  * @param   The 2nd move history
  * @return  true is the same, false otherwise
  */
-bool move_hist_compare(const struct move_hist *hist1,
-                       const struct move_hist *hist2) {
+bool position_hist_compare(const struct position_hist *hist1,
+                           const struct position_hist *hist2) {
 
     assert(validate_move_history(hist1));
     assert(validate_move_history(hist2));
@@ -220,7 +205,7 @@ static bool compare_move_states(const struct move_state *ms1,
     return true;
 }
 
-static bool validate_move_history(const struct move_hist *mh) {
+static bool validate_move_history(const struct position_hist *mh) {
     if (mh->init_key != INIT_TOKEN) {
         return false;
     }
