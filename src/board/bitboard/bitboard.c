@@ -127,7 +127,8 @@ uint8_t bb_count_bits(const uint64_t bb) {
  * @return      The zero-based bit that was set
  */
 enum square bb_pop_1st_bit(uint64_t *bb) {
-    enum square sq = (enum square)__builtin_ctzll(*bb);
+    int bit_num = __builtin_ctzll(*bb);
+    enum square sq = (enum square)bit_num;
     bb_clear_square(bb, sq);
     return sq;
 }

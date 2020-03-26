@@ -21,6 +21,8 @@ set(FEN_DIR             ${K2_PROJECT_SOURCE_DIR}/fen)
 set(POSN_DIR            ${K2_PROJECT_SOURCE_DIR}/position)
 set(MOVE_DIR            ${K2_PROJECT_SOURCE_DIR}/move)
 set(UTILS_DIR           ${K2_PROJECT_SOURCE_DIR}/utils)
+set(PERFT_DIR           ${K2_PROJECT_SOURCE_DIR}/perft)
+
 
 message("Setting up K2 Engine source files...")
 
@@ -42,6 +44,7 @@ set (SOURCES
         ${MOVE_DIR}/move_gen.c
         ${UTILS_DIR}/utils.c
         ${UTILS_DIR}/rand.c
+        ${PERFT_DIR}/perft_file_reader.c
         )
 
 message("Setting up K2 Engine include files...")
@@ -54,6 +57,7 @@ set(INCLUDES
         ${POSN_DIR}
         ${MOVE_DIR}
         ${UTILS_DIR}
+        ${PERFT_DIR}
         )
 
 # Global variables to allow the test binary to access the main source files 
@@ -64,44 +68,48 @@ message("Setting up K2 Engine build target compiler flags...")
 
 #//
         
-set (ENGINE_COMPILER_WARNS "-std=c11 \
-        -fno-common \
-        -fno-omit-frame-pointer \
-        -fsanitize=undefined \
-        -fshort-enums \
-        -m64 \
-        -g3 \
-        -Waggregate-return \
-        -Wall \
-        -Wcast-align \
-        -Wcast-qual \
-        -Wcomment \
-        -Wconversion \
-        -Werror \
-        -Wextra \
-        -Wfloat-equal \
-        -Winit-self \
-        -Wmissing-declarations \
-        -Wmissing-include-dirs \
-        -Wmissing-prototypes \
-        -Wnested-externs \
-        -Wold-style-definition \
-        -Wpedantic \
-        -Wpointer-arith \
-        -Wredundant-decls \
-        -Wshadow \
-        -Wsign-conversion \
-        -Wstrict-aliasing \
-        -Wstrict-overflow=5 \
-        -Wstrict-prototypes \
-        -Wswitch-default \
-        -Wundef \
-        -Wuninitialized \
-        -Wunreachable-code \
-        -Wunused-macros \
-        -Wunused-parameter \
-        -Wwrite-strings"
-        )
+set (ENGINE_COMPILER_WARNS "-std=c17 \
+-flto \
+-fno-common \
+-fomit-frame-pointer \
+-fsanitize=undefined \
+-fshort-enums \
+-g3 \
+-m64 \
+-march=native \
+-Waggregate-return \
+-Wall \
+-Wbad-function-cast \
+-Wcast-align \
+-Wcast-qual \
+-Wconversion \
+-Wdouble-promotion \
+-Werror \
+-Wextra \
+-Wfloat-equal \
+-Wformat-nonliteral \
+-Winline \
+-Winvalid-pch \
+-Wmissing-declarations \
+-Wmissing-format-attribute \
+-Wmissing-include-dirs \
+-Wmissing-prototypes \
+-Wnested-externs \
+-Wnull-dereference \
+-Wpedantic \
+-Wpointer-arith \
+-Wredundant-decls \
+-Wshadow \
+-Wsign-conversion \
+-Wstrict-aliasing=2 \
+-Wstrict-overflow=5 \
+-Wstrict-prototypes \
+-Wswitch-default \
+-Wswitch-enum \
+-Wundef \
+-Wunreachable-code \
+-Wunused-macros \
+-Wwrite-strings")
 
 
 
@@ -112,8 +120,21 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${ENGINE_COMPILER_WARNS}
 
 
 include_directories(${INCLUDES})
+
+# *** Main ****
 # note: include main.c here
+message("*** Setting up main binary....")
 add_executable(k2 main.c ${SOURCES})
 
-message("*** K2 Chess Engine Binary build environment - DONE ***'")
+# *** Perft ***
+message("*** Setting up perft binary....")
+add_executable(perft perft/perft_runner.c ${SOURCES})
+message("*** Setting up post-uild copy of Perft suite test file")
+add_custom_command(
+        TARGET perft POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy 
+                ${CMAKE_SOURCE_DIR}/resources/perftsuite.epd
+                ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/perftsuite.epd)
+
+message("*** K2 Chess Engine Binary build environment - DONE ***")
 

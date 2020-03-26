@@ -150,6 +150,13 @@ bool validate_en_pass_sq(const enum square sq_to_check) {
     case RANK_3:
     case RANK_6:
         return true;
+    case RANK_1:
+    case RANK_2:
+    case RANK_4:
+    case RANK_5:
+    case RANK_7:
+    case RANK_8:
+        return false;
     default:
         return false;
     }
