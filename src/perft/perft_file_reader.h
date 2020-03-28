@@ -41,6 +41,7 @@ struct epd_row {
 
 struct perft_epd {
     struct epd_row rows[PERFT_EPD_ROWS];
+    uint16_t row_count;
 };
 
 struct perft_epd perft_load_file(const char *file);

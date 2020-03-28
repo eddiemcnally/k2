@@ -25,9 +25,59 @@
  */
 
 #include "perft_runner.h"
-#include <stdbool.h>
+#include "perft_file_reader.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(void) { printf("hello\n"); }
+
+//uint64_t do_perft(const uint8_t depth, struct position *pos);
+
+int main(void) {
+
+    struct perft_epd parsed = perft_load_file("perftsuite.epd");
+
+    printf("count = %d\n", parsed.row_count);
+}
+
+
+// uint64_t do_perft(const uint8_t depth, struct position *pos){
+//     uint64_t nodes = 0;
+//     if (depth == 0){
+//         return 1;
+//     }
+
+
+
+// }
+
+
+
+// pub fn perft(depth: u8, position: &mut Position) -> u64 {
+//     let mut nodes = 0;
+//     if depth == 0 {
+//         return 1;
+//     }
+
+//     let mut move_list = Vec::new();
+
+//     move_gen::generate_moves(position, &mut move_list);
+
+//     for mv in &move_list {
+//         let move_legality = position.make_move(*mv);
+//         if move_legality == MoveLegality::Legal {
+//             nodes = nodes + perft(depth - 1, position);
+//         }
+//         position.take_move();
+//     }
+
+//     //println!("#Nodes: {}, Move List: {:?}", nodes, move_list);
+//     return nodes;
+// }
+
+
+
+
+
+

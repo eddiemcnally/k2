@@ -63,6 +63,7 @@ struct perft_epd perft_load_file(const char *file) {
         // init for next time round loop
         memset(line, 0, LINE_SIZE);
     }
+    retval.row_count = line_cnt;
 
     fclose(fp);
     if (line)
@@ -76,7 +77,6 @@ struct perft_epd perft_load_file(const char *file) {
 // Private functions
 //
 //////////////////////////////////////////
-
 struct epd_row parse_row(char *row) {
     struct epd_row retval;
 
@@ -86,7 +86,7 @@ struct epd_row parse_row(char *row) {
     strcpy((char *)(&retval.fen), token);
 
     uint8_t i = 0;
-    while (token != NULL && i++ <= MAX_DEPTH - 1) {
+    while (token != NULL && i < MAX_DEPTH) {
         token = strtok(NULL, FIELD_DELIM);
 
         // this is of the form "D3 139 "
@@ -94,6 +94,8 @@ struct epd_row parse_row(char *row) {
         uint64_t depth_count = parse_depth_details(token);
 
         retval.move_cnt[i] = depth_count;
+
+        i++;
     }
 
     return retval;
