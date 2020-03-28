@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 //uint64_t do_perft(const uint8_t depth, struct position *pos);
 
 int main(void) {
@@ -41,18 +40,13 @@ int main(void) {
     printf("count = %d\n", parsed.row_count);
 }
 
-
 // uint64_t do_perft(const uint8_t depth, struct position *pos){
 //     uint64_t nodes = 0;
 //     if (depth == 0){
 //         return 1;
 //     }
 
-
-
 // }
-
-
 
 // pub fn perft(depth: u8, position: &mut Position) -> u64 {
 //     let mut nodes = 0;
@@ -75,9 +69,3 @@ int main(void) {
 //     //println!("#Nodes: {}, Move List: {:?}", nodes, move_list);
 //     return nodes;
 // }
-
-
-
-
-
-

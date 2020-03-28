@@ -28,11 +28,15 @@
 #include "move.h"
 #include <stdint.h>
 
+#define MOVE_LIST_MAX_LEN 2048
 // struct representing a list of moves
-struct move_list;
+struct move_list {
+    uint16_t struct_init_key;
+    uint16_t move_count;
+    struct move move_list[MOVE_LIST_MAX_LEN];
+};
 
-struct move_list *mvl_allocate(void);
-void mvl_deallocate(struct move_list *mvl);
+struct move_list mvl_initialise(void);
 uint16_t mvl_get_move_count(const struct move_list *mvl);
 struct move mvl_get_move_at_offset(const struct move_list *mvl,
                                    uint16_t offset);

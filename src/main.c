@@ -47,10 +47,10 @@ int main(void) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, BLACK, mvl);
+    mv_gen_bishop_moves(brd, BLACK, &mvl);
 
     struct move mv = move_encode_quiet(e2, d1);
     printf("Move : %s", move_print(mv));

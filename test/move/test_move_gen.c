@@ -38,20 +38,20 @@
 
 static bool contains_all_4_promotion_moves(const enum square from_sq,
                                            const enum square to_sq,
-                                           struct move_list *mvl,
+                                           const struct move_list *mvl,
                                            const bool is_capture);
 
 #define CONTAINS_QUIET(mvl, from, to)                                          \
     ({                                                                         \
         struct move mv;                                                        \
         mv = move_encode_quiet(from, to);                                      \
-        assert_true(mvl_contains_move(mvl, mv));                               \
+        assert_true(mvl_contains_move(&mvl, mv));                              \
     })
 #define CONTAINS_CAPTURE(mvl, from, to)                                        \
     ({                                                                         \
         struct move mv;                                                        \
         mv = move_encode_capture(from, to);                                    \
-        assert_true(mvl_contains_move(mvl, mv));                               \
+        assert_true(mvl_contains_move(&mvl, mv));                              \
     })
 
 void test_move_gen_knight_white_1(void **state) {
@@ -62,11 +62,11 @@ void test_move_gen_knight_white_1(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
     struct board *brd = pos_get_board(pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_knight_moves(brd, WHITE, mvl);
+    mv_gen_knight_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_WHITE_KNIGHT_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_WHITE_KNIGHT_MOVES);
 
     CONTAINS_QUIET(mvl, g4, f2);
     CONTAINS_QUIET(mvl, g4, h2);
@@ -90,11 +90,11 @@ void test_move_gen_knight_white_2(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
     struct board *brd = pos_get_board(pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_knight_moves(brd, WHITE, mvl);
+    mv_gen_knight_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_WHITE_KNIGHT_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_WHITE_KNIGHT_MOVES);
 
     CONTAINS_QUIET(mvl, b8, c6);
     CONTAINS_QUIET(mvl, e3, c4);
@@ -113,11 +113,11 @@ void test_move_gen_knight_white_3(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
     struct board *brd = pos_get_board(pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_knight_moves(brd, WHITE, mvl);
+    mv_gen_knight_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_WHITE_KNIGHT_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_WHITE_KNIGHT_MOVES);
 
     CONTAINS_QUIET(mvl, f2, e4);
     CONTAINS_QUIET(mvl, f2, d3);
@@ -141,11 +141,11 @@ void test_move_gen_knight_black_1(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
     struct board *brd = pos_get_board(pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_knight_moves(brd, BLACK, mvl);
+    mv_gen_knight_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_BLACK_KNIGHT_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_BLACK_KNIGHT_MOVES);
 
     CONTAINS_QUIET(mvl, c8, a7);
     CONTAINS_QUIET(mvl, c8, b6);
@@ -168,11 +168,11 @@ void test_move_gen_knight_black_2(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
     struct board *brd = pos_get_board(pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_knight_moves(brd, BLACK, mvl);
+    mv_gen_knight_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_BLACK_KNIGHT_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_BLACK_KNIGHT_MOVES);
 
     CONTAINS_QUIET(mvl, c4, a5);
     CONTAINS_QUIET(mvl, c4, e5);
@@ -198,11 +198,11 @@ void test_move_gen_knight_black_3(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
     struct board *brd = pos_get_board(pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_knight_moves(brd, BLACK, mvl);
+    mv_gen_knight_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_BLACK_KNIGHT_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_BLACK_KNIGHT_MOVES);
 
     CONTAINS_QUIET(mvl, b2, d1);
     CONTAINS_QUIET(mvl, b2, d3);
@@ -223,11 +223,11 @@ void test_move_gen_king_white_no_castling_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, WHITE, mvl);
+    mv_gen_king_moves(pos, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_MOVES);
 
     CONTAINS_QUIET(mvl, c4, c3);
     CONTAINS_QUIET(mvl, c4, d3);
@@ -247,11 +247,11 @@ void test_move_gen_king_white_no_castling_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, WHITE, mvl);
+    mv_gen_king_moves(pos, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_MOVES);
 
     CONTAINS_QUIET(mvl, h5, g6);
     CONTAINS_QUIET(mvl, h5, g5);
@@ -267,11 +267,11 @@ void test_move_gen_king_white_no_castling_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, WHITE, mvl);
+    mv_gen_king_moves(pos, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_MOVES);
 
     CONTAINS_QUIET(mvl, a2, a3);
     CONTAINS_QUIET(mvl, a2, b3);
@@ -286,15 +286,15 @@ void test_move_white_castling_WK_WQ(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, WHITE, mvl);
+    mv_gen_king_moves(pos, WHITE, &mvl);
 
     struct move wk_cast = move_encode_castle_kingside(WHITE);
-    assert_true(mvl_contains_move(mvl, wk_cast));
+    assert_true(mvl_contains_move(&mvl, wk_cast));
 
     struct move wq_cast = move_encode_castle_queenside(WHITE);
-    assert_true(mvl_contains_move(mvl, wq_cast));
+    assert_true(mvl_contains_move(&mvl, wq_cast));
 }
 
 void test_move_white_castling_WK_only(void **state) {
@@ -303,15 +303,15 @@ void test_move_white_castling_WK_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, WHITE, mvl);
+    mv_gen_king_moves(pos, WHITE, &mvl);
 
     struct move wk_cast = move_encode_castle_kingside(WHITE);
-    assert_true(mvl_contains_move(mvl, wk_cast));
+    assert_true(mvl_contains_move(&mvl, wk_cast));
 
     struct move wq_cast = move_encode_castle_queenside(WHITE);
-    assert_false(mvl_contains_move(mvl, wq_cast));
+    assert_false(mvl_contains_move(&mvl, wq_cast));
 }
 
 void test_move_white_castling_WQ_only(void **state) {
@@ -320,15 +320,15 @@ void test_move_white_castling_WQ_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, WHITE, mvl);
+    mv_gen_king_moves(pos, WHITE, &mvl);
 
     struct move wk_cast = move_encode_castle_kingside(WHITE);
-    assert_false(mvl_contains_move(mvl, wk_cast));
+    assert_false(mvl_contains_move(&mvl, wk_cast));
 
     struct move wq_cast = move_encode_castle_queenside(WHITE);
-    assert_true(mvl_contains_move(mvl, wq_cast));
+    assert_true(mvl_contains_move(&mvl, wq_cast));
 }
 
 void test_move_gen_king_black_no_castling_1(void **state) {
@@ -338,11 +338,11 @@ void test_move_gen_king_black_no_castling_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, BLACK, mvl);
+    mv_gen_king_moves(pos, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_MOVES);
 
     CONTAINS_QUIET(mvl, g5, h6);
     CONTAINS_QUIET(mvl, g5, h5);
@@ -361,11 +361,11 @@ void test_move_gen_king_black_no_castling_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, BLACK, mvl);
+    mv_gen_king_moves(pos, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_MOVES);
 
     CONTAINS_QUIET(mvl, f1, g1);
     CONTAINS_QUIET(mvl, f1, g2);
@@ -381,11 +381,11 @@ void test_move_gen_king_black_no_castling_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, BLACK, mvl);
+    mv_gen_king_moves(pos, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == NUM_EXPECTED_MOVES);
+    assert_true(mvl_get_move_count(&mvl) == NUM_EXPECTED_MOVES);
 
     CONTAINS_QUIET(mvl, g5, h6);
     CONTAINS_QUIET(mvl, g5, h5);
@@ -400,15 +400,15 @@ void test_move_black_castling_BK_BQ(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, BLACK, mvl);
+    mv_gen_king_moves(pos, BLACK, &mvl);
 
     struct move bk_cast = move_encode_castle_kingside(BLACK);
-    assert_true(mvl_contains_move(mvl, bk_cast));
+    assert_true(mvl_contains_move(&mvl, bk_cast));
 
     struct move bq_cast = move_encode_castle_queenside(BLACK);
-    assert_true(mvl_contains_move(mvl, bq_cast));
+    assert_true(mvl_contains_move(&mvl, bq_cast));
 }
 
 void test_move_black_castling_BK_only(void **state) {
@@ -417,15 +417,15 @@ void test_move_black_castling_BK_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, BLACK, mvl);
+    mv_gen_king_moves(pos, BLACK, &mvl);
 
     struct move bk_cast = move_encode_castle_kingside(BLACK);
-    assert_true(mvl_contains_move(mvl, bk_cast));
+    assert_true(mvl_contains_move(&mvl, bk_cast));
 
     struct move bq_cast = move_encode_castle_queenside(BLACK);
-    assert_false(mvl_contains_move(mvl, bq_cast));
+    assert_false(mvl_contains_move(&mvl, bq_cast));
 }
 
 void test_move_black_castling_BQ_only(void **state) {
@@ -434,15 +434,15 @@ void test_move_black_castling_BQ_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_king_moves(pos, BLACK, mvl);
+    mv_gen_king_moves(pos, BLACK, &mvl);
 
     struct move bk_cast = move_encode_castle_kingside(BLACK);
-    assert_false(mvl_contains_move(mvl, bk_cast));
+    assert_false(mvl_contains_move(&mvl, bk_cast));
 
     struct move bq_cast = move_encode_castle_queenside(BLACK);
-    assert_true(mvl_contains_move(mvl, bq_cast));
+    assert_true(mvl_contains_move(&mvl, bq_cast));
 }
 
 void test_move_white_pawns_promotion_1(void **state) {
@@ -451,19 +451,19 @@ void test_move_white_pawns_promotion_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
-    assert_true(contains_all_4_promotion_moves(b7, b8, mvl, false));
-    assert_true(contains_all_4_promotion_moves(b7, c8, mvl, true));
-    assert_true(contains_all_4_promotion_moves(h7, h8, mvl, false));
+    assert_true(contains_all_4_promotion_moves(b7, b8, &mvl, false));
+    assert_true(contains_all_4_promotion_moves(b7, c8, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(h7, h8, &mvl, false));
 }
 
 static bool contains_all_4_promotion_moves(const enum square from_sq,
                                            const enum square to_sq,
-                                           struct move_list *mvl,
+                                           const struct move_list *mvl,
                                            const bool is_capture) {
     struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, is_capture);
     if (mvl_contains_move(mvl, mv) == false) {
@@ -490,19 +490,19 @@ void test_move_white_pawns_promotion_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
-    assert_true(contains_all_4_promotion_moves(b7, a8, mvl, true));
-    assert_true(contains_all_4_promotion_moves(b7, c8, mvl, true));
-    assert_true(contains_all_4_promotion_moves(d7, c8, mvl, true));
-    assert_true(contains_all_4_promotion_moves(d7, d8, mvl, false));
-    assert_true(contains_all_4_promotion_moves(d7, e8, mvl, true));
-    assert_true(contains_all_4_promotion_moves(f7, e8, mvl, true));
-    assert_true(contains_all_4_promotion_moves(f7, f8, mvl, false));
-    assert_true(contains_all_4_promotion_moves(h7, h8, mvl, false));
+    assert_true(contains_all_4_promotion_moves(b7, a8, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(b7, c8, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(d7, c8, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(d7, d8, &mvl, false));
+    assert_true(contains_all_4_promotion_moves(d7, e8, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(f7, e8, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(f7, f8, &mvl, false));
+    assert_true(contains_all_4_promotion_moves(h7, h8, &mvl, false));
 }
 
 void test_move_white_pawns_1(void **state) {
@@ -511,12 +511,12 @@ void test_move_white_pawns_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 7);
+    assert_true(mvl_get_move_count(&mvl) == 7);
 
     CONTAINS_QUIET(mvl, c6, c7);
     CONTAINS_QUIET(mvl, c4, c5);
@@ -534,13 +534,13 @@ void test_move_white_pawns_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 10);
-    assert_true(contains_all_4_promotion_moves(a7, a8, mvl, false));
+    assert_true(mvl_get_move_count(&mvl) == 10);
+    assert_true(contains_all_4_promotion_moves(a7, a8, &mvl, false));
 
     CONTAINS_QUIET(mvl, b4, b5);
     CONTAINS_QUIET(mvl, e3, e4);
@@ -557,19 +557,19 @@ void test_move_white_pawns_first_move_double_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_pawn_double_first(a2, a4);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(d2, d4);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(f2, f4);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_white_pawns_first_move_double_2(void **state) {
@@ -578,22 +578,22 @@ void test_move_white_pawns_first_move_double_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_pawn_double_first(a2, a4);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(b2, b4);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(d2, d4);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(f2, f4);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_white_pawns_en_passant_1(void **state) {
@@ -602,13 +602,13 @@ void test_move_white_pawns_en_passant_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_enpassant(g5, h6);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_white_pawns_en_passant_2(void **state) {
@@ -617,13 +617,13 @@ void test_move_white_pawns_en_passant_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_enpassant(b5, a6);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_white_pawns_en_passant_3(void **state) {
@@ -632,13 +632,13 @@ void test_move_white_pawns_en_passant_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_white_pawn_moves(pos, brd, mvl);
+    mv_gen_white_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_enpassant(b5, c6);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_black_pawns_promotion_1(void **state) {
@@ -647,15 +647,15 @@ void test_move_black_pawns_promotion_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
-    assert_true(contains_all_4_promotion_moves(d2, d1, mvl, false));
-    assert_true(contains_all_4_promotion_moves(g2, f1, mvl, true));
-    assert_true(contains_all_4_promotion_moves(g2, g1, mvl, false));
-    assert_true(contains_all_4_promotion_moves(g2, h1, mvl, true));
+    assert_true(contains_all_4_promotion_moves(d2, d1, &mvl, false));
+    assert_true(contains_all_4_promotion_moves(g2, f1, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(g2, g1, &mvl, false));
+    assert_true(contains_all_4_promotion_moves(g2, h1, &mvl, true));
 }
 
 void test_move_black_pawns_promotion_2(void **state) {
@@ -664,16 +664,16 @@ void test_move_black_pawns_promotion_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
-    assert_true(contains_all_4_promotion_moves(a2, b1, mvl, true));
-    assert_true(contains_all_4_promotion_moves(d2, c1, mvl, true));
-    assert_true(contains_all_4_promotion_moves(d2, d1, mvl, false));
-    assert_true(contains_all_4_promotion_moves(h2, g1, mvl, true));
-    assert_true(contains_all_4_promotion_moves(h2, h1, mvl, false));
+    assert_true(contains_all_4_promotion_moves(a2, b1, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(d2, c1, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(d2, d1, &mvl, false));
+    assert_true(contains_all_4_promotion_moves(h2, g1, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(h2, h1, &mvl, false));
 }
 
 void test_move_black_pawns_1(void **state) {
@@ -682,15 +682,15 @@ void test_move_black_pawns_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 10);
+    assert_true(mvl_get_move_count(&mvl) == 10);
 
     struct move double_mv = move_encode_pawn_double_first(a7, a5);
-    assert_true(mvl_contains_move(mvl, double_mv));
+    assert_true(mvl_contains_move(&mvl, double_mv));
 
     CONTAINS_QUIET(mvl, a7, a6);
     CONTAINS_QUIET(mvl, b5, b4);
@@ -710,16 +710,16 @@ void test_move_black_pawns_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 22);
+    assert_true(mvl_get_move_count(&mvl) == 22);
 
-    assert_true(contains_all_4_promotion_moves(b2, b1, mvl, false));
-    assert_true(contains_all_4_promotion_moves(b2, c1, mvl, true));
-    assert_true(contains_all_4_promotion_moves(h2, g1, mvl, true));
+    assert_true(contains_all_4_promotion_moves(b2, b1, &mvl, false));
+    assert_true(contains_all_4_promotion_moves(b2, c1, &mvl, true));
+    assert_true(contains_all_4_promotion_moves(h2, g1, &mvl, true));
 
     CONTAINS_QUIET(mvl, c5, c4);
     CONTAINS_QUIET(mvl, g6, g5);
@@ -739,19 +739,19 @@ void test_move_black_pawns_first_move_double_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_pawn_double_first(a7, a5);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(b7, b5);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(h7, h5);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_black_pawns_first_move_double_2(void **state) {
@@ -760,16 +760,16 @@ void test_move_black_pawns_first_move_double_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_pawn_double_first(a7, a5);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(f7, f5);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_black_pawns_en_passant_1(void **state) {
@@ -778,13 +778,13 @@ void test_move_black_pawns_en_passant_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_enpassant(b4, a3);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_black_pawns_en_passant_2(void **state) {
@@ -793,13 +793,13 @@ void test_move_black_pawns_en_passant_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_enpassant(g4, f3);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_black_pawns_en_passant_3(void **state) {
@@ -808,13 +808,13 @@ void test_move_black_pawns_en_passant_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_black_pawn_moves(pos, brd, mvl);
+    mv_gen_black_pawn_moves(pos, brd, &mvl);
 
     struct move mv = move_encode_enpassant(f4, e3);
-    assert_true(mvl_contains_move(mvl, mv));
+    assert_true(mvl_contains_move(&mvl, mv));
 }
 
 void test_move_white_bishop_1(void **state) {
@@ -823,12 +823,12 @@ void test_move_white_bishop_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, WHITE, mvl);
+    mv_gen_bishop_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 12);
+    assert_true(mvl_get_move_count(&mvl) == 12);
 
     CONTAINS_QUIET(mvl, g1, f2);
     CONTAINS_QUIET(mvl, d3, c2);
@@ -851,12 +851,12 @@ void test_move_white_bishop_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, WHITE, mvl);
+    mv_gen_bishop_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 15);
+    assert_true(mvl_get_move_count(&mvl) == 15);
 
     CONTAINS_QUIET(mvl, b7, a8);
     CONTAINS_QUIET(mvl, b7, c8);
@@ -882,12 +882,12 @@ void test_move_white_bishop_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, WHITE, mvl);
+    mv_gen_bishop_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 10);
+    assert_true(mvl_get_move_count(&mvl) == 10);
 
     CONTAINS_QUIET(mvl, e4, d3);
     CONTAINS_QUIET(mvl, e4, d5);
@@ -908,12 +908,12 @@ void test_move_black_bishop_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, BLACK, mvl);
+    mv_gen_bishop_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 9);
+    assert_true(mvl_get_move_count(&mvl) == 9);
 
     CONTAINS_QUIET(mvl, a7, b8);
     CONTAINS_QUIET(mvl, f1, e2);
@@ -933,12 +933,12 @@ void test_move_black_bishop_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, BLACK, mvl);
+    mv_gen_bishop_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 0);
+    assert_true(mvl_get_move_count(&mvl) == 0);
 }
 
 void test_move_black_bishop_3(void **state) {
@@ -947,12 +947,12 @@ void test_move_black_bishop_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, BLACK, mvl);
+    mv_gen_bishop_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 16);
+    assert_true(mvl_get_move_count(&mvl) == 16);
 
     CONTAINS_QUIET(mvl, a6, b7);
     CONTAINS_QUIET(mvl, a6, b5);
@@ -979,12 +979,12 @@ void test_move_white_rook_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_rook_moves(brd, WHITE, mvl);
+    mv_gen_rook_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 7);
+    assert_true(mvl_get_move_count(&mvl) == 7);
 
     CONTAINS_QUIET(mvl, a7, a8);
     CONTAINS_QUIET(mvl, e5, d5);
@@ -1002,12 +1002,12 @@ void test_move_white_rook_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_rook_moves(brd, WHITE, mvl);
+    mv_gen_rook_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 15);
+    assert_true(mvl_get_move_count(&mvl) == 15);
 
     CONTAINS_QUIET(mvl, a8, b8);
     CONTAINS_QUIET(mvl, a8, c8);
@@ -1033,12 +1033,12 @@ void test_move_white_rook_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_rook_moves(brd, WHITE, mvl);
+    mv_gen_rook_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 5);
+    assert_true(mvl_get_move_count(&mvl) == 5);
 
     CONTAINS_CAPTURE(mvl, b4, b5);
     CONTAINS_CAPTURE(mvl, b4, a4);
@@ -1053,12 +1053,12 @@ void test_move_black_rook_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_rook_moves(brd, BLACK, mvl);
+    mv_gen_rook_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 11);
+    assert_true(mvl_get_move_count(&mvl) == 11);
 
     CONTAINS_QUIET(mvl, a1, a2);
     CONTAINS_QUIET(mvl, a1, a3);
@@ -1081,12 +1081,12 @@ void test_move_black_rook_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_rook_moves(brd, BLACK, mvl);
+    mv_gen_rook_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 0);
+    assert_true(mvl_get_move_count(&mvl) == 0);
 }
 
 void test_move_black_rook_3(void **state) {
@@ -1096,12 +1096,12 @@ void test_move_black_rook_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_rook_moves(brd, BLACK, mvl);
+    mv_gen_rook_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 0);
+    assert_true(mvl_get_move_count(&mvl) == 0);
 }
 
 void test_move_white_queen_1(void **state) {
@@ -1111,12 +1111,12 @@ void test_move_white_queen_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_queen_moves(brd, WHITE, mvl);
+    mv_gen_queen_moves(brd, WHITE, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 11);
+    assert_true(mvl_get_move_count(&mvl) == 11);
 
     CONTAINS_QUIET(mvl, f4, f3);
     CONTAINS_QUIET(mvl, f4, e3);
@@ -1139,12 +1139,12 @@ void test_move_black_queen_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
     struct board *brd = pos_get_board(pos);
-    mv_gen_queen_moves(brd, BLACK, mvl);
+    mv_gen_queen_moves(brd, BLACK, &mvl);
 
-    assert_true(mvl_get_move_count(mvl) == 8);
+    assert_true(mvl_get_move_count(&mvl) == 8);
 
     CONTAINS_QUIET(mvl, a8, b8);
     CONTAINS_QUIET(mvl, a8, a7);
@@ -1163,20 +1163,20 @@ void test_move_all_moves_4_knights_opening_white_to_move(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list *mvl = mvl_allocate();
+    struct move_list mvl = mvl_initialise();
 
-    mv_gen_all_moves(pos, mvl);
+    mv_gen_all_moves(pos, &mvl);
 
     struct move double_mv = move_encode_pawn_double_first(a2, a4);
-    assert_true(mvl_contains_move(mvl, double_mv));
+    assert_true(mvl_contains_move(&mvl, double_mv));
     double_mv = move_encode_pawn_double_first(b2, b4);
-    assert_true(mvl_contains_move(mvl, double_mv));
+    assert_true(mvl_contains_move(&mvl, double_mv));
     double_mv = move_encode_pawn_double_first(d2, d4);
-    assert_true(mvl_contains_move(mvl, double_mv));
+    assert_true(mvl_contains_move(&mvl, double_mv));
     double_mv = move_encode_pawn_double_first(g2, g4);
-    assert_true(mvl_contains_move(mvl, double_mv));
+    assert_true(mvl_contains_move(&mvl, double_mv));
     double_mv = move_encode_pawn_double_first(h2, h4);
-    assert_true(mvl_contains_move(mvl, double_mv));
+    assert_true(mvl_contains_move(&mvl, double_mv));
 
     CONTAINS_QUIET(mvl, a2, a3);
     CONTAINS_QUIET(mvl, b2, b3);

@@ -32,14 +32,6 @@
 
 static const uint16_t MOVE_LIST_INIT_KEY = 0xdead;
 
-#define MOVE_LIST_MAX_LEN 2048
-
-struct move_list {
-    uint16_t struct_init_key;
-    uint16_t move_count;
-    struct move move_list[MOVE_LIST_MAX_LEN];
-};
-
 // ==================================================================
 //
 // public functions
@@ -49,26 +41,14 @@ struct move_list {
 /**
  * @brief       Allocates and initialises a new move list
  *
- * @return      A ptr to a new move_list instance
+ * @return      A new move_list instance
  */
-struct move_list *mvl_allocate(void) {
-    struct move_list *retval =
-        (struct move_list *)malloc(sizeof(struct move_list));
-    memset(retval, 0, sizeof(struct move_list));
-    retval->struct_init_key = MOVE_LIST_INIT_KEY;
+struct move_list mvl_initialise(void) {
+    struct move_list retval;
+    memset(&retval, 0, sizeof(struct move_list));
+    retval.struct_init_key = MOVE_LIST_INIT_KEY;
 
     return retval;
-}
-
-/**
- * @brief       Deallocates a move_list and returns resources
- *
- * @param mvl   A ptr to the move_list to free up.
- */
-void mvl_deallocate(struct move_list *mvl) {
-    assert(validate_move_list(mvl));
-    memset(mvl, 0, sizeof(struct move_list));
-    free(mvl);
 }
 
 /**
