@@ -357,9 +357,13 @@ static uint16_t convert_move_count(const char *str) {
     return (uint16_t)result;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 static bool validate_struct_init(const struct parsed_fen *pf) {
     if (pf->struct_init_key != STRUCT_INIT_KEY) {
         return false;
     }
     return true;
 }
+
+#pragma GCC diagnostic pop

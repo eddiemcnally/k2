@@ -282,6 +282,8 @@ char pce_get_label(const struct piece pce) {
 struct piece pce_get_from_label(const char c) {
     assert(validate_label(c));
 
+    struct piece retval = {.pce_val = NO_PIECE};
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
 
@@ -313,6 +315,8 @@ struct piece pce_get_from_label(const char c) {
     default:
         assert(false);
     }
+#pragma GCC diagnostic pop
+    return retval;
 }
 
 /**
@@ -398,6 +402,7 @@ bool validate_label(const char c) {
         printf("Invalid label %c\n", c);
         assert(false);
     }
+    return false;
 }
 
 static enum colour extract_colour(const struct piece pce) {

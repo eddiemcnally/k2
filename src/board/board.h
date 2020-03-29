@@ -60,3 +60,4 @@ bool brd_compare(const struct board *first, const struct board *second);
 uint32_t brd_get_material(const struct board *brd, const enum colour side);
 
 void brd_clone(const struct board *source, struct board *dest);
+void brd_print(const struct board *brd);

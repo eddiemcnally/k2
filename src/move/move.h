@@ -56,8 +56,8 @@ bool move_compare(const struct move mv1, const struct move mv2);
 
 enum square move_decode_from_sq(const struct move mv);
 enum square move_decode_to_sq(const struct move mv);
-struct piece move_decode_promotion_piece(const struct move mv,
-                                         const enum colour side);
+bool try_move_decode_promotion_piece(const struct move mv,
+                                     const enum colour side, struct piece *pce);
 bool move_is_quiet(const struct move mv);
 bool move_is_capture(const struct move mv);
 bool move_is_promotion(const struct move mv);
@@ -66,9 +66,6 @@ bool move_is_castle(const struct move mv);
 bool move_is_double_pawn(const struct move mv);
 bool move_is_king_castle(const struct move mv);
 bool move_is_queen_castle(const struct move mv);
-struct piece move_get_promote_piece(const struct move mv,
-                                    const enum colour side_being_moved);
-
 char *move_print(struct move mv);
 
 bool validate_move(const struct move mv);

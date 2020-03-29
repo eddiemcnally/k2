@@ -244,7 +244,7 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
     assert_false(cast_perm_has_permission(CP_WK, cp));
-    assert_true(cast_perm_has_permission(CP_WQ, cp));
+    assert_false(cast_perm_has_permission(CP_WQ, cp));
     assert_true(cast_perm_has_permission(CP_BK, cp));
     assert_true(cast_perm_has_permission(CP_BQ, cp));
 }
@@ -304,7 +304,7 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CP_WK, cp));
+    assert_false(cast_perm_has_permission(CP_WK, cp));
     assert_false(cast_perm_has_permission(CP_WQ, cp));
     assert_true(cast_perm_has_permission(CP_BK, cp));
     assert_true(cast_perm_has_permission(CP_BQ, cp));
@@ -369,7 +369,7 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     struct cast_perm_container cp = pos_get_cast_perm(pos);
     assert_true(cast_perm_has_permission(CP_WK, cp));
     assert_true(cast_perm_has_permission(CP_WQ, cp));
-    assert_true(cast_perm_has_permission(CP_BK, cp));
+    assert_false(cast_perm_has_permission(CP_BK, cp));
     assert_false(cast_perm_has_permission(CP_BQ, cp));
 }
 
@@ -431,7 +431,7 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_WK, cp));
     assert_true(cast_perm_has_permission(CP_WQ, cp));
     assert_false(cast_perm_has_permission(CP_BK, cp));
-    assert_true(cast_perm_has_permission(CP_BQ, cp));
+    assert_false(cast_perm_has_permission(CP_BQ, cp));
 }
 
 void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
@@ -1204,8 +1204,10 @@ void test_position_make_move_white_promotion(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        const struct piece expected_prom_pce =
-            move_decode_promotion_piece(mv, WHITE);
+        struct piece expected_prom_pce;
+        bool decoded =
+            try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
+        assert_true(decoded);
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
@@ -1240,8 +1242,11 @@ void test_position_make_move_black_promotion(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        const struct piece expected_prom_pce =
-            move_decode_promotion_piece(mv, BLACK);
+        struct piece expected_prom_pce;
+        bool decoded =
+            try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
+        assert_true(decoded);
+
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
@@ -1276,8 +1281,11 @@ void test_position_make_move_white_promotion_capture(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        const struct piece expected_prom_pce =
-            move_decode_promotion_piece(mv, WHITE);
+        struct piece expected_prom_pce;
+        bool decoded =
+            try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
+        assert_true(decoded);
+
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
@@ -1312,8 +1320,11 @@ void test_position_make_move_black_promotion_capture(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        const struct piece expected_prom_pce =
-            move_decode_promotion_piece(mv, BLACK);
+        struct piece expected_prom_pce;
+        bool decoded =
+            try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
+        assert_true(decoded);
+
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 

@@ -66,15 +66,16 @@ set(ENGINE_SRCS ${SOURCES} PARENT_SCOPE)
 
 message("Setting up K2 Engine build target compiler flags...")
 
-#//
+# -DNDEBUG \
         
 set (ENGINE_COMPILER_WARNS "-std=c17 \
+-DNDEBUG \
 -flto \
 -fno-common \
 -fomit-frame-pointer \
 -fsanitize=undefined \
 -fshort-enums \
--g3 \
+-O3 \
 -m64 \
 -march=native \
 -Waggregate-return \
@@ -105,7 +106,6 @@ set (ENGINE_COMPILER_WARNS "-std=c17 \
 -Wstrict-overflow=5 \
 -Wstrict-prototypes \
 -Wswitch-default \
--Wswitch-enum \
 -Wundef \
 -Wunreachable-code \
 -Wunused-macros \
@@ -113,7 +113,6 @@ set (ENGINE_COMPILER_WARNS "-std=c17 \
 
 
 
-# set up build target compiler flags
 # set up build target compiler flags
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${ENGINE_COMPILER_WARNS}")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${ENGINE_COMPILER_WARNS}") 

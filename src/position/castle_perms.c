@@ -78,6 +78,15 @@ bool cast_perm_has_permission(const enum castle_permission cp,
     }
 }
 
+void cast_perm_clear_white_permissions(struct cast_perm_container *cp_cont) {
+    set_perm_state(cp_cont, CAST_PERM_WK, false);
+    set_perm_state(cp_cont, CAST_PERM_WQ, false);
+}
+void cast_perm_clear_black_permissions(struct cast_perm_container *cp_cont) {
+    set_perm_state(cp_cont, CAST_PERM_BK, false);
+    set_perm_state(cp_cont, CAST_PERM_BQ, false);
+}
+
 /**
  * @brief               Set the given Castle Permission to the given state
  * @param cp            The Castle Permission to set

@@ -62,6 +62,7 @@ struct position_hist {
 static bool compare_move_states(const struct move_state *ms1,
                                 const struct move_state *ms2);
 static bool validate_move_history(const struct position_hist *mh);
+
 /**
  * @brief       Initialises the move history environment
  *
@@ -205,6 +206,10 @@ static bool compare_move_states(const struct move_state *ms1,
     return true;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 static bool validate_move_history(const struct position_hist *mh) {
     if (mh->init_key != INIT_TOKEN) {
         return false;
@@ -224,3 +229,4 @@ static bool validate_move_history(const struct position_hist *mh) {
 
     return true;
 }
+#pragma GCC diagnostic pop

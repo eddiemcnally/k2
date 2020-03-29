@@ -264,6 +264,8 @@ uint64_t brd_get_piece_bb(const struct board *brd,
  * @param brd The board to validate
  */
 bool validate_board(const struct board *brd) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
     enum square sq;
 
     if (brd->struct_init_key != STRUCT_INIT_KEY) {
@@ -283,18 +285,16 @@ bool validate_board(const struct board *brd) {
         const bool is_occupied = bb_is_set(brd->bb_board, sq);
 
         if (is_occupied) {
-            struct piece pce = brd->pce_square[sq];
             assert(bb_is_set(conflated_col_bb, sq));
-            assert(pce_are_equal(pce, pce_get_no_piece()) == false);
+            assert(pce_are_equal(brd->pce_square[sq], pce_get_no_piece()) ==
+                   false);
             assert(bb_is_set(brd->bb_board, sq));
-
-            enum colour pce_col = pce_get_colour(pce);
-            assert(bb_is_set(brd->bb_colour[pce_col], sq));
+            assert(bb_is_set(
+                brd->bb_colour[pce_get_colour(brd->pce_square[sq])], sq));
         } else {
             assert(bb_is_clear(conflated_col_bb, sq));
             assert(pce_are_equal(brd->pce_square[sq], pce_get_no_piece()));
             assert(bb_is_clear(brd->bb_board, sq));
-
             assert(bb_is_clear(white_bb, sq));
             assert(bb_is_clear(black_bb, sq));
         }
@@ -329,6 +329,7 @@ bool validate_board(const struct board *brd) {
     assert(conflated_pce_bb == brd->bb_board);
     assert(total_bit_count == num_bits_on_board);
 
+#pragma GCC diagnostic pop
     return true;
 }
 
@@ -385,6 +386,32 @@ void brd_clone(const struct board *source, struct board *dest) {
     assert(validate_board(source));
 
     memcpy(dest, source, sizeof(struct board));
+}
+
+void brd_print(const struct board *brd) {
+
+    printf("\nGame Board:\n\n");
+
+    for (int r = RANK_8; r >= RANK_1; r--) {
+        printf("%d  ", r + 1);
+        for (int f = FILE_A; f <= FILE_H; f++) {
+            const enum square sq =
+                sq_gen_from_rank_file((enum rank)r, (enum file)f);
+            struct piece pce;
+            const bool found = brd_try_get_piece_on_square(brd, sq, &pce);
+            if (found) {
+                printf("%3c", pce_get_label(pce));
+            } else {
+                printf("  .");
+            }
+        }
+        printf("\n");
+    }
+
+    printf("\n   ");
+    for (enum file f = FILE_A; f <= FILE_H; f++) {
+        printf("%3c", 'a' + f);
+    }
 }
 
 // ==================================================================
@@ -475,6 +502,8 @@ static void move_bitboards(struct board *brd, const struct piece pce,
     brd->pce_square[to_sq] = pce;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 static bool validate_struct_init(const struct board *brd) {
     return brd->struct_init_key == STRUCT_INIT_KEY;
 }
@@ -496,3 +525,4 @@ static bool validate_pce_on_sq(const struct board *brd, const struct piece pce,
 
     return pce_are_equal(pce_on_brd, pce);
 }
+#pragma GCC diagnostic pop
