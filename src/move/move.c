@@ -28,6 +28,8 @@
 #include "piece.h"
 #include "square.h"
 #include <assert.h>
+#include <stdio.h>
+#include <string.h>
 
 /**
  * bitmap for move
@@ -87,6 +89,7 @@ enum move_flag_bits {
 static void set_flag(uint16_t *mv, const uint16_t flag);
 static struct move encode_from_to(const enum square from_sq,
                                   const enum square to_sq);
+static const char *move_details(const struct move mv);
 
 // ==================================================================
 //
@@ -470,10 +473,64 @@ char *move_print(const struct move mv) {
     const enum rank to_rank = sq_get_rank(to_sq);
     const enum file to_file = sq_get_file(to_sq);
 
-    sprintf(move_string, "%c%c%c%c", ('a' + from_file), ('1' + from_rank),
-            ('a' + to_file), ('1' + to_rank));
+    sprintf(move_string, "%c%c%c%c : %s", ('a' + from_file), ('1' + from_rank),
+            ('a' + to_file), ('1' + to_rank), move_details(mv));
 
     return move_string;
+}
+
+/*
+ * 0000 ---- ---- ----      Quiet move
+ * 0001 ---- ---- ----      Double Pawn push
+ * 0010 ---- ---- ----      King Castle
+ * 0011 ---- ---- ----      Queen Castle
+ * 0100 ---- ---- ----      Capture
+ * 0101 ---- ---- ----      En Passant Capture
+ * 1000 ---- ---- ----      Promotion Knight
+ * 1001 ---- ---- ----      Promotion Bishop
+ * 1010 ---- ---- ----      Promotion Rook
+ * 1011 ---- ---- ----      Promotion Queen
+ * 1100 ---- ---- ----      Promotion Knight Capture
+ * 1101 ---- ---- ----      Promotion Bishop Capture
+ * 1110 ---- ---- ----      Promotion Rook Capture
+ * 1111 ---- ---- ----      Promotion Queen Capture
+ */
+const char *move_details(const struct move mv) {
+
+    uint16_t details = (uint16_t)(mv.val & (uint16_t)MV_MASK_FLAGS);
+
+    switch (details) {
+    case MV_FLG_QUIET:
+        return "Quiet";
+    case MV_FLG_DOUBLE_PAWN:
+        return "Double Pawn";
+    case MV_FLG_KING_CASTLE:
+        return "King Castle";
+    case MV_FLG_QUEEN_CASTLE:
+        return "Queen Castle";
+    case MV_FLG_CAPTURE:
+        return "Capture";
+    case MV_FLG_EN_PASS:
+        return "En Passant";
+    case MV_FLG_PROMOTE_KNIGHT:
+        return "Promote; Knight";
+    case MV_FLG_PROMOTE_BISHOP:
+        return "Promote; Bishop";
+    case MV_FLG_PROMOTE_ROOK:
+        return "Promote; Rook";
+    case MV_FLG_PROMOTE_QUEEN:
+        return "Promote; Queen";
+    case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
+        return "Promote; Capture; Knight";
+    case MV_FLG_PROMOTE_BISHOP_CAPTURE:
+        return "Promote; Capture; Bishop";
+    case MV_FLG_PROMOTE_ROOK_CAPTURE:
+        return "Promote; Capture; Rook";
+    case MV_FLG_PROMOTE_QUEEN_CAPTURE:
+        return "Promote; Capture; Queen";
+    default:
+        return "No Details";
+    }
 }
 
 bool validate_move(const struct move mv) {

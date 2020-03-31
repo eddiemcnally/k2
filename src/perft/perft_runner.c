@@ -47,6 +47,8 @@ int main(void) {
         pos_initialise(parsed.rows[r].fen, pos);
 
         for (int d = 0; d < PERFT_EPD_MAX_DEPTH; d++) {
+            // time performance
+            const double start_in_millis = get_time_of_day_in_secs();
             const uint64_t expected_nodes = parsed.rows[r].move_cnt[d];
 
             const uint64_t actual_nodes = do_perft((uint8_t)(d + 1), pos);
@@ -57,8 +59,11 @@ int main(void) {
                     "*** Problem: fen=%s, depth=%d, expected=%lu, actual=%lu\n",
                     parsed.rows[r].fen, (d + 1), expected_nodes, actual_nodes);
             }
-            printf("fen=%s, depth=%d, expected=%lu \n",
-                   parsed.rows[r].fen, (d + 1), expected_nodes);
+
+            double elapsed_in_secs = get_elapsed_time_in_secs(start_in_millis);
+            double nodes_per_sec = (double)actual_nodes / elapsed_in_secs;
+            printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=%f\n",
+                   parsed.rows[r].fen, (d + 1), actual_nodes, nodes_per_sec);
         }
     }
 
@@ -71,7 +76,6 @@ uint64_t do_perft(const uint8_t depth, struct position *pos) {
     }
 
     uint64_t nodes = 0;
-
     struct move_list mvl = mvl_initialise();
     mv_gen_all_moves(pos, &mvl);
 
@@ -79,9 +83,9 @@ uint64_t do_perft(const uint8_t depth, struct position *pos) {
 
     for (int i = 0; i < mvl.move_count; i++) {
         const struct move mv = mvl.move_list[i];
-        const bool is_legal = pos_try_make_move(pos, mv);
+        const enum move_legality legality = pos_make_move(pos, mv);
 
-        if (is_legal) {
+        if (legality == LEGAL_MOVE) {
             nodes += do_perft(depth - 1, pos);
         }
         pos_take_move(pos);

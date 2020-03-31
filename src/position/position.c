@@ -81,13 +81,12 @@ static void make_en_passant_move(struct position *pos,
                                  const struct move en_pass_mv,
                                  const enum square from_sq,
                                  const enum square to_sq);
-static bool is_move_legal(const struct position *pos, const struct move mov);
+static enum move_legality get_move_legal_status(const struct position *pos,
+                                                const struct move mov);
 static bool is_castle_move_legal(const struct position *pos,
                                  const struct move mov,
                                  const enum colour side_to_move,
                                  const enum colour attacking_side);
-static bool is_move_legal(const struct position *pos, const struct move mov);
-
 static void update_castle_perms(struct position *pos, const struct move mv,
                                 const struct piece pce_being_moved);
 
@@ -220,20 +219,8 @@ bool validate_position(const struct position *pos) {
 }
 #pragma GCC diagnostic pop
 
-/**
- * @brief Makes the given move and updates the position
- * 
- * @param pos       The position
- * @param mv        The move to make
- * @return true     Move is valid
- * @return false    Move is invalid
- */
-bool pos_try_make_move(struct position *pos, const struct move mv) {
+enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
-
-    //printf("****************** START ********************\n");
-    //printf("MOVE : %s\n", move_print(mv));
-    //brd_print(pos->brd);
 
     position_hist_push(pos->position_history, mv, pos->fifty_move_counter,
                        pos->en_passant, pos->hashkey,
@@ -303,7 +290,7 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
     }
 
     // some cleanup
-    bool move_legal = is_move_legal(pos, mv);
+    const enum move_legality legality = get_move_legal_status(pos, mv);
     if (move_is_double_pawn(mv) == false) {
         pos->en_passant.is_active = false;
     }
@@ -313,11 +300,13 @@ bool pos_try_make_move(struct position *pos, const struct move mv) {
     // swap sides
     pos->side_to_move = pce_swap_side(pos->side_to_move);
 
-    return move_legal;
+    return legality;
 }
 
 struct move pos_take_move(struct position *pos) {
     assert(validate_position(pos));
+
+    //printf("*** TAKE MOVE \n");
 
     struct move mv;
     position_hist_pop(pos->position_history, &mv, &pos->fifty_move_counter,
@@ -413,48 +402,28 @@ static void do_capture_move(struct position *pos, const struct move mv,
     assert(move_is_capture(mv));
 
     struct piece pce_capt;
-    if (move_is_en_passant(mv)) {
-        assert(validate_en_passant_pce_and_sq(pos));
-        enum square en_pass_pce_sq;
+    bool found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_capt);
+    assert(found == true);
+    if (found == false) {
+        printf("Piece not found\n");
+        return;
+    }
 
-        // flip the flag
-        pos->en_passant.is_active = false;
-
-        if (pos->side_to_move == WHITE) {
-            pce_capt = BLACK_PAWN;
-            en_pass_pce_sq = sq_get_square_minus_1_rank(to_sq);
-        } else {
-            pce_capt = WHITE_PAWN;
-            en_pass_pce_sq = sq_get_square_plus_1_rank(to_sq);
-        }
-
-        brd_remove_piece(pos->brd, pce_capt, en_pass_pce_sq);
-        brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
-
-    } else {
-        bool found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_capt);
-        assert(found == true);
-        if (found == false) {
-            printf("Piece not found\n");
+    if (move_is_promotion(mv)) {
+        struct piece pce_prom;
+        bool decoded_ok =
+            try_move_decode_promotion_piece(mv, pos->side_to_move, &pce_prom);
+        if (!decoded_ok) {
+            printf("Promotion piece not decoded correctly\n");
+            assert(false);
             return;
         }
-
-        if (move_is_promotion(mv)) {
-            struct piece pce_prom;
-            bool decoded_ok = try_move_decode_promotion_piece(
-                mv, pos->side_to_move, &pce_prom);
-            if (!decoded_ok) {
-                printf("Promotion piece not decoded correctly\n");
-                assert(false);
-                return;
-            }
-            brd_remove_piece(pos->brd, pce_to_move, from_sq);
-            brd_remove_piece(pos->brd, pce_to_move, to_sq);
-            brd_add_piece(pos->brd, pce_prom, to_sq);
-        } else {
-            brd_remove_piece(pos->brd, pce_capt, to_sq);
-            brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
-        }
+        brd_remove_piece(pos->brd, pce_to_move, from_sq);
+        brd_remove_piece(pos->brd, pce_to_move, to_sq);
+        brd_add_piece(pos->brd, pce_prom, to_sq);
+    } else {
+        brd_remove_piece(pos->brd, pce_capt, to_sq);
+        brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
     }
 }
 
@@ -477,10 +446,7 @@ static void update_castle_perms(struct position *pos, const struct move mv,
         } else {
             cast_perm_clear_black_permissions(&pos->castle_perm_container);
         }
-        return;
-    }
-
-    if (pce_role == ROOK) {
+    } else if (pce_role == ROOK) {
         // rook moved, reset castle permissions
         const enum colour side = pce_get_colour(pce_being_moved);
         if (side == WHITE) {
@@ -532,7 +498,8 @@ static void update_castle_perms(struct position *pos, const struct move mv,
     }
 }
 
-static bool is_move_legal(const struct position *pos, const struct move mov) {
+static enum move_legality get_move_legal_status(const struct position *pos,
+                                                const struct move mov) {
     const enum colour side_to_move = pos_get_side_to_move(pos);
     const enum colour attacking_side = pce_swap_side(side_to_move);
 
@@ -541,18 +508,18 @@ static bool is_move_legal(const struct position *pos, const struct move mov) {
 
     if (att_chk_is_sq_attacked(pos->brd, king_sq, attacking_side)) {
         // square attacked, move not legal
-        return false;
+        return ILLEGAL_MOVE;
     }
 
     if (move_is_castle(mov)) {
         // check that the castle wasn't done through attacked squares
         if (is_castle_move_legal(pos, mov, side_to_move, attacking_side) ==
             false) {
-            return false;
+            return ILLEGAL_MOVE;
         }
     }
 
-    return true;
+    return LEGAL_MOVE;
 }
 
 static bool is_castle_move_legal(const struct position *pos,

@@ -46,6 +46,8 @@ struct en_pass_active {
     bool is_active;
 };
 
+enum move_legality { LEGAL_MOVE = 0, ILLEGAL_MOVE = 1 };
+
 #define INITIAL_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
 
 struct cast_perm_container pos_get_cast_perm(const struct position *pos);
@@ -61,7 +63,7 @@ bool pos_try_get_en_pass_sq(const struct position *pos,
                             enum square *en_pass_sq);
 enum colour pos_get_side_to_move(const struct position *pos);
 
-bool pos_try_make_move(struct position *pos, const struct move mv);
+enum move_legality pos_make_move(struct position *pos, const struct move mv);
 struct move pos_take_move(struct position *pos);
 
 bool validate_position(const struct position *pos);

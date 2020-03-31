@@ -104,10 +104,10 @@ struct epd_row parse_row(char *row) {
 // extracts the "139" from the following sample string
 //     "D3 139 "
 uint64_t parse_depth_details(char *str) {
-    int depth;
+    uint64_t depth;
     char desc[10];
 
-    sscanf(str, "%s %d", desc, &depth);
+    sscanf(str, "%s %lu", desc, &depth);
 
     return (uint64_t)depth;
 }

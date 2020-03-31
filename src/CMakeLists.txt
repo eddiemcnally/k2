@@ -69,12 +69,12 @@ message("Setting up K2 Engine build target compiler flags...")
 # -DNDEBUG \
         
 set (ENGINE_COMPILER_WARNS "-std=c17 \
--DNDEBUG \
 -flto \
 -fno-common \
 -fomit-frame-pointer \
 -fsanitize=undefined \
 -fshort-enums \
+-DNDEBUG \
 -O3 \
 -m64 \
 -march=native \

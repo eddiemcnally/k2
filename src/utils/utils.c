@@ -80,13 +80,14 @@ void print_stacktrace(void) {
  * @brief       Returns the current time of day in milliseconds
  * @return      Time of day in millis
  */
-uint64_t get_time_of_day_in_millis(void) {
+double get_time_of_day_in_secs(void) {
     struct timeval tp;
 
     int errno = gettimeofday(&tp, NULL);
 
     if (errno == 0) {
-        return (uint64_t)(tp.tv_sec * 1000 + tp.tv_usec / 1000);
+        double time_in_secs = (double)tp.tv_sec + (double)tp.tv_usec / 1000000;
+        return time_in_secs;
     }
 
     return 0;
@@ -96,7 +97,7 @@ uint64_t get_time_of_day_in_millis(void) {
  * @brief       Returns elapsed time between the given time and now, in milliseconds.
  * @return      Elapsed time in milliseconds
  */
-uint64_t get_elapsed_time_in_millis(uint64_t start_time) {
-    uint64_t now_in_millis = get_time_of_day_in_millis();
-    return (now_in_millis - start_time);
+double get_elapsed_time_in_secs(double start_time) {
+    double now_in_secs = get_time_of_day_in_secs();
+    return (now_in_secs - start_time);
 }
