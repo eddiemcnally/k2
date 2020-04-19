@@ -123,25 +123,29 @@ void test_move_decode_promotion_piece_white(void **state) {
     const enum square from_sq = a7;
     const enum square to_sq = a8;
     struct move mv;
-    struct piece pce;
+    enum piece pce;
 
     mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
     try_move_decode_promotion_piece(mv, WHITE, &pce);
+    assert_true(pce == WHITE_KNIGHT);
     assert_true(pce_get_piece_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == WHITE);
 
     mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
     try_move_decode_promotion_piece(mv, WHITE, &pce);
+    assert_true(pce == WHITE_BISHOP);
     assert_true(pce_get_piece_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == WHITE);
 
     mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
     try_move_decode_promotion_piece(mv, WHITE, &pce);
+    assert_true(pce == WHITE_ROOK);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
     mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
     try_move_decode_promotion_piece(mv, WHITE, &pce);
+    assert_true(pce == WHITE_QUEEN);
     assert_true(pce_get_piece_role(pce) == QUEEN);
     assert_true(pce_get_colour(pce) == WHITE);
 }
@@ -151,23 +155,27 @@ void test_move_decode_promotion_piece_black(void **state) {
     const enum square to_sq = a8;
 
     struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
-    struct piece pce;
+    enum piece pce;
     try_move_decode_promotion_piece(mv, BLACK, &pce);
+    assert_true(pce == BLACK_KNIGHT);
     assert_true(pce_get_piece_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == BLACK);
 
     mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
     try_move_decode_promotion_piece(mv, BLACK, &pce);
+    assert_true(pce == BLACK_BISHOP);
     assert_true(pce_get_piece_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == BLACK);
 
     mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
     try_move_decode_promotion_piece(mv, BLACK, &pce);
+    assert_true(pce == BLACK_ROOK);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
     mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
     try_move_decode_promotion_piece(mv, BLACK, &pce);
+    assert_true(pce == BLACK_QUEEN);
     assert_true(pce_get_piece_role(pce) == QUEEN);
     assert_true(pce_get_colour(pce) == BLACK);
 }

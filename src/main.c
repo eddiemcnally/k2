@@ -25,9 +25,11 @@
  */
 
 #include "board.h"
+#include "move.h"
 #include "move_gen.h"
 #include "move_list.h"
 #include "occ_mask_gen.h"
+#include "perft.h"
 #include "piece.h"
 #include "position.h"
 #include "square.h"
@@ -41,17 +43,25 @@
 
 int main(void) {
 
-    const char *RANDOM_FEN_1 =
-        "3R2K1/1PknP3/p6P/Prn1Pp1p/NN3P2/r2B2Pp/p2pb3/6B1 b - - 0 1\n";
+    const enum square from_sq = a7;
+    const enum square to_sq = a8;
+    struct move mv;
+    enum piece pce;
 
-    struct position *pos = pos_create();
-    pos_initialise(RANDOM_FEN_1, pos);
+    mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
 
-    struct move_list mvl = mvl_initialise();
+    try_move_decode_promotion_piece(mv, WHITE, &pce);
 
-    struct board *brd = pos_get_board(pos);
-    mv_gen_bishop_moves(brd, BLACK, &mvl);
+    printf("pce = 0x%x\n", pce);
 
-    struct move mv = move_encode_quiet(e2, d1);
-    printf("Move : %s", move_print(mv));
+    enum piece_role role = pce_get_piece_role(pce);
+    printf("role = 0x%x\n", role);
+
+    // const char *RANDOM_FEN_1 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/"
+    //                            "PPPBBPPP/R3K2R w KQkq - 0 1\n";
+
+    // struct position *pos = pos_create();
+    // pos_initialise(RANDOM_FEN_1, pos);
+
+    // do_perft(5, pos);
 }

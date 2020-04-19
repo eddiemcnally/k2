@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2019 Eddie McNally
+ *  Copyright (c) 2020 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -23,16 +23,38 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-#pragma once
 
-#include "castle_perms.h"
-#include "piece.h"
-#include "square.h"
+#include "perft.h"
+#include "move_gen.h"
+#include "perft_file_reader.h"
+#include "position.h"
+#include "utils.h"
+
+#include <inttypes.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-void init_key_mgmt(void);
-uint64_t hash_piece_update(const enum piece pce, const enum square sq);
-uint64_t hash_side_update(void);
-uint64_t hash_castle_perm(const enum castle_permission cp);
-uint64_t hash_en_passant(const enum square sq);
-uint64_t hash_get_current_val(void);
+uint64_t do_perft(const uint8_t depth, struct position *pos) {
+    if (depth == 0) {
+        return 1;
+    }
+
+    uint64_t nodes = 0;
+    struct move_list mvl = mvl_initialise();
+    mv_gen_all_moves(pos, &mvl);
+
+    //printf("generated move cnt %d\n", mvl.move_count);
+
+    for (int i = 0; i < mvl.move_count; i++) {
+        const struct move mv = mvl.move_list[i];
+        const enum move_legality legality = pos_make_move(pos, mv);
+
+        if (legality == LEGAL_MOVE) {
+            nodes += do_perft(depth - 1, pos);
+        }
+        pos_take_move(pos);
+    }
+
+    return nodes;
+}

@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2019 Eddie McNally
+ *  Copyright (c) 2020 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -25,14 +25,7 @@
  */
 #pragma once
 
-#include "castle_perms.h"
-#include "piece.h"
-#include "square.h"
+#include "position.h"
 #include <stdint.h>
 
-void init_key_mgmt(void);
-uint64_t hash_piece_update(const enum piece pce, const enum square sq);
-uint64_t hash_side_update(void);
-uint64_t hash_castle_perm(const enum castle_permission cp);
-uint64_t hash_en_passant(const enum square sq);
-uint64_t hash_get_current_val(void);
+uint64_t do_perft(const uint8_t depth, struct position *pos);

@@ -57,7 +57,7 @@ bool move_compare(const struct move mv1, const struct move mv2);
 enum square move_decode_from_sq(const struct move mv);
 enum square move_decode_to_sq(const struct move mv);
 bool try_move_decode_promotion_piece(const struct move mv,
-                                     const enum colour side, struct piece *pce);
+                                     const enum colour side, enum piece *pce);
 bool move_is_quiet(const struct move mv);
 bool move_is_capture(const struct move mv);
 bool move_is_promotion(const struct move mv);

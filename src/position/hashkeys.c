@@ -76,13 +76,12 @@ void init_key_mgmt(void) {
  * @param sq    The square
  * @return      The updated hash key
  */
-uint64_t hash_piece_update(const struct piece pce, const enum square sq) {
+uint64_t hash_piece_update(const enum piece pce, const enum square sq) {
 
     assert(validate_piece(pce));
     assert(validate_square(sq));
 
-    enum piece_role pt = pce_get_piece_role(pce);
-    uint8_t pce_off = pce_get_array_idx(pt);
+    uint8_t pce_off = pce_get_array_idx(pce);
 
     hashkey ^= piece_keys[pce_off][sq];
     return hashkey;

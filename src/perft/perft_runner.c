@@ -26,6 +26,7 @@
 
 #include "perft_runner.h"
 #include "move_gen.h"
+#include "perft.h"
 #include "perft_file_reader.h"
 #include "utils.h"
 
@@ -34,8 +35,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-static uint64_t do_perft(const uint8_t depth, struct position *pos);
 
 int main(void) {
 
@@ -61,35 +60,17 @@ int main(void) {
             }
 
             double elapsed_in_secs = get_elapsed_time_in_secs(start_in_millis);
-            double nodes_per_sec = (double)actual_nodes / elapsed_in_secs;
-            printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=%f\n",
-                   parsed.rows[r].fen, (d + 1), actual_nodes, nodes_per_sec);
+            if (elapsed_in_secs > 0) {
+                double nodes_per_sec = (double)actual_nodes / elapsed_in_secs;
+                printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=%f\n",
+                       parsed.rows[r].fen, (d + 1), actual_nodes,
+                       nodes_per_sec);
+            } else {
+                printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=0\n",
+                       parsed.rows[r].fen, (d + 1), actual_nodes);
+            }
         }
     }
 
     printf("Total node count: %lu\n", total_nodes);
-}
-
-uint64_t do_perft(const uint8_t depth, struct position *pos) {
-    if (depth == 0) {
-        return 1;
-    }
-
-    uint64_t nodes = 0;
-    struct move_list mvl = mvl_initialise();
-    mv_gen_all_moves(pos, &mvl);
-
-    //printf("generated move cnt %d\n", mvl.move_count);
-
-    for (int i = 0; i < mvl.move_count; i++) {
-        const struct move mv = mvl.move_list[i];
-        const enum move_legality legality = pos_make_move(pos, mv);
-
-        if (legality == LEGAL_MOVE) {
-            nodes += do_perft(depth - 1, pos);
-        }
-        pos_take_move(pos);
-    }
-
-    return nodes;
 }

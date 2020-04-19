@@ -74,7 +74,7 @@ static enum square get_en_pass_sq(const enum colour side,
                                   const enum square from_sq);
 static void do_capture_move(struct position *pos, const struct move mv,
                             const enum square from_sq, const enum square to_sq,
-                            const struct piece pce_to_move);
+                            const enum piece pce_to_move);
 static void make_castle_piece_moves(struct position *pos,
                                     const struct move castle_move);
 static void make_en_passant_move(struct position *pos,
@@ -88,7 +88,7 @@ static bool is_castle_move_legal(const struct position *pos,
                                  const enum colour side_to_move,
                                  const enum colour attacking_side);
 static void update_castle_perms(struct position *pos, const struct move mv,
-                                const struct piece pce_being_moved);
+                                const enum piece pce_being_moved);
 
 // set up bitboards for all squares that need to be checked when
 // testing castle move validity
@@ -229,7 +229,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
 
-    struct piece pce_to_move;
+    enum piece pce_to_move;
     bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
     if (found == false) {
         printf("Problem with move\n");
@@ -263,7 +263,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     } else if (move_is_promotion(mv)) {
         if (move_is_capture(mv)) {
             // promotion with capture, remove existing piece
-            struct piece pce_being_captured;
+            enum piece pce_being_captured;
             bool piece_found = brd_try_get_piece_on_square(pos->brd, to_sq,
                                                            &pce_being_captured);
             assert(piece_found == true);
@@ -274,7 +274,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
 
             brd_remove_piece(pos->brd, pce_being_captured, to_sq);
         }
-        struct piece pce_prom;
+        enum piece pce_prom;
         bool decoded_ok =
             try_move_decode_promotion_piece(mv, pos->side_to_move, &pce_prom);
         if (!decoded_ok) {
@@ -398,10 +398,10 @@ static void init_pos_struct(struct position *pos) {
 
 static void do_capture_move(struct position *pos, const struct move mv,
                             const enum square from_sq, const enum square to_sq,
-                            const struct piece pce_to_move) {
+                            const enum piece pce_to_move) {
     assert(move_is_capture(mv));
 
-    struct piece pce_capt;
+    enum piece pce_capt;
     bool found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_capt);
     assert(found == true);
     if (found == false) {
@@ -410,7 +410,7 @@ static void do_capture_move(struct position *pos, const struct move mv,
     }
 
     if (move_is_promotion(mv)) {
-        struct piece pce_prom;
+        enum piece pce_prom;
         bool decoded_ok =
             try_move_decode_promotion_piece(mv, pos->side_to_move, &pce_prom);
         if (!decoded_ok) {
@@ -428,7 +428,7 @@ static void do_capture_move(struct position *pos, const struct move mv,
 }
 
 static void update_castle_perms(struct position *pos, const struct move mv,
-                                const struct piece pce_being_moved) {
+                                const enum piece pce_being_moved) {
     if (move_is_castle(mv)) {
         // already handled elsewhere
         return;
@@ -503,7 +503,9 @@ static enum move_legality get_move_legal_status(const struct position *pos,
     const enum colour side_to_move = pos_get_side_to_move(pos);
     const enum colour attacking_side = pce_swap_side(side_to_move);
 
-    uint64_t king_bb = brd_get_piece_bb(pos->brd, KING, side_to_move);
+    const enum piece king = side_to_move == WHITE ? WHITE_KING : BLACK_KING;
+
+    uint64_t king_bb = brd_get_piece_bb(pos->brd, king);
     const enum square king_sq = bb_pop_1st_bit(&king_bb);
 
     if (att_chk_is_sq_attacked(pos->brd, king_sq, attacking_side)) {
@@ -562,10 +564,10 @@ static void make_castle_piece_moves(struct position *pos,
     const bool is_queen_side = move_is_queen_castle(castle_move);
     const enum colour side = pos->side_to_move;
 
-    const struct piece pce_wk = WHITE_KING;
-    const struct piece pce_wr = WHITE_ROOK;
-    const struct piece pce_bk = BLACK_KING;
-    const struct piece pce_br = BLACK_ROOK;
+    const enum piece pce_wk = WHITE_KING;
+    const enum piece pce_wr = WHITE_ROOK;
+    const enum piece pce_bk = BLACK_KING;
+    const enum piece pce_br = BLACK_ROOK;
 
     switch (side) {
     case WHITE:
@@ -610,7 +612,7 @@ static void make_en_passant_move(struct position *pos,
         return;
     }
 
-    struct piece pce_to_move;
+    enum piece pce_to_move;
     bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
     assert(found);
 
@@ -631,7 +633,7 @@ static void make_en_passant_move(struct position *pos,
         return;
     }
 
-    struct piece pce_to_remove;
+    enum piece pce_to_remove;
     found =
         brd_try_get_piece_on_square(pos->brd, sq_with_piece, &pce_to_remove);
 
@@ -664,7 +666,7 @@ static void populate_position_from_fen(struct position *pos,
     set_up_castle_permissions(pos, fen);
 
     for (enum square sq = a1; sq <= h8; sq++) {
-        struct piece pce;
+        enum piece pce;
         bool found_pce = fen_try_get_piece_on_sq(fen, sq, &pce);
         if (found_pce) {
             brd_add_piece(pos->brd, pce, sq);
@@ -677,7 +679,7 @@ static void populate_position_from_fen(struct position *pos,
 #pragma GCC diagnostic ignored "-Wunused-function"
 static bool validate_en_passant_pce_and_sq(const struct position *pos) {
     assert(pos->en_passant.is_active == true);
-    struct piece en_pass_pce;
+    enum piece en_pass_pce;
     bool found =
         brd_try_get_piece_on_square(pos->brd, pos->en_passant.sq, &en_pass_pce);
     assert(found == true);

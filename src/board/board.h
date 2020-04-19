@@ -44,16 +44,14 @@ bool validate_board(const struct board *brd);
 
 bool brd_is_sq_occupied(const struct board *brd, const enum square sq);
 bool brd_try_get_piece_on_square(const struct board *brd, const enum square sq,
-                                 struct piece *pce);
-void brd_add_piece(struct board *brd, const struct piece pce,
+                                 enum piece *pce);
+void brd_add_piece(struct board *brd, const enum piece pce,
                    const enum square sq);
 uint64_t brd_get_board_bb(const struct board *brd);
-uint64_t brd_get_piece_bb(const struct board *brd,
-                          const enum piece_role pce_role,
-                          const enum colour col);
-void brd_remove_piece(struct board *brd, const struct piece pce,
+uint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce);
+void brd_remove_piece(struct board *brd, const enum piece pce,
                       const enum square sq);
-void brd_move_piece(struct board *brd, const struct piece pce,
+void brd_move_piece(struct board *brd, const enum piece pce,
                     const enum square from_sq, const enum square to_sq);
 uint64_t brd_get_colour_bb(const struct board *brd, const enum colour colour);
 bool brd_compare(const struct board *first, const struct board *second);

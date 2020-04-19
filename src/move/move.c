@@ -131,32 +131,29 @@ struct move move_encode_promoted(const enum square from_sq,
 
     struct move mv = encode_from_to(from_sq, to_sq);
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-
     switch (promoted_piece) {
     case KNIGHT:
-        mv.val |= MV_FLG_PROMOTE_KNIGHT;
+        set_flag(&mv.val, MV_FLG_PROMOTE_KNIGHT);
         break;
-
     case BISHOP:
-        mv.val |= MV_FLG_PROMOTE_BISHOP;
+        set_flag(&mv.val, MV_FLG_PROMOTE_BISHOP);
         break;
-
     case ROOK:
-        mv.val |= MV_FLG_PROMOTE_ROOK;
+        set_flag(&mv.val, MV_FLG_PROMOTE_ROOK);
         break;
-
     case QUEEN:
-        mv.val |= MV_FLG_PROMOTE_QUEEN;
+        set_flag(&mv.val, MV_FLG_PROMOTE_QUEEN);
         break;
-
+    case PAWN:
+        assert(false);
+        break;
+    case KING:
+        assert(false);
+        break;
     default:
         assert(false);
         break;
     }
-
-#pragma GCC diagnostic pop
 
     if (is_capture) {
         set_flag(&mv.val, MV_FLG_BIT_CAPTURE);
@@ -175,9 +172,9 @@ struct move move_encode_promoted(const enum square from_sq,
  * @return false    not ok
  */
 bool try_move_decode_promotion_piece(const struct move mv,
-                                     const enum colour side,
-                                     struct piece *pce) {
+                                     const enum colour side, enum piece *pce) {
     assert(validate_move(mv));
+    assert(validate_colour(side));
 
     const uint16_t m = mv.val & MV_MASK_FLAGS;
 
@@ -217,6 +214,8 @@ bool try_move_decode_promotion_piece(const struct move mv,
     default:
         assert(false);
     }
+
+    assert(false);
     return false;
 }
 

@@ -34,7 +34,7 @@
 #include <cmocka.h>
 
 struct sq_pce {
-    struct piece piece;
+    enum piece piece;
     bool has_piece;
 };
 
@@ -90,14 +90,14 @@ void test_fen_pieces_init_position(void **state) {
     }
 
     bool found = false;
-    struct piece pce;
+    enum piece pce;
     for (int s = a1; s <= h8; s++) {
         struct sq_pce d = data[s];
 
         bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
 
         if (b == true) {
-            assert_true(pce_are_equal(pce, d.piece));
+            assert_true(pce == d.piece);
         }
     }
 
@@ -204,14 +204,14 @@ void test_fen_pieces_random_position_1(void **state) {
     data[h8].has_piece = true;
     data[h8].piece = BLACK_ROOK;
 
-    struct piece pce;
+    enum piece pce;
     for (int s = a1; s <= h8; s++) {
         struct sq_pce d = data[s];
 
         bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
 
         if (b == true) {
-            assert_true(pce_are_equal(pce, d.piece));
+            assert_true(pce == d.piece);
         }
     }
 }

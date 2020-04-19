@@ -93,6 +93,7 @@ int main(void) {
         cmocka_unit_test(test_piece_get_piece_from_label),
         cmocka_unit_test(test_piece_get_array_idx),
         cmocka_unit_test(test_piece_get_piece_label),
+        cmocka_unit_test(test_piece_role),
 
         // Position
         cmocka_unit_test(test_position_get_set_castle_permissions),
@@ -230,14 +231,11 @@ int main(void) {
         cmocka_unit_test(test_move_white_bishop_3),
         cmocka_unit_test(test_move_black_bishop_1),
         cmocka_unit_test(test_move_black_bishop_2),
-        cmocka_unit_test(test_move_black_bishop_3),
 
         cmocka_unit_test(test_move_white_rook_1),
         cmocka_unit_test(test_move_white_rook_2),
         cmocka_unit_test(test_move_white_rook_3),
         cmocka_unit_test(test_move_black_rook_1),
-        cmocka_unit_test(test_move_black_rook_2),
-        cmocka_unit_test(test_move_black_rook_3),
 
         cmocka_unit_test(test_move_white_queen_1),
         cmocka_unit_test(test_move_black_queen_1),

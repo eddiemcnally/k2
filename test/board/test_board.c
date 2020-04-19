@@ -42,12 +42,12 @@ void test_board_brd_allocate_deallocate(void **state) {
 void test_board_brd_bulk_add_remove_piece(void **state) {
     struct board *brd = brd_allocate();
 
-    struct piece all_pieces[NUM_PIECES];
+    enum piece all_pieces[NUM_PIECES];
     pce_get_all_pieces(all_pieces);
 
     for (int i = 0; i < NUM_PIECES; i++) {
 
-        struct piece pce = all_pieces[i];
+        enum piece pce = all_pieces[i];
         for (enum square sq = a1; sq <= h8; sq++) {
 
             const enum colour side = pce_get_colour(pce);
@@ -58,11 +58,11 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
             uint32_t material_after_add = brd_get_material(brd, side);
 
             // verify it's there
-            struct piece found_pce;
+            enum piece found_pce;
             bool found = brd_try_get_piece_on_square(brd, sq, &found_pce);
 
             assert_true(found);
-            assert_true(pce_are_equal(found_pce, pce));
+            assert_true(found_pce == pce);
             bool is_occupied = brd_is_sq_occupied(brd, sq);
             assert_true(is_occupied);
             assert_int_not_equal(material_before_add, material_after_add);
@@ -84,12 +84,12 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
 
 void test_board_brd_move_piece(void **state) {
     struct board *brd = brd_allocate();
-    struct piece all_pieces[NUM_PIECES];
+    enum piece all_pieces[NUM_PIECES];
     pce_get_all_pieces(all_pieces);
 
     for (int i = 0; i < NUM_PIECES; i++) {
 
-        struct piece pce = all_pieces[i];
+        enum piece pce = all_pieces[i];
         for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
             for (enum square to_sq = a1; to_sq <= h8; to_sq++) {
                 if (from_sq == to_sq) {
@@ -101,11 +101,11 @@ void test_board_brd_move_piece(void **state) {
                 brd_add_piece(brd, pce, from_sq);
 
                 // verify it's there
-                struct piece found_pce;
+                enum piece found_pce;
                 bool found =
                     brd_try_get_piece_on_square(brd, from_sq, &found_pce);
                 assert_true(found);
-                assert_true(pce_are_equal(found_pce, pce));
+                assert_true(found_pce == pce);
                 bool is_occupied = brd_is_sq_occupied(brd, from_sq);
                 assert_true(is_occupied);
 
@@ -146,7 +146,7 @@ void test_board_brd_get_piece_bb(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    uint64_t bb = brd_get_piece_bb(brd, PAWN, WHITE);
+    uint64_t bb = brd_get_piece_bb(brd, WHITE_PAWN);
     assert_true(bb_is_set(bb, b2));
     assert_true(bb_is_set(bb, d3));
     assert_true(bb_is_set(bb, e2));
@@ -156,22 +156,22 @@ void test_board_brd_get_piece_bb(void **state) {
     assert_true(bb_is_set(bb, g5));
     assert_true(bb_is_set(bb, h2));
 
-    bb = brd_get_piece_bb(brd, BISHOP, WHITE);
+    bb = brd_get_piece_bb(brd, WHITE_BISHOP);
     assert_true(bb_is_set(bb, b7));
     assert_true(bb_is_set(bb, f8));
 
-    bb = brd_get_piece_bb(brd, KNIGHT, WHITE);
+    bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
     assert_true(bb_is_set(bb, c1));
     assert_true(bb_is_set(bb, e8));
 
-    bb = brd_get_piece_bb(brd, ROOK, WHITE);
+    bb = brd_get_piece_bb(brd, WHITE_ROOK);
     assert_true(bb_is_set(bb, a4));
     assert_true(bb_is_set(bb, d8));
 
-    bb = brd_get_piece_bb(brd, QUEEN, WHITE);
+    bb = brd_get_piece_bb(brd, WHITE_QUEEN);
     assert_true(bb_is_set(bb, f1));
 
-    bb = brd_get_piece_bb(brd, PAWN, BLACK);
+    bb = brd_get_piece_bb(brd, BLACK_PAWN);
     assert_true(bb_is_set(bb, c3));
     assert_true(bb_is_set(bb, c4));
     assert_true(bb_is_set(bb, d5));
@@ -181,19 +181,19 @@ void test_board_brd_get_piece_bb(void **state) {
     assert_true(bb_is_set(bb, h3));
     assert_true(bb_is_set(bb, h6));
 
-    bb = brd_get_piece_bb(brd, BISHOP, BLACK);
+    bb = brd_get_piece_bb(brd, BLACK_BISHOP);
     assert_true(bb_is_set(bb, b1));
     assert_true(bb_is_set(bb, f6));
 
-    bb = brd_get_piece_bb(brd, KNIGHT, BLACK);
+    bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
     assert_true(bb_is_set(bb, d1));
     assert_true(bb_is_set(bb, b8));
 
-    bb = brd_get_piece_bb(brd, ROOK, BLACK);
+    bb = brd_get_piece_bb(brd, BLACK_ROOK);
     assert_true(bb_is_set(bb, e1));
     assert_true(bb_is_set(bb, g3));
 
-    bb = brd_get_piece_bb(brd, QUEEN, BLACK);
+    bb = brd_get_piece_bb(brd, BLACK_QUEEN);
     assert_true(bb_is_set(bb, a7));
 
     pos_destroy(pos);
@@ -439,7 +439,7 @@ void test_board_brd_try_get_piece_on_square(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    struct piece pce;
+    enum piece pce;
 
     assert_false(brd_try_get_piece_on_square(brd, a1, &pce));
     assert_false(brd_try_get_piece_on_square(brd, a2, &pce));
@@ -628,7 +628,7 @@ void test_board_brd_try_get_piece_on_square_1(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    struct piece pce;
+    enum piece pce;
 
     assert_true(brd_try_get_piece_on_square(brd, a1, &pce));
     assert_true(pce_get_piece_role(pce) == KNIGHT);

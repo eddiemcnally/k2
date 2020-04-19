@@ -41,7 +41,7 @@ struct parsed_fen;
 struct parsed_fen *fen_parse(const char *fen);
 
 bool fen_try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
-                             struct piece *pce);
+                             enum piece *pce);
 bool fen_has_wk_castle_perms(const struct parsed_fen *pf);
 bool fen_has_wq_castle_perms(const struct parsed_fen *pf);
 bool fen_has_bk_castle_perms(const struct parsed_fen *pf);

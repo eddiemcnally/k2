@@ -195,7 +195,7 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    struct piece pce;
+    enum piece pce;
 
     const enum square start_rook_sq = h1;
     const enum square start_king_sq = e1;
@@ -256,7 +256,7 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    struct piece pce;
+    enum piece pce;
 
     const enum square start_rook_sq = a1;
     const enum square start_king_sq = e1;
@@ -317,7 +317,7 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    struct piece pce;
+    enum piece pce;
 
     const enum square start_rook_sq = a8;
     const enum square start_king_sq = e8;
@@ -380,7 +380,7 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
 
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
-    struct piece pce;
+    enum piece pce;
 
     const enum square start_rook_sq = h8;
     const enum square start_king_sq = e8;
@@ -709,10 +709,10 @@ void test_position_make_move_black_knight(void **state) {
             assert_true(white_material_before > white_material_after);
         }
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, BLACK_KNIGHT));
+        assert_true(pce == BLACK_KNIGHT);
 
         pos_destroy(pos);
     }
@@ -755,10 +755,10 @@ void test_position_make_move_white_knight(void **state) {
             assert_true(black_material_before > black_material_after);
         }
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, WHITE_KNIGHT));
+        assert_true(pce == WHITE_KNIGHT);
 
         pos_destroy(pos);
     }
@@ -803,10 +803,10 @@ void test_position_make_move_black_bishop(void **state) {
             assert_true(white_material_before > white_material_after);
         }
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, BLACK_BISHOP));
+        assert_true(pce == BLACK_BISHOP);
 
         pos_destroy(pos);
     }
@@ -855,10 +855,10 @@ void test_position_make_move_white_bishop(void **state) {
             assert_true(black_material_before > black_material_after);
         }
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, WHITE_BISHOP));
+        assert_true(pce == WHITE_BISHOP);
 
         pos_destroy(pos);
     }
@@ -911,10 +911,10 @@ void test_position_make_move_black_queen(void **state) {
             assert_true(white_material_before > white_material_after);
         }
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, BLACK_QUEEN));
+        assert_true(pce == BLACK_QUEEN);
 
         pos_destroy(pos);
     }
@@ -965,10 +965,10 @@ void test_position_make_move_white_queen(void **state) {
             assert_true(black_material_before > black_material_after);
         }
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, WHITE_QUEEN));
+        assert_true(pce == WHITE_QUEEN);
 
         pos_destroy(pos);
     }
@@ -1026,10 +1026,10 @@ void test_position_make_move_black_king_valid_moves(void **state) {
 
         assert_true(legality == LEGAL_MOVE);
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, BLACK_KING));
+        assert_true(pce == BLACK_KING);
 
         pos_destroy(pos);
     }
@@ -1081,10 +1081,10 @@ void test_position_make_move_white_king_valid_moves(void **state) {
 
         assert_true(legality == LEGAL_MOVE);
 
-        struct piece pce;
+        enum piece pce;
         assert_true(brd_try_get_piece_on_square(brd, from_sq, &pce) == false);
         assert_true(brd_try_get_piece_on_square(brd, to_sq, &pce) == true);
-        assert_true(pce_are_equal(pce, WHITE_KING));
+        assert_true(pce == WHITE_KING);
 
         pos_destroy(pos);
     }
@@ -1125,7 +1125,7 @@ void test_position_make_move_black_en_passant(void **state) {
     enum move_legality legality = pos_make_move(pos, mv);
 
     assert_true(legality == LEGAL_MOVE);
-    struct piece old_white_pawn;
+    enum piece old_white_pawn;
     bool old_white_pawn_found =
         brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
     assert_true(old_white_pawn_found);
@@ -1143,7 +1143,7 @@ void test_position_make_move_black_en_passant(void **state) {
         brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
     assert_false(old_white_pawn_found);
 
-    struct piece blk_pawn;
+    enum piece blk_pawn;
     bool blk_pawn_found = brd_try_get_piece_on_square(brd, c3, &blk_pawn);
     assert_true(blk_pawn_found);
     enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
@@ -1164,7 +1164,7 @@ void test_position_make_move_white_en_passant(void **state) {
     enum move_legality legality = pos_make_move(pos, mv);
 
     assert_true(legality == LEGAL_MOVE);
-    struct piece old_black_pawn;
+    enum piece old_black_pawn;
     bool old_black_pawn_found =
         brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
     assert_true(old_black_pawn_found);
@@ -1182,7 +1182,7 @@ void test_position_make_move_white_en_passant(void **state) {
         brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
     assert_false(old_black_pawn_found);
 
-    struct piece white_pawn;
+    enum piece white_pawn;
     bool white_pawn_found = brd_try_get_piece_on_square(brd, g6, &white_pawn);
     assert_true(white_pawn_found);
     enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
@@ -1204,7 +1204,7 @@ void test_position_make_move_white_promotion(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        struct piece expected_prom_pce;
+        enum piece expected_prom_pce;
         bool decoded =
             try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
         assert_true(decoded);
@@ -1219,10 +1219,10 @@ void test_position_make_move_white_promotion(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        struct piece prom_pce;
+        enum piece prom_pce;
         bool prom_pce_found = brd_try_get_piece_on_square(brd, b8, &prom_pce);
         assert_true(prom_pce_found);
-        assert_true(pce_are_equal(prom_pce, expected_prom_pce));
+        assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, b7));
 
         pos_destroy(pos);
@@ -1242,7 +1242,7 @@ void test_position_make_move_black_promotion(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        struct piece expected_prom_pce;
+        enum piece expected_prom_pce;
         bool decoded =
             try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
         assert_true(decoded);
@@ -1258,10 +1258,10 @@ void test_position_make_move_black_promotion(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        struct piece prom_pce;
+        enum piece prom_pce;
         bool prom_pce_found = brd_try_get_piece_on_square(brd, f1, &prom_pce);
         assert_true(prom_pce_found);
-        assert_true(pce_are_equal(prom_pce, expected_prom_pce));
+        assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, f2));
 
         pos_destroy(pos);
@@ -1281,7 +1281,7 @@ void test_position_make_move_white_promotion_capture(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        struct piece expected_prom_pce;
+        enum piece expected_prom_pce;
         bool decoded =
             try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
         assert_true(decoded);
@@ -1297,10 +1297,10 @@ void test_position_make_move_white_promotion_capture(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        struct piece prom_pce;
+        enum piece prom_pce;
         bool prom_pce_found = brd_try_get_piece_on_square(brd, c8, &prom_pce);
         assert_true(prom_pce_found);
-        assert_true(pce_are_equal(prom_pce, expected_prom_pce));
+        assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, b7));
 
         pos_destroy(pos);
@@ -1320,7 +1320,7 @@ void test_position_make_move_black_promotion_capture(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        struct piece expected_prom_pce;
+        enum piece expected_prom_pce;
         bool decoded =
             try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
         assert_true(decoded);
@@ -1336,10 +1336,10 @@ void test_position_make_move_black_promotion_capture(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        struct piece prom_pce;
+        enum piece prom_pce;
         bool prom_pce_found = brd_try_get_piece_on_square(brd, f1, &prom_pce);
         assert_true(prom_pce_found);
-        assert_true(pce_are_equal(prom_pce, expected_prom_pce));
+        assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, e2));
 
         pos_destroy(pos);

@@ -33,47 +33,95 @@
 
 enum colour {
     WHITE = 0,
-    BLACK = 0x01,
+    BLACK = 1,
 };
 
-struct piece {
-    uint8_t pce_val;
+// ---- -XXX    ROLE
+// ---- X---    Colour 0-> White, 1 -> Black
+// XXXX ----    Offset when used in an array
+//===========================================
+// ---- -000    Pawn
+// ---- -001    Bishop
+// ---- -010    Knight
+// ---- -011    Rook
+// ---- -100    Queen
+// ---- -101    King
+// ---- 1---    BLACK
+// 0000 ----    White   Pawn Offset
+// 0001 ----            Bishop Offset
+// 0010 ----            Knight Offset
+// 0011 ----            Rook Offset
+// 0100 ----            Queen Offset
+// 0101 ----            King Offset
+// 0110 ----    Black   Pawn offset
+// 0111 ----            Bishop Offset
+// 1000 ----            Knight Offset
+// 1001 ----            Rook offset
+// 1010 ----            Queen Offset
+// 1011 ----            King Offset
+
+enum piece_role {
+    PAWN = 0x00,
+    BISHOP = 0x01,
+    KNIGHT = 0x02,
+    ROOK = 0x03,
+    QUEEN = 0x04,
+    KING = 0x05
 };
 
-enum piece_role { PAWN = 0, BISHOP, KNIGHT, ROOK, QUEEN, KING };
+enum {
+    WP_OFF = 0x00,
+    WB_OFF = 0x10,
+    WN_OFF = 0x20,
+    WR_OFF = 0x30,
+    WQ_OFF = 0x40,
+    WK_OFF = 0x50,
+    BP_OFF = 0x60,
+    BB_OFF = 0x70,
+    BN_OFF = 0x80,
+    BR_OFF = 0x90,
+    BQ_OFF = 0xA0,
+    BK_OFF = 0xB0,
+};
 
-extern struct piece WHITE_PAWN;
-extern struct piece WHITE_BISHOP;
-extern struct piece WHITE_KNIGHT;
-extern struct piece WHITE_ROOK;
-extern struct piece WHITE_QUEEN;
-extern struct piece WHITE_KING;
+#define COLOUR_MASK ((uint8_t)0x08)
 
-extern struct piece BLACK_PAWN;
-extern struct piece BLACK_BISHOP;
-extern struct piece BLACK_KNIGHT;
-extern struct piece BLACK_ROOK;
-extern struct piece BLACK_QUEEN;
-extern struct piece BLACK_KING;
+static const uint8_t ROLE_MASK = 0x07;
+static const uint8_t OFFSET_MASK = 0xF0;
 
-#define NUM_COLOURS 2
-#define NUM_PIECE_ROLES 6
+enum piece {
+    WHITE_PAWN = (uint8_t)(PAWN | (uint8_t)(WP_OFF)),
+    WHITE_BISHOP = (uint8_t)(BISHOP | (uint8_t)(WB_OFF)),
+    WHITE_KNIGHT = (uint8_t)(KNIGHT | (uint8_t)(WN_OFF)),
+    WHITE_ROOK = (uint8_t)(ROOK | (uint8_t)(WR_OFF)),
+    WHITE_QUEEN = (uint8_t)(QUEEN | (uint8_t)(WQ_OFF)),
+    WHITE_KING = (uint8_t)(KING | (uint8_t)(WK_OFF)),
+
+    BLACK_PAWN = (uint8_t)(PAWN | COLOUR_MASK | (uint8_t)(BP_OFF)),
+    BLACK_BISHOP = (uint8_t)(BISHOP | COLOUR_MASK | (uint8_t)(BB_OFF)),
+    BLACK_KNIGHT = (uint8_t)(KNIGHT | COLOUR_MASK | (uint8_t)(BN_OFF)),
+    BLACK_ROOK = (uint8_t)(ROOK | COLOUR_MASK | (uint8_t)(BR_OFF)),
+    BLACK_QUEEN = (uint8_t)(QUEEN | COLOUR_MASK | (uint8_t)(BQ_OFF)),
+    BLACK_KING = (uint8_t)(KING | COLOUR_MASK | (uint8_t)(BK_OFF)),
+};
+
+#define NUM_COLOURS (2)
+#define NUM_PIECE_ROLES (6)
 #define NUM_PIECES (NUM_PIECE_ROLES * NUM_COLOURS)
 
-enum piece_role pce_get_piece_role(const struct piece pce);
-bool pce_are_equal(const struct piece pce1, const struct piece pce2);
-bool pce_is_white(const struct piece pce);
-bool pce_is_black(const struct piece pce);
+enum piece_role pce_get_piece_role(const enum piece pce);
+bool pce_is_white(const enum piece pce);
+bool pce_is_black(const enum piece pce);
 enum colour pce_swap_side(const enum colour side);
-enum colour pce_get_colour(const struct piece pce);
+enum colour pce_get_colour(const enum piece pce);
 uint32_t pce_get_value(const enum piece_role pt);
-char pce_get_label(const struct piece pce);
-struct piece pce_get_from_label(const char c);
-uint8_t pce_get_array_idx(const enum piece_role pt);
+char pce_get_label(const enum piece pce);
+enum piece pce_get_from_label(const char c);
+uint8_t pce_get_array_idx(const enum piece pce);
 uint8_t pce_col_get_array_idx(const enum colour col);
-struct piece pce_get_no_piece(void);
-bool validate_piece(const struct piece pce);
+enum piece pce_get_no_piece(void);
+bool validate_piece(const enum piece pce);
 bool validate_piece_role(const enum piece_role pt);
 bool validate_colour(const enum colour col);
 bool validate_label(const char c);
-void pce_get_all_pieces(struct piece pce_array[NUM_PIECES]);
+void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]);

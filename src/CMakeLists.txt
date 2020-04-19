@@ -45,6 +45,7 @@ set (SOURCES
         ${UTILS_DIR}/utils.c
         ${UTILS_DIR}/rand.c
         ${PERFT_DIR}/perft_file_reader.c
+        ${PERFT_DIR}/perft.c
         )
 
 message("Setting up K2 Engine include files...")
@@ -67,13 +68,15 @@ set(ENGINE_SRCS ${SOURCES} PARENT_SCOPE)
 message("Setting up K2 Engine build target compiler flags...")
 
 # -DNDEBUG \
-        
+# -flto \   
+# -O3 \     
+
 set (ENGINE_COMPILER_WARNS "-std=c17 \
--flto \
 -fno-common \
 -fomit-frame-pointer \
 -fsanitize=undefined \
 -fshort-enums \
+-flto \
 -DNDEBUG \
 -O3 \
 -m64 \

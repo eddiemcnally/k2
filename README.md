@@ -32,7 +32,7 @@ You can now build and run unit tests:
 ## Build notes:
 - k2 is currently set up to use clang as the compiler.
 - However, the code uses various GCC built-in functions
-- The build process outputs 2 binaries: "k2" and "k2_test_runner". These can be found in the _build/bin directory.
+- The build process outputs 3 binaries: "k2", perft and "k2_test_runner". These can be found in the _build/bin directory.
 - Requires CMake 3.9 or greater
 - Enables LTO by default; has a dependency on binutils-gold and llvm9-gold
 
@@ -44,5 +44,4 @@ You can now build and run unit tests:
 - uses Hyperbola Quintessence for sliding piece move generation
 
 # Current Status
-- Move generation for all pieces is complete
-- Initial dev has started for position management
+- Verified perft test suite to depth 6 (12.2B combined moves)

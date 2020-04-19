@@ -40,27 +40,13 @@ enum piece_values {
     PCE_VAL_QUEEN = 1000,
     PCE_VAL_KING = 50000
 };
+#define NO_PIECE ((uint8_t)0xFF)
 
-#define COLOUR_MASK 0x80
-#define COLOUR_SHIFT 7
-#define NO_PIECE 0xFF
+#define COLOUR_SHIFT 3
+#define OFFSET_SHIFT 4
 
-struct piece WHITE_PAWN = {.pce_val = (uint8_t)(PAWN)};
-struct piece WHITE_BISHOP = {.pce_val = (uint8_t)(BISHOP)};
-struct piece WHITE_KNIGHT = {.pce_val = (uint8_t)(KNIGHT)};
-struct piece WHITE_ROOK = {.pce_val = (uint8_t)(ROOK)};
-struct piece WHITE_QUEEN = {.pce_val = (uint8_t)(QUEEN)};
-struct piece WHITE_KING = {.pce_val = (uint8_t)(KING)};
-
-struct piece BLACK_PAWN = {.pce_val = (uint8_t)(PAWN | 0x80)};
-struct piece BLACK_BISHOP = {.pce_val = (uint8_t)(BISHOP | 0x80)};
-struct piece BLACK_KNIGHT = {.pce_val = (uint8_t)(KNIGHT | 0x80)};
-struct piece BLACK_ROOK = {.pce_val = (uint8_t)(ROOK | 0x80)};
-struct piece BLACK_QUEEN = {.pce_val = (uint8_t)(QUEEN | 0x80)};
-struct piece BLACK_KING = {.pce_val = (uint8_t)(KING | 0x80)};
-
-static enum colour extract_colour(const struct piece pce);
-static enum piece_role extract_piece_role(const struct piece pce);
+static enum colour extract_colour(const enum piece pce);
+static enum piece_role extract_piece_role(const enum piece pce);
 
 // ==================================================================
 //
@@ -75,7 +61,7 @@ static enum piece_role extract_piece_role(const struct piece pce);
  * 
  * @return          the piece_type
  */
-enum piece_role pce_get_piece_role(const struct piece pce) {
+enum piece_role pce_get_piece_role(const enum piece pce) {
     assert(validate_piece(pce));
 
     return extract_piece_role(pce);
@@ -87,7 +73,7 @@ enum piece_role pce_get_piece_role(const struct piece pce) {
  * @param pce   The piece
  * @return true if WHITE, false otherwise
  */
-bool pce_is_white(const struct piece pce) {
+bool pce_is_white(const enum piece pce) {
     assert(validate_piece(pce));
 
     enum colour col = extract_colour(pce);
@@ -100,7 +86,7 @@ bool pce_is_white(const struct piece pce) {
  * @param pce   The piece
  * @return true if BLACK, false otherwise
  */
-bool pce_is_black(const struct piece pce) {
+bool pce_is_black(const enum piece pce) {
     assert(validate_piece(pce));
 
     enum colour col = extract_colour(pce);
@@ -124,7 +110,7 @@ enum colour pce_swap_side(const enum colour col) {
  * @param pce The piece
  * @return The colour of the given piece
  */
-enum colour pce_get_colour(const struct piece pce) {
+enum colour pce_get_colour(const enum piece pce) {
     assert(validate_piece(pce));
 
     return extract_colour(pce);
@@ -135,23 +121,7 @@ enum colour pce_get_colour(const struct piece pce) {
 *
 * @return piece A "no piece" enum
 */
-struct piece pce_get_no_piece(void) {
-    struct piece pce = {.pce_val = NO_PIECE};
-    return pce;
-}
-
-/**
- * @brief       Compares 2 pieces for equality
- *
- * @param pce1  first piece
- * @param pce2  second piece
- * 
- * @return      true if same, false otherwise
- */
-
-bool pce_are_equal(const struct piece pce1, const struct piece pce2) {
-    return pce1.pce_val == pce2.pce_val;
-}
+enum piece pce_get_no_piece(void) { return (enum piece)NO_PIECE; }
 
 /**
  * @brief       Gets the piece value of the given piece_type
@@ -184,13 +154,13 @@ uint32_t pce_get_value(const enum piece_role pt) {
 /**
 * @brief            Converts the piece-type to an array index for use by various modules
 *
-* @param pt         The piece_type
+* @param pt         The piece
 * @return           uint8_t The array index
 */
-uint8_t pce_get_array_idx(const enum piece_role pt) {
-    assert(validate_piece_role(pt));
+uint8_t pce_get_array_idx(const enum piece pce) {
+    assert(validate_piece(pce));
 
-    return (uint8_t)pt;
+    return (pce & OFFSET_MASK) >> OFFSET_SHIFT;
 }
 
 /**
@@ -210,7 +180,7 @@ uint8_t pce_col_get_array_idx(const enum colour col) {
 * @param        Pointer to array that is populated
 * @return       The array
 */
-void pce_get_all_pieces(struct piece pce_array[NUM_PIECES]) {
+void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]) {
     int i = 0;
 
     pce_array[i++] = WHITE_PAWN;
@@ -234,7 +204,7 @@ void pce_get_all_pieces(struct piece pce_array[NUM_PIECES]) {
  * @param pce The piece
  * @return A character representing the labe
  */
-char pce_get_label(const struct piece pce) {
+char pce_get_label(const enum piece pce) {
     assert(validate_piece(pce));
 
     enum colour col = extract_colour(pce);
@@ -279,10 +249,10 @@ char pce_get_label(const struct piece pce) {
  * @param c The piece label
  * @return The associated piece
  */
-struct piece pce_get_from_label(const char c) {
+enum piece pce_get_from_label(const char c) {
     assert(validate_label(c));
 
-    struct piece retval = {.pce_val = NO_PIECE};
+    enum piece retval = NO_PIECE;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
@@ -324,9 +294,11 @@ struct piece pce_get_from_label(const char c) {
  *
  * @param pce The piece
  */
-bool validate_piece(const struct piece pce) {
+bool validate_piece(const enum piece pce) {
     const enum piece_role pt = extract_piece_role(pce);
+    assert(validate_piece_role(pt));
     const enum colour col = extract_colour(pce);
+    assert(validate_colour(col));
 
     switch (pt) {
     case PAWN:
@@ -405,10 +377,13 @@ bool validate_label(const char c) {
     return false;
 }
 
-static enum colour extract_colour(const struct piece pce) {
-    return (enum colour)((pce.pce_val & COLOUR_MASK) >> COLOUR_SHIFT);
+static enum colour extract_colour(const enum piece pce) {
+    return (enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT);
 }
 
-static enum piece_role extract_piece_role(const struct piece pce) {
-    return (enum piece_role)(pce.pce_val & (uint8_t)~COLOUR_MASK);
+static enum piece_role extract_piece_role(const enum piece pce) {
+    enum piece_role r = pce & ROLE_MASK;
+    assert(validate_piece_role(r));
+
+    return (enum piece_role)(r);
 }

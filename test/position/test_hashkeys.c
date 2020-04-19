@@ -42,11 +42,11 @@ void test_hashkeys_all_pieces_all_squares_before_after_same(void **state) {
 
     init_key_mgmt();
 
-    struct piece pce_array[NUM_PIECES];
+    enum piece pce_array[NUM_PIECES];
     pce_get_all_pieces(pce_array);
 
     for (int p = 0; p < NUM_PIECES; p++) {
-        struct piece pce = pce_array[p];
+        enum piece pce = pce_array[p];
 
         for (enum square sq = a1; sq < h8; sq++) {
 
