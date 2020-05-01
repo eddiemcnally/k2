@@ -43,25 +43,25 @@
 
 int main(void) {
 
-    const enum square from_sq = a7;
-    const enum square to_sq = a8;
-    struct move mv;
-    enum piece pce;
+    // const enum square from_sq = a7;
+    // const enum square to_sq = a8;
+    // struct move mv;
+    // enum piece pce;
 
-    mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
+    // // mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
 
-    try_move_decode_promotion_piece(mv, WHITE, &pce);
+    // // try_move_decode_promotion_piece(mv, WHITE, &pce);
 
-    printf("pce = 0x%x\n", pce);
+    // // printf("pce = 0x%x\n", pce);
 
-    enum piece_role role = pce_get_piece_role(pce);
-    printf("role = 0x%x\n", role);
+    // // enum piece_role role = pce_get_piece_role(pce);
+    // // printf("role = 0x%x\n", role);
 
-    // const char *RANDOM_FEN_1 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/"
-    //                            "PPPBBPPP/R3K2R w KQkq - 0 1\n";
+    const char *RANDOM_FEN_1 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/"
+                               "PPPBBPPP/R3K2R w KQkq - 0 1\n";
 
-    // struct position *pos = pos_create();
-    // pos_initialise(RANDOM_FEN_1, pos);
+    struct position *pos = pos_create();
+    pos_initialise(RANDOM_FEN_1, pos);
 
-    // do_perft(5, pos);
+    do_perft(5, pos);
 }

@@ -17,9 +17,6 @@ message("Setting CMAKE Verbose level '${CMAKE_VERBOSE_MAKEFILE}'")
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 message("Setting CMAKE Compiler to '${CMAKE_C_COMPILER}'")
 
-set(CMAKE_BUILD_TYPE Debug)
-message("Setting build target to '${CMAKE_BUILD_TYPE}'")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 message("Setting binary output to directory to '${CMAKE_RUNTIME_OUTPUT_DIRECTORY}'")
         

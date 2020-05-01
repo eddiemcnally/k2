@@ -31,7 +31,7 @@
 #include "square.h"
 #include <assert.h>
 
-void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t *brd);
+void set_dest_sq_if_valid(enum rank rank, enum file file, uint64_t *brd);
 uint64_t get_occupancy_mask(enum piece pce, enum square sq);
 bool IS_VALID_FILE(enum file f);
 bool IS_VALID_RANK(enum rank r);
@@ -88,13 +88,13 @@ void occ_mask_gen_king(uint64_t *occ_mask_array) {
 
         // the equates to ranks and files as follows (rank/file):
         //      (+1, -1),       (+1, 0),        (+1, +1)
-        //  (0, -1),    XXX,            (0, +1)
+        //       (0, -1),       XXX,            (0, +1)
         // etc
-        uint8_t dest_rank = 0;
-        uint8_t dest_file = 0;
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
 
-        uint8_t rank = sq_get_rank(sq);
-        uint8_t file = sq_get_file(sq);
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
 
         uint64_t b = 0;
 
@@ -165,8 +165,8 @@ void occ_mask_gen_knight(uint64_t *occ_mask_array) {
     //              00 01 02 03 40 05 06 07
 
     for (enum square sq = a1; sq <= h8; sq++) {
-        uint8_t dest_rank = 0;
-        uint8_t dest_file = 0;
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
 
         // 8 destination squares are:
         // (-2 +8), (-1 + 16), (+1 + 16) (+2 + 8),
@@ -176,8 +176,8 @@ void occ_mask_gen_knight(uint64_t *occ_mask_array) {
         //
         // converting to ranks and files, we get:
         //  (left 2 files, up 1 rank),(left 2 files, down 1 rank), etc
-        uint8_t rank = sq_get_rank(sq);
-        uint8_t file = sq_get_file(sq);
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
 
         //printf("rank/file: %d/%d\n", rank, file);
 
@@ -260,23 +260,21 @@ void occ_mask_gen_white_pawn_capture_non_first_double_move(
     for (enum square sq = a1; sq <= h8; sq++) {
         uint64_t b = 0;
         if (sq >= a2 && sq <= h7) {
-            int dest_rank = 0;
-            int dest_file = 0;
+            enum rank dest_rank = 0;
+            enum file dest_file = 0;
 
-            int rank = sq_get_rank(sq);
-            int file = sq_get_file(sq);
+            enum rank rank = sq_get_rank(sq);
+            enum file file = sq_get_file(sq);
 
             // up and left
             dest_rank = rank + 1;
             dest_file = file - 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
-                                 &b);
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
 
             // up and right
             dest_rank = rank + 1;
             dest_file = file + 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
-                                 &b);
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
         }
         occ_mask_array[sq] = b;
     }
@@ -305,23 +303,21 @@ void occ_mask_gen_black_pawn_capture_non_first_double_move(
     for (enum square sq = a1; sq <= h8; sq++) {
         uint64_t b = 0;
         if (sq >= a2 && sq <= h7) {
-            int dest_rank = 0;
-            int dest_file = 0;
+            enum rank dest_rank = 0;
+            enum file dest_file = 0;
 
-            int rank = sq_get_rank(sq);
-            int file = sq_get_file(sq);
+            enum rank rank = sq_get_rank(sq);
+            enum file file = sq_get_file(sq);
 
             // up and left
             dest_rank = rank - 1;
             dest_file = file - 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
-                                 &b);
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
 
             // up and right
             dest_rank = rank - 1;
             dest_file = file + 1;
-            set_dest_sq_if_valid((enum rank)dest_rank, (enum file)dest_file,
-                                 &b);
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
         }
         occ_mask_array[sq] = b;
     }
@@ -340,18 +336,18 @@ void occ_mask_gen_rook(uint64_t *occ_mask_array) {
 
     for (enum square sq = a1; sq < h8; sq++) {
 
-        uint8_t rank = sq_get_rank(sq);
-        uint8_t file = sq_get_file(sq);
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
 
         uint64_t b = 0;
 
         // move up the ranks of this file
-        for (uint8_t i = RANK_1; i <= RANK_8; i++) {
+        for (enum rank i = RANK_1; i <= RANK_8; i++) {
             set_dest_sq_if_valid(i, file, &b);
         }
 
         // move along the files of this rank
-        for (uint8_t i = FILE_A; i <= FILE_H; i++) {
+        for (enum file i = FILE_A; i <= FILE_H; i++) {
             set_dest_sq_if_valid(rank, i, &b);
         }
 
@@ -389,13 +385,13 @@ void occ_mask_gen_bishop(uint64_t *occ_mask_array) {
 
     for (enum square sq = a1; sq < h8; sq++) {
 
-        uint8_t rank = sq_get_rank(sq);
-        uint8_t file = sq_get_file(sq);
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
 
         //printf("rank/file : %d/%d\n", rank, file);
 
-        uint8_t dest_rank = 0;
-        uint8_t dest_file = 0;
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
         uint64_t b = 0;
 
         // move left and down
@@ -441,7 +437,7 @@ void occ_mask_gen_bishop(uint64_t *occ_mask_array) {
     }
 }
 
-void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t *bb) {
+void set_dest_sq_if_valid(enum rank rank, enum file file, uint64_t *bb) {
     if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
         enum square dest_sq = sq_gen_from_rank_file(rank, file);
         bb_set_square(bb, (enum square)dest_sq);

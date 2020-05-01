@@ -28,21 +28,8 @@
 #include <assert.h>
 #include <stdio.h>
 
-static const uint64_t BIT_0 = 0x0000000000000001;
+#define BIT_0 ((uint64_t)0x0000000000000001)
 static const uint64_t EMPTY_BITBOARD = 0;
-
-// A lookup table for reversing bits in a byte.
-// See https://graphics.stanford.edu/%7Eseander/bithacks.html#BitReverseTable
-#define R2(n) n, n + 2 * 64, n + 1 * 64, n + 3 * 64
-#define R4(n)                                                                  \
-    R2(n)                                                                      \
-    , R2(n + 2 * 16), R2(n + 1 * 16), R2(n + 3 * 16)
-#define R6(n)                                                                  \
-    R4(n)                                                                      \
-    , R4(n + 2 * 4), R4(n + 1 * 4), R4(n + 3 * 4)
-
-static const unsigned char BitReverseTable256[256] = {R6(0), R6(2), R6(1),
-                                                      R6(3)};
 
 /**
  * @brief       Returns a bitboard with a single bit set representing the given square
@@ -50,7 +37,7 @@ static const unsigned char BitReverseTable256[256] = {R6(0), R6(2), R6(1),
  * @param sq    The square
  * @return      The bitboard with the set bit
  */
-uint64_t bb_get_sq_mask(const enum square sq) {
+inline uint64_t bb_get_sq_mask(const enum square sq) {
     assert(validate_square(sq));
 
     uint64_t bb = 0;
@@ -63,7 +50,7 @@ uint64_t bb_get_sq_mask(const enum square sq) {
  * @param bb    The bitboard
  * @param sq    The square
  */
-void bb_set_square(uint64_t *bb, const enum square sq) {
+inline void bb_set_square(uint64_t *bb, const enum square sq) {
     assert(validate_square(sq));
 
     *bb |= (BIT_0 << sq);
@@ -75,7 +62,7 @@ void bb_set_square(uint64_t *bb, const enum square sq) {
  * @param bb    The bitboard
  * @param sq    The square
  */
-void bb_clear_square(uint64_t *bb, const enum square sq) {
+inline void bb_clear_square(uint64_t *bb, const enum square sq) {
     assert(validate_square(sq));
 
     *bb &= (~(BIT_0 << sq));
@@ -89,7 +76,7 @@ void bb_clear_square(uint64_t *bb, const enum square sq) {
  *
  * @return true if bit is set, false otherwise.
  */
-bool bb_is_set(const uint64_t bb, const enum square sq) {
+inline bool bb_is_set(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
     return (bb & (BIT_0 << sq)) != 0;
@@ -103,7 +90,7 @@ bool bb_is_set(const uint64_t bb, const enum square sq) {
  *
  * @return true if bit is set, false otherwise.
  */
-bool bb_is_clear(const uint64_t bb, const enum square sq) {
+inline bool bb_is_clear(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
     return (bb_is_set(bb, sq) == false);
@@ -115,7 +102,7 @@ bool bb_is_clear(const uint64_t bb, const enum square sq) {
  * @param bb    The bitboard
  * @return      The number of set bits
  */
-uint8_t bb_count_bits(const uint64_t bb) {
+inline uint8_t bb_count_bits(const uint64_t bb) {
     return (uint8_t)__builtin_popcountll(bb);
 }
 
@@ -126,7 +113,7 @@ uint8_t bb_count_bits(const uint64_t bb) {
  * @param bb    The bitboard
  * @return      The zero-based bit that was set
  */
-enum square bb_pop_1st_bit(uint64_t *bb) {
+inline enum square bb_pop_1st_bit(uint64_t *bb) {
     int bit_num = __builtin_ctzll(*bb);
     enum square sq = (enum square)bit_num;
     bb_clear_square(bb, sq);
@@ -172,18 +159,70 @@ void bb_print_as_board(const uint64_t bb) {
  *
  * @param bb    The bitboard
  * @return      The reversed bitboard
+ * see https://graphics.stanford.edu/~seander/bithacks.html#ReverseByteWith64Bits
  */
-uint64_t bb_reverse(uint64_t bb) {
+inline uint64_t bb_reverse(uint64_t bb) {
     uint64_t retval = 0;
 
     uint8_t *p_in = (uint8_t *)&bb;
     uint8_t *p_out = (uint8_t *)&retval;
-    // reverse the bits in each byte
-    for (int i = 0; i < 8; i++) {
-        *p_out = (uint8_t)BitReverseTable256[*p_in];
-        p_out++;
-        p_in++;
-    }
+    // reverse the bits in each byte - manually unwound loop
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
+
+    *p_out = (uint8_t)(
+        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
+         (uint64_t)0x0101010101) >>
+        32);
+    p_out++;
+    p_in++;
 
     // now reverse the bytes
     return __builtin_bswap64(retval);

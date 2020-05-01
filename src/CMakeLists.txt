@@ -7,6 +7,7 @@
 #
 cmake_minimum_required(VERSION 3.0)
 
+
 message("*** Setting up K2 Chess Engine Binary build environment ***'")
 
 set(K2_PROJECT_SOURCE_DIR   ${PROJECT_SOURCE_DIR}/src)
@@ -65,24 +66,16 @@ set(INCLUDES
 set(ENGINE_INCL ${INCLUDES} PARENT_SCOPE)
 set(ENGINE_SRCS ${SOURCES} PARENT_SCOPE)
 
+
+
+
+
+
+
+
 message("Setting up K2 Engine build target compiler flags...")
 
-# -DNDEBUG \
-# -flto \   
-# -O3 \     
-
-set (ENGINE_COMPILER_WARNS "-std=c17 \
--fno-common \
--fomit-frame-pointer \
--fsanitize=undefined \
--fshort-enums \
--flto \
--DNDEBUG \
--O3 \
--m64 \
--march=native \
--Waggregate-return \
--Wall \
+set(CC_WARNINGS "-Wall \
 -Wbad-function-cast \
 -Wcast-align \
 -Wcast-qual \
@@ -112,13 +105,29 @@ set (ENGINE_COMPILER_WARNS "-std=c17 \
 -Wundef \
 -Wunreachable-code \
 -Wunused-macros \
--Wwrite-strings")
+-Wwrite-strings"
+        )
+
+set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
+set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
 
 
 
-# set up build target compiler flags
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${ENGINE_COMPILER_WARNS}")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${ENGINE_COMPILER_WARNS}") 
+
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c17 -fshort-enums ${CC_WARNINGS}")
+
+# -fomit-frame-pointer \
+# -DNDEBUG 
+
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
+-fsanitize=undefined \
+-fomit-frame-pointer \
+-DNDEBUG \
+-flto \
+-O3 \
+-m64 \
+-march=native")
+
 
 
 include_directories(${INCLUDES})
