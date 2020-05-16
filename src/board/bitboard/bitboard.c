@@ -159,71 +159,8 @@ void bb_print_as_board(const uint64_t bb) {
  *
  * @param bb    The bitboard
  * @return      The reversed bitboard
- * see https://graphics.stanford.edu/~seander/bithacks.html#ReverseByteWith64Bits
  */
 inline uint64_t bb_reverse(uint64_t bb) {
-    uint64_t retval = 0;
-
-    uint8_t *p_in = (uint8_t *)&bb;
-    uint8_t *p_out = (uint8_t *)&retval;
-    // reverse the bits in each byte - manually unwound loop
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    *p_out = (uint8_t)(
-        ((((uint64_t)*p_in * (uint64_t)0x80200802) & (uint64_t)0x0884422110) *
-         (uint64_t)0x0101010101) >>
-        32);
-    p_out++;
-    p_in++;
-
-    // now reverse the bytes
-    return __builtin_bswap64(retval);
+    // see https://clang.llvm.org/docs/LanguageExtensions.html#builtin-functions
+    return __builtin_bitreverse64(bb);
 }

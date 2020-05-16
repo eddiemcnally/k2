@@ -101,14 +101,16 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
     assert(validate_move_history(pos_history));
     assert(validate_board(brd));
 
-    pos_history->free_slot->mv = mv;
-    pos_history->free_slot->fifty_move_counter = fifty_move_counter;
-    pos_history->free_slot->en_passant = en_passant;
-    pos_history->free_slot->hashkey = hashkey;
-    pos_history->free_slot->castle_perm_container = castle_perm_cont;
-    brd_clone(brd, (struct board *)(&pos_history->free_slot->board));
+    struct move_state *free_slot = pos_history->free_slot;
 
-    assert(validate_board((struct board *)(&pos_history->free_slot->board)));
+    free_slot->mv = mv;
+    free_slot->fifty_move_counter = fifty_move_counter;
+    free_slot->en_passant = en_passant;
+    free_slot->hashkey = hashkey;
+    free_slot->castle_perm_container = castle_perm_cont;
+    brd_clone(brd, (struct board *)(&free_slot->board));
+
+    assert(validate_board((const struct board *)(&free_slot->board)));
 
     pos_history->num_used_slots++;
     pos_history->free_slot++;
@@ -125,15 +127,17 @@ void position_hist_pop(struct position_hist *pos_history, struct move *mv,
 
     assert(validate_move_history(pos_history));
 
-    *mv = pos_history->free_slot->mv;
-    *fifty_move_counter = pos_history->free_slot->fifty_move_counter;
-    *en_passant = pos_history->free_slot->en_passant;
-    *hashkey = pos_history->free_slot->hashkey;
-    *castle_perm_container = pos_history->free_slot->castle_perm_container;
+    const struct move_state *free_slot = pos_history->free_slot;
+
+    *mv = free_slot->mv;
+    *fifty_move_counter = free_slot->fifty_move_counter;
+    *en_passant = free_slot->en_passant;
+    *hashkey = free_slot->hashkey;
+    *castle_perm_container = free_slot->castle_perm_container;
 
     assert(validate_board((struct board *)(&pos_history->free_slot->board)));
 
-    brd_clone((struct board *)(&pos_history->free_slot->board), brd);
+    brd_clone((const struct board *)(&free_slot->board), brd);
 }
 
 /**

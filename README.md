@@ -24,7 +24,7 @@ To build using Cmake:
 - cd ./k2
 - mkdir _build
 - cd _build
-- cmake .. -G "Unix Makefiles"
+- cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=<Debug | Release>
 
 You can now build and run unit tests: 
 - make && ctest -VV

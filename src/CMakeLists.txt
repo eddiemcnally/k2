@@ -119,7 +119,7 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c17 -fshort-enums ${CC_WARN
 # -fomit-frame-pointer \
 # -DNDEBUG 
 
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
 -fsanitize=undefined \
 -fomit-frame-pointer \
 -DNDEBUG \
