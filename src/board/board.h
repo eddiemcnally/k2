@@ -36,7 +36,7 @@
 
 struct board;
 
-#define BOARD_SIZE_BYTES ((int)200)
+#define BOARD_SIZE_BYTES ((int)184)
 
 struct board *brd_allocate(void);
 void brd_deallocate(struct board *brd);

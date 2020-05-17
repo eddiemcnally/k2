@@ -36,11 +36,6 @@
  * @brief       Represents the state of the board (squares, pieces)
  */
 struct board {
-    uint32_t struct_init_key;
-
-    // a set bit represents an occupied square
-    uint64_t bb_board;
-
     // a bitboard per colour, a set bit means that colour occupies that square
     uint64_t bb_colour[NUM_COLOURS];
 
@@ -57,12 +52,8 @@ struct board {
 static_assert((int)(sizeof(struct board)) == BOARD_SIZE_BYTES,
               "Board is copied, check for -fshort-enums compiler option is "
               "enabled for efficiency.");
-static_assert(BOARD_SIZE_BYTES == 200, "Incorrect value for BOARD_SIZE_BYTES");
+static_assert(BOARD_SIZE_BYTES == 184, "Incorrect value for BOARD_SIZE_BYTES");
 
-// used to check struct is populated when passed into public functions
-static const uint32_t STRUCT_INIT_KEY = 0xdeadbeef;
-
-static bool validate_struct_init(const struct board *brd);
 static bool validate_square_empty(const struct board *brd,
                                   const enum square to_sq);
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce,
@@ -100,8 +91,6 @@ struct board *brd_allocate(void) {
  * @param brd   Pointer to the struct memory
  */
 void brd_deallocate(struct board *brd) {
-    assert(validate_struct_init(brd));
-
     memset(brd, 0, sizeof(struct board));
     free(brd);
 }
@@ -114,7 +103,8 @@ void brd_deallocate(struct board *brd) {
  */
 uint64_t brd_get_board_bb(const struct board *brd) {
     assert(validate_board(brd));
-    return brd->bb_board;
+
+    return brd->bb_colour[WHITE] | brd->bb_colour[BLACK];
 }
 
 /**
@@ -127,7 +117,8 @@ bool brd_is_sq_occupied(const struct board *brd, const enum square sq) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
-    return bb_is_set(brd->bb_board, sq);
+    const uint64_t bb_brd = brd_get_board_bb(brd);
+    return bb_is_set(bb_brd, sq);
 }
 
 /**
@@ -141,12 +132,9 @@ bool brd_try_get_piece_on_square(const struct board *brd, const enum square sq,
                                  enum piece *pce) {
     assert(validate_board(brd));
     assert(validate_square(sq));
-
-    if (brd_is_sq_occupied(brd, sq)) {
-        *pce = brd->pce_square[sq];
-        return true;
-    }
-    return false;
+    
+    *pce = brd->pce_square[sq];
+    return *pce != pce_get_no_piece();
 }
 
 /**
@@ -263,10 +251,6 @@ bool validate_board(const struct board *brd) {
 #pragma GCC diagnostic ignored "-Wunused-variable"
     enum square sq;
 
-    if (brd->struct_init_key != STRUCT_INIT_KEY) {
-        assert(false);
-    }
-
     const uint8_t white_idx = pce_col_get_array_idx(WHITE);
     const uint8_t black_idx = pce_col_get_array_idx(BLACK);
 
@@ -277,18 +261,16 @@ bool validate_board(const struct board *brd) {
 
     // check various bitboards agree with the pieces on the squares
     for (sq = a1; sq <= h8; sq++) {
-        const bool is_occupied = bb_is_set(brd->bb_board, sq);
+        const bool is_occupied = bb_is_set(conflated_col_bb, sq);
 
         if (is_occupied) {
             assert(bb_is_set(conflated_col_bb, sq));
             assert(brd->pce_square[sq] != pce_get_no_piece());
-            assert(bb_is_set(brd->bb_board, sq));
             assert(bb_is_set(
                 brd->bb_colour[pce_get_colour(brd->pce_square[sq])], sq));
         } else {
             assert(bb_is_clear(conflated_col_bb, sq));
             assert(brd->pce_square[sq] == pce_get_no_piece());
-            assert(bb_is_clear(brd->bb_board, sq));
             assert(bb_is_clear(white_bb, sq));
             assert(bb_is_clear(black_bb, sq));
         }
@@ -300,7 +282,7 @@ bool validate_board(const struct board *brd) {
 
     // can't be more bits set than max pieces on board
     const uint8_t num_bits_on_board =
-        (uint8_t)__builtin_popcountll(brd->bb_board);
+        (uint8_t)__builtin_popcountll(conflated_col_bb);
     assert(num_bits_on_board <= 32);
 
     // check colour bitboards and conflated board are the same
@@ -324,7 +306,6 @@ bool validate_board(const struct board *brd) {
         total_bit_count += (uint8_t)__builtin_popcountll(brd->piece_bb[offset]);
     }
 
-    assert(conflated_pce_bb == brd->bb_board);
     assert(total_bit_count == num_bits_on_board);
 
 #pragma GCC diagnostic pop
@@ -342,10 +323,6 @@ bool validate_board(const struct board *brd) {
 bool brd_compare(const struct board *first, const struct board *second) {
     assert(validate_board(first));
     assert(validate_board(second));
-
-    if (first->bb_board != second->bb_board) {
-        return false;
-    }
 
     for (int i = 0; i < NUM_COLOURS; i++) {
         if (first->bb_colour[i] != second->bb_colour[i]) {
@@ -423,7 +400,6 @@ void brd_print(const struct board *brd) {
 static void init_struct(struct board *brd) {
     memset(brd, 0, sizeof(struct board));
 
-    brd->bb_board = bb_get_empty();
     for (int i = 0; i < NUM_COLOURS; i++) {
         brd->bb_colour[i] = bb_get_empty();
         brd->material[i] = 0;
@@ -432,8 +408,6 @@ static void init_struct(struct board *brd) {
     for (enum square sq = a1; sq <= h8; sq++) {
         brd->pce_square[sq] = pce_get_no_piece();
     }
-
-    brd->struct_init_key = STRUCT_INIT_KEY;
 }
 
 static void add_material(struct board *brd, enum piece pce) {
@@ -459,11 +433,9 @@ static void clear_bitboards(struct board *brd, const enum piece pce,
     const uint8_t col_off = pce_col_get_array_idx(col);
 
     uint64_t *p_pce_bb = &brd->piece_bb[pce_off];
-    uint64_t *p_brd_bb = &brd->bb_board;
     uint64_t *p_col_bb = &brd->bb_colour[col_off];
 
     bb_clear_square(p_pce_bb, sq);
-    bb_clear_square(p_brd_bb, sq);
     bb_clear_square(p_col_bb, sq);
     brd->pce_square[sq] = pce_get_no_piece();
 }
@@ -475,11 +447,9 @@ static void set_bitboards(struct board *brd, const enum piece pce,
     const uint8_t col_off = pce_col_get_array_idx(col);
 
     uint64_t *p_pce_bb = &brd->piece_bb[pce_off];
-    uint64_t *p_brd_bb = &brd->bb_board;
     uint64_t *p_col_bb = &brd->bb_colour[col_off];
 
     bb_set_square(p_pce_bb, sq);
-    bb_set_square(p_brd_bb, sq);
     bb_set_square(p_col_bb, sq);
     brd->pce_square[sq] = pce;
 }
@@ -491,25 +461,19 @@ static void move_bitboards(struct board *brd, const enum piece pce,
     const uint8_t col_off = pce_col_get_array_idx(col);
 
     uint64_t *p_pce_bb = &brd->piece_bb[pce_off];
-    uint64_t *p_brd_bb = &brd->bb_board;
     uint64_t *p_col_bb = &brd->bb_colour[col_off];
 
     bb_clear_square(p_pce_bb, from_sq);
-    bb_clear_square(p_brd_bb, from_sq);
     bb_clear_square(p_col_bb, from_sq);
     brd->pce_square[from_sq] = pce_get_no_piece();
 
     bb_set_square(p_pce_bb, to_sq);
-    bb_set_square(p_brd_bb, to_sq);
     bb_set_square(p_col_bb, to_sq);
     brd->pce_square[to_sq] = pce;
 }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
-static bool validate_struct_init(const struct board *brd) {
-    return brd->struct_init_key == STRUCT_INIT_KEY;
-}
 
 static bool validate_square_empty(const struct board *brd,
                                   const enum square sq) {

@@ -63,5 +63,5 @@ int main(void) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    do_perft(5, pos);
+    do_perft(4, pos);
 }

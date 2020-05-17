@@ -132,6 +132,7 @@ bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq,
     return false;
 }
 
+
 static void populate_white_bitboards(const struct board *brd,
                                      struct cached_bitboard *cache) {
 

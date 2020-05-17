@@ -86,6 +86,12 @@ enum {
 
 #define COLOUR_MASK ((uint8_t)0x08)
 
+enum piece_offset{
+    WHITE_OFFSET = 0,
+    BLACK_OFFSET = 1,
+};
+
+
 static const uint8_t ROLE_MASK = 0x07;
 static const uint8_t OFFSET_MASK = 0xF0;
 

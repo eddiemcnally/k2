@@ -48,6 +48,10 @@ enum piece_values {
 static enum colour extract_colour(const enum piece pce);
 static enum piece_role extract_piece_role(const enum piece pce);
 
+static_assert(WHITE_OFFSET == WHITE, "Colour WHITE offset incorrect");
+static_assert(BLACK_OFFSET == BLACK, "Colour BLACK offset incorrect");
+
+
 // ==================================================================
 //
 // public functions
