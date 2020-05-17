@@ -114,16 +114,15 @@ set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
 
 
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c17 -fshort-enums ${CC_WARNINGS}")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c17 -fshort-enums -fsanitize=undefined ${CC_WARNINGS}")
 
 # -fomit-frame-pointer \
 # -DNDEBUG 
 
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -g -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
--fsanitize=undefined \
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
 -fomit-frame-pointer \
 -DNDEBUG \
--flto \
+-flto=full \
 -O3 \
 -m64 \
 -march=native")

@@ -506,7 +506,7 @@ static enum move_legality get_move_legal_status(const struct position *pos,
     const enum piece king = side_to_move == WHITE ? WHITE_KING : BLACK_KING;
 
     uint64_t king_bb = brd_get_piece_bb(pos->brd, king);
-    const enum square king_sq = bb_pop_1st_bit(&king_bb);
+    const enum square king_sq = bb_pop_1st_bit(king_bb);
 
     if (att_chk_is_sq_attacked(pos->brd, king_sq, attacking_side)) {
         // square attacked, move not legal
@@ -548,7 +548,8 @@ static bool is_castle_move_legal(const struct position *pos,
     }
 
     while (cast_bb != 0) {
-        const enum square sq = bb_pop_1st_bit(&cast_bb);
+        const enum square sq = bb_pop_1st_bit(cast_bb);
+        cast_bb = bb_clear_square(cast_bb, sq);
         if (att_chk_is_sq_attacked(pos->brd, sq, attacking_side)) {
             return false;
         }

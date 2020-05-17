@@ -49,11 +49,12 @@ inline uint64_t bb_get_sq_mask(const enum square sq) {
  *
  * @param bb    The bitboard
  * @param sq    The square
+ * @return      The bitboard with the square set
  */
-inline void bb_set_square(uint64_t *bb, const enum square sq) {
+inline uint64_t bb_set_square(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
-    *bb |= (BIT_0 << sq);
+    return bb | (BIT_0 << sq);
 }
 
 /**
@@ -61,11 +62,12 @@ inline void bb_set_square(uint64_t *bb, const enum square sq) {
  *
  * @param bb    The bitboard
  * @param sq    The square
+ * @return      The bitboard with the square cleared
  */
-inline void bb_clear_square(uint64_t *bb, const enum square sq) {
+inline uint64_t bb_clear_square(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
-    *bb &= (~(BIT_0 << sq));
+    return bb & (~(BIT_0 << sq));
 }
 
 /**
@@ -113,10 +115,9 @@ inline uint8_t bb_count_bits(const uint64_t bb) {
  * @param bb    The bitboard
  * @return      The zero-based bit that was set
  */
-inline enum square bb_pop_1st_bit(uint64_t *bb) {
-    int bit_num = __builtin_ctzll(*bb);
+inline enum square bb_pop_1st_bit(const uint64_t bb) {
+    int bit_num = __builtin_ctzll(bb);
     enum square sq = (enum square)bit_num;
-    bb_clear_square(bb, sq);
     return sq;
 }
 

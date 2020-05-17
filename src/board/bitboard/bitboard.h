@@ -32,11 +32,11 @@
 
 uint64_t bb_get_empty(void);
 uint64_t bb_get_sq_mask(const enum square sq);
-void bb_set_square(uint64_t *bb, const enum square sq);
-void bb_clear_square(uint64_t *bb, const enum square sq);
+uint64_t bb_set_square(const uint64_t bb, const enum square sq);
+uint64_t bb_clear_square(const uint64_t bb, const enum square sq);
 bool bb_is_set(const uint64_t bb, const enum square sq);
 bool bb_is_clear(const uint64_t bb, const enum square sq);
 uint8_t bb_count_bits(const uint64_t bb);
-enum square bb_pop_1st_bit(uint64_t *bb);
+enum square bb_pop_1st_bit(const uint64_t bb);
 uint64_t bb_reverse(uint64_t bb);
 void bb_print_as_board(const uint64_t bb);

@@ -51,7 +51,6 @@ static enum piece_role extract_piece_role(const enum piece pce);
 static_assert(WHITE_OFFSET == WHITE, "Colour WHITE offset incorrect");
 static_assert(BLACK_OFFSET == BLACK, "Colour BLACK offset incorrect");
 
-
 // ==================================================================
 //
 // public functions
@@ -125,7 +124,7 @@ enum colour pce_get_colour(const enum piece pce) {
 *
 * @return piece A "no piece" enum
 */
-enum piece pce_get_no_piece(void) { return (enum piece)NO_PIECE; }
+inline enum piece pce_get_no_piece(void) { return (enum piece)NO_PIECE; }
 
 /**
  * @brief       Gets the piece value of the given piece_type

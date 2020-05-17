@@ -80,58 +80,37 @@ bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq,
         if (is_white_pawn_attacking(cached_bb.pawn, sq_rank, sq_file)) {
             return true;
         }
-
-        if (is_knight_attacking(cached_bb.knight, sq)) {
-            return true;
-        }
-
-        if (is_king_attacking(cached_bb.king, sq)) {
-            return true;
-        }
-
-        // conflate rook and queen
-        uint64_t pce_bb = cached_bb.rook | cached_bb.queen;
-        if (is_horizontal_or_vertical_attacking(cached_bb.all_bb, pce_bb, sq,
-                                                sq_rank, sq_file)) {
-            return true;
-        }
-
-        // conflate bishop and queen
-        pce_bb = cached_bb.bishop | cached_bb.queen;
-        if (is_diagonally_attacked(cached_bb.all_bb, pce_bb, sq)) {
-            return true;
-        }
-
     } else {
         populate_black_bitboards(brd, &cached_bb);
 
         if (is_black_pawn_attacking(cached_bb.pawn, sq_rank, sq_file)) {
             return true;
         }
-        if (is_knight_attacking(cached_bb.knight, sq)) {
-            return true;
-        }
-        if (is_king_attacking(cached_bb.king, sq)) {
-            return true;
-        }
+    }
 
-        // conflate rook and queen
-        uint64_t pce_bb = cached_bb.rook | cached_bb.queen;
-        if (is_horizontal_or_vertical_attacking(cached_bb.all_bb, pce_bb, sq,
-                                                sq_rank, sq_file)) {
-            return true;
-        }
+    // conflate rook and queen
+    uint64_t pce_bb = cached_bb.rook | cached_bb.queen;
+    if (is_horizontal_or_vertical_attacking(cached_bb.all_bb, pce_bb, sq,
+                                            sq_rank, sq_file)) {
+        return true;
+    }
 
-        // conflate bishop and queen
-        pce_bb = cached_bb.bishop | cached_bb.queen;
-        if (is_diagonally_attacked(cached_bb.all_bb, pce_bb, sq)) {
-            return true;
-        }
+    // conflate bishop and queen
+    pce_bb = cached_bb.bishop | cached_bb.queen;
+    if (is_diagonally_attacked(cached_bb.all_bb, pce_bb, sq)) {
+        return true;
+    }
+
+    if (is_knight_attacking(cached_bb.knight, sq)) {
+        return true;
+    }
+
+    if (is_king_attacking(cached_bb.king, sq)) {
+        return true;
     }
 
     return false;
 }
-
 
 static void populate_white_bitboards(const struct board *brd,
                                      struct cached_bitboard *cache) {
@@ -216,7 +195,8 @@ static bool is_knight_attacking(const uint64_t knight_bb,
     uint64_t bb = knight_bb;
 
     while (bb != 0) {
-        const enum square pce_sq = bb_pop_1st_bit(&bb);
+        const enum square pce_sq = bb_pop_1st_bit(bb);
+        bb = bb_clear_square(bb, pce_sq);
         const uint64_t occ_mask = occ_mask_get_knight(pce_sq);
         if (bb_is_set(occ_mask, sq)) {
             return true;
@@ -227,7 +207,7 @@ static bool is_knight_attacking(const uint64_t knight_bb,
 
 static bool is_king_attacking(const uint64_t king_bb, const enum square sq) {
     uint64_t bb = king_bb;
-    const enum square pce_sq = bb_pop_1st_bit(&bb);
+    const enum square pce_sq = bb_pop_1st_bit(bb);
     const uint64_t occ_mask = occ_mask_get_king(pce_sq);
     if (bb_is_set(occ_mask, sq)) {
         return true;
@@ -243,7 +223,8 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb,
 
     uint64_t bb = attacking_pce_bb;
     while (bb != 0) {
-        const enum square pce_sq = bb_pop_1st_bit(&bb);
+        const enum square pce_sq = bb_pop_1st_bit(bb);
+        bb = bb_clear_square(bb, pce_sq);
 
         if ((sq_get_rank(pce_sq) == sq_rank) ||
             (sq_get_file(pce_sq) == sq_file)) {
@@ -264,7 +245,8 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb,
     uint64_t bb = attacking_pce_bb;
 
     while (bb != 0) {
-        const enum square pce_sq = bb_pop_1st_bit(&bb);
+        const enum square pce_sq = bb_pop_1st_bit(bb);
+        bb = bb_clear_square(bb, pce_sq);
         const uint64_t occ_mask_bishop = occ_mask_get_bishop(pce_sq);
 
         if (bb_is_set(occ_mask_bishop, sq)) {
