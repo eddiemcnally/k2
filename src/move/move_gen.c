@@ -124,6 +124,7 @@ void mv_gen_all_moves(const struct position *pos, struct move_list *mvl) {
         mv_gen_white_castle_moves(pos, mvl);
         mv_gen_white_pawn_moves(pos, brd, mvl);
         break;
+
     case BLACK:
 
         mv_gen_king_knight_moves(brd, BLACK, mvl);

@@ -38,6 +38,8 @@
 
 int main(void) {
 
+    set_priority_and_affinity();
+
     struct perft_epd parsed = perft_load_file("perftsuite.epd");
     uint64_t total_nodes = 0;
 

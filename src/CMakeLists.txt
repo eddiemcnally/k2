@@ -40,6 +40,7 @@ set (SOURCES
         ${POSN_DIR}/position_hist.c
         ${POSN_DIR}/castle_perms.c
         ${POSN_DIR}/attack_checker.c
+        ${POSN_DIR}/evaluate.c
         ${MOVE_DIR}/move.c
         ${MOVE_DIR}/move_list.c
         ${MOVE_DIR}/move_gen.c
@@ -65,10 +66,6 @@ set(INCLUDES
 # Global variables to allow the test binary to access the main source files 
 set(ENGINE_INCL ${INCLUDES} PARENT_SCOPE)
 set(ENGINE_SRCS ${SOURCES} PARENT_SCOPE)
-
-
-
-
 
 
 

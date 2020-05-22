@@ -104,7 +104,8 @@ bool pce_is_black(const enum piece pce) {
  */
 enum colour pce_swap_side(const enum colour col) {
     assert(validate_colour(col));
-    return col == WHITE ? BLACK : WHITE;
+
+    return (enum colour)(~col & 0x01);
 }
 
 /**
