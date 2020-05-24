@@ -17,7 +17,7 @@ To install on Debian:
 - sudo apt-get install libcmocka0 libcmocka-dev
 
 ## Doxygen
-If installed, running 'mak' will cause Doxygen to be run on the source code. 
+If installed, running 'make' will cause Doxygen to be executed against the source code. 
 The generated output is written to the bin directory.
 
 
