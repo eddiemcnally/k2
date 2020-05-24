@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup FEN_Manipulation
+ *
+ * @ingroup FEN_Manipulation
+ * @{
+ * @details Provides functions to parse a FEN and extract the information into a set of structs and enums.
+ *
+ */
+
 #include "fen.h"
 #include "piece.h"
 #include "position.h"

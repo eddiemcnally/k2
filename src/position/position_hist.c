@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup PositionHistory
+ *
+ * @ingroup PositionHistory
+ * @{
+ * @details Code to manage historical board positions
+ *
+ */
+
 #include "position_hist.h"
 #include "board.h"
 #include "castle_perms.h"

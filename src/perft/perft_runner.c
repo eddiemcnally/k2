@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Perft
+ *
+ * @ingroup Perft
+ * @{
+ * @details Perft test runner 
+ *
+ */
+
 #include "perft_runner.h"
 #include "move_gen.h"
 #include "perft.h"

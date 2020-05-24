@@ -23,6 +23,13 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
+/*! @addtogroup Hash
+ *
+ * @ingroup Hash
+ * @{
+ * @details Functions to hash board positions
+ *
+ */
 
 #include "hashkeys.h"
 #include "castle_perms.h"

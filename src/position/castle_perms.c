@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup CastlePermission
+ *
+ * @ingroup CastlePermissions
+ * @{
+ * @details Code associated with encoding and decoding castle permissions
+ *
+ */
+
 #include "castle_perms.h"
 #include <assert.h>
 

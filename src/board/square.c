@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Square
+ *
+ * @ingroup Square
+ * @{
+ * @details A set of enums and functions associated with manipulating Sqaures, Ranks and Files.
+ *
+ */
+
 #include "square.h"
 #include <assert.h>
 

@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup MoveGeneration
+ *
+ * @ingroup MoveGeneration
+ * @{
+ * @details Provides functions to generate all moves from a given board and position.
+ *
+ */
+
 #include "move_gen.h"
 #include "bitboard.h"
 #include "board.h"

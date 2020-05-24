@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Perft
+ *
+ * @ingroup Perft
+ * @{
+ * @details Perft file-reader
+ *
+ */
+
 #include "perft_file_reader.h"
 
 #include <ctype.h>

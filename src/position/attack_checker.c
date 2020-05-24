@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Position
+ *
+ * @ingroup Attack_Checker
+ * @{
+ * @details Code to test the legality of a move
+ *
+ */
+
 #include "attack_checker.h"
 #include "bitboard.h"
 #include "board.h"

@@ -32,6 +32,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*! @addtogroup Move
+ *
+ * @ingroup Move
+ * @{
+ * @details Provides functions to encode and decode moves.
+ *
+ */
+
 /**
  * bitmap for move
  * See http://chessprogramming.wikispaces.com/Encoding+Moves

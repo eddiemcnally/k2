@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup MoveList
+ *
+ * @ingroup MoveList
+ * @{
+ * @details Provides functions to support handling of a Move List.
+ *
+ */
+
 #include "move_list.h"
 #include "move.h"
 #include <assert.h>

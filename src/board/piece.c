@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Piece
+ *
+ * @ingroup Piece
+ * @{
+ * @details This contains code associated with a piece, colour, value, role, etc.
+ *
+ */
+
 #include "piece.h"
 #include <assert.h>
 #include <ctype.h>

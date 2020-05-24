@@ -6,7 +6,7 @@ Kestrel Rev 1 was a learning experience. There was a lot of code written that be
 With that understanding, K2 is a fresh start, with a better understanding of what's needed.
 
 
-## CMocka:
+## CMocka
 Uses Cmocka (https://cmocka.org/) as a unit test framework.
 
 To install on openSUSE:
@@ -15,6 +15,10 @@ To install on openSUSE:
 
 To install on Debian:
 - sudo apt-get install libcmocka0 libcmocka-dev
+
+## Doxygen
+If installed, running 'mak' will cause Doxygen to be run on the source code. 
+The generated output is written to the bin directory.
 
 
 ## CMake and CTest

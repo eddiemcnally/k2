@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Bitboard
+ *
+ * @ingroup Bitboard
+ * @{
+ * @details Utility functions for manipulating uint64_t bitboards.
+ *
+ */
+
 #include "bitboard.h"
 #include <assert.h>
 #include <stdio.h>

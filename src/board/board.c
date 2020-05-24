@@ -23,6 +23,13 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
+/*! @addtogroup Board
+ *
+ * @ingroup Board
+ * @{
+ * @details This the board representation within the Engine.
+ *
+ */
 
 #include "board.h"
 #include "bitboard.h"
@@ -33,7 +40,8 @@
 #include <assert.h>
 
 /**
- * @brief       Represents the state of the board (squares, pieces)
+ * @brief struct for board
+ * 
  */
 struct board {
     // a bitboard per colour, a set bit means that colour occupies that square
@@ -78,9 +86,9 @@ struct board *brd_allocate(void) {
 }
 
 /**
- * @brief       Clears and Deallocates the memory associated with a board
- *
- * @param brd   Pointer to the struct memory
+ * @brief De-allocated the board
+ * 
+ * @param brd 
  */
 void brd_deallocate(struct board *brd) {
     memset(brd, 0, sizeof(struct board));

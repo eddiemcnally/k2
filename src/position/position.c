@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup PositionManagement
+ *
+ * @ingroup PositionManagement
+ * @{
+ * @details Functions to encode the rules of the game (making/taking moves, handling en passant, castling, etc)
+ *
+ */
+
 #include "position.h"
 #include "attack_checker.h"
 #include "board.h"

@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Perft
+ *
+ * @ingroup Perft
+ * @{
+ * @details Perft recursive move maker
+ *
+ */
+
 #include "perft.h"
 #include "move_gen.h"
 #include "perft_file_reader.h"

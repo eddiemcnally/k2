@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup OccupancyMasks
+ *
+ * @ingroup OccupancyMasks
+ * @{
+ * @details A set of pre-calculated occupancy masks for various pieces on each square.
+ *
+ */
+
 #include "occupancy_mask.h"
 #include "bitboard.h"
 #include "piece.h"
