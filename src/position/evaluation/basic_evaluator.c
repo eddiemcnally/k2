@@ -23,12 +23,20 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
+/*! @addtogroup Evaluation
+ *
+ * @ingroup Evaluation
+ * @{
+ * @details Contains code for position evaluation
+ *
+ */
 
-#include "evaluate.h"
+#include "basic_evaluator.h"
 #include "bitboard.h"
 #include "board.h"
 #include "piece.h"
 #include "position.h"
+#include "square.h"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -36,8 +44,11 @@
 #include <stdint.h>
 #include <string.h>
 
-static int32_t eval_white_pieces_on_square(void);
-static int32_t eval_black_pieces_on_square(void);
+static int32_t eval_white_pieces_on_square(const uint64_t bb,
+                                           const int8_t pce_table[NUM_SQUARES]);
+static int32_t eval_black_pieces_on_square(const uint64_t bb,
+                                           const int8_t pce_table[NUM_SQUARES]);
+static uint8_t map_square_to_offset(const enum square sq);
 
 // Values for piece square arrays are taken from
 // https://www.chessprogramming.org/Simplified_Evaluation_Function
@@ -101,28 +112,14 @@ static const uint8_t MIRROR_VALUE[NUM_SQUARES] = {
     8,  9,  10, 11, 12, 13, 14, 15, 0,  1,  2,  3,  4,  5,  6,  7,
 };
 
-struct value_info {
-    uint64_t bb;
-    const int8_t (*val_array)[NUM_SQUARES];
-};
-
-#define EV_PAWN_OFF 0
-#define EV_BISHOP_OFF 1
-#define EV_KNIGHT_OFF 2
-#define EV_ROOK_OFF 3
-#define EV_QUEEN_OFF 4
-#define EV_KING_OFF 5
-
-static struct value_info val_info[NUM_PIECE_ROLES] = {
-    [EV_PAWN_OFF] = {.bb = 0, .val_array = &PAWN_SQ_VALUE},
-    [EV_BISHOP_OFF] = {.bb = 0, .val_array = &BISHOP_SQ_VALUE},
-    [EV_KNIGHT_OFF] = {.bb = 0, .val_array = &KNIGHT_SQ_VALUE},
-    [EV_ROOK_OFF] = {.bb = 0, .val_array = &ROOK_SQ_VALUE},
-    [EV_QUEEN_OFF] = {.bb = 0, .val_array = &QUEEN_SQ_VALUE},
-    [EV_KING_OFF] = {.bb = 0, .val_array = &KING_SQ_VALUE},
-};
-
-int32_t evaluate_position(const struct position *pos) {
+/**
+ * @brief Performs basic evaluation of the position. Limits evaluation 
+ * to material and a look-up piece table for piece positions on board.
+ * 
+ * @param pos       the position
+ * @return int32_t  the score
+ */
+int32_t evaluate_position_basic(const struct position *pos) {
 
     const struct board *brd = pos_get_board(pos);
 
@@ -132,24 +129,35 @@ int32_t evaluate_position(const struct position *pos) {
     int32_t score = (int32_t)(white_material - black_material);
 
     // populate bitboards for white
-    val_info[EV_PAWN_OFF].bb = brd_get_piece_bb(brd, WHITE_PAWN);
-    val_info[EV_BISHOP_OFF].bb = brd_get_piece_bb(brd, WHITE_BISHOP);
-    val_info[EV_KNIGHT_OFF].bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
-    val_info[EV_ROOK_OFF].bb = brd_get_piece_bb(brd, WHITE_ROOK);
-    val_info[EV_QUEEN_OFF].bb = brd_get_piece_bb(brd, WHITE_QUEEN);
-    val_info[EV_KING_OFF].bb = brd_get_piece_bb(brd, WHITE_KING);
+    const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
+    const uint64_t wb_bb = brd_get_piece_bb(brd, WHITE_BISHOP);
+    const uint64_t wn_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
+    const uint64_t wr_bb = brd_get_piece_bb(brd, WHITE_ROOK);
+    const uint64_t wq_bb = brd_get_piece_bb(brd, WHITE_QUEEN);
+    const uint64_t wk_bb = brd_get_piece_bb(brd, WHITE_KING);
     // evaluate white positions
-    score += eval_white_pieces_on_square();
+    score += eval_white_pieces_on_square(wp_bb, PAWN_SQ_VALUE);
+    score += eval_white_pieces_on_square(wb_bb, BISHOP_SQ_VALUE);
+    score += eval_white_pieces_on_square(wn_bb, KNIGHT_SQ_VALUE);
+    score += eval_white_pieces_on_square(wr_bb, ROOK_SQ_VALUE);
+    score += eval_white_pieces_on_square(wq_bb, QUEEN_SQ_VALUE);
+    score += eval_white_pieces_on_square(wk_bb, KING_SQ_VALUE);
 
-    // populate bitboards for BLACK
-    val_info[EV_PAWN_OFF].bb = brd_get_piece_bb(brd, BLACK_PAWN);
-    val_info[EV_BISHOP_OFF].bb = brd_get_piece_bb(brd, BLACK_BISHOP);
-    val_info[EV_KNIGHT_OFF].bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
-    val_info[EV_ROOK_OFF].bb = brd_get_piece_bb(brd, BLACK_ROOK);
-    val_info[EV_QUEEN_OFF].bb = brd_get_piece_bb(brd, BLACK_QUEEN);
-    val_info[EV_KING_OFF].bb = brd_get_piece_bb(brd, BLACK_KING);
+    // populate bitboards for black
+    const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
+    const uint64_t bb_bb = brd_get_piece_bb(brd, BLACK_BISHOP);
+    const uint64_t bn_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
+    const uint64_t br_bb = brd_get_piece_bb(brd, BLACK_ROOK);
+    const uint64_t bq_bb = brd_get_piece_bb(brd, BLACK_QUEEN);
+    const uint64_t bk_bb = brd_get_piece_bb(brd, BLACK_KING);
     // evaluate black positions
-    score += eval_black_pieces_on_square();
+    // NOTE subtraction
+    score -= eval_black_pieces_on_square(bp_bb, PAWN_SQ_VALUE);
+    score -= eval_black_pieces_on_square(bb_bb, BISHOP_SQ_VALUE);
+    score -= eval_black_pieces_on_square(bn_bb, KNIGHT_SQ_VALUE);
+    score -= eval_black_pieces_on_square(br_bb, ROOK_SQ_VALUE);
+    score -= eval_black_pieces_on_square(bq_bb, QUEEN_SQ_VALUE);
+    score -= eval_black_pieces_on_square(bk_bb, KING_SQ_VALUE);
 
     if (pos_get_side_to_move(pos) == WHITE) {
         return score;
@@ -158,37 +166,42 @@ int32_t evaluate_position(const struct position *pos) {
     }
 }
 
-inline static int32_t eval_white_pieces_on_square() {
-    struct value_info *val = val_info;
+inline static int32_t
+eval_white_pieces_on_square(const uint64_t bitboard,
+                            const int8_t pce_table[NUM_SQUARES]) {
+    uint64_t bb = bitboard;
     int32_t score = 0;
 
-    for (int i = 0; i < NUM_PIECE_ROLES; i++, val++) {
-        uint64_t bb = val->bb;
+    while (bb != 0) {
+        const enum square sq = bb_pop_1st_bit(bb);
+        bb = bb_clear_square(bb, sq);
 
-        while (bb != 0) {
-            const enum square sq = bb_pop_1st_bit(bb);
-            bb = bb_clear_square(bb, sq);
-
-            score += (int32_t)val->val_array[sq];
-        }
+        const uint8_t offset = map_square_to_offset(sq);
+        const int8_t bonus = pce_table[offset];
+        score += bonus;
     }
     return score;
 }
 
-inline static int32_t eval_black_pieces_on_square() {
-    struct value_info *val = val_info;
+inline static int32_t
+eval_black_pieces_on_square(const uint64_t bitboard,
+                            const int8_t pce_table[NUM_SQUARES]) {
+
     int32_t score = 0;
+    uint64_t bb = bitboard;
 
-    for (int i = 0; i < NUM_PIECE_ROLES; i++, val++) {
-        uint64_t bb = val->bb;
+    while (bb != 0) {
+        const enum square sq = bb_pop_1st_bit(bb);
+        bb = bb_clear_square(bb, sq);
 
-        while (bb != 0) {
-            const enum square sq = bb_pop_1st_bit(bb);
-            bb = bb_clear_square(bb, sq);
-
-            const uint8_t mirrored_offset = MIRROR_VALUE[sq];
-            score += (int32_t)val->val_array[mirrored_offset];
-        }
+        const uint8_t offset = map_square_to_offset(sq);
+        const uint8_t mirrored_offset = MIRROR_VALUE[offset];
+        const int8_t bonus = pce_table[mirrored_offset];
+        score += bonus;
     }
     return score;
+}
+
+inline static uint8_t map_square_to_offset(const enum square sq) {
+    return MIRROR_VALUE[sq];
 }

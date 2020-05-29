@@ -174,6 +174,16 @@ bool validate_en_pass_sq(const enum square sq_to_check) {
     }
 }
 
+/**
+ * @brief Try convert he given rank and file to a square. Rank and File are 
+ * validated (since they can be outside the range)
+ * 
+ * @param r     rank
+ * @param f     file
+ * @param sq    a pointer to the square 
+ * @return true if valid square generated
+ * @return false rank and/or file are invalie
+ */
 bool sq_try_get_sq(const enum rank r, const enum file f, enum square *sq) {
 
     if (sq_is_valid_rank(r) && sq_is_valid_file(f)) {

@@ -39,14 +39,16 @@
 
 /**
  * Piece values
+ * values taken from here: 
+ * https://www.chessprogramming.org/Simplified_Evaluation_Function 
  */
 enum piece_values {
     PCE_VAL_PAWN = 100,
-    PCE_VAL_BISHOP = 325,
-    PCE_VAL_KNIGHT = 325,
+    PCE_VAL_BISHOP = 330,
+    PCE_VAL_KNIGHT = 320,
     PCE_VAL_ROOK = 500,
-    PCE_VAL_QUEEN = 1000,
-    PCE_VAL_KING = 50000
+    PCE_VAL_QUEEN = 900,
+    PCE_VAL_KING = 20000
 };
 #define NO_PIECE ((uint8_t)0xFF)
 

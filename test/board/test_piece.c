@@ -92,11 +92,11 @@ void test_piece_get_piece_label(void **state) {
 
 void test_piece_values(void **state) {
     assert_true(pce_get_value(PAWN) == 100);
-    assert_true(pce_get_value(BISHOP) == 325);
-    assert_true(pce_get_value(KNIGHT) == 325);
+    assert_true(pce_get_value(BISHOP) == 330);
+    assert_true(pce_get_value(KNIGHT) == 320);
     assert_true(pce_get_value(ROOK) == 500);
-    assert_true(pce_get_value(QUEEN) == 1000);
-    assert_true(pce_get_value(KING) == 50000);
+    assert_true(pce_get_value(QUEEN) == 900);
+    assert_true(pce_get_value(KING) == 20000);
 }
 
 void test_piece_get_colour_white_pieces(void **state) {

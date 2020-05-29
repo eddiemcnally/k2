@@ -26,6 +26,7 @@
 
 #include "test_launcher.h"
 #include "test_attack_checker.h"
+#include "test_basic_evaluator.h"
 #include "test_bitboard.h"
 #include "test_board.h"
 #include "test_castle_permissions.h"
@@ -142,6 +143,8 @@ int main(void) {
         cmocka_unit_test(
             test_position_make_move_then_take_move_positions_restored_as_expected),
         cmocka_unit_test(test_position_make_move_sparse_board_black_to_move),
+        cmocka_unit_test(test_basic_evaluator_sample_white_position),
+        cmocka_unit_test(test_basic_evaluator_sample_black_position),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),

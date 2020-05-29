@@ -20,6 +20,7 @@ set(BB_DIR              ${K2_PROJECT_SOURCE_DIR}/board/bitboard)
 set(OCC_GEN_DIR         ${K2_PROJECT_SOURCE_DIR}/board/bitboard/occ_mask_gen)
 set(FEN_DIR             ${K2_PROJECT_SOURCE_DIR}/fen)
 set(POSN_DIR            ${K2_PROJECT_SOURCE_DIR}/position)
+set(EVAL_DIR            ${K2_PROJECT_SOURCE_DIR}/position/evaluation)
 set(MOVE_DIR            ${K2_PROJECT_SOURCE_DIR}/move)
 set(UTILS_DIR           ${K2_PROJECT_SOURCE_DIR}/utils)
 set(PERFT_DIR           ${K2_PROJECT_SOURCE_DIR}/perft)
@@ -40,7 +41,7 @@ set (SOURCES
         ${POSN_DIR}/position_hist.c
         ${POSN_DIR}/castle_perms.c
         ${POSN_DIR}/attack_checker.c
-        ${POSN_DIR}/evaluate.c
+        ${EVAL_DIR}/basic_evaluator.c
         ${MOVE_DIR}/move.c
         ${MOVE_DIR}/move_list.c
         ${MOVE_DIR}/move_gen.c
@@ -58,6 +59,7 @@ set(INCLUDES
         ${OCC_GEN_DIR}
         ${FEN_DIR}
         ${POSN_DIR}
+        ${EVAL_DIR}
         ${MOVE_DIR}
         ${UTILS_DIR}
         ${PERFT_DIR}

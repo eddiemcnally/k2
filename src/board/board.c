@@ -40,7 +40,7 @@
 #include <assert.h>
 
 /**
- * @brief struct for board
+ * @brief struct for containing the board
  * 
  */
 struct board {

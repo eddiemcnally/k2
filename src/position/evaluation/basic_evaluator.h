@@ -29,4 +29,4 @@
 
 #include <stdint.h>
 
-int32_t evaluate_position(const struct position *pos);
+int32_t evaluate_position_basic(const struct position *pos);

@@ -341,6 +341,14 @@ static void mv_gen_black_pawn_moves(const struct position *pos,
     }
 }
 
+/**
+ * @brief Get the sliding diagonal antidiagonal moves
+ * 
+ * @param brd The board
+ * @param queen_bishop_bb   a bitboard representing squares occupied by queen and bishop 
+ * @param side_to_move      the side to move
+ * @param mvl               the move list to be populated
+ */
 static void get_sliding_diagonal_antidiagonal_moves(
     const struct board *brd, const uint64_t queen_bishop_bb,
     const enum colour side_to_move, struct move_list *mvl) {
@@ -392,6 +400,14 @@ static void get_sliding_diagonal_antidiagonal_moves(
     }
 }
 
+/**
+ * @brief Get the sliding rank file moves
+ * 
+ * @param brd   the board
+ * @param rook_queen_bb     a bitboard representing queen and rook piece locations
+ * @param side_to_move      side to move
+ * @param mvl               the move list to be populated
+ */
 static void get_sliding_rank_file_moves(const struct board *brd,
                                         const uint64_t rook_queen_bb,
                                         const enum colour side_to_move,
