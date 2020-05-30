@@ -45,13 +45,10 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces);
 static void setup_side_to_move(struct parsed_fen *pf, const char *side);
 static void setup_castle_permissions(struct parsed_fen *pf, const char *perms);
 static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass);
-static void setup_half_move_count(struct parsed_fen *pf,
-                                  const char *half_move_cnt);
-static void setup_full_move_count(struct parsed_fen *pf,
-                                  const char *full_move_cnt);
+static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_cnt);
+static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt);
 static uint16_t convert_move_count(const char *str);
-static void handle_rank(struct parsed_fen *pf, const enum rank rank,
-                        const char *pieces);
+static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces);
 static bool validate_struct_init(const struct parsed_fen *pf);
 
 // ==================================================================
@@ -141,8 +138,7 @@ struct parsed_fen *fen_parse(const char *fen_string) {
  * @param       pce     Pointer where returned piece will be saved
  * @return      true if piece found, false otherwise
  */
-bool fen_try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq,
-                             enum piece *pce) {
+bool fen_try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq, enum piece *pce) {
     if (pf->pieces[sq].is_occupied == true) {
         *pce = pf->pieces[sq].piece;
         //printf("returning piece %c\n", get_label(*pce));
@@ -256,8 +252,7 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces) {
     }
 }
 
-static void handle_rank(struct parsed_fen *pf, const enum rank rank,
-                        const char *pieces) {
+static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces) {
     enum file file = FILE_A;
 
     while (*pieces) {
@@ -276,8 +271,7 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank,
 
         if (piece_found == true) {
             //printf("found piece %c\n", c);
-            enum square sq =
-                sq_gen_from_rank_file((enum rank)rank, (enum file)file);
+            enum square sq = sq_gen_from_rank_file((enum rank)rank, (enum file)file);
 
             //printf("adding piece %c to square %s\n", c, print_square(sq));
 
@@ -341,21 +335,18 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass) {
         int rank = en_pass[1] - '1';
 
         pf->is_en_pass_set = true;
-        pf->en_pass_sq =
-            sq_gen_from_rank_file((enum rank)rank, (enum file)file);
+        pf->en_pass_sq = sq_gen_from_rank_file((enum rank)rank, (enum file)file);
     } else {
         pf->is_en_pass_set = false;
     }
 }
 
-static void setup_half_move_count(struct parsed_fen *pf,
-                                  const char *half_move_cnt) {
+static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_cnt) {
     uint16_t half_move = convert_move_count(half_move_cnt);
     pf->half_move_cnt = half_move;
 }
 
-static void setup_full_move_count(struct parsed_fen *pf,
-                                  const char *full_move_cnt) {
+static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt) {
     uint16_t full_move = convert_move_count(full_move_cnt);
     pf->full_move_cnt = full_move;
 }

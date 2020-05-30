@@ -77,8 +77,7 @@ uint16_t mvl_get_move_count(const struct move_list *mvl) {
  * @param offset The move offset in the move list
  * @return      The move at the move list offset
  */
-struct move mvl_get_move_at_offset(const struct move_list *mvl,
-                                   uint16_t offset) {
+struct move mvl_get_move_at_offset(const struct move_list *mvl, uint16_t offset) {
     assert(validate_move_list(mvl));
     assert(offset <= mvl->move_count - 1);
 
@@ -166,7 +165,9 @@ bool validate_move_list(const struct move_list *mvl) {
  *
  * @return      The max size
  */
-uint16_t mvl_get_mvl_max_size(void) { return MOVE_LIST_MAX_LEN; }
+uint16_t mvl_get_mvl_max_size(void) {
+    return MOVE_LIST_MAX_LEN;
+}
 
 /**
  * @brief               Compares 2 move lists for equivalency
@@ -174,8 +175,7 @@ uint16_t mvl_get_mvl_max_size(void) { return MOVE_LIST_MAX_LEN; }
  * @param second        Pointer to the second move list
  * @return              True if the lists are the same, false otherwise
  */
-bool mvl_compare(const struct move_list *first,
-                 const struct move_list *second) {
+bool mvl_compare(const struct move_list *first, const struct move_list *second) {
     assert(validate_move_list(first));
     assert(validate_move_list(second));
 

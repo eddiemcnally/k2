@@ -90,9 +90,13 @@ enum square sq_get_square_minus_1_rank(const enum square sq) {
     return sq - 8;
 }
 
-bool sq_is_valid_rank(const enum rank r) { return r >= RANK_1 && r <= RANK_8; }
+bool sq_is_valid_rank(const enum rank r) {
+    return r >= RANK_1 && r <= RANK_8;
+}
 
-bool sq_is_valid_file(const enum file f) { return f >= FILE_A && f <= FILE_H; }
+bool sq_is_valid_file(const enum file f) {
+    return f >= FILE_A && f <= FILE_H;
+}
 
 /**
  * @brief       Returns the square given the associated rank and file
@@ -128,7 +132,9 @@ char *print_square(const enum square sq) {
  * @param sq    The square
  * @return      true if valid, false otherwise
  */
-bool validate_square(const enum square sq) { return (sq >= a1) && (sq <= h8); }
+bool validate_square(const enum square sq) {
+    return (sq >= a1) && (sq <= h8);
+}
 
 /**
  * @brief       Validates the given rank is within normal range

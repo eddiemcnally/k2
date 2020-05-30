@@ -43,11 +43,9 @@ struct hist_data {
     uint8_t fifty_move_counter;
 };
 
-void test_move_history_push_multiple_moves_used_slots_as_expected(
-    void **state) {
+void test_move_history_push_multiple_moves_used_slots_as_expected(void **state) {
 
-#define INITIAL_FEN_BLACK_TO_MOVE                                              \
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
+#define INITIAL_FEN_BLACK_TO_MOVE "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
 
     struct position *pos = pos_create();
     pos_initialise(INITIAL_FEN_BLACK_TO_MOVE, pos);
@@ -63,8 +61,7 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(
         struct cast_perm_container cp;
         cast_perm_set_permission(CP_WK, &cp, true);
 
-        position_hist_push(mh, mv, (uint8_t)i, en_pass, (uint64_t)(i * i), cp,
-                           pos_get_board(pos));
+        position_hist_push(mh, mv, (uint8_t)i, en_pass, (uint64_t)(i * i), cp, pos_get_board(pos));
 
         assert_true(position_hist_get_num(mh) == i + 1);
     }

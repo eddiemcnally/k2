@@ -37,18 +37,12 @@ struct move {
     uint16_t val;
 };
 
-struct move move_encode_quiet(const enum square from_sq,
-                              const enum square to_sq);
-struct move move_encode_promoted(const enum square from_sq,
-                                 const enum square to_sq,
-                                 const enum piece_role promoted_piece,
-                                 const bool is_capture);
-struct move move_encode_capture(const enum square from_sq,
-                                const enum square to_sq);
-struct move move_encode_enpassant(const enum square from_sq,
-                                  const enum square to_sq);
-struct move move_encode_pawn_double_first(const enum square from_sq,
-                                          const enum square to_sq);
+struct move move_encode_quiet(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promoted(const enum square from_sq, const enum square to_sq,
+                                 const enum piece_role promoted_piece, const bool is_capture);
+struct move move_encode_capture(const enum square from_sq, const enum square to_sq);
+struct move move_encode_enpassant(const enum square from_sq, const enum square to_sq);
+struct move move_encode_pawn_double_first(const enum square from_sq, const enum square to_sq);
 struct move move_encode_castle_kingside(const enum colour side);
 struct move move_encode_castle_queenside(const enum colour side);
 
@@ -56,8 +50,7 @@ bool move_compare(const struct move mv1, const struct move mv2);
 
 enum square move_decode_from_sq(const struct move mv);
 enum square move_decode_to_sq(const struct move mv);
-bool try_move_decode_promotion_piece(const struct move mv,
-                                     const enum colour side, enum piece *pce);
+bool try_move_decode_promotion_piece(const struct move mv, const enum colour side, enum piece *pce);
 bool move_is_quiet(const struct move mv);
 bool move_is_capture(const struct move mv);
 bool move_is_promotion(const struct move mv);

@@ -39,8 +39,7 @@ void test_att_chk_is_white_pawn_attacking(void **state) {
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[14] = {b4, d4, c5, e5, g5, f6, h6,
-                                   g6, a7, c7, d7, f7, f8, h8};
+    enum square attacked_sq[14] = {b4, d4, c5, e5, g5, f6, h6, g6, a7, c7, d7, f7, f8, h8};
     for (int i = 0; i < 14; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], WHITE));
     }
@@ -58,8 +57,7 @@ void test_att_chk_is_black_pawn_attacking(void **state) {
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[14] = {a3, c3, a4, c4, b5, c5, c6,
-                                   e5, e6, e2, f2, g2, h2, g5};
+    enum square attacked_sq[14] = {a3, c3, a4, c4, b5, c5, c6, e5, e6, e2, f2, g2, h2, g5};
     for (int i = 0; i < 14; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], BLACK));
     }
@@ -77,8 +75,7 @@ void test_att_chk_is_white_knight_attacking(void **state) {
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[12] = {e1, e3, f4, h4, b6, a5,
-                                   a3, b2, d2, e3, e5, d6};
+    enum square attacked_sq[12] = {e1, e3, f4, h4, b6, a5, a3, b2, d2, e3, e5, d6};
     for (int i = 0; i < 12; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], WHITE));
     }
@@ -91,8 +88,7 @@ void test_att_chk_is_black_knight_attacking(void **state) {
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[12] = {d8, d6, c5, a5, h2, g1,
-                                   e1, d2, d4, e5, g5, h4};
+    enum square attacked_sq[12] = {d8, d6, c5, a5, h2, g1, e1, d2, d4, e5, g5, h4};
     for (int i = 0; i < 12; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], BLACK));
     }
@@ -125,15 +121,13 @@ void test_att_chk_is_black_king_attacking(void **state) {
 }
 
 void test_att_chk_is_white_horizontal_and_vertical_attacking(void **state) {
-    const char *fen =
-        "K3k3/2B1p2n/4pP2/Nq3r2/1P1Ppp1R/8/2P1P2p/R1b1n2Q w - - 0 1";
+    const char *fen = "K3k3/2B1p2n/4pP2/Nq3r2/1P1Ppp1R/8/2P1P2p/R1b1n2Q w - - 0 1";
 
     struct position *pos = pos_create();
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[17] = {b1, c1, g1, f1, e1, a2, a3, a4, h2,
-                                   h3, g2, f3, g4, f4, h5, h6, h7};
+    enum square attacked_sq[17] = {b1, c1, g1, f1, e1, a2, a3, a4, h2, h3, g2, f3, g4, f4, h5, h6, h7};
     for (int i = 0; i < 17; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], WHITE));
     }
@@ -151,8 +145,7 @@ void test_att_chk_is_black_horizontal_and_vertical_attacking(void **state) {
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[19] = {a5, a6, b8, c8, d8, b7, c7, d7, e7, f7,
-                                   h4, h3, g4, g5, f5, g6, f7, h6, h7};
+    enum square attacked_sq[19] = {a5, a6, b8, c8, d8, b7, c7, d7, e7, f7, h4, h3, g4, g5, f5, g6, f7, h6, h7};
     for (int i = 0; i < 19; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], BLACK));
     }
@@ -170,8 +163,7 @@ void test_att_chk_is_white_diagonal_attacking(void **state) {
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[19] = {c7, e7, f6, f5, e6, d7, c8, h3, h5, f3,
-                                   e2, d1, h4, f2, h2, f4, e5, d6, c7};
+    enum square attacked_sq[19] = {c7, e7, f6, f5, e6, d7, c8, h3, h5, f3, e2, d1, h4, f2, h2, f4, e5, d6, c7};
     for (int i = 0; i < 19; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], WHITE));
     }
@@ -189,8 +181,7 @@ void test_att_chk_is_black_diagonal_attacking(void **state) {
     pos_initialise(fen, pos);
     struct board *brd = pos_get_board(pos);
 
-    enum square attacked_sq[15] = {b3, c2, b5, c6, d7, g1, e3, d4,
-                                   g7, h6, e7, d6, c5, b4, a3};
+    enum square attacked_sq[15] = {b3, c2, b5, c6, d7, g1, e3, d4, g7, h6, e7, d6, c5, b4, a3};
     for (int i = 0; i < 15; i++) {
         assert_true(att_chk_is_sq_attacked(brd, attacked_sq[i], BLACK));
     }

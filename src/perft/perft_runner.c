@@ -64,20 +64,17 @@ int main(void) {
             total_nodes += actual_nodes;
 
             if (expected_nodes != actual_nodes) {
-                printf(
-                    "*** Problem: fen=%s, depth=%d, expected=%lu, actual=%lu\n",
-                    parsed.rows[r].fen, (d + 1), expected_nodes, actual_nodes);
+                printf("*** Problem: fen=%s, depth=%d, expected=%lu, actual=%lu\n", parsed.rows[r].fen, (d + 1),
+                       expected_nodes, actual_nodes);
             }
 
             double elapsed_in_secs = get_elapsed_time_in_secs(start_in_millis);
             if (elapsed_in_secs > 0) {
                 double nodes_per_sec = (double)actual_nodes / elapsed_in_secs;
-                printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=%f\n",
-                       parsed.rows[r].fen, (d + 1), actual_nodes,
+                printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=%f\n", parsed.rows[r].fen, (d + 1), actual_nodes,
                        nodes_per_sec);
             } else {
-                printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=0\n",
-                       parsed.rows[r].fen, (d + 1), actual_nodes);
+                printf("fen=%s, depth=%d, #nodes=%lu, #nodes/sec=0\n", parsed.rows[r].fen, (d + 1), actual_nodes);
             }
         }
     }

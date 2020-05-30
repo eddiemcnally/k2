@@ -84,8 +84,7 @@ void test_hashkeys_update_side(void **state) {
 
 void test_hashkeys_update_castle_permissions(void **state) {
 
-    enum castle_permission cp_list[NUM_CASTLE_PERMS] = {CP_NONE, CP_WK, CP_WQ,
-                                                        CP_BK, CP_BQ};
+    enum castle_permission cp_list[NUM_CASTLE_PERMS] = {CP_NONE, CP_WK, CP_WQ, CP_BK, CP_BQ};
     init_key_mgmt();
 
     for (int i = 0; i < NUM_CASTLE_PERMS; i++) {

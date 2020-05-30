@@ -72,25 +72,20 @@ static int mti = NN + 1;
 void init_genrand64(unsigned long long seed) {
     mt[0] = seed;
     for (mti = 1; mti < NN; mti++)
-        mt[mti] =
-            (6364136223846793005ULL * (mt[mti - 1] ^ (mt[mti - 1] >> 62)) +
-             +(uint64_t)mti);
+        mt[mti] = (6364136223846793005ULL * (mt[mti - 1] ^ (mt[mti - 1] >> 62)) + +(uint64_t)mti);
 }
 
 /* initialize by an array with array-length */
 /* init_key is the array for initializing keys */
 /* key_length is its length */
-void init_by_array64(unsigned long long init_key[],
-                     unsigned long long key_length) {
+void init_by_array64(unsigned long long init_key[], unsigned long long key_length) {
     unsigned long long i, j, k;
     init_genrand64(19650218ULL);
     i = 1;
     j = 0;
     k = (NN > key_length ? NN : key_length);
     for (; k; k--) {
-        mt[i] = (mt[i] ^
-                 ((mt[i - 1] ^ (mt[i - 1] >> 62)) * 3935559000370003845ULL)) +
-                init_key[j] + j; /* non linear */
+        mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 62)) * 3935559000370003845ULL)) + init_key[j] + j; /* non linear */
         i++;
         j++;
         if (i >= NN) {
@@ -101,9 +96,7 @@ void init_by_array64(unsigned long long init_key[],
             j = 0;
     }
     for (k = NN - 1; k; k--) {
-        mt[i] = (mt[i] ^
-                 ((mt[i - 1] ^ (mt[i - 1] >> 62)) * 2862933555777941757ULL)) -
-                i; /* non linear */
+        mt[i] = (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 62)) * 2862933555777941757ULL)) - i; /* non linear */
         i++;
         if (i >= NN) {
             mt[0] = mt[NN - 1];
@@ -152,7 +145,9 @@ unsigned long long genrand64_int64(void) {
 }
 
 /* generates a random number on [0, 2^63-1]-interval */
-long long genrand64_int63(void) { return (long long)(genrand64_int64() >> 1); }
+long long genrand64_int63(void) {
+    return (long long)(genrand64_int64() >> 1);
+}
 
 /* generates a random number on [0,1]-real-interval */
 double genrand64_real1(void) {
@@ -171,8 +166,6 @@ double genrand64_real3(void) {
 
 /* Init the PRNG */
 void init_prng(void) {
-    unsigned long long init[4] = {0x12345ULL, 0x23456ULL, 0x34567ULL,
-                                  0x45678ULL},
-                       length = 4;
+    unsigned long long init[4] = {0x12345ULL, 0x23456ULL, 0x34567ULL, 0x45678ULL}, length = 4;
     init_by_array64(init, length);
 }

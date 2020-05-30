@@ -51,32 +51,19 @@ struct cached_bitboard {
     uint64_t all_bb;
 };
 
-static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb,
-                                                const uint64_t attacking_pce_bb,
-                                                const enum square sq,
-                                                const enum rank sq_rank,
-                                                const enum file sq_file);
+static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
+                                                const enum square sq, const enum rank sq_rank, const enum file sq_file);
 static uint64_t in_between(const enum square sq1, const enum square sq2);
-static bool is_diagonally_attacked(const uint64_t all_pce_bb,
-                                   const uint64_t attacking_pce_bb,
-                                   const enum square sq);
-static void populate_white_bitboards(const struct board *brd,
-                                     struct cached_bitboard *cache);
-static void populate_black_bitboards(const struct board *brd,
-                                     struct cached_bitboard *cache);
-static bool is_white_pawn_attacking(const uint64_t pawn_bb,
-                                    const enum rank sq_rank,
-                                    const enum file sq_file);
-static bool is_black_pawn_attacking(const uint64_t pawn_bb,
-                                    const enum rank sq_rank,
-                                    const enum file sq_file);
-static bool is_pawn_attacking(const uint64_t pawn_bb, const enum rank r,
-                              const enum file f);
+static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
+static void populate_white_bitboards(const struct board *brd, struct cached_bitboard *cache);
+static void populate_black_bitboards(const struct board *brd, struct cached_bitboard *cache);
+static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file);
+static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file);
+static bool is_pawn_attacking(const uint64_t pawn_bb, const enum rank r, const enum file f);
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
 static bool is_king_attacking(const uint64_t king_bb, const enum square sq);
 
-bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq,
-                            const enum colour attacking_side) {
+bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const enum colour attacking_side) {
     struct cached_bitboard cached_bb;
 
     const enum rank sq_rank = sq_get_rank(sq);
@@ -98,8 +85,7 @@ bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq,
 
     // conflate rook and queen
     uint64_t pce_bb = cached_bb.rook | cached_bb.queen;
-    if (is_horizontal_or_vertical_attacking(cached_bb.all_bb, pce_bb, sq,
-                                            sq_rank, sq_file)) {
+    if (is_horizontal_or_vertical_attacking(cached_bb.all_bb, pce_bb, sq, sq_rank, sq_file)) {
         return true;
     }
 
@@ -120,8 +106,7 @@ bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq,
     return false;
 }
 
-static void populate_white_bitboards(const struct board *brd,
-                                     struct cached_bitboard *cache) {
+static void populate_white_bitboards(const struct board *brd, struct cached_bitboard *cache) {
 
     __builtin_prefetch(brd);
 
@@ -134,8 +119,7 @@ static void populate_white_bitboards(const struct board *brd,
     cache->all_bb = brd_get_board_bb(brd);
 }
 
-static void populate_black_bitboards(const struct board *brd,
-                                     struct cached_bitboard *cache) {
+static void populate_black_bitboards(const struct board *brd, struct cached_bitboard *cache) {
 
     __builtin_prefetch(brd);
 
@@ -148,9 +132,7 @@ static void populate_black_bitboards(const struct board *brd,
     cache->all_bb = brd_get_board_bb(brd);
 }
 
-static bool is_white_pawn_attacking(const uint64_t pawn_bb,
-                                    const enum rank sq_rank,
-                                    const enum file sq_file) {
+static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file) {
     if (pawn_bb == 0) {
         return false;
     }
@@ -168,9 +150,7 @@ static bool is_white_pawn_attacking(const uint64_t pawn_bb,
     return false;
 }
 
-static bool is_black_pawn_attacking(const uint64_t pawn_bb,
-                                    const enum rank sq_rank,
-                                    const enum file sq_file) {
+static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file) {
     if (pawn_bb == 0) {
         return false;
     }
@@ -188,8 +168,7 @@ static bool is_black_pawn_attacking(const uint64_t pawn_bb,
     return false;
 }
 
-static bool is_pawn_attacking(const uint64_t pawn_bb, const enum rank r,
-                              const enum file f) {
+static bool is_pawn_attacking(const uint64_t pawn_bb, const enum rank r, const enum file f) {
     enum square pawn_sq;
     const bool is_valid = sq_try_get_sq(r, f, &pawn_sq);
     if (is_valid) {
@@ -198,8 +177,7 @@ static bool is_pawn_attacking(const uint64_t pawn_bb, const enum rank r,
     return false;
 }
 
-static bool is_knight_attacking(const uint64_t knight_bb,
-                                const enum square sq) {
+static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) {
     uint64_t bb = knight_bb;
 
     while (bb != 0) {
@@ -223,10 +201,8 @@ static bool is_king_attacking(const uint64_t king_bb, const enum square sq) {
     return false;
 }
 
-static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb,
-                                                const uint64_t attacking_pce_bb,
-                                                const enum square sq,
-                                                const enum rank sq_rank,
+static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
+                                                const enum square sq, const enum rank sq_rank,
                                                 const enum file sq_file) {
 
     uint64_t bb = attacking_pce_bb;
@@ -234,8 +210,7 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb,
         const enum square pce_sq = bb_pop_1st_bit(bb);
         bb = bb_clear_square(bb, pce_sq);
 
-        if ((sq_get_rank(pce_sq) == sq_rank) ||
-            (sq_get_file(pce_sq) == sq_file)) {
+        if ((sq_get_rank(pce_sq) == sq_rank) || (sq_get_file(pce_sq) == sq_file)) {
             // possible attack
             const uint64_t inter_sq = in_between(pce_sq, sq);
             if ((inter_sq & all_pce_bb) == 0) {
@@ -247,9 +222,7 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb,
     return false;
 }
 
-static bool is_diagonally_attacked(const uint64_t all_pce_bb,
-                                   const uint64_t attacking_pce_bb,
-                                   const enum square sq) {
+static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq) {
     uint64_t bb = attacking_pce_bb;
 
     while (bb != 0) {
@@ -289,7 +262,7 @@ static uint64_t in_between(const enum square sq1, const enum square sq2) {
     line += 2 * (((rank & 7) - 1) >> 58);      /* b1g1 if same rank */
     line += (((rank - file) & 15) - 1) & b2g7; /* b2g7 if same diagonal */
     line += (((rank + file) & 15) - 1) & h1b7; /* h1b7 if same antidiag */
-    line *= btwn & -btwn; /* mul acts like shift by smaller square */
+    line *= btwn & -btwn;                      /* mul acts like shift by smaller square */
 
     return line & btwn; /* return the bits on that line in-between */
 }

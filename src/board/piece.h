@@ -60,14 +60,7 @@ enum colour {
 // 1010 ----            Queen Offset
 // 1011 ----            King Offset
 
-enum piece_role {
-    PAWN = 0x00,
-    BISHOP = 0x01,
-    KNIGHT = 0x02,
-    ROOK = 0x03,
-    QUEEN = 0x04,
-    KING = 0x05
-};
+enum piece_role { PAWN = 0x00, BISHOP = 0x01, KNIGHT = 0x02, ROOK = 0x03, QUEEN = 0x04, KING = 0x05 };
 
 enum {
     WP_OFF = 0x00,
@@ -91,8 +84,25 @@ enum piece_offset {
     BLACK_OFFSET = 1,
 };
 
+#define IDX_SHIFT 4
 static const uint8_t ROLE_MASK = 0x07;
 static const uint8_t OFFSET_MASK = 0xF0;
+
+// array indices for pieces
+enum {
+    WHITE_PAWN_IDX = (WP_OFF >> IDX_SHIFT),
+    WHITE_BISHOP_IDX = (WB_OFF >> IDX_SHIFT),
+    WHITE_KNIGHT_IDX = (WN_OFF >> IDX_SHIFT),
+    WHITE_ROOK_IDX = (WR_OFF >> IDX_SHIFT),
+    WHITE_QUEEN_IDX = (WQ_OFF >> IDX_SHIFT),
+    WHITE_KING_IDX = (WK_OFF >> IDX_SHIFT),
+    BLACK_PAWN_IDX = (BP_OFF >> IDX_SHIFT),
+    BLACK_BISHOP_IDX = (BB_OFF >> IDX_SHIFT),
+    BLACK_KNIGHT_IDX = (BN_OFF >> IDX_SHIFT),
+    BLACK_ROOK_IDX = (BR_OFF >> IDX_SHIFT),
+    BLACK_QUEEN_IDX = (BQ_OFF >> IDX_SHIFT),
+    BLACK_KING_IDX = (BK_OFF >> IDX_SHIFT),
+};
 
 enum piece {
     WHITE_PAWN = (uint8_t)(PAWN | (uint8_t)(WP_OFF)),

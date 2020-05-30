@@ -133,4 +133,6 @@ uint64_t hash_castle_perm(const enum castle_permission cp) {
  * @brief       Returns the current hash key
  * @return      The current hash key
  */
-uint64_t hash_get_current_val(void) { return hashkey; }
+uint64_t hash_get_current_val(void) {
+    return hashkey;
+}

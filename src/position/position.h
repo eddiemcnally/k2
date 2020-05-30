@@ -51,16 +51,14 @@ enum move_legality { LEGAL_MOVE = 0, ILLEGAL_MOVE = 1 };
 #define INITIAL_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
 
 struct cast_perm_container pos_get_cast_perm(const struct position *pos);
-void pos_set_cast_perm(struct position *pos,
-                       const struct cast_perm_container perms);
+void pos_set_cast_perm(struct position *pos, const struct cast_perm_container perms);
 
 struct position *pos_create(void);
 void pos_destroy(struct position *pos);
 void pos_initialise(const char *fen, struct position *pos);
 
 struct board *pos_get_board(const struct position *pos);
-bool pos_try_get_en_pass_sq(const struct position *pos,
-                            enum square *en_pass_sq);
+bool pos_try_get_en_pass_sq(const struct position *pos, enum square *en_pass_sq);
 enum colour pos_get_side_to_move(const struct position *pos);
 
 enum move_legality pos_make_move(struct position *pos, const struct move mv);

@@ -67,8 +67,7 @@ struct position_hist {
     uint16_t num_used_slots;
 };
 
-static bool compare_move_states(const struct move_state *ms1,
-                                const struct move_state *ms2);
+static bool compare_move_states(const struct move_state *ms1, const struct move_state *ms2);
 static bool validate_move_history(const struct position_hist *mh);
 
 /**
@@ -77,8 +76,7 @@ static bool validate_move_history(const struct position_hist *mh);
  * @return      Pointer to initialised struct
  */
 struct position_hist *position_hist_init(void) {
-    struct position_hist *retval = (struct position_hist *)calloc(
-        MAX_GAME_MOVES, sizeof(struct position_hist));
+    struct position_hist *retval = (struct position_hist *)calloc(MAX_GAME_MOVES, sizeof(struct position_hist));
 
     retval->free_slot = &retval->history[0];
     retval->num_used_slots = 0;
@@ -99,12 +97,9 @@ void position_hist_release_memory(struct position_hist *mh) {
     free(mh);
 }
 
-void position_hist_push(struct position_hist *pos_history, const struct move mv,
-                        const uint8_t fifty_move_counter,
-                        const struct en_pass_active en_passant,
-                        const uint64_t hashkey,
-                        const struct cast_perm_container castle_perm_cont,
-                        const struct board *brd) {
+void position_hist_push(struct position_hist *pos_history, const struct move mv, const uint8_t fifty_move_counter,
+                        const struct en_pass_active en_passant, const uint64_t hashkey,
+                        const struct cast_perm_container castle_perm_cont, const struct board *brd) {
 
     assert(validate_move_history(pos_history));
     assert(validate_board(brd));
@@ -124,11 +119,9 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
     pos_history->free_slot++;
 }
 
-void position_hist_pop(struct position_hist *pos_history, struct move *mv,
-                       uint8_t *fifty_move_counter,
+void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8_t *fifty_move_counter,
                        struct en_pass_active *en_passant, uint64_t *hashkey,
-                       struct cast_perm_container *castle_perm_container,
-                       struct board *brd) {
+                       struct cast_perm_container *castle_perm_container, struct board *brd) {
 
     pos_history->num_used_slots--;
     pos_history->free_slot--;
@@ -162,8 +155,7 @@ uint16_t position_hist_get_num(const struct position_hist *mh) {
  * @param   The 2nd move history
  * @return  true is the same, false otherwise
  */
-bool position_hist_compare(const struct position_hist *hist1,
-                           const struct position_hist *hist2) {
+bool position_hist_compare(const struct position_hist *hist1, const struct position_hist *hist2) {
 
     assert(validate_move_history(hist1));
     assert(validate_move_history(hist2));
@@ -187,8 +179,7 @@ bool position_hist_compare(const struct position_hist *hist1,
     return true;
 }
 
-static bool compare_move_states(const struct move_state *ms1,
-                                const struct move_state *ms2) {
+static bool compare_move_states(const struct move_state *ms1, const struct move_state *ms2) {
     if (move_compare(ms1->mv, ms2->mv) == false) {
         return false;
     }
@@ -209,8 +200,7 @@ static bool compare_move_states(const struct move_state *ms1,
         return false;
     }
 
-    bool same_cast_perms = cast_compare_perms(ms1->castle_perm_container,
-                                              ms2->castle_perm_container);
+    bool same_cast_perms = cast_compare_perms(ms1->castle_perm_container, ms2->castle_perm_container);
     if (same_cast_perms == false) {
         return false;
     }

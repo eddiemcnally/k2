@@ -38,8 +38,7 @@ struct move_list {
 
 struct move_list mvl_initialise(void);
 uint16_t mvl_get_move_count(const struct move_list *mvl);
-struct move mvl_get_move_at_offset(const struct move_list *mvl,
-                                   uint16_t offset);
+struct move mvl_get_move_at_offset(const struct move_list *mvl, uint16_t offset);
 void mvl_add(struct move_list *mvl, struct move mv);
 void mvl_reset(struct move_list *mvl);
 bool mvl_contains_move(const struct move_list *mvl, const struct move mv);

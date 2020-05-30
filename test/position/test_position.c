@@ -81,11 +81,10 @@ void test_position_compare(void **state) {
 }
 
 void test_position_make_move_white_double_first_move(void **state) {
-    struct mv_from_to moves[8] = {
-        {.from_sq = a2, .to_sq = a4}, {.from_sq = b2, .to_sq = b4},
-        {.from_sq = c2, .to_sq = c4}, {.from_sq = d2, .to_sq = d4},
-        {.from_sq = e2, .to_sq = e4}, {.from_sq = f2, .to_sq = f4},
-        {.from_sq = g2, .to_sq = g4}, {.from_sq = h2, .to_sq = h4}};
+    struct mv_from_to moves[8] = {{.from_sq = a2, .to_sq = a4}, {.from_sq = b2, .to_sq = b4},
+                                  {.from_sq = c2, .to_sq = c4}, {.from_sq = d2, .to_sq = d4},
+                                  {.from_sq = e2, .to_sq = e4}, {.from_sq = f2, .to_sq = f4},
+                                  {.from_sq = g2, .to_sq = g4}, {.from_sq = h2, .to_sq = h4}};
 
     struct move quiet_move = move_encode_quiet(a7, a6);
 
@@ -110,13 +109,11 @@ void test_position_make_move_white_double_first_move(void **state) {
         found = pos_try_get_en_pass_sq(pos, &enp_sq);
         assert_true(found);
 
-        enum square expected_enp_sq =
-            sq_get_square_plus_1_rank(moves[i].from_sq);
+        enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);
         assert_true(expected_enp_sq == enp_sq);
 
         // check the pawn piece has moved
-        bool is_from_sq_occupied =
-            brd_is_sq_occupied(pos_get_board(pos), from_sq);
+        bool is_from_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), from_sq);
         assert_false(is_from_sq_occupied);
         bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
         assert_true(is_to_sq_occupied);
@@ -135,14 +132,12 @@ void test_position_make_move_white_double_first_move(void **state) {
 }
 
 void test_position_make_move_black_double_first_move(void **state) {
-#define INITIAL_FEN_BLACK_TO_MOVE                                              \
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
+#define INITIAL_FEN_BLACK_TO_MOVE "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n"
 
-    struct mv_from_to moves[8] = {
-        {.from_sq = a7, .to_sq = a5}, {.from_sq = b7, .to_sq = b5},
-        {.from_sq = c7, .to_sq = c5}, {.from_sq = d7, .to_sq = d5},
-        {.from_sq = e7, .to_sq = e5}, {.from_sq = f7, .to_sq = f5},
-        {.from_sq = g7, .to_sq = g5}, {.from_sq = h7, .to_sq = h5}};
+    struct mv_from_to moves[8] = {{.from_sq = a7, .to_sq = a5}, {.from_sq = b7, .to_sq = b5},
+                                  {.from_sq = c7, .to_sq = c5}, {.from_sq = d7, .to_sq = d5},
+                                  {.from_sq = e7, .to_sq = e5}, {.from_sq = f7, .to_sq = f5},
+                                  {.from_sq = g7, .to_sq = g5}, {.from_sq = h7, .to_sq = h5}};
 
     struct move quiet_move = move_encode_quiet(a2, a3);
 
@@ -169,8 +164,7 @@ void test_position_make_move_black_double_first_move(void **state) {
         assert_true(expected_enp_sq == enp_sq);
 
         // check the pawn piece has moved
-        bool is_from_sq_occupied =
-            brd_is_sq_occupied(pos_get_board(pos), from_sq);
+        bool is_from_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), from_sq);
         assert_false(is_from_sq_occupied);
         bool is_to_sq_occupied = brd_is_sq_occupied(pos_get_board(pos), to_sq);
         assert_true(is_to_sq_occupied);
@@ -188,8 +182,7 @@ void test_position_make_move_black_double_first_move(void **state) {
     }
 }
 
-void test_position_make_move_castle_white_kingside_move_valid_position_updated(
-    void **state) {
+void test_position_make_move_castle_white_kingside_move_valid_position_updated(void **state) {
     const char *FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1P1BPPP/"
                       "R2QK2R w KQkq - 0 1\n";
 
@@ -203,14 +196,12 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(
     const enum square end_king_sq = g1;
 
     // validate the starting position
-    bool is_start_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    bool is_start_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
@@ -229,14 +220,12 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    bool is_end_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    bool is_end_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
@@ -249,8 +238,7 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_BQ, cp));
 }
 
-void test_position_make_move_castle_white_queenside_move_valid_position_updated(
-    void **state) {
+void test_position_make_move_castle_white_queenside_move_valid_position_updated(void **state) {
     const char *FEN = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/"
                       "R3K2R w KQkq - 0 1\n";
 
@@ -264,14 +252,12 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
     const enum square end_king_sq = c1;
 
     // validate the starting position
-    bool is_start_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    bool is_start_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
@@ -290,14 +276,12 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    bool is_end_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    bool is_end_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
@@ -310,8 +294,7 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
     assert_true(cast_perm_has_permission(CP_BQ, cp));
 }
 
-void test_position_make_move_castle_black_queenside_move_valid_position_updated(
-    void **state) {
+void test_position_make_move_castle_black_queenside_move_valid_position_updated(void **state) {
     const char *FEN = "r3k2r/p1pp1p1p/bpn1qnp1/2b1p3/4P3/1PNPBN2/P1PQBPPP/"
                       "R3K2R b KQkq - 0 1\n";
 
@@ -325,14 +308,12 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     const enum square end_king_sq = c8;
 
     // validate the starting position
-    bool is_start_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    bool is_start_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
@@ -353,14 +334,12 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    bool is_end_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    bool is_end_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
@@ -373,8 +352,7 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     assert_false(cast_perm_has_permission(CP_BQ, cp));
 }
 
-void test_position_make_move_castle_black_kingside_move_valid_position_updated(
-    void **state) {
+void test_position_make_move_castle_black_kingside_move_valid_position_updated(void **state) {
     const char *FEN = "r3k2r/p1ppqp1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R "
                       "b KQkq - 0 1\n";
 
@@ -388,14 +366,12 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
     const enum square end_king_sq = g8;
 
     // validate the starting position
-    bool is_start_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
+    bool is_start_king_found = brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(is_start_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    bool is_start_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
+    bool is_start_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(is_start_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
@@ -414,14 +390,12 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    bool is_end_rook_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
+    bool is_end_rook_found = brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(is_end_rook_found);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    bool is_end_king_found =
-        brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
+    bool is_end_king_found = brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(is_end_king_found);
     assert_true(pce_get_piece_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
@@ -436,15 +410,10 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(
 
 void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
 
-    const char *fen_list[] = {"4k3/4q3/8/8/8/8/8/R3K2R w K - 0 1",
-                              "4k3/5q2/8/8/8/8/8/R3K2R w K - 0 1",
-                              "4k3/6q1/8/8/8/8/8/R3K2R w K - 0 1",
-                              "4k3/8/8/8/8/3q4/8/R3K2R w K - 0 1",
-                              "4k3/8/8/8/8/7q/8/R3K2R w K - 0 1",
-                              "4k3/8/8/8/8/8/3q4/R3K2R w K - 0 1",
-                              "4k3/8/q7/8/8/8/8/R3K2R w K - 0 1",
-                              "4k3/8/8/q7/8/8/8/R3K2R w K - 0 1",
-                              "4k3/q7/8/8/8/8/8/R3K2R w K - 0 1"};
+    const char *fen_list[] = {
+        "4k3/4q3/8/8/8/8/8/R3K2R w K - 0 1", "4k3/5q2/8/8/8/8/8/R3K2R w K - 0 1", "4k3/6q1/8/8/8/8/8/R3K2R w K - 0 1",
+        "4k3/8/8/8/8/3q4/8/R3K2R w K - 0 1", "4k3/8/8/8/8/7q/8/R3K2R w K - 0 1",  "4k3/8/8/8/8/8/3q4/R3K2R w K - 0 1",
+        "4k3/8/q7/8/8/8/8/R3K2R w K - 0 1",  "4k3/8/8/q7/8/8/8/R3K2R w K - 0 1",  "4k3/q7/8/8/8/8/8/R3K2R w K - 0 1"};
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
     struct move wk_castle = move_encode_castle_kingside(WHITE);
@@ -474,16 +443,11 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
 }
 
 void test_position_make_move_castle_black_kingside_move_invalid(void **state) {
-    const char *fen_list[] = {"r3k2r/8/8/8/Q7/8/8/4K3 b k - 0 1",
-                              "r3k2r/8/8/8/1Q6/8/8/4K3 b k - 0 1",
-                              "r3k2r/8/8/8/2Q5/8/8/4K3 b k - 0 1",
-                              "r3k2r/8/8/8/4Q3/8/8/4K3 b k - 0 1",
-                              "r3k2r/8/8/8/5Q2/8/8/4K3 b k - 0 1",
-                              "r3k2r/8/8/8/6Q1/8/8/4K3 b k - 0 1",
-                              "r3k2r/8/6Q1/8/8/8/8/4K3 b k - 0 1",
-                              "r3k2r/8/7Q/8/8/8/8/4K3 b k - 0 1",
-                              "r3k2r/7Q/8/8/8/8/8/4K3 b k - 0 1",
-                              "r3k2r/6Q1/8/8/8/8/8/4K3 b k - 0 1"};
+    const char *fen_list[] = {"r3k2r/8/8/8/Q7/8/8/4K3 b k - 0 1",  "r3k2r/8/8/8/1Q6/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/8/8/2Q5/8/8/4K3 b k - 0 1", "r3k2r/8/8/8/4Q3/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/8/8/5Q2/8/8/4K3 b k - 0 1", "r3k2r/8/8/8/6Q1/8/8/4K3 b k - 0 1",
+                              "r3k2r/8/6Q1/8/8/8/8/4K3 b k - 0 1", "r3k2r/8/7Q/8/8/8/8/4K3 b k - 0 1",
+                              "r3k2r/7Q/8/8/8/8/8/4K3 b k - 0 1",  "r3k2r/6Q1/8/8/8/8/8/4K3 b k - 0 1"};
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
     struct move bk_castle = move_encode_castle_kingside(BLACK);
@@ -513,15 +477,9 @@ void test_position_make_move_castle_black_kingside_move_invalid(void **state) {
 
 void test_position_make_move_castle_white_queenside_move_invalid(void **state) {
     const char *fen_list[] = {
-        "4k3/4q3/8/8/8/8/8/R3K2R w Q - 0 1",
-        "4k3/8/3q4/8/8/8/8/R3K2R w Q - 0 1",
-        "4k3/8/2q5/8/8/8/8/R3K2R w Q - 0 1",
-        "4k3/8/8/8/8/1q6/8/R3K2R w Q - 0 1",
-        "4k3/8/8/8/8/8/1q6/R3K2R w Q - 0 1",
-        "4k3/8/8/8/8/5q2/8/R3K2R w Q - 0 1",
-        "4k3/8/8/8/5q2/8/8/R3K2R w Q - 0 1",
-        "4k3/8/8/7q/8/8/8/R3K2R w Q - 0 1",
-        "4k3/8/8/8/8/4q3/8/R3K2R w Q - 0 1",
+        "4k3/4q3/8/8/8/8/8/R3K2R w Q - 0 1", "4k3/8/3q4/8/8/8/8/R3K2R w Q - 0 1", "4k3/8/2q5/8/8/8/8/R3K2R w Q - 0 1",
+        "4k3/8/8/8/8/1q6/8/R3K2R w Q - 0 1", "4k3/8/8/8/8/8/1q6/R3K2R w Q - 0 1", "4k3/8/8/8/8/5q2/8/R3K2R w Q - 0 1",
+        "4k3/8/8/8/5q2/8/8/R3K2R w Q - 0 1", "4k3/8/8/7q/8/8/8/R3K2R w Q - 0 1",  "4k3/8/8/8/8/4q3/8/R3K2R w Q - 0 1",
     };
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
@@ -551,12 +509,9 @@ void test_position_make_move_castle_white_queenside_move_invalid(void **state) {
 
 void test_position_make_move_castle_black_queenside_move_invalid(void **state) {
 
-    const char *fen_list[] = {"r3k2r/8/8/8/Q7/8/8/4K3 b q - 0 1",
-                              "r3k2r/8/8/8/2Q5/8/8/4K3 b q - 0 1",
-                              "r3k2r/8/8/8/3Q4/8/8/4K3 b q - 0 1",
-                              "r3k2r/8/8/8/4Q3/8/8/4K3 b q - 0 1",
-                              "r3k2r/8/6Q1/8/8/8/8/4K3 b q - 0 1",
-                              "r3k2r/8/5Q2/8/8/8/8/4K3 b q - 0 1",
+    const char *fen_list[] = {"r3k2r/8/8/8/Q7/8/8/4K3 b q - 0 1",  "r3k2r/8/8/8/2Q5/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/8/8/3Q4/8/8/4K3 b q - 0 1", "r3k2r/8/8/8/4Q3/8/8/4K3 b q - 0 1",
+                              "r3k2r/8/6Q1/8/8/8/8/4K3 b q - 0 1", "r3k2r/8/5Q2/8/8/8/8/4K3 b q - 0 1",
                               "r3k2r/8/3Q4/8/8/8/8/4K3 b q - 0 1"};
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
@@ -667,17 +622,14 @@ void test_position_brd_is_sq_occupied(void **state) {
 }
 
 void test_position_make_move_black_knight(void **state) {
-    const char *test_fen =
-        "5N2/B7/3n1k2/pP1K3B/2P5/1b3p1P/2p1n1pP/N1b5 b - - 0 1\n";
+    const char *test_fen = "5N2/B7/3n1k2/pP1K3B/2P5/1b3p1P/2p1n1pP/N1b5 b - - 0 1\n";
 
     struct move mv_list[] = {
-        move_encode_quiet(e2, d4),   move_encode_quiet(e2, c3),
-        move_encode_quiet(e2, g1),   move_encode_quiet(e2, g3),
-        move_encode_quiet(e2, f4),
+        move_encode_quiet(e2, d4),   move_encode_quiet(e2, c3),   move_encode_quiet(e2, g1),
+        move_encode_quiet(e2, g3),   move_encode_quiet(e2, f4),
 
-        move_encode_quiet(d6, b7),   move_encode_quiet(d6, c8),
-        move_encode_quiet(d6, e8),   move_encode_quiet(d6, f7),
-        move_encode_quiet(d6, f5),   move_encode_quiet(d6, e4),
+        move_encode_quiet(d6, b7),   move_encode_quiet(d6, c8),   move_encode_quiet(d6, e8),
+        move_encode_quiet(d6, f7),   move_encode_quiet(d6, f5),   move_encode_quiet(d6, e4),
 
         move_encode_capture(d6, b5), move_encode_capture(d6, c4),
     };
@@ -719,13 +671,11 @@ void test_position_make_move_black_knight(void **state) {
 }
 
 void test_position_make_move_white_knight(void **state) {
-    const char *test_fen =
-        "5N2/B7/5k2/pP1K3B/2P5/1b3pnP/n1p3pP/N1b5 w - - 0 1\n";
+    const char *test_fen = "5N2/B7/5k2/pP1K3B/2P5/1b3pnP/n1p3pP/N1b5 w - - 0 1\n";
 
     struct move mv_list[] = {
-        move_encode_quiet(f8, d7),   move_encode_quiet(f8, e6),
-        move_encode_quiet(f8, g6),   move_encode_quiet(f8, h7),
-        move_encode_capture(a1, b3), move_encode_capture(a1, c2),
+        move_encode_quiet(f8, d7), move_encode_quiet(f8, e6),   move_encode_quiet(f8, g6),
+        move_encode_quiet(f8, h7), move_encode_capture(a1, b3), move_encode_capture(a1, c2),
     };
 
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
@@ -768,12 +718,10 @@ void test_position_make_move_black_bishop(void **state) {
     const char *test_fen = "6K1/4k3/1Q6/p6B/P1P1BP2/1bp2p2/3b2pP/8 b - - 0 1\n";
 
     struct move mv_list[] = {
-        move_encode_quiet(b3, a2),   move_encode_quiet(b3, c2),
-        move_encode_quiet(b3, d1),   move_encode_quiet(d2, e1),
-        move_encode_quiet(d2, e3),   move_encode_quiet(d2, c1),
+        move_encode_quiet(b3, a2),   move_encode_quiet(b3, c2),   move_encode_quiet(b3, d1),
+        move_encode_quiet(d2, e1),   move_encode_quiet(d2, e3),   move_encode_quiet(d2, c1),
 
-        move_encode_capture(b3, a4), move_encode_capture(b3, c4),
-        move_encode_capture(d2, f4),
+        move_encode_capture(b3, a4), move_encode_capture(b3, c4), move_encode_capture(d2, f4),
     };
 
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
@@ -813,19 +761,15 @@ void test_position_make_move_black_bishop(void **state) {
 }
 
 void test_position_make_move_white_bishop(void **state) {
-    const char *test_fen =
-        "6K1/8/1Q3k2/p6B/P1P1BP2/1b3p2/2p3pP/4b3 w - - 0 1\n";
+    const char *test_fen = "6K1/8/1Q3k2/p6B/P1P1BP2/1b3p2/2p3pP/4b3 w - - 0 1\n";
 
     struct move mv_list[] = {
-        move_encode_quiet(e4, d3),   move_encode_quiet(e4, d5),
-        move_encode_quiet(e4, d6),   move_encode_quiet(e4, b7),
-        move_encode_quiet(e4, a8),   move_encode_quiet(e4, f5),
-        move_encode_quiet(e4, g6),   move_encode_quiet(e4, h7),
-        move_encode_quiet(h5, g4),   move_encode_quiet(h5, g6),
-        move_encode_quiet(h5, f7),   move_encode_quiet(h5, e8),
+        move_encode_quiet(e4, d3),   move_encode_quiet(e4, d5),   move_encode_quiet(e4, d6),
+        move_encode_quiet(e4, b7),   move_encode_quiet(e4, a8),   move_encode_quiet(e4, f5),
+        move_encode_quiet(e4, g6),   move_encode_quiet(e4, h7),   move_encode_quiet(h5, g4),
+        move_encode_quiet(h5, g6),   move_encode_quiet(h5, f7),   move_encode_quiet(h5, e8),
 
-        move_encode_capture(e4, c2), move_encode_capture(e4, f3),
-        move_encode_capture(h5, f3),
+        move_encode_capture(e4, c2), move_encode_capture(e4, f3), move_encode_capture(h5, f3),
     };
 
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
@@ -870,18 +814,15 @@ void test_position_make_move_black_queen(void **state) {
     struct move mv_list[] = {
         move_encode_quiet(f5, g5),   move_encode_quiet(f5, e5),
 
-        move_encode_quiet(f5, d5),   move_encode_quiet(f5, c5),
-        move_encode_quiet(f5, b5),   move_encode_quiet(f5, g4),
-        move_encode_quiet(f5, h3),   move_encode_quiet(f5, g6),
+        move_encode_quiet(f5, d5),   move_encode_quiet(f5, c5),   move_encode_quiet(f5, b5),
+        move_encode_quiet(f5, g4),   move_encode_quiet(f5, h3),   move_encode_quiet(f5, g6),
 
-        move_encode_quiet(f5, h7),   move_encode_quiet(f5, f6),
-        move_encode_quiet(f5, f7),   move_encode_quiet(f5, f8),
+        move_encode_quiet(f5, h7),   move_encode_quiet(f5, f6),   move_encode_quiet(f5, f7),
+        move_encode_quiet(f5, f8),
 
-        move_encode_quiet(f5, e6),   move_encode_quiet(f5, d7),
-        move_encode_quiet(f5, c8),
+        move_encode_quiet(f5, e6),   move_encode_quiet(f5, d7),   move_encode_quiet(f5, c8),
 
-        move_encode_capture(f5, h5), move_encode_capture(f5, f4),
-        move_encode_capture(f5, e4),
+        move_encode_capture(f5, h5), move_encode_capture(f5, f4), move_encode_capture(f5, e4),
     };
 
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
@@ -924,18 +865,14 @@ void test_position_make_move_white_queen(void **state) {
     const char *test_fen = "7k/8/1Q5b/p4q1B/P1P1BP2/1bp2p2/6pP/2K5 w - - 0 1\n";
 
     struct move mv_list[] = {
-        move_encode_quiet(b6, a6),   move_encode_quiet(b6, c6),
-        move_encode_quiet(b6, d6),   move_encode_quiet(b6, e6),
-        move_encode_quiet(b6, f6),   move_encode_quiet(b6, g6),
-        move_encode_quiet(b6, b5),   move_encode_quiet(b6, b4),
-        move_encode_quiet(b6, b7),   move_encode_quiet(b6, b8),
-        move_encode_quiet(b6, a7),   move_encode_quiet(b6, c7),
-        move_encode_quiet(b6, d8),   move_encode_quiet(b6, c5),
-        move_encode_quiet(b6, d4),   move_encode_quiet(b6, e3),
-        move_encode_quiet(b6, f2),   move_encode_quiet(b6, g1),
+        move_encode_quiet(b6, a6),   move_encode_quiet(b6, c6),   move_encode_quiet(b6, d6),
+        move_encode_quiet(b6, e6),   move_encode_quiet(b6, f6),   move_encode_quiet(b6, g6),
+        move_encode_quiet(b6, b5),   move_encode_quiet(b6, b4),   move_encode_quiet(b6, b7),
+        move_encode_quiet(b6, b8),   move_encode_quiet(b6, a7),   move_encode_quiet(b6, c7),
+        move_encode_quiet(b6, d8),   move_encode_quiet(b6, c5),   move_encode_quiet(b6, d4),
+        move_encode_quiet(b6, e3),   move_encode_quiet(b6, f2),   move_encode_quiet(b6, g1),
 
-        move_encode_capture(b6, a5), move_encode_capture(b6, h6),
-        move_encode_capture(b6, b3),
+        move_encode_capture(b6, a5), move_encode_capture(b6, h6), move_encode_capture(b6, b3),
     };
 
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
@@ -974,10 +911,8 @@ void test_position_make_move_white_queen(void **state) {
     }
 }
 
-void test_position_make_move_white_discovered_attack_on_king_invalid_move(
-    void **state) {
-    const char *test_fen =
-        "7k/8/1Q5b/p4q1B/P1P2P2/1bp2p2/2B3pP/3K4 w - - 0 1\n";
+void test_position_make_move_white_discovered_attack_on_king_invalid_move(void **state) {
+    const char *test_fen = "7k/8/1Q5b/p4q1B/P1P2P2/1bp2p2/2B3pP/3K4 w - - 0 1\n";
 
     const struct move mv = move_encode_quiet(c2, b1);
     struct position *pos = pos_create();
@@ -989,8 +924,7 @@ void test_position_make_move_white_discovered_attack_on_king_invalid_move(
     pos_destroy(pos);
 }
 
-void test_position_make_move_black_discovered_attack_on_king_invalid_move(
-    void **state) {
+void test_position_make_move_black_discovered_attack_on_king_invalid_move(void **state) {
     const char *test_fen = "Q4b1k/8/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
 
     const struct move mv = move_encode_quiet(f8, a3);
@@ -1004,8 +938,7 @@ void test_position_make_move_black_discovered_attack_on_king_invalid_move(
 }
 
 void test_position_make_move_black_king_valid_moves(void **state) {
-    const char *test_fen =
-        "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
+    const char *test_fen = "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
 
     struct move mv_list[] = {
         move_encode_quiet(g8, h8),
@@ -1036,8 +969,7 @@ void test_position_make_move_black_king_valid_moves(void **state) {
 }
 
 void test_position_make_move_black_king_invalid_moves(void **state) {
-    const char *test_fen =
-        "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
+    const char *test_fen = "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
 
     struct move mv_list[] = {
         move_encode_quiet(g8, f7),
@@ -1126,8 +1058,7 @@ void test_position_make_move_black_en_passant(void **state) {
 
     assert_true(legality == LEGAL_MOVE);
     enum piece old_white_pawn;
-    bool old_white_pawn_found =
-        brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
+    bool old_white_pawn_found = brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
     assert_true(old_white_pawn_found);
     assert_true(validate_piece(old_white_pawn));
     enum square enp_sq;
@@ -1139,8 +1070,7 @@ void test_position_make_move_black_en_passant(void **state) {
     const struct move en_pass_mv = move_encode_enpassant(b4, c3);
     legality = pos_make_move(pos, en_pass_mv);
 
-    old_white_pawn_found =
-        brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
+    old_white_pawn_found = brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
     assert_false(old_white_pawn_found);
 
     enum piece blk_pawn;
@@ -1165,8 +1095,7 @@ void test_position_make_move_white_en_passant(void **state) {
 
     assert_true(legality == LEGAL_MOVE);
     enum piece old_black_pawn;
-    bool old_black_pawn_found =
-        brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
+    bool old_black_pawn_found = brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
     assert_true(old_black_pawn_found);
     assert_true(validate_piece(old_black_pawn));
     enum square enp_sq;
@@ -1178,8 +1107,7 @@ void test_position_make_move_white_en_passant(void **state) {
     const struct move en_pass_mv = move_encode_enpassant(f5, g6);
     legality = pos_make_move(pos, en_pass_mv);
 
-    old_black_pawn_found =
-        brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
+    old_black_pawn_found = brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
     assert_false(old_black_pawn_found);
 
     enum piece white_pawn;
@@ -1205,8 +1133,7 @@ void test_position_make_move_white_promotion(void **state) {
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
         enum piece expected_prom_pce;
-        bool decoded =
-            try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
+        bool decoded = try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
         assert_true(decoded);
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
@@ -1243,8 +1170,7 @@ void test_position_make_move_black_promotion(void **state) {
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
         enum piece expected_prom_pce;
-        bool decoded =
-            try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
+        bool decoded = try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
         assert_true(decoded);
 
         struct position *pos = pos_create();
@@ -1282,8 +1208,7 @@ void test_position_make_move_white_promotion_capture(void **state) {
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
         enum piece expected_prom_pce;
-        bool decoded =
-            try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
+        bool decoded = try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
         assert_true(decoded);
 
         struct position *pos = pos_create();
@@ -1321,8 +1246,7 @@ void test_position_make_move_black_promotion_capture(void **state) {
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
         enum piece expected_prom_pce;
-        bool decoded =
-            try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
+        bool decoded = try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
         assert_true(decoded);
 
         struct position *pos = pos_create();
@@ -1346,8 +1270,7 @@ void test_position_make_move_black_promotion_capture(void **state) {
     }
 }
 
-void test_position_make_move_then_take_move_positions_restored_as_expected(
-    void **state) {
+void test_position_make_move_then_take_move_positions_restored_as_expected(void **state) {
     const char *test_fen = "4k3/6p1/8/5P2/8/8/8/4K3 b - - 0 1\n";
 
     struct position *pos = pos_create();

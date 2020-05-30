@@ -113,9 +113,8 @@ void test_fen_pieces_init_position(void **state) {
 }
 
 void test_fen_pieces_random_position_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/"
-        "R4RK1 w Qkq - 1 4\n";
+    const char *RANDOM_FEN_1 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/"
+                               "R4RK1 w Qkq - 1 4\n";
     struct parsed_fen *brd = fen_parse(RANDOM_FEN_1);
 
     // setup test data for comparison
@@ -245,10 +244,8 @@ void test_fen_castle_permissions_random_fen(void **state) {
                                "1B1PQP1P/R4RK1 w Qkq - 1 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/"
                                "1B1PQP1P/R4RK1 b KQkq - 0 3\n";
-    const char *RANDOM_FEN_3 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
-    const char *RANDOM_FEN_4 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
+    const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
+    const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
     struct parsed_fen *fen = fen_parse(RANDOM_FEN_1);
 
@@ -283,10 +280,8 @@ void test_fen_en_passant(void **state) {
                                "1B1PQP1P/R4RK1 b KQkq c6 11 3\n";
     const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/"
                                "1B1PQP1P/R4RK1 b Kq b3 1 2\n";
-    const char *RANDOM_FEN_4 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - g3 0 3\n";
-    const char *RANDOM_FEN_5 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
+    const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - g3 0 3\n";
+    const char *RANDOM_FEN_5 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
     enum square enp_sq;
     struct parsed_fen *brd = fen_parse(RANDOM_FEN_1);
@@ -319,10 +314,8 @@ void test_fen_half_move_count(void **state) {
                                "1B1PQP1P/R4RK1 w Qkq - 22 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/"
                                "1B1PQP1P/R4RK1 b KQkq - 11 3\n";
-    const char *RANDOM_FEN_3 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
-    const char *RANDOM_FEN_4 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
+    const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
+    const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
     struct parsed_fen *brd = fen_parse(RANDOM_FEN_1);
     assert_int_equal(fen_get_half_move_cnt(brd), 22);
@@ -339,10 +332,8 @@ void test_fen_full_move_count(void **state) {
                                "1B1PQP1P/R4RK1 w Qkq - 22 4\n";
     const char *RANDOM_FEN_2 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/"
                                "1B1PQP1P/R4RK1 b KQkq - 11 3\n";
-    const char *RANDOM_FEN_3 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
-    const char *RANDOM_FEN_4 =
-        "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 10\n";
+    const char *RANDOM_FEN_3 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b Kq - 1 2\n";
+    const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 10\n";
 
     struct parsed_fen *brd = fen_parse(RANDOM_FEN_1);
     assert_int_equal(fen_get_full_move_cnt(brd), 4);

@@ -244,8 +244,7 @@ void occ_mask_gen_knight(uint64_t *occ_mask_array) {
     }
 }
 
-void occ_mask_gen_white_pawn_capture_non_first_double_move(
-    uint64_t *occ_mask_array) {
+void occ_mask_gen_white_pawn_capture_non_first_double_move(uint64_t *occ_mask_array) {
 
     //              56 57 58 59 60 61 62 63
     //              48 49 50 51 52 53 54 55
@@ -288,8 +287,7 @@ void occ_mask_gen_white_pawn_capture_non_first_double_move(
  * @return      filled out array.
  *
  */
-void occ_mask_gen_black_pawn_capture_non_first_double_move(
-    uint64_t *occ_mask_array) {
+void occ_mask_gen_black_pawn_capture_non_first_double_move(uint64_t *occ_mask_array) {
 
     //              56 57 58 59 60 61 62 63
     //              48 49 50 51 52 53 54 55
@@ -518,8 +516,12 @@ void occ_mask_gen_diagonal_occupancy_masks(void) {
     }
 }
 
-bool IS_VALID_FILE(enum file f) { return f >= FILE_A && f <= FILE_H; }
-bool IS_VALID_RANK(enum rank r) { return r >= RANK_1 && r <= RANK_8; }
+bool IS_VALID_FILE(enum file f) {
+    return f >= FILE_A && f <= FILE_H;
+}
+bool IS_VALID_RANK(enum rank r) {
+    return r >= RANK_1 && r <= RANK_8;
+}
 
 void occ_mask_gen_print_as_board(const uint64_t mask) {
     for (uint8_t rank = RANK_8; rank >= RANK_1; rank--) {

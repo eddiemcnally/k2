@@ -36,27 +36,24 @@
 #include "position.h"
 #include <cmocka.h>
 
-static bool contains_all_4_promotion_moves(const enum square from_sq,
-                                           const enum square to_sq,
-                                           const struct move_list *mvl,
-                                           const bool is_capture);
+static bool contains_all_4_promotion_moves(const enum square from_sq, const enum square to_sq,
+                                           const struct move_list *mvl, const bool is_capture);
 
-#define CONTAINS_QUIET(mvl, from, to)                                          \
-    ({                                                                         \
-        struct move mv;                                                        \
-        mv = move_encode_quiet(from, to);                                      \
-        assert_true(mvl_contains_move(&mvl, mv));                              \
+#define CONTAINS_QUIET(mvl, from, to)                                                                                  \
+    ({                                                                                                                 \
+        struct move mv;                                                                                                \
+        mv = move_encode_quiet(from, to);                                                                              \
+        assert_true(mvl_contains_move(&mvl, mv));                                                                      \
     })
-#define CONTAINS_CAPTURE(mvl, from, to)                                        \
-    ({                                                                         \
-        struct move mv;                                                        \
-        mv = move_encode_capture(from, to);                                    \
-        assert_true(mvl_contains_move(&mvl, mv));                              \
+#define CONTAINS_CAPTURE(mvl, from, to)                                                                                \
+    ({                                                                                                                 \
+        struct move mv;                                                                                                \
+        mv = move_encode_capture(from, to);                                                                            \
+        assert_true(mvl_contains_move(&mvl, mv));                                                                      \
     })
 
 void test_move_gen_knight_white_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -99,8 +96,7 @@ void test_move_gen_knight_white_2(void **state) {
 }
 
 void test_move_gen_knight_white_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "K3b1nk/3p3p/2pPNqP1/1pQPp1PB/1p4Pp/pP6/P1PRrN1B/3nb1Rr w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "K3b1nk/3p3p/2pPNqP1/1pQPp1PB/1p4Pp/pP6/P1PRrN1B/3nb1Rr w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -124,8 +120,7 @@ void test_move_gen_knight_white_3(void **state) {
 }
 
 void test_move_gen_knight_black_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -148,8 +143,7 @@ void test_move_gen_knight_black_1(void **state) {
 }
 
 void test_move_gen_knight_black_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "1r5r/1P1PPP2/ppB1KN2/1p5q/2nR1PPP/p3Pnpp/kpNRQ1pb/4B2b b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "1r5r/1P1PPP2/ppB1KN2/1p5q/2nR1PPP/p3Pnpp/kpNRQ1pb/4B2b b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -175,8 +169,7 @@ void test_move_gen_knight_black_2(void **state) {
 }
 
 void test_move_gen_knight_black_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "2K5/ppbQpr1q/N2PPBP1/kB1bP1N1/2P4p/1pP4p/1npnPPp1/rR2R3 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "2K5/ppbQpr1q/N2PPBP1/kB1bP1N1/2P4p/1pP4p/1npnPPp1/rR2R3 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -198,8 +191,7 @@ void test_move_gen_knight_black_3(void **state) {
 }
 
 void test_move_gen_king_white_no_castling_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "5Q2/1p3pp1/3P1Pn1/6k1/2K5/Pr3p2/p2R1P2/7B w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "5Q2/1p3pp1/3P1Pn1/6k1/2K5/Pr3p2/p2R1P2/7B w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -219,8 +211,7 @@ void test_move_gen_king_white_no_castling_1(void **state) {
 }
 
 void test_move_gen_king_white_no_castling_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "8/3Q2pN/1b5P/3Pp2K/2n3p1/P2RP3/Pp6/5k2 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "8/3Q2pN/1b5P/3Pp2K/2n3p1/P2RP3/Pp6/5k2 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -236,8 +227,7 @@ void test_move_gen_king_white_no_castling_2(void **state) {
 }
 
 void test_move_gen_king_white_no_castling_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "n7/4p2p/PP1p1pp1/1n4k1/6q1/6N1/K3p3/2N3r1 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "n7/4p2p/PP1p1pp1/1n4k1/6q1/6N1/K3p3/2N3r1 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -253,8 +243,7 @@ void test_move_gen_king_white_no_castling_3(void **state) {
 }
 
 void test_move_white_castling_WK_WQ(void **state) {
-    const char *RANDOM_FEN_1 =
-        "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQPN2/PP1BBPPP/R3K2R w KQkq - 0 1\n";
+    const char *RANDOM_FEN_1 = "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQPN2/PP1BBPPP/R3K2R w KQkq - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -270,8 +259,7 @@ void test_move_white_castling_WK_WQ(void **state) {
 }
 
 void test_move_white_castling_WK_only(void **state) {
-    const char *RANDOM_FEN_1 =
-        "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQPN2/PP2BPPP/R1B1K2R w K - 0 1\n";
+    const char *RANDOM_FEN_1 = "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQPN2/PP2BPPP/R1B1K2R w K - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -287,8 +275,7 @@ void test_move_white_castling_WK_only(void **state) {
 }
 
 void test_move_white_castling_WQ_only(void **state) {
-    const char *RANDOM_FEN_1 =
-        "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR w Q - 0 1\n";
+    const char *RANDOM_FEN_1 = "r1bqkb1r/ppp2ppp/2n2n2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR w Q - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -304,8 +291,7 @@ void test_move_white_castling_WQ_only(void **state) {
 }
 
 void test_move_gen_king_black_no_castling_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "5Q2/1p3pp1/3P1Pn1/6k1/2K5/Pr3p2/p2R1P2/7B b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "5Q2/1p3pp1/3P1Pn1/6k1/2K5/Pr3p2/p2R1P2/7B b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -324,8 +310,7 @@ void test_move_gen_king_black_no_castling_1(void **state) {
 }
 
 void test_move_gen_king_black_no_castling_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "8/3Q2pN/1b5P/3Pp2K/2n3p1/P2RP3/Pp6/5k2 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "8/3Q2pN/1b5P/3Pp2K/2n3p1/P2RP3/Pp6/5k2 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -341,8 +326,7 @@ void test_move_gen_king_black_no_castling_2(void **state) {
 }
 
 void test_move_gen_king_black_no_castling_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "n7/4p2p/PP1p1pp1/1n4k1/6q1/6N1/K3p3/2N3r1 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "n7/4p2p/PP1p1pp1/1n4k1/6q1/6N1/K3p3/2N3r1 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -358,8 +342,7 @@ void test_move_gen_king_black_no_castling_3(void **state) {
 }
 
 void test_move_black_castling_BK_BQ(void **state) {
-    const char *RANDOM_FEN_1 =
-        "r3k2r/pppqbppp/2n1bn2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR b Qkq - 0 1\n";
+    const char *RANDOM_FEN_1 = "r3k2r/pppqbppp/2n1bn2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR b Qkq - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -375,8 +358,7 @@ void test_move_black_castling_BK_BQ(void **state) {
 }
 
 void test_move_black_castling_BK_only(void **state) {
-    const char *RANDOM_FEN_1 =
-        "rn2k2r/pppqbppp/4bn2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR b Qk - 0 1\n";
+    const char *RANDOM_FEN_1 = "rn2k2r/pppqbppp/4bn2/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR b Qk - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -392,8 +374,7 @@ void test_move_black_castling_BK_only(void **state) {
 }
 
 void test_move_black_castling_BQ_only(void **state) {
-    const char *RANDOM_FEN_1 =
-        "r3k1nr/pppqbppp/2n1b3/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR b Qq - 0 1\n";
+    const char *RANDOM_FEN_1 = "r3k1nr/pppqbppp/2n1b3/3pp3/2PP4/2NQP3/PP1B1PPP/R3K1NR b Qq - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -423,10 +404,8 @@ void test_move_white_pawns_promotion_1(void **state) {
     assert_true(contains_all_4_promotion_moves(h7, h8, &mvl, false));
 }
 
-static bool contains_all_4_promotion_moves(const enum square from_sq,
-                                           const enum square to_sq,
-                                           const struct move_list *mvl,
-                                           const bool is_capture) {
+static bool contains_all_4_promotion_moves(const enum square from_sq, const enum square to_sq,
+                                           const struct move_list *mvl, const bool is_capture) {
     struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, is_capture);
     if (mvl_contains_move(mvl, mv) == false) {
         return false;
@@ -467,8 +446,7 @@ void test_move_white_pawns_promotion_2(void **state) {
 }
 
 void test_move_white_pawns_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "1qN5/pR1B4/2Pp1Pbb/Bp1Pr1pP/k1P3pp/NrP1P1nP/K1p2n1p/2R4Q w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "1qN5/pR1B4/2Pp1Pbb/Bp1Pr1pP/k1P3pp/NrP1P1nP/K1p2n1p/2R4Q w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -487,8 +465,7 @@ void test_move_white_pawns_1(void **state) {
 }
 
 void test_move_white_pawns_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "1Nr1n3/P2pkp2/pp1bb1pK/Q1pq3P/NP4pp/P3PR1P/B3P1P1/2B2nRr w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "1Nr1n3/P2pkp2/pp1bb1pK/Q1pq3P/NP4pp/P3PR1P/B3P1P1/2B2nRr w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -508,8 +485,7 @@ void test_move_white_pawns_2(void **state) {
 }
 
 void test_move_white_pawns_first_move_double_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3N1Kb1/3Q1N1p/1pPnP1P1/p1Rr1ppp/4B1rB/2p5/P1PPqPPR/3n1k2 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N1p/1pPnP1P1/p1Rr1ppp/4B1rB/2p5/P1PPqPPR/3n1k2 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -565,8 +541,7 @@ void test_move_white_pawns_en_passant_1(void **state) {
 }
 
 void test_move_white_pawns_en_passant_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3N1Kb1/3Q1N2/3n4/pPpr1pPp/2p1B1rB/2P3P1/PP1PqP1R/3n1k2 w - a6 0 1\n";
+    const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N2/3n4/pPpr1pPp/2p1B1rB/2P3P1/PP1PqP1R/3n1k2 w - a6 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -579,8 +554,7 @@ void test_move_white_pawns_en_passant_2(void **state) {
 }
 
 void test_move_white_pawns_en_passant_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3N1Kb1/3Q1N2/3n4/pPpr1pPp/2p1B1rB/2P3P1/PP1PqP1R/3n1k2 w - c6 0 1\n";
+    const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N2/3n4/pPpr1pPp/2p1B1rB/2P3P1/PP1PqP1R/3n1k2 w - c6 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -593,8 +567,7 @@ void test_move_white_pawns_en_passant_3(void **state) {
 }
 
 void test_move_black_pawns_promotion_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "2r1N3/pPp1QpnP/Np1B4/1pP1R1PP/r3qb2/2nP4/PpKp1kpP/1b3R1B b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "2r1N3/pPp1QpnP/Np1B4/1pP1R1PP/r3qb2/2nP4/PpKp1kpP/1b3R1B b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -626,8 +599,7 @@ void test_move_black_pawns_promotion_2(void **state) {
 }
 
 void test_move_black_pawns_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "1qN5/pR1B4/2Pp1Pbb/1pP1r1pP/k2P1p1p/Nr2P1BP/K1p2n1p/2R4Q b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "1qN5/pR1B4/2Pp1Pbb/1pP1r1pP/k2P1p1p/Nr2P1BP/K1p2n1p/2R4Q b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -651,8 +623,7 @@ void test_move_black_pawns_1(void **state) {
 }
 
 void test_move_black_pawns_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "1Nr1n3/P3k3/p2bb1pK/Q1pq3P/NP1p1pp1/P3PR1P/Bp2P1Pp/2B2nRr b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "1Nr1n3/P3k3/p2bb1pK/Q1pq3P/NP1p1pp1/P3PR1P/Bp2P1Pp/2B2nRr b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -677,8 +648,7 @@ void test_move_black_pawns_2(void **state) {
 }
 
 void test_move_black_pawns_first_move_double_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3Nk1b1/pp3p1p/3n4/2RrNpp1/2P1B1rB/QPp2K1P/P1PPqPPR/3n4 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "3Nk1b1/pp3p1p/3n4/2RrNpp1/2P1B1rB/QPp2K1P/P1PPqPPR/3n4 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -697,8 +667,7 @@ void test_move_black_pawns_first_move_double_1(void **state) {
 }
 
 void test_move_black_pawns_first_move_double_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "4k1b1/pp3p1p/1N1n2p1/2RrN2r/2P1Bp2/QPp2K1P/P1PPqPPR/3n4 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "4k1b1/pp3p1p/1N1n2p1/2RrN2r/2P1Bp2/QPp2K1P/P1PPqPPR/3n4 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -714,8 +683,7 @@ void test_move_black_pawns_first_move_double_2(void **state) {
 }
 
 void test_move_black_pawns_en_passant_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3N1Kb1/3Q1N2/3nP3/p1Rr1pPp/Ppp1B1rB/2P3P1/1P1PqP1R/3n1k2 b - a3 0 1\n";
+    const char *RANDOM_FEN_1 = "3N1Kb1/3Q1N2/3nP3/p1Rr1pPp/Ppp1B1rB/2P3P1/1P1PqP1R/3n1k2 b - a3 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -742,8 +710,7 @@ void test_move_black_pawns_en_passant_2(void **state) {
 }
 
 void test_move_black_pawns_en_passant_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3N1Kb1/1q3N2/3n4/pPpr2Pp/2p1PprB/2P3PQ/PPBP3R/3n1k2 b - e3 0 1\n";
+    const char *RANDOM_FEN_1 = "3N1Kb1/1q3N2/3n4/pPpr2Pp/2p1PprB/2P3PQ/PPBP3R/3n1k2 b - e3 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -756,8 +723,7 @@ void test_move_black_pawns_en_passant_3(void **state) {
 }
 
 void test_move_white_bishop_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3R2K1/1PknP3/p6P/Prn1Pp1p/NN3P2/r2B2Pp/p2pb3/6B1 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "3R2K1/1PknP3/p6P/Prn1Pp1p/NN3P2/r2B2Pp/p2pb3/6B1 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -781,8 +747,7 @@ void test_move_white_bishop_1(void **state) {
 }
 
 void test_move_white_bishop_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3n1N1n/1B1R1prK/Q2P4/P1P2r2/PPp2k1p/2B3N1/ppP4p/4b2b w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "3n1N1n/1B1R1prK/Q2P4/P1P2r2/PPp2k1p/2B3N1/ppP4p/4b2b w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -809,8 +774,7 @@ void test_move_white_bishop_2(void **state) {
 }
 
 void test_move_white_bishop_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3n1N1n/3R1pr1/Q2P2bK/P1P2r2/PPp1Bk1p/6N1/ppP4p/B3b3 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "3n1N1n/3R1pr1/Q2P2bK/P1P2r2/PPp1Bk1p/6N1/ppP4p/B3b3 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -854,8 +818,7 @@ void test_move_black_bishop_1(void **state) {
 }
 
 void test_move_black_bishop_2(void **state) {
-    const char *RANDOM_FEN_1 =
-        "2N1r3/2k2P2/b7/8/r2P1p2/2B4P/1K4b1/8 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "2N1r3/2k2P2/b7/8/r2P1p2/2B4P/1K4b1/8 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -883,8 +846,7 @@ void test_move_black_bishop_2(void **state) {
 }
 
 void test_move_white_rook_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3kb2B/RP1P4/P4ppN/P1P1Rq2/2PKn1pp/1rQ3p1/2pp1NpP/rnb5 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "3kb2B/RP1P4/P4ppN/P1P1Rq2/2PKn1pp/1rQ3p1/2pp1NpP/rnb5 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -931,8 +893,7 @@ void test_move_white_rook_2(void **state) {
 }
 
 void test_move_white_rook_3(void **state) {
-    const char *RANDOM_FEN_1 =
-        "b1NRNk2/1pPp3K/p6P/Qp3rB1/nRq2p2/1r4pP/1PpPP3/b2n4 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "b1NRNk2/1pPp3K/p6P/Qp3rB1/nRq2p2/1r4pP/1PpPP3/b2n4 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -948,8 +909,7 @@ void test_move_white_rook_3(void **state) {
 }
 
 void test_move_black_rook_1(void **state) {
-    const char *RANDOM_FEN_1 =
-        "3kb2B/RP1P4/P4ppN/P1P1Rq2/2PKn1pp/1rQ3p1/2pp1NpP/rnb5 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "3kb2B/RP1P4/P4ppN/P1P1Rq2/2PKn1pp/1rQ3p1/2pp1NpP/rnb5 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -973,8 +933,7 @@ void test_move_black_rook_1(void **state) {
 
 void test_move_white_queen_1(void **state) {
     // No BROOK pieces on board
-    const char *RANDOM_FEN_1 =
-        "q1k3rr/2p1pBB1/1K2Pp1n/Pb3Ppp/1nP1PQ2/2Pp4/5P1P/1N1N1R2 w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "q1k3rr/2p1pBB1/1K2Pp1n/Pb3Ppp/1nP1PQ2/2Pp4/5P1P/1N1N1R2 w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -998,8 +957,7 @@ void test_move_white_queen_1(void **state) {
 
 void test_move_black_queen_1(void **state) {
     // No BROOK pieces on board
-    const char *RANDOM_FEN_1 =
-        "q1k3rr/2p1pBB1/1K2Pp1n/Pb3Ppp/1nP1PQ2/2Pp4/5P1P/1N1N1R2 b - - 0 1\n";
+    const char *RANDOM_FEN_1 = "q1k3rr/2p1pBB1/1K2Pp1n/Pb3Ppp/1nP1PQ2/2Pp4/5P1P/1N1N1R2 b - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);

@@ -96,8 +96,7 @@ enum move_flag_bits {
 };
 
 static uint16_t set_flag(const uint16_t mv, const uint16_t flag);
-static struct move encode_from_to(const enum square from_sq,
-                                  const enum square to_sq);
+static struct move encode_from_to(const enum square from_sq, const enum square to_sq);
 static const char *move_details(const struct move mv);
 
 // ==================================================================
@@ -113,8 +112,7 @@ static const char *move_details(const struct move mv);
  * @param to_sq     The to square
  * @return The encoded move
  */
-struct move move_encode_quiet(const enum square from_sq,
-                              const enum square to_sq) {
+struct move move_encode_quiet(const enum square from_sq, const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -130,10 +128,8 @@ struct move move_encode_quiet(const enum square from_sq,
  * @param is_capture true if also a capture move, false otherwise
  * @return The encoded move
  */
-struct move move_encode_promoted(const enum square from_sq,
-                                 const enum square to_sq,
-                                 const enum piece_role promoted_piece,
-                                 const bool is_capture) {
+struct move move_encode_promoted(const enum square from_sq, const enum square to_sq,
+                                 const enum piece_role promoted_piece, const bool is_capture) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
     assert(validate_piece_role(promoted_piece));
@@ -177,8 +173,7 @@ struct move move_encode_promoted(const enum square from_sq,
  * @return true     ok
  * @return false    not ok
  */
-bool try_move_decode_promotion_piece(const struct move mv,
-                                     const enum colour side, enum piece *pce) {
+bool try_move_decode_promotion_piece(const struct move mv, const enum colour side, enum piece *pce) {
     assert(validate_move(mv));
     assert(validate_colour(side));
 
@@ -232,8 +227,7 @@ bool try_move_decode_promotion_piece(const struct move mv,
  * @param to_sq The to square
  * @return The encoded move
  */
-struct move move_encode_capture(const enum square from_sq,
-                                const enum square to_sq) {
+struct move move_encode_capture(const enum square from_sq, const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -302,8 +296,7 @@ struct move move_encode_castle_queenside(const enum colour side) {
  * @param       to_sq the to square
  * @return      The encoded move
  */
-struct move move_encode_pawn_double_first(const enum square from_sq,
-                                          const enum square to_sq) {
+struct move move_encode_pawn_double_first(const enum square from_sq, const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -319,8 +312,7 @@ struct move move_encode_pawn_double_first(const enum square from_sq,
  * @param to_sq The to square
  * @return The encoded move
  */
-struct move move_encode_enpassant(const enum square from_sq,
-                                  const enum square to_sq) {
+struct move move_encode_enpassant(const enum square from_sq, const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -478,8 +470,8 @@ char *move_print(const struct move mv) {
     const enum rank to_rank = sq_get_rank(to_sq);
     const enum file to_file = sq_get_file(to_sq);
 
-    sprintf(move_string, "%c%c%c%c : %s", ('a' + from_file), ('1' + from_rank),
-            ('a' + to_file), ('1' + to_rank), move_details(mv));
+    sprintf(move_string, "%c%c%c%c : %s", ('a' + from_file), ('1' + from_rank), ('a' + to_file), ('1' + to_rank),
+            move_details(mv));
 
     return move_string;
 }
@@ -553,8 +545,7 @@ bool validate_move(const struct move mv) {
 //
 // ==================================================================
 
-static inline struct move encode_from_to(const enum square from_sq,
-                                         const enum square to_sq) {
+static inline struct move encode_from_to(const enum square from_sq, const enum square to_sq) {
     uint16_t mv = 0;
 
     uint16_t m = (uint16_t)(from_sq << MV_SHFT_FROM_SQ);

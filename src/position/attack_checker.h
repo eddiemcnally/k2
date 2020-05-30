@@ -30,5 +30,4 @@
 #include "square.h"
 #include <stdbool.h>
 
-bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq,
-                            const enum colour attacking_side);
+bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const enum colour attacking_side);

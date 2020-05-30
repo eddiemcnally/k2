@@ -134,7 +134,9 @@ inline enum square bb_pop_1st_bit(const uint64_t bb) {
  *
  * @return      The empty bitboard
  */
-uint64_t bb_get_empty(void) { return EMPTY_BITBOARD; }
+uint64_t bb_get_empty(void) {
+    return EMPTY_BITBOARD;
+}
 
 /**
  * @brief       Prints outs the bitboard as a chessboard with ranks and files
@@ -145,8 +147,7 @@ void bb_print_as_board(const uint64_t bb) {
     for (int rank = RANK_8; rank >= RANK_1; rank--) {
         printf("%d  ", rank + 1); // enum is zero-based
         for (int file = FILE_A; file <= FILE_H; file++) {
-            enum square sq =
-                sq_gen_from_rank_file((enum rank)rank, (enum file)file);
+            enum square sq = sq_gen_from_rank_file((enum rank)rank, (enum file)file);
             if (bb_is_set(bb, sq)) {
                 printf("  X");
             } else {

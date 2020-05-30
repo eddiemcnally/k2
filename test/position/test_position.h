@@ -37,14 +37,10 @@ void test_position_brd_is_sq_occupied(void **state);
 void test_position_compare(void **state);
 void test_position_make_move_white_double_first_move(void **state);
 void test_position_make_move_black_double_first_move(void **state);
-void test_position_make_move_castle_white_kingside_move_valid_position_updated(
-    void **state);
-void test_position_make_move_castle_white_queenside_move_valid_position_updated(
-    void **state);
-void test_position_make_move_castle_black_kingside_move_valid_position_updated(
-    void **state);
-void test_position_make_move_castle_black_queenside_move_valid_position_updated(
-    void **state);
+void test_position_make_move_castle_white_kingside_move_valid_position_updated(void **state);
+void test_position_make_move_castle_white_queenside_move_valid_position_updated(void **state);
+void test_position_make_move_castle_black_kingside_move_valid_position_updated(void **state);
+void test_position_make_move_castle_black_queenside_move_valid_position_updated(void **state);
 void test_position_make_move_castle_white_kingside_move_invalid(void **state);
 void test_position_make_move_castle_white_queenside_move_invalid(void **state);
 void test_position_make_move_castle_black_kingside_move_invalid(void **state);
@@ -55,10 +51,8 @@ void test_position_make_move_white_bishop(void **state);
 void test_position_make_move_black_bishop(void **state);
 void test_position_make_move_black_queen(void **state);
 void test_position_make_move_white_queen(void **state);
-void test_position_make_move_white_discovered_attack_on_king_invalid_move(
-    void **state);
-void test_position_make_move_black_discovered_attack_on_king_invalid_move(
-    void **state);
+void test_position_make_move_white_discovered_attack_on_king_invalid_move(void **state);
+void test_position_make_move_black_discovered_attack_on_king_invalid_move(void **state);
 void test_position_make_move_white_king_valid_moves(void **state);
 void test_position_make_move_white_king_invalid_moves(void **state);
 void test_position_make_move_black_king_valid_moves(void **state);
@@ -69,6 +63,5 @@ void test_position_make_move_white_promotion(void **state);
 void test_position_make_move_black_promotion(void **state);
 void test_position_make_move_black_promotion_capture(void **state);
 void test_position_make_move_white_promotion_capture(void **state);
-void test_position_make_move_then_take_move_positions_restored_as_expected(
-    void **state);
+void test_position_make_move_then_take_move_positions_restored_as_expected(void **state);
 void test_position_make_move_sparse_board_black_to_move(void **state);

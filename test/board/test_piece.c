@@ -30,9 +30,7 @@
 #include "piece.h"
 #include <cmocka.h>
 
-static void label_piece_colour_validate(const char label,
-                                        const enum piece_role pt,
-                                        const enum colour col);
+static void label_piece_colour_validate(const char label, const enum piece_role pt, const enum colour col);
 
 void test_piece_get_piece_from_label(void **state) {
 
@@ -219,9 +217,7 @@ void test_piece_is_black(void **state) {
     assert_true(pce_is_black(pce));
 }
 
-static void label_piece_colour_validate(const char label,
-                                        const enum piece_role pt,
-                                        const enum colour col) {
+static void label_piece_colour_validate(const char label, const enum piece_role pt, const enum colour col) {
     enum piece pce = pce_get_from_label(label);
     assert_true(pce_get_piece_role(pce) == pt);
     assert_true(pce_get_colour(pce) == col);
