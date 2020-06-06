@@ -24,6 +24,14 @@
  *  SOFTWARE.
  */
 
+/*! @addtogroup Utils
+ *
+ * @ingroup Utils
+ * @{
+ * @details General utility functions for the engine
+ *
+ */
+
 #define _GNU_SOURCE
 #include "utils.h"
 #include <ctype.h>
@@ -100,4 +108,22 @@ double get_time_of_day_in_secs(void) {
 double get_elapsed_time_in_secs(double start_time) {
     double now_in_secs = get_time_of_day_in_secs();
     return (now_in_secs - start_time);
+}
+
+/**
+ * @brief Rounds a number down to the nearest power of 2
+ * 
+ * @param n the number
+ * @return uint64_t the rounded down number
+ */
+uint64_t round_down_to_nearest_power_2(uint64_t n) {
+    uint64_t res = 0;
+    for (uint64_t i = n; i >= 1; i--) {
+        // If i is a power of 2
+        if ((i & (i - 1)) == 0) {
+            res = i;
+            break;
+        }
+    }
+    return res;
 }

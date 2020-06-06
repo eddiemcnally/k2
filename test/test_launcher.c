@@ -39,6 +39,7 @@
 #include "test_position.h"
 #include "test_position_hist.h"
 #include "test_square.h"
+#include "test_transposition_table.h"
 #include <cmocka.h>
 #include <setjmp.h>
 
@@ -133,6 +134,11 @@ int main(void) {
         cmocka_unit_test(test_position_make_move_sparse_board_black_to_move),
         cmocka_unit_test(test_basic_evaluator_sample_white_position),
         cmocka_unit_test(test_basic_evaluator_sample_black_position),
+
+        // search
+        cmocka_unit_test(test_transposition_table_create_different_sizes_as_expected),
+        cmocka_unit_test(test_transposition_table_create_too_small_num_elems_zero),
+        cmocka_unit_test(test_transposition_table_add_multiple_all_present),
 
         // hashkey mgmt
         cmocka_unit_test(test_hashkeys_init_to_non_zero_value),

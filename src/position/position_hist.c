@@ -123,6 +123,14 @@ void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8
                        struct en_pass_active *en_passant, uint64_t *hashkey,
                        struct cast_perm_container *castle_perm_container, struct board *brd) {
 
+    assert(pos_history != NULL);
+    assert(mv != NULL);
+    assert(fifty_move_counter != NULL);
+    assert(en_passant != NULL);
+    assert(hashkey != NULL);
+    assert(castle_perm_container != NULL);
+    assert(brd != NULL);
+
     pos_history->num_used_slots--;
     pos_history->free_slot--;
 

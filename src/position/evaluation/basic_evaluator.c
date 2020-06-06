@@ -117,21 +117,23 @@ int32_t evaluate_position_basic(const struct position *pos) {
     struct piece_bitboards bb = {0};
     brd_clone_pce_bitboards(brd, &bb);
 
-    // evaluate white positions
+    // evaluate piece position (white is +ve, black is -ve)
     score += eval_white_pieces_on_square(bb.pce_bb[WHITE_PAWN_IDX], PAWN_SQ_VALUE);
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_BISHOP_IDX], BISHOP_SQ_VALUE);
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_KNIGHT_IDX], KNIGHT_SQ_VALUE);
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_ROOK_IDX], ROOK_SQ_VALUE);
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_QUEEN_IDX], QUEEN_SQ_VALUE);
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_KING_IDX], KING_SQ_VALUE);
-
-    // evaluate black positions
-    // NOTE subtraction
     score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_PAWN_IDX], PAWN_SQ_VALUE);
+
+    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_BISHOP_IDX], BISHOP_SQ_VALUE);
     score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_BISHOP_IDX], BISHOP_SQ_VALUE);
+
+    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_KNIGHT_IDX], KNIGHT_SQ_VALUE);
     score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_KNIGHT_IDX], KNIGHT_SQ_VALUE);
+
+    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_ROOK_IDX], ROOK_SQ_VALUE);
     score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_ROOK_IDX], ROOK_SQ_VALUE);
+
+    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_QUEEN_IDX], QUEEN_SQ_VALUE);
     score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_QUEEN_IDX], QUEEN_SQ_VALUE);
+
+    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_KING_IDX], KING_SQ_VALUE);
     score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_KING_IDX], KING_SQ_VALUE);
 
     if (pos_get_side_to_move(pos) == WHITE) {

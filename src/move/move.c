@@ -546,15 +546,16 @@ bool validate_move(const struct move mv) {
 // ==================================================================
 
 static inline struct move encode_from_to(const enum square from_sq, const enum square to_sq) {
-    uint16_t mv = 0;
 
-    uint16_t m = (uint16_t)(from_sq << MV_SHFT_FROM_SQ);
-    mv |= (uint16_t)(m & MV_MASK_FROM_SQ);
+    const uint16_t from_val = (uint16_t)(from_sq << MV_SHFT_FROM_SQ);
+    const uint16_t from_mv = (uint16_t)(from_val & MV_MASK_FROM_SQ);
 
-    m = (uint16_t)(to_sq << MV_SHFT_TO_SQ);
-    mv |= (uint16_t)(m & MV_MASK_TO_SQ);
+    const uint16_t to_val = (uint16_t)(to_sq << MV_SHFT_TO_SQ);
+    const uint16_t to_mv = (uint16_t)(to_val & MV_MASK_TO_SQ);
 
-    struct move mov = {.val = mv};
+    const uint16_t mv = from_mv | to_mv;
+    const struct move mov = {.val = mv};
+
     return mov;
 }
 

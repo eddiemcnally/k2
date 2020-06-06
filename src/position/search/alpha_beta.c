@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2020 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -24,12 +24,33 @@
  *  SOFTWARE.
  */
 
-#pragma once
+/*! @addtogroup Search
+ *
+ * @ingroup Alpha-Beta
+ * @{
+ * @details Implements the Alpha-Beta search function
+ *
+ */
 
-#include <stdint.h>
+#include "alpha_beta.h"
+#include "move_gen.h"
+#include "move_list.h"
 
-void set_priority_and_affinity(void);
-void print_stacktrace(void);
-double get_time_of_day_in_secs(void);
-double get_elapsed_time_in_secs(double start_time);
-uint64_t round_down_to_nearest_power_2(uint64_t n);
+int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct position *pos,
+                          struct search_data *search_info) {
+
+    if (depth == 0) {
+        // do quiesence search
+        return 0;
+    }
+
+    // todo:
+    // check repetition
+    // check 50 move rule
+    // check max depth
+    // check search_info->node count > MAX COUNT
+
+    struct move_list mv_list = mvl_initialise();
+
+    mv_gen_all_moves(pos, &mv_list);
+}

@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2020 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -24,12 +24,23 @@
  *  SOFTWARE.
  */
 
-#pragma once
+/*! @addtogroup Search
+ *
+ * @ingroup Search
+ * @{
+ * @details Functions associated with position search
+ *
+ */
 
-#include <stdint.h>
+#include "search.h"
+#include "alpha_beta.h"
+#include "board.h"
+#include "position.h"
 
-void set_priority_and_affinity(void);
-void print_stacktrace(void);
-double get_time_of_day_in_secs(void);
-double get_elapsed_time_in_secs(double start_time);
-uint64_t round_down_to_nearest_power_2(uint64_t n);
+void search_position(struct position *pos, struct search_data *search_info) {
+
+    uint8_t depth = 0;
+
+    for (depth = 1; depth <= search_info->search_depth; depth++) {
+    }
+}

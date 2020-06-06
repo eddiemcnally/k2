@@ -24,6 +24,7 @@ set(EVAL_DIR            ${K2_PROJECT_SOURCE_DIR}/position/evaluation)
 set(MOVE_DIR            ${K2_PROJECT_SOURCE_DIR}/move)
 set(UTILS_DIR           ${K2_PROJECT_SOURCE_DIR}/utils)
 set(PERFT_DIR           ${K2_PROJECT_SOURCE_DIR}/perft)
+set(SEARCH_DIR          ${K2_PROJECT_SOURCE_DIR}/position/search)
 
 
 message("Setting up K2 Engine source files...")
@@ -49,6 +50,7 @@ set (SOURCES
         ${UTILS_DIR}/rand.c
         ${PERFT_DIR}/perft_file_reader.c
         ${PERFT_DIR}/perft.c
+        ${SEARCH_DIR}/transposition_table.c
         )
 
 message("Setting up K2 Engine include files...")
@@ -63,6 +65,7 @@ set(INCLUDES
         ${MOVE_DIR}
         ${UTILS_DIR}
         ${PERFT_DIR}
+        ${SEARCH_DIR}
         )
 
 # Global variables to allow the test binary to access the main source files 

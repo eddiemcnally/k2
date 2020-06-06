@@ -30,9 +30,13 @@
 #include "square.h"
 #include <stdint.h>
 
+struct hashkey {
+    uint64_t hash;
+};
+
 void init_key_mgmt(void);
-uint64_t hash_piece_update(const enum piece pce, const enum square sq);
-uint64_t hash_side_update(void);
-uint64_t hash_castle_perm(const enum castle_permission cp);
-uint64_t hash_en_passant(const enum square sq);
-uint64_t hash_get_current_val(void);
+struct hashkey hash_piece_update(const enum piece pce, const enum square sq);
+struct hashkey hash_side_update(void);
+struct hashkey hash_castle_perm(const enum castle_permission cp);
+struct hashkey hash_en_passant(const enum square sq);
+struct hashkey hash_get_current_val(void);

@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2020 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -26,10 +26,10 @@
 
 #pragma once
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
-void set_priority_and_affinity(void);
-void print_stacktrace(void);
-double get_time_of_day_in_secs(void);
-double get_elapsed_time_in_secs(double start_time);
-uint64_t round_down_to_nearest_power_2(uint64_t n);
+struct search_data {
+    uint8_t search_depth;
+};

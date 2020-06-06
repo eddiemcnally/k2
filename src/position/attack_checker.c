@@ -38,6 +38,7 @@
 #include "occupancy_mask.h"
 #include "square.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -64,6 +65,11 @@ static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
 static bool is_king_attacking(const uint64_t king_bb, const enum square sq);
 
 bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const enum colour attacking_side) {
+
+    assert(validate_board(brd));
+    assert(validate_square(sq));
+    assert(validate_colour(attacking_side));
+
     struct cached_bitboard cached_bb;
 
     const enum rank sq_rank = sq_get_rank(sq);
@@ -84,14 +90,14 @@ bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const
     }
 
     // conflate rook and queen
-    uint64_t pce_bb = cached_bb.rook | cached_bb.queen;
-    if (is_horizontal_or_vertical_attacking(cached_bb.all_bb, pce_bb, sq, sq_rank, sq_file)) {
+    const uint64_t rook_queen_bb = cached_bb.rook | cached_bb.queen;
+    if (is_horizontal_or_vertical_attacking(cached_bb.all_bb, rook_queen_bb, sq, sq_rank, sq_file)) {
         return true;
     }
 
     // conflate bishop and queen
-    pce_bb = cached_bb.bishop | cached_bb.queen;
-    if (is_diagonally_attacked(cached_bb.all_bb, pce_bb, sq)) {
+    const uint64_t bishop_queen_bb = cached_bb.bishop | cached_bb.queen;
+    if (is_diagonally_attacked(cached_bb.all_bb, bishop_queen_bb, sq)) {
         return true;
     }
 
