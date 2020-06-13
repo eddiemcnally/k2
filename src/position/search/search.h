@@ -32,4 +32,13 @@
 
 struct search_data {
     uint8_t search_depth;
+
+    // stand pat handling
+    int32_t stand_pat_cutoff;
+    int32_t stand_pat_improvement;
+
+    // control search
+    bool search_stopped;
 };
+
+#define MAX_SEARCH_DEPTH 64

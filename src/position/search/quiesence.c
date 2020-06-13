@@ -33,3 +33,63 @@
  */
 
 #include "quiesence.h"
+#include "basic_evaluator.h"
+#include "move_gen.h"
+#include "move_list.h"
+
+static struct move_list mvl;
+static bool is_mvl_init = false;
+
+int32_t quiescence(struct position *pos, struct search_data *search, int32_t alpha, int32_t beta) {
+    if (is_mvl_init == false) {
+        is_mvl_init = true;
+        mvl_initialise(&mvl);
+    }
+    mvl_reset(&mvl);
+
+    // todo
+    // - check for time limit every 'n' moves
+    // - check on move repetitpon and 50-move counter
+
+    if (pos_get_ply(pos) > MAX_SEARCH_DEPTH - 1) {
+        return evaluate_position_basic(pos);
+    }
+
+    // stand pat
+    int32_t stand_pat_score = evaluate_position_basic(pos);
+    if (stand_pat_score >= beta) {
+        search->stand_pat_cutoff++;
+        return beta;
+    }
+    if (stand_pat_score > alpha) {
+        search->stand_pat_improvement++;
+        alpha = stand_pat_score;
+    }
+
+    mv_gen_only_capture_moves(pos, &mvl);
+
+    uint16_t num_moves = mvl.move_count;
+    for (uint16_t i = 0; i < num_moves; i++) {
+        struct move mv = mvl.move_list[i];
+        enum move_legality legality = pos_make_move(pos, mv);
+        if (legality == LEGAL_MOVE) {
+            // note: alpha/beta are swapped, and sign is reversed
+            int32_t score = -quiescence(pos, search, -beta, -alpha);
+            pos_take_move(pos);
+
+            if (search->search_stopped == true) {
+                // timed out
+                return 0;
+            }
+
+            if (score > alpha) {
+                if (score >= beta) {
+                    return beta;
+                }
+
+                alpha = score;
+            }
+        }
+    }
+    return alpha;
+}

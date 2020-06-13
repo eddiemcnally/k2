@@ -65,7 +65,8 @@ void test_move_gen_knight_white_1(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -89,7 +90,8 @@ void test_move_gen_knight_white_2(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -108,7 +110,8 @@ void test_move_gen_knight_white_3(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -132,7 +135,8 @@ void test_move_gen_knight_black_1(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -155,7 +159,8 @@ void test_move_gen_knight_black_2(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -181,7 +186,8 @@ void test_move_gen_knight_black_3(void **state) {
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -202,7 +208,8 @@ void test_move_gen_king_white_no_castling_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -222,7 +229,8 @@ void test_move_gen_king_white_no_castling_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -238,7 +246,8 @@ void test_move_gen_king_white_no_castling_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -254,7 +263,8 @@ void test_move_white_castling_WK_WQ(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -270,7 +280,8 @@ void test_move_white_castling_WK_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -286,7 +297,8 @@ void test_move_white_castling_WQ_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -302,7 +314,8 @@ void test_move_gen_king_black_no_castling_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -321,7 +334,8 @@ void test_move_gen_king_black_no_castling_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -337,7 +351,8 @@ void test_move_gen_king_black_no_castling_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -353,7 +368,8 @@ void test_move_black_castling_BK_BQ(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -369,7 +385,8 @@ void test_move_black_castling_BK_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -385,7 +402,8 @@ void test_move_black_castling_BQ_only(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -402,7 +420,8 @@ void test_move_white_pawns_promotion_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -438,7 +457,8 @@ void test_move_white_pawns_promotion_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -457,7 +477,8 @@ void test_move_white_pawns_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -476,7 +497,8 @@ void test_move_white_pawns_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -496,7 +518,8 @@ void test_move_white_pawns_first_move_double_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -516,7 +539,8 @@ void test_move_white_pawns_first_move_double_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -539,7 +563,8 @@ void test_move_white_pawns_en_passant_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -552,7 +577,8 @@ void test_move_white_pawns_en_passant_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -565,7 +591,8 @@ void test_move_white_pawns_en_passant_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -578,7 +605,8 @@ void test_move_black_pawns_promotion_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -594,7 +622,8 @@ void test_move_black_pawns_promotion_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -610,7 +639,8 @@ void test_move_black_pawns_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -634,7 +664,8 @@ void test_move_black_pawns_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -659,7 +690,8 @@ void test_move_black_pawns_first_move_double_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -678,7 +710,8 @@ void test_move_black_pawns_first_move_double_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -694,7 +727,8 @@ void test_move_black_pawns_en_passant_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -708,7 +742,8 @@ void test_move_black_pawns_en_passant_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -721,7 +756,8 @@ void test_move_black_pawns_en_passant_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -734,7 +770,8 @@ void test_move_white_bishop_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -758,7 +795,8 @@ void test_move_white_bishop_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -785,7 +823,8 @@ void test_move_white_bishop_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -808,7 +847,8 @@ void test_move_black_bishop_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -829,7 +869,8 @@ void test_move_black_bishop_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -857,7 +898,8 @@ void test_move_white_rook_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -877,7 +919,8 @@ void test_move_white_rook_2(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -904,7 +947,8 @@ void test_move_white_rook_3(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -920,7 +964,8 @@ void test_move_black_rook_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -944,7 +989,8 @@ void test_move_white_queen_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -968,7 +1014,8 @@ void test_move_black_queen_1(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -989,7 +1036,8 @@ void test_move_all_moves_4_knights_opening_white_to_move(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_all_moves(pos, &mvl);
 
@@ -1040,7 +1088,8 @@ void test_move_white_capture_only_moves(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_only_capture_moves(pos, &mvl);
     assert_true(mvl.move_count == 14);
@@ -1067,7 +1116,8 @@ void test_move_black_capture_only_moves(void **state) {
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
 
     mv_gen_only_capture_moves(pos, &mvl);
     assert_true(mvl.move_count == 16);

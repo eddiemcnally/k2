@@ -145,6 +145,10 @@ struct board *pos_get_board(const struct position *pos) {
     return pos->brd;
 }
 
+uint16_t pos_get_ply(const struct position *pos) {
+    return pos->ply;
+}
+
 /**
  * @brief       Gets the side to move from the position struct
  *

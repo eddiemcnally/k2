@@ -49,7 +49,9 @@ uint64_t do_perft(const uint8_t depth, struct position *pos) {
     }
 
     uint64_t nodes = 0;
-    struct move_list mvl = mvl_initialise();
+    struct move_list mvl;
+    mvl_initialise(&mvl);
+
     mv_gen_all_moves(pos, &mvl);
 
     //printf("generated move cnt %d\n", mvl.move_count);

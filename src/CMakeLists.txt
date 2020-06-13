@@ -51,6 +51,7 @@ set (SOURCES
         ${PERFT_DIR}/perft_file_reader.c
         ${PERFT_DIR}/perft.c
         ${SEARCH_DIR}/transposition_table.c
+        ${SEARCH_DIR}/quiesence.c
         )
 
 message("Setting up K2 Engine include files...")
