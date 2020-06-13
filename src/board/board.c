@@ -99,7 +99,7 @@ void brd_deallocate(struct board *brd) {
  * @param brd The board
  * @return A bitboard with a bit set for each occupier square
  */
-uint64_t brd_get_board_bb(const struct board *brd) {
+inline uint64_t brd_get_board_bb(const struct board *brd) {
     assert(validate_board(brd));
 
     return brd->bb_colour[WHITE] | brd->bb_colour[BLACK];

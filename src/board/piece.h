@@ -85,8 +85,8 @@ enum piece_offset {
 };
 
 #define IDX_SHIFT 4
-static const uint8_t ROLE_MASK = 0x07;
-static const uint8_t OFFSET_MASK = 0xF0;
+#define ROLE_MASK ((uint8_t)0x07)
+#define OFFSET_MASK ((uint8_t)0xF0)
 
 // array indices for pieces
 enum {

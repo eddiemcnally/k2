@@ -55,11 +55,11 @@ enum piece_values {
 #define COLOUR_SHIFT 3
 #define OFFSET_SHIFT 4
 
-static enum colour extract_colour(const enum piece pce);
-static enum piece_role extract_piece_role(const enum piece pce);
-
 static_assert(WHITE_OFFSET == WHITE, "Colour WHITE offset incorrect");
 static_assert(BLACK_OFFSET == BLACK, "Colour BLACK offset incorrect");
+
+#define extract_colour(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))
+#define extract_piece_role(pce) ((enum piece_role)(pce & ROLE_MASK))
 
 // ==================================================================
 //
@@ -74,7 +74,7 @@ static_assert(BLACK_OFFSET == BLACK, "Colour BLACK offset incorrect");
  * 
  * @return          the piece_type
  */
-enum piece_role pce_get_piece_role(const enum piece pce) {
+inline enum piece_role pce_get_piece_role(const enum piece pce) {
     assert(validate_piece(pce));
 
     return extract_piece_role(pce);
@@ -86,7 +86,7 @@ enum piece_role pce_get_piece_role(const enum piece pce) {
  * @param pce   The piece
  * @return true if WHITE, false otherwise
  */
-bool pce_is_white(const enum piece pce) {
+inline bool pce_is_white(const enum piece pce) {
     assert(validate_piece(pce));
 
     enum colour col = extract_colour(pce);
@@ -99,7 +99,7 @@ bool pce_is_white(const enum piece pce) {
  * @param pce   The piece
  * @return true if BLACK, false otherwise
  */
-bool pce_is_black(const enum piece pce) {
+inline bool pce_is_black(const enum piece pce) {
     assert(validate_piece(pce));
 
     enum colour col = extract_colour(pce);
@@ -112,7 +112,7 @@ bool pce_is_black(const enum piece pce) {
  * @param col   The given colour
  * @return      The opposite colour
  */
-enum colour pce_swap_side(const enum colour col) {
+inline enum colour pce_swap_side(const enum colour col) {
     assert(validate_colour(col));
 
     return (enum colour)(~col & 0x01);
@@ -124,7 +124,7 @@ enum colour pce_swap_side(const enum colour col) {
  * @param pce The piece
  * @return The colour of the given piece
  */
-enum colour pce_get_colour(const enum piece pce) {
+inline enum colour pce_get_colour(const enum piece pce) {
     assert(validate_piece(pce));
 
     return extract_colour(pce);
@@ -145,7 +145,7 @@ inline enum piece pce_get_no_piece(void) {
  * @param pt    The piece_type
  * @return      The piece value
  */
-uint32_t pce_get_value(const enum piece_role pt) {
+inline uint32_t pce_get_value(const enum piece_role pt) {
     assert(validate_piece_role(pt));
 
     switch (pt) {
@@ -173,7 +173,7 @@ uint32_t pce_get_value(const enum piece_role pt) {
 * @param pt         The piece
 * @return           uint8_t The array index
 */
-uint8_t pce_get_array_idx(const enum piece pce) {
+inline uint8_t pce_get_array_idx(const enum piece pce) {
     assert(validate_piece(pce));
 
     return (pce & OFFSET_MASK) >> OFFSET_SHIFT;
@@ -185,7 +185,7 @@ uint8_t pce_get_array_idx(const enum piece pce) {
 * @param col    p_col The colour
 * @return uint8_t The array index
 */
-uint8_t pce_col_get_array_idx(const enum colour col) {
+inline uint8_t pce_col_get_array_idx(const enum colour col) {
     assert(validate_colour(col));
 
     return (uint8_t)col;
@@ -196,7 +196,7 @@ uint8_t pce_col_get_array_idx(const enum colour col) {
 * @param        Pointer to array that is populated
 * @return       The array
 */
-void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]) {
+inline void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]) {
     int i = 0;
 
     pce_array[i++] = WHITE_PAWN;
@@ -391,15 +391,4 @@ bool validate_label(const char c) {
         assert(false);
     }
     return false;
-}
-
-static enum colour extract_colour(const enum piece pce) {
-    return (enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT);
-}
-
-static enum piece_role extract_piece_role(const enum piece pce) {
-    enum piece_role r = pce & ROLE_MASK;
-    assert(validate_piece_role(r));
-
-    return (enum piece_role)(r);
 }

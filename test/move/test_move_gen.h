@@ -86,3 +86,6 @@ void test_move_white_queen_1(void **state);
 void test_move_black_queen_1(void **state);
 
 void test_move_all_moves_4_knights_opening_white_to_move(void **state);
+
+void test_move_white_capture_only_moves(void **state);
+void test_move_black_capture_only_moves(void **state);

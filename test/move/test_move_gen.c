@@ -52,6 +52,13 @@ static bool contains_all_4_promotion_moves(const enum square from_sq, const enum
         assert_true(mvl_contains_move(&mvl, mv));                                                                      \
     })
 
+#define CONTAINS_PROMOTE(mvl, from, to, pce_role, is_capture)                                                          \
+    ({                                                                                                                 \
+        struct move mv;                                                                                                \
+        mv = move_encode_promoted(from, to, pce_role, is_capture);                                                     \
+        assert_true(mvl_contains_move(&mvl, mv));                                                                      \
+    })
+
 void test_move_gen_knight_white_1(void **state) {
     const char *RANDOM_FEN_1 = "R1n2b2/3p4/K1P2n2/1P2N2p/P2k1pN1/1P2p1Q1/Rpb1p3/1rB5 w - - 0 1\n";
 
@@ -1026,4 +1033,60 @@ void test_move_all_moves_4_knights_opening_white_to_move(void **state) {
     CONTAINS_QUIET(mvl, h1, g1);
 
     CONTAINS_CAPTURE(mvl, f3, e5);
+}
+
+void test_move_white_capture_only_moves(void **state) {
+    const char *RANDOM_FEN_1 = "6n1/2k2P2/7p/2bp1p2/rprP2P1/1PB1N1p1/5Pb1/2K5 w - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(RANDOM_FEN_1, pos);
+    struct move_list mvl = mvl_initialise();
+
+    mv_gen_only_capture_moves(pos, &mvl);
+    assert_true(mvl.move_count == 14);
+
+    CONTAINS_CAPTURE(mvl, b3, a4);
+    CONTAINS_CAPTURE(mvl, b3, c4);
+    CONTAINS_CAPTURE(mvl, c3, b4);
+    CONTAINS_CAPTURE(mvl, d4, c5);
+    CONTAINS_CAPTURE(mvl, e3, c4);
+    CONTAINS_CAPTURE(mvl, e3, d5);
+    CONTAINS_CAPTURE(mvl, e3, f5);
+    CONTAINS_CAPTURE(mvl, e3, g2);
+    CONTAINS_CAPTURE(mvl, f2, g3);
+    CONTAINS_CAPTURE(mvl, g4, f5);
+
+    CONTAINS_PROMOTE(mvl, f7, g8, QUEEN, true);
+    CONTAINS_PROMOTE(mvl, f7, g8, ROOK, true);
+    CONTAINS_PROMOTE(mvl, f7, g8, BISHOP, true);
+    CONTAINS_PROMOTE(mvl, f7, g8, KNIGHT, true);
+}
+
+void test_move_black_capture_only_moves(void **state) {
+    const char *RANDOM_FEN_1 = "r7/2k2P2/4P1Pp/2bp1p2/1prP1nP1/RPB1b3/3NP1p1/2K2N2 b - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(RANDOM_FEN_1, pos);
+    struct move_list mvl = mvl_initialise();
+
+    mv_gen_only_capture_moves(pos, &mvl);
+    assert_true(mvl.move_count == 16);
+
+    CONTAINS_CAPTURE(mvl, f4, e2);
+    CONTAINS_CAPTURE(mvl, f4, e6);
+    CONTAINS_CAPTURE(mvl, f4, g6);
+    CONTAINS_CAPTURE(mvl, e3, d2);
+    CONTAINS_CAPTURE(mvl, e3, d4);
+    CONTAINS_CAPTURE(mvl, c5, d4);
+    CONTAINS_CAPTURE(mvl, c4, c3);
+    CONTAINS_CAPTURE(mvl, c4, d4);
+    CONTAINS_CAPTURE(mvl, a8, a3);
+    CONTAINS_CAPTURE(mvl, b4, a3);
+    CONTAINS_CAPTURE(mvl, b4, c3);
+    CONTAINS_CAPTURE(mvl, f5, g4);
+
+    CONTAINS_PROMOTE(mvl, g2, f1, QUEEN, true);
+    CONTAINS_PROMOTE(mvl, g2, f1, ROOK, true);
+    CONTAINS_PROMOTE(mvl, g2, f1, BISHOP, true);
+    CONTAINS_PROMOTE(mvl, g2, f1, KNIGHT, true);
 }
