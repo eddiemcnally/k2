@@ -21,6 +21,12 @@ If installed, running 'make' will cause Doxygen to be executed against the sourc
 The generated output is written to the bin directory.
 
 
+## Clang
+K2 is built with Clang, and configured to use LTO (-flto).
+
+To install lto support (openSUSE):
+- sudo zypper install llvm-gold
+
 ## CMake and CTest
 k2 uses CMake (3.9 or later) and CTest.
 
