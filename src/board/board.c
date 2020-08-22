@@ -40,6 +40,14 @@
 #include <assert.h>
 
 /**
+ * @brief struct for containing bitboards for all piece locations
+ * 
+ */
+struct piece_bitboards {
+    uint64_t pce_bb[NUM_PIECES];
+};
+
+/**
  * @brief struct for containing the board
  * 
  */
@@ -240,16 +248,6 @@ void brd_move_piece(struct board *brd, const enum piece pce, const enum square f
     *pce_bb = bb_set_square(*pce_bb, to_sq);
     *col_bb = bb_set_square(*col_bb, to_sq);
     brd->pce_square[to_sq] = pce;
-}
-
-/**
- * @brief Clones all piece bitboards.
- * 
- * @param brd The board
- * @param pce_bb The destination 
- */
-void brd_clone_pce_bitboards(const struct board *brd, struct piece_bitboards *pce_bb) {
-    memcpy(pce_bb, &brd->pce_bitboards, sizeof(struct piece_bitboards));
 }
 
 /**

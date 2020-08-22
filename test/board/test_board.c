@@ -429,48 +429,6 @@ void test_board_brd_is_sq_occupied(void **state) {
     assert_false(brd_is_sq_occupied(brd, h8));
 }
 
-void test_brd_clone_pce_bitboards_as_expected(void **state) {
-
-    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
-                      "1bNnrQ2 w - - 0 1\n";
-
-    struct position *pos = pos_create();
-    pos_initialise(FEN, pos);
-
-    struct board *brd = pos_get_board(pos);
-
-    const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
-    const uint64_t wb_bb = brd_get_piece_bb(brd, WHITE_BISHOP);
-    const uint64_t wn_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
-    const uint64_t wr_bb = brd_get_piece_bb(brd, WHITE_ROOK);
-    const uint64_t wq_bb = brd_get_piece_bb(brd, WHITE_QUEEN);
-    const uint64_t wk_bb = brd_get_piece_bb(brd, WHITE_KING);
-    const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
-    const uint64_t bb_bb = brd_get_piece_bb(brd, BLACK_BISHOP);
-    const uint64_t bn_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
-    const uint64_t br_bb = brd_get_piece_bb(brd, BLACK_ROOK);
-    const uint64_t bq_bb = brd_get_piece_bb(brd, BLACK_QUEEN);
-    const uint64_t bk_bb = brd_get_piece_bb(brd, BLACK_KING);
-
-    struct piece_bitboards bb = {0};
-
-    brd_clone_pce_bitboards(brd, &bb);
-
-    assert_true(wp_bb == bb.pce_bb[pce_get_array_idx(WHITE_PAWN)]);
-    assert_true(wb_bb == bb.pce_bb[pce_get_array_idx(WHITE_BISHOP)]);
-    assert_true(wn_bb == bb.pce_bb[pce_get_array_idx(WHITE_KNIGHT)]);
-    assert_true(wr_bb == bb.pce_bb[pce_get_array_idx(WHITE_ROOK)]);
-    assert_true(wq_bb == bb.pce_bb[pce_get_array_idx(WHITE_QUEEN)]);
-    assert_true(wk_bb == bb.pce_bb[pce_get_array_idx(WHITE_KING)]);
-
-    assert_true(bp_bb == bb.pce_bb[pce_get_array_idx(BLACK_PAWN)]);
-    assert_true(bb_bb == bb.pce_bb[pce_get_array_idx(BLACK_BISHOP)]);
-    assert_true(bn_bb == bb.pce_bb[pce_get_array_idx(BLACK_KNIGHT)]);
-    assert_true(br_bb == bb.pce_bb[pce_get_array_idx(BLACK_ROOK)]);
-    assert_true(bq_bb == bb.pce_bb[pce_get_array_idx(BLACK_QUEEN)]);
-    assert_true(bk_bb == bb.pce_bb[pce_get_array_idx(BLACK_KING)]);
-}
-
 void test_board_brd_try_get_piece_on_square(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 w - - 0 1\n";

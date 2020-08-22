@@ -33,14 +33,12 @@
 void test_hashkeys_init_to_non_zero_value(void **state) {
 
     init_key_mgmt();
-    struct hashkey hash = hash_get_current_val();
+    struct hashkey hash = init_key_mgmt();
 
     assert_true(hash.hash != 0);
 }
 
 void test_hashkeys_all_pieces_all_squares_before_after_same(void **state) {
-
-    init_key_mgmt();
 
     enum piece pce_array[NUM_PIECES];
     pce_get_all_pieces(pce_array);
@@ -49,17 +47,17 @@ void test_hashkeys_all_pieces_all_squares_before_after_same(void **state) {
         enum piece pce = pce_array[p];
 
         for (enum square sq = a1; sq < h8; sq++) {
-
             // hash before
-            struct hashkey before_hash = hash_get_current_val();
+            struct hashkey before_hash = init_key_mgmt();
+            ;
             assert_true(before_hash.hash != 0);
 
             // flip the hash for piece/square
-            struct hashkey after_init_flip_hash = hash_piece_update(pce, sq);
+            struct hashkey after_init_flip_hash = hash_piece_update(pce, sq, before_hash);
             assert_true(before_hash.hash != after_init_flip_hash.hash);
 
             // flip again
-            struct hashkey after_second_flip_hash = hash_piece_update(pce, sq);
+            struct hashkey after_second_flip_hash = hash_piece_update(pce, sq, after_init_flip_hash);
             assert_true(after_init_flip_hash.hash != after_second_flip_hash.hash);
 
             // same as orig hash
@@ -70,13 +68,12 @@ void test_hashkeys_all_pieces_all_squares_before_after_same(void **state) {
 
 void test_hashkeys_update_side(void **state) {
 
-    init_key_mgmt();
-    struct hashkey init_hash = hash_get_current_val();
+    struct hashkey init_hash = init_key_mgmt();
 
-    struct hashkey after_first_flip = hash_side_update();
+    struct hashkey after_first_flip = hash_side_update(init_hash);
     assert_true(init_hash.hash != after_first_flip.hash);
 
-    struct hashkey after_second_flip = hash_side_update();
+    struct hashkey after_second_flip = hash_side_update(after_first_flip);
     assert_true(after_first_flip.hash != after_second_flip.hash);
 
     assert_true(init_hash.hash == after_second_flip.hash);
@@ -85,19 +82,18 @@ void test_hashkeys_update_side(void **state) {
 void test_hashkeys_update_castle_permissions(void **state) {
 
     enum castle_permission cp_list[NUM_CASTLE_PERMS] = {CP_NONE, CP_WK, CP_WQ, CP_BK, CP_BQ};
-    init_key_mgmt();
 
     for (int i = 0; i < NUM_CASTLE_PERMS; i++) {
         enum castle_permission cp = cp_list[i];
 
-        struct hashkey init_hash = hash_get_current_val();
+        struct hashkey init_hash = init_key_mgmt();
 
         // initial flip
-        struct hashkey after_init_flip = hash_castle_perm(cp);
+        struct hashkey after_init_flip = hash_castle_perm(cp, init_hash);
         assert_true(after_init_flip.hash != init_hash.hash);
 
         // second flip
-        struct hashkey after_second_flip = hash_castle_perm(cp);
+        struct hashkey after_second_flip = hash_castle_perm(cp, after_init_flip);
         assert_true(after_init_flip.hash != after_second_flip.hash);
 
         assert_true(init_hash.hash == after_second_flip.hash);
@@ -109,15 +105,15 @@ void test_hashkeys_all_en_passant_squares_before_after_same(void **state) {
     for (enum square sq = a1; sq < h8; sq++) {
 
         // hash before
-        struct hashkey before_hash = hash_get_current_val();
+        struct hashkey before_hash = init_key_mgmt();
         assert_true(before_hash.hash != 0);
 
         // flip the hash for the square
-        struct hashkey after_init_flip_hash = hash_en_passant(sq);
+        struct hashkey after_init_flip_hash = hash_en_passant(sq, before_hash);
         assert_true(before_hash.hash != after_init_flip_hash.hash);
 
         // flip again
-        struct hashkey after_second_flip_hash = hash_en_passant(sq);
+        struct hashkey after_second_flip_hash = hash_en_passant(sq, after_init_flip_hash);
         assert_true(after_init_flip_hash.hash != after_second_flip_hash.hash);
 
         // same as orig hash

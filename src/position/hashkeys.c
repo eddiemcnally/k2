@@ -42,14 +42,15 @@ static struct hashkey piece_keys[NUM_PIECES][NUM_SQUARES];
 static struct hashkey side_key;
 static struct hashkey castle_keys[NUM_CASTLE_PERMS];
 static struct hashkey en_passant_sq_keys[NUM_SQUARES];
-static struct hashkey hashkey;
 
 /**
  * @brief       Initialises the position hashkeys
  *
  */
-void init_key_mgmt(void) {
+struct hashkey init_key_mgmt(void) {
     init_prng();
+
+    struct hashkey hashkey;
 
     hashkey.hash = 0;
 
@@ -76,64 +77,66 @@ void init_key_mgmt(void) {
 
         hashkey.hash ^= castle_keys[i].hash;
     }
+    return hashkey;
 }
 
 /**
- * @brief       Flips the hash based on the piece and square
- * @param pce   The piece 
- * @param sq    The square
- * @return      The updated hash key
+ * @brief               Flips the hash based on the piece and square
+ * @param pce           The piece 
+ * @param sq            The square
+ * @param key_to_modify The hashkey to modify
+ * @return              The updated hash key
  */
-struct hashkey hash_piece_update(const enum piece pce, const enum square sq) {
+struct hashkey hash_piece_update(const enum piece pce, const enum square sq, const struct hashkey key_to_modify) {
 
     assert(validate_piece(pce));
     assert(validate_square(sq));
 
-    uint8_t pce_off = pce_get_array_idx(pce);
+    const uint8_t pce_off = pce_get_array_idx(pce);
+    const uint64_t new_hash = key_to_modify.hash ^ piece_keys[pce_off][sq].hash;
 
-    hashkey.hash ^= piece_keys[pce_off][sq].hash;
-    return hashkey;
+    const struct hashkey retval = {.hash = new_hash};
+    return retval;
 }
 
 /**
- * @brief       Flips the hash for the side
- * @return      The updated hash key
+ * @brief               Flips the hash for the side
+ * @param key_to_modify The hashkey to modify
+ * @return              The updated hash key
  */
-struct hashkey hash_side_update(void) {
-    hashkey.hash ^= side_key.hash;
-    return hashkey;
+struct hashkey hash_side_update(const struct hashkey key_to_modify) {
+    const uint64_t new_hash = key_to_modify.hash ^ side_key.hash;
+
+    const struct hashkey retval = {.hash = new_hash};
+    return retval;
 }
 
 /**
- * @brief       Flips the hash for the en passant square
- * @return      The updated hash key
+ * @brief               Flips the hash for the en passant square
+ * @param key_to_modify The hashkey to modify
+ * @return              The updated hash key
  */
-struct hashkey hash_en_passant(const enum square sq) {
+struct hashkey hash_en_passant(const enum square sq, const struct hashkey key_to_modify) {
     assert(validate_square(sq));
 
-    hashkey.hash ^= en_passant_sq_keys[sq].hash;
-    return hashkey;
+    const uint64_t new_hash = key_to_modify.hash ^ en_passant_sq_keys[sq].hash;
+    const struct hashkey retval = {.hash = new_hash};
+    return retval;
 }
 
 /**
- * @brief       Flips the hash based on the castle permissions
- * @param pce   The piece 
- * @param sq    The square
- * @return      The updated hash key
+ * @brief               Flips the hash based on the castle permissions
+ * @param pce           The piece 
+ * @param sq            The square
+ * @param key_to_modify The hashkey to modify
+ * @return              The updated hash key
  */
-struct hashkey hash_castle_perm(const enum castle_permission cp) {
+struct hashkey hash_castle_perm(const enum castle_permission cp, const struct hashkey key_to_modify) {
 
     assert(validate_castle_permission(cp));
 
-    uint8_t cp_off = cast_perm_get_offset(cp);
-    hashkey.hash ^= castle_keys[cp_off].hash;
-    return hashkey;
-}
-
-/**
- * @brief       Returns the current hash key
- * @return      The current hash key
- */
-struct hashkey hash_get_current_val(void) {
-    return hashkey;
+    const uint8_t cp_off = cast_perm_get_offset(cp);
+    const uint64_t new_hash = key_to_modify.hash ^ castle_keys[cp_off].hash;
+    const struct hashkey retval = {.hash = new_hash};
+    return retval;
 }

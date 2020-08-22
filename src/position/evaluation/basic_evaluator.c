@@ -114,27 +114,24 @@ int32_t evaluate_position_basic(const struct position *pos) {
 
     int32_t score = (int32_t)(white_material - black_material);
 
-    struct piece_bitboards bb = {0};
-    brd_clone_pce_bitboards(brd, &bb);
-
     // evaluate piece position (white is +ve, black is -ve)
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_PAWN_IDX], PAWN_SQ_VALUE);
-    score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_PAWN_IDX], PAWN_SQ_VALUE);
+    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_PAWN), PAWN_SQ_VALUE);
+    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_PAWN), PAWN_SQ_VALUE);
 
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_BISHOP_IDX], BISHOP_SQ_VALUE);
-    score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_BISHOP_IDX], BISHOP_SQ_VALUE);
+    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_BISHOP), BISHOP_SQ_VALUE);
+    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_BISHOP), BISHOP_SQ_VALUE);
 
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_KNIGHT_IDX], KNIGHT_SQ_VALUE);
-    score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_KNIGHT_IDX], KNIGHT_SQ_VALUE);
+    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_KNIGHT), KNIGHT_SQ_VALUE);
+    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_KNIGHT), KNIGHT_SQ_VALUE);
 
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_ROOK_IDX], ROOK_SQ_VALUE);
-    score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_ROOK_IDX], ROOK_SQ_VALUE);
+    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_ROOK), ROOK_SQ_VALUE);
+    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_ROOK), ROOK_SQ_VALUE);
 
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_QUEEN_IDX], QUEEN_SQ_VALUE);
-    score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_QUEEN_IDX], QUEEN_SQ_VALUE);
+    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_QUEEN), QUEEN_SQ_VALUE);
+    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_QUEEN), QUEEN_SQ_VALUE);
 
-    score += eval_white_pieces_on_square(bb.pce_bb[WHITE_KING_IDX], KING_SQ_VALUE);
-    score -= eval_black_pieces_on_square(bb.pce_bb[BLACK_KING_IDX], KING_SQ_VALUE);
+    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_KING), KING_SQ_VALUE);
+    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_KING), KING_SQ_VALUE);
 
     if (pos_get_side_to_move(pos) == WHITE) {
         return score;

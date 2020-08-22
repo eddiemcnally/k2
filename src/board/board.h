@@ -38,15 +38,10 @@ struct board;
 
 #define BOARD_SIZE_BYTES ((int)184)
 
-struct piece_bitboards {
-    uint64_t pce_bb[NUM_PIECES];
-};
-
 struct board *brd_allocate(void);
 void brd_deallocate(struct board *brd);
 bool validate_board(const struct board *brd);
 
-void brd_clone_pce_bitboards(const struct board *brd, struct piece_bitboards *pce_bb);
 bool brd_is_sq_occupied(const struct board *brd, const enum square sq);
 bool brd_try_get_piece_on_square(const struct board *brd, const enum square sq, enum piece *pce);
 void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq);

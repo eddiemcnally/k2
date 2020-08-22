@@ -168,7 +168,6 @@ int main(void) {
         cmocka_unit_test(test_board_brd_get_board_bb),
         cmocka_unit_test(test_board_compare),
         cmocka_unit_test(test_board_clone),
-        cmocka_unit_test(test_brd_clone_pce_bitboards_as_expected),
 
         // square
         cmocka_unit_test(test_square_sq_get_rank),

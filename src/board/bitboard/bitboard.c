@@ -117,7 +117,7 @@ inline uint8_t bb_count_bits(const uint64_t bb) {
 }
 
 /**
- * @brief       Pops the lowest set bit, and clears the bit in the bitboard.  Uses gcc built-in function
+ * @brief       Pops the lowest set bit.  Uses gcc built-in function
  * (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
  *
  * @param bb    The bitboard

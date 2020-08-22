@@ -34,9 +34,8 @@ struct hashkey {
     uint64_t hash;
 };
 
-void init_key_mgmt(void);
-struct hashkey hash_piece_update(const enum piece pce, const enum square sq);
-struct hashkey hash_side_update(void);
-struct hashkey hash_castle_perm(const enum castle_permission cp);
-struct hashkey hash_en_passant(const enum square sq);
-struct hashkey hash_get_current_val(void);
+struct hashkey init_key_mgmt(void);
+struct hashkey hash_piece_update(const enum piece pce, const enum square sq, const struct hashkey key_to_modify);
+struct hashkey hash_side_update(const struct hashkey key_to_modify);
+struct hashkey hash_castle_perm(const enum castle_permission cp, const struct hashkey key_to_modify);
+struct hashkey hash_en_passant(const enum square sq, const struct hashkey key_to_modify);

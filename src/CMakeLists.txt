@@ -126,10 +126,12 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fsh
 -fomit-frame-pointer \
 -DNDEBUG \
 -flto=full \
--O3 \
+-Ofast \
+-funroll-loops \
 -m64 \
 -Winline \
--march=native")
+-march=native \
+-mtune=native")
 
 
 
