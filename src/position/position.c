@@ -441,11 +441,11 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
         // king moved, reset castle permissions
         const enum colour side = pce_get_colour(pce_being_moved);
         if (side == WHITE) {
-            pos_update_castle_perm(pos, CP_WK, false);
-            pos_update_castle_perm(pos, CP_WQ, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
         } else {
-            pos_update_castle_perm(pos, CP_BK, false);
-            pos_update_castle_perm(pos, CP_BQ, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
         }
     } else if (pce_role == ROOK) {
         // rook moved, reset castle permissions
@@ -453,10 +453,10 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
         if (side == WHITE) {
             switch (from_sq) {
             case a1:
-                pos_update_castle_perm(pos, CP_WQ, false);
+                pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
                 break;
             case h1:
-                pos_update_castle_perm(pos, CP_WK, false);
+                pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
                 break;
             default:
                 break;
@@ -464,10 +464,10 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
         } else {
             switch (from_sq) {
             case a8:
-                pos_update_castle_perm(pos, CP_BQ, false);
+                pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
                 break;
             case h8:
-                pos_update_castle_perm(pos, CP_BK, false);
+                pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
                 break;
             default:
                 break;
@@ -478,16 +478,16 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
     if (move_is_capture(mv)) {
         switch (to_sq) {
         case a8:
-            pos_update_castle_perm(pos, CP_BQ, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
             break;
         case h8:
-            pos_update_castle_perm(pos, CP_BK, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
             break;
         case a1:
-            pos_update_castle_perm(pos, CP_WQ, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
             break;
         case h1:
-            pos_update_castle_perm(pos, CP_WK, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
             break;
         default:
             break;
@@ -573,8 +573,8 @@ static void make_castle_piece_moves(struct position *pos, const struct move cast
         } else {
             assert(false);
         }
-        pos_update_castle_perm(pos, CP_WK, false);
-        pos_update_castle_perm(pos, CP_WQ, false);
+        pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+        pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
         break;
     case BLACK:
         if (is_king_side) {
@@ -586,8 +586,8 @@ static void make_castle_piece_moves(struct position *pos, const struct move cast
         } else {
             assert(false);
         }
-        pos_update_castle_perm(pos, CP_BK, false);
-        pos_update_castle_perm(pos, CP_BQ, false);
+        pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+        pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
         break;
     default:
         assert(false);
@@ -681,19 +681,19 @@ static bool validate_en_passant_pce_and_sq(const struct position *pos) {
 
 static void set_up_castle_permissions(struct position *pos, const struct parsed_fen *fen) {
 
-    pos_update_castle_perm(pos, CP_NONE, true);
+    pos_update_castle_perm(pos, CASTLE_PERM_NONE, true);
 
     if (fen_has_wk_castle_perms(fen)) {
-        pos_update_castle_perm(pos, CP_WK, true);
+        pos_update_castle_perm(pos, CASTLE_PERM_WK, true);
     }
     if (fen_has_wq_castle_perms(fen)) {
-        pos_update_castle_perm(pos, CP_WQ, true);
+        pos_update_castle_perm(pos, CASTLE_PERM_WQ, true);
     }
     if (fen_has_bk_castle_perms(fen)) {
-        pos_update_castle_perm(pos, CP_BK, true);
+        pos_update_castle_perm(pos, CASTLE_PERM_BK, true);
     }
     if (fen_has_bq_castle_perms(fen)) {
-        pos_update_castle_perm(pos,CP_BQ, true);
+        pos_update_castle_perm(pos,CASTLE_PERM_BQ, true);
     }
 }
 

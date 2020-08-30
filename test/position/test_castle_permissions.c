@@ -33,36 +33,36 @@
 void test_castle_permissions_get_set(void **state) {
     struct cast_perm_container cp = {.val = 0};
 
-    cast_perm_set_permission(CP_WK, &cp, true);
-    assert_true(cast_perm_has_permission(CP_WK, cp));
-    cast_perm_set_permission(CP_WK, &cp, false);
-    assert_false(cast_perm_has_permission(CP_WK, cp));
+    cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    cast_perm_set_permission(CASTLE_PERM_WK, &cp, false);
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
 
-    cast_perm_set_permission(CP_WQ, &cp, true);
-    assert_true(cast_perm_has_permission(CP_WQ, cp));
-    cast_perm_set_permission(CP_WQ, &cp, false);
-    assert_false(cast_perm_has_permission(CP_WQ, cp));
+    cast_perm_set_permission(CASTLE_PERM_WQ, &cp, true);
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    cast_perm_set_permission(CASTLE_PERM_WQ, &cp, false);
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
 
-    cast_perm_set_permission(CP_BK, &cp, true);
-    assert_true(cast_perm_has_permission(CP_BK, cp));
-    cast_perm_set_permission(CP_BK, &cp, false);
-    assert_false(cast_perm_has_permission(CP_BK, cp));
+    cast_perm_set_permission(CASTLE_PERM_BK, &cp, true);
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    cast_perm_set_permission(CASTLE_PERM_BK, &cp, false);
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
 
-    cast_perm_set_permission(CP_BQ, &cp, true);
-    assert_true(cast_perm_has_permission(CP_BQ, cp));
-    cast_perm_set_permission(CP_BQ, &cp, false);
-    assert_false(cast_perm_has_permission(CP_BQ, cp));
+    cast_perm_set_permission(CASTLE_PERM_BQ, &cp, true);
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    cast_perm_set_permission(CASTLE_PERM_BQ, &cp, false);
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
 }
 
 void test_castle_permissions_no_perms_get_set(void **state) {
 
     struct cast_perm_container cp = {.val = 0};
 
-    cast_perm_set_permission(CP_NONE, &cp, true);
-    assert_false(cast_perm_has_permission(CP_WK, cp));
-    assert_false(cast_perm_has_permission(CP_WQ, cp));
-    assert_false(cast_perm_has_permission(CP_BK, cp));
-    assert_false(cast_perm_has_permission(CP_BQ, cp));
+    cast_perm_set_permission(CASTLE_PERM_NONE, &cp, true);
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
 
-    assert_true(cast_perm_has_permission(CP_NONE, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_NONE, cp));
 }

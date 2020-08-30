@@ -60,7 +60,7 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(void **state) 
         struct move mv = move_encode_quiet(a1, a3);
         struct en_pass_active en_pass = {.is_active = false};
         struct cast_perm_container cp;
-        cast_perm_set_permission(CP_WK, &cp, true);
+        cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
 
         struct hashkey hashkey;
         hashkey.hash = (uint64_t)(i * i);

@@ -38,24 +38,24 @@ struct mv_from_to {
 
 void test_position_get_set_castle_permissions(void **state) {
     struct cast_perm_container cp = {.val = 0};
-    cast_perm_set_permission(CP_WK, &cp, true);
+    cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
     struct position *pos = pos_create();
 
     pos_set_cast_perm(pos, cp);
     struct cast_perm_container retrieved_cp = pos_get_cast_perm(pos);
     assert_true(cast_compare_perms(cp, retrieved_cp));
 
-    cast_perm_set_permission(CP_WQ, &cp, true);
+    cast_perm_set_permission(CASTLE_PERM_WQ, &cp, true);
     pos_set_cast_perm(pos, cp);
     retrieved_cp = pos_get_cast_perm(pos);
     assert_true(cast_compare_perms(cp, retrieved_cp));
 
-    cast_perm_set_permission(CP_WK, &cp, true);
+    cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
     pos_set_cast_perm(pos, cp);
     retrieved_cp = pos_get_cast_perm(pos);
     assert_true(cast_compare_perms(cp, retrieved_cp));
 
-    cast_perm_set_permission(CP_BQ, &cp, true);
+    cast_perm_set_permission(CASTLE_PERM_BQ, &cp, true);
     pos_set_cast_perm(pos, cp);
     retrieved_cp = pos_get_cast_perm(pos);
     assert_true(cast_compare_perms(cp, retrieved_cp));
@@ -208,10 +208,10 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CP_WK, start_cp));
-    assert_true(cast_perm_has_permission(CP_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CP_BK, start_cp));
-    assert_true(cast_perm_has_permission(CP_BQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
 
     struct move wk_castle = move_encode_castle_kingside(WHITE);
 
@@ -232,10 +232,10 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_false(cast_perm_has_permission(CP_WK, cp));
-    assert_false(cast_perm_has_permission(CP_WQ, cp));
-    assert_true(cast_perm_has_permission(CP_BK, cp));
-    assert_true(cast_perm_has_permission(CP_BQ, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
 }
 
 void test_position_make_move_castle_white_queenside_move_valid_position_updated(void **state) {
@@ -264,10 +264,10 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CP_WK, start_cp));
-    assert_true(cast_perm_has_permission(CP_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CP_BK, start_cp));
-    assert_true(cast_perm_has_permission(CP_BQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
 
     struct move wk_castle = move_encode_castle_queenside(WHITE);
 
@@ -288,10 +288,10 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_false(cast_perm_has_permission(CP_WK, cp));
-    assert_false(cast_perm_has_permission(CP_WQ, cp));
-    assert_true(cast_perm_has_permission(CP_BK, cp));
-    assert_true(cast_perm_has_permission(CP_BQ, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
 }
 
 void test_position_make_move_castle_black_queenside_move_valid_position_updated(void **state) {
@@ -322,10 +322,10 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CP_WK, start_cp));
-    assert_true(cast_perm_has_permission(CP_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CP_BK, start_cp));
-    assert_true(cast_perm_has_permission(CP_BQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
 
     struct move bq_castle = move_encode_castle_queenside(BLACK);
 
@@ -346,10 +346,10 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CP_WK, cp));
-    assert_true(cast_perm_has_permission(CP_WQ, cp));
-    assert_false(cast_perm_has_permission(CP_BK, cp));
-    assert_false(cast_perm_has_permission(CP_BQ, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
 }
 
 void test_position_make_move_castle_black_kingside_move_valid_position_updated(void **state) {
@@ -378,10 +378,10 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CP_WK, start_cp));
-    assert_true(cast_perm_has_permission(CP_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CP_BK, start_cp));
-    assert_true(cast_perm_has_permission(CP_BQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
 
     struct move bk_castle = move_encode_castle_kingside(BLACK);
 
@@ -402,10 +402,10 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CP_WK, cp));
-    assert_true(cast_perm_has_permission(CP_WQ, cp));
-    assert_false(cast_perm_has_permission(CP_BK, cp));
-    assert_false(cast_perm_has_permission(CP_BQ, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
 }
 
 void test_position_make_move_castle_white_kingside_move_invalid(void **state) {

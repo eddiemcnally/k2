@@ -67,15 +67,15 @@ struct cast_perm_container cast_perm_init(void) {
  */
 bool cast_perm_has_permission(const enum castle_permission cp, const struct cast_perm_container cp_cont) {
     switch (cp) {
-    case CP_NONE:
+    case CASTLE_PERM_NONE:
         return cp_cont.val == 0;
-    case CP_WQ:
+    case CASTLE_PERM_WQ:
         return (cp_cont.val & CAST_PERM_WQ) != 0;
-    case CP_WK:
+    case CASTLE_PERM_WK:
         return (cp_cont.val & CAST_PERM_WK) != 0;
-    case CP_BQ:
+    case CASTLE_PERM_BQ:
         return (cp_cont.val & CAST_PERM_BQ) != 0;
-    case CP_BK:
+    case CASTLE_PERM_BK:
         return (cp_cont.val & CAST_PERM_BK) != 0;
     default:
         assert(false);
@@ -98,19 +98,19 @@ void cast_perm_clear_black_permissions(struct cast_perm_container *cp_cont) {
  */
 void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *cp_cont, const bool state) {
     switch (cp) {
-    case CP_NONE:
+    case CASTLE_PERM_NONE:
         cp_cont->val = 0;
         break;
-    case CP_WQ:
+    case CASTLE_PERM_WQ:
         set_perm_state(cp_cont, CAST_PERM_WQ, state);
         break;
-    case CP_WK:
+    case CASTLE_PERM_WK:
         set_perm_state(cp_cont, CAST_PERM_WK, state);
         break;
-    case CP_BQ:
+    case CASTLE_PERM_BQ:
         set_perm_state(cp_cont, CAST_PERM_BQ, state);
         break;
-    case CP_BK:
+    case CASTLE_PERM_BK:
         set_perm_state(cp_cont, CAST_PERM_BK, state);
         break;
     default:
@@ -125,15 +125,15 @@ void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_
  */
 uint8_t cast_perm_get_offset(const enum castle_permission cp) {
     switch (cp) {
-    case CP_NONE:
+    case CASTLE_PERM_NONE:
         return OFFSET_CAST_PERM_NONE;
-    case CP_WQ:
+    case CASTLE_PERM_WQ:
         return OFFSET_CAST_PERM_WQ;
-    case CP_WK:
+    case CASTLE_PERM_WK:
         return OFFSET_CAST_PERM_WK;
-    case CP_BQ:
+    case CASTLE_PERM_BQ:
         return OFFSET_CAST_PERM_BQ;
-    case CP_BK:
+    case CASTLE_PERM_BK:
         return OFFSET_CAST_PERM_BK;
     default:
         assert(false);
@@ -152,11 +152,11 @@ bool validate_castle_permissions(const struct cast_perm_container cp) {
 
 bool validate_castle_permission(const enum castle_permission cp) {
     switch (cp) {
-    case CP_NONE:
-    case CP_WK:
-    case CP_WQ:
-    case CP_BK:
-    case CP_BQ:
+    case CASTLE_PERM_NONE:
+    case CASTLE_PERM_WK:
+    case CASTLE_PERM_WQ:
+    case CASTLE_PERM_BK:
+    case CASTLE_PERM_BQ:
         return true;
     default:
         return false;

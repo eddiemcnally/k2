@@ -37,11 +37,11 @@ struct cast_perm_container {
 };
 
 enum castle_permission {
-    CP_NONE = 0,
-    CP_WQ,
-    CP_WK,
-    CP_BQ,
-    CP_BK,
+    CASTLE_PERM_NONE = 0,
+    CASTLE_PERM_WQ,
+    CASTLE_PERM_WK,
+    CASTLE_PERM_BQ,
+    CASTLE_PERM_BK,
 };
 
 // include the "no-permisisons" state
