@@ -37,6 +37,7 @@
 #include "board.h"
 #include "castle_perms.h"
 #include "fen.h"
+#include "hashkeys.h"
 #include "move.h"
 #include "position_hist.h"
 #include <assert.h>
@@ -49,7 +50,7 @@ struct position {
     uint16_t struct_init_key;
 
     // position hash
-    uint64_t hashkey;
+    struct hashkey hashkey;
 
     // current board representation
     struct board *brd;
@@ -86,6 +87,11 @@ static enum move_legality get_move_legal_status(const struct position *pos, cons
 static bool is_castle_move_legal(const struct position *pos, const struct move mov, const enum colour side_to_move,
                                  const enum colour attacking_side);
 static void update_castle_perms(struct position *pos, const struct move mv, const enum piece pce_being_moved);
+static void pos_move_piece(struct position *pos, const enum piece pce, const enum square from_sq,
+                           const enum square to_sq);
+static void pos_remove_piece(struct position *pos, const enum piece pce, const enum square sq);
+static void pos_add_piece(struct position *pos, const enum piece pce, const enum square sq);
+static void pos_update_castle_perm(struct position *pos, const enum castle_permission perm, const bool perm_state);
 
 // set up bitboards for all squares that need to be checked when
 // testing castle move validity
@@ -241,12 +247,12 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
 
     if (move_is_quiet(mv)) {
         // normal quiet move
-        brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
+        pos_move_piece(pos, pce_to_move, from_sq, to_sq);
     } else if (move_is_double_pawn(mv)) {
         pos->en_passant.sq = get_en_pass_sq(pos->side_to_move, from_sq);
         pos->en_passant.is_active = true;
 
-        brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
+        pos_move_piece(pos, pce_to_move, from_sq, to_sq);
 
     } else if (move_is_castle(mv)) {
         make_castle_piece_moves(pos, mv);
@@ -264,7 +270,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
                 return false;
             }
 
-            brd_remove_piece(pos->brd, pce_being_captured, to_sq);
+            pos_remove_piece(pos, pce_being_captured, to_sq);
         }
         enum piece pce_prom;
         bool decoded_ok = try_move_decode_promotion_piece(mv, pos->side_to_move, &pce_prom);
@@ -273,8 +279,8 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
             assert(false);
             return false;
         }
-        brd_remove_piece(pos->brd, pce_to_move, from_sq);
-        brd_add_piece(pos->brd, pce_prom, to_sq);
+        pos_remove_piece(pos, pce_to_move, from_sq);
+        pos_add_piece(pos, pce_prom, to_sq);
 
     } else if (move_is_capture(mv)) {
         do_capture_move(pos, mv, from_sq, to_sq, pce_to_move);
@@ -404,12 +410,12 @@ static void do_capture_move(struct position *pos, const struct move mv, const en
             assert(false);
             return;
         }
-        brd_remove_piece(pos->brd, pce_to_move, from_sq);
-        brd_remove_piece(pos->brd, pce_to_move, to_sq);
-        brd_add_piece(pos->brd, pce_prom, to_sq);
+        pos_remove_piece(pos, pce_to_move, from_sq);
+        pos_remove_piece(pos, pce_to_move, to_sq);
+        pos_add_piece(pos, pce_prom, to_sq);
     } else {
-        brd_remove_piece(pos->brd, pce_capt, to_sq);
-        brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
+        pos_remove_piece(pos, pce_capt, to_sq);
+        pos_move_piece(pos, pce_to_move, from_sq, to_sq);
     }
 }
 
@@ -427,9 +433,11 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
         // king moved, reset castle permissions
         const enum colour side = pce_get_colour(pce_being_moved);
         if (side == WHITE) {
-            cast_perm_clear_white_permissions(&pos->castle_perm_container);
+            pos_update_castle_perm(pos, CP_WK, false);
+            pos_update_castle_perm(pos, CP_WQ, false);
         } else {
-            cast_perm_clear_black_permissions(&pos->castle_perm_container);
+            pos_update_castle_perm(pos, CP_BK, false);
+            pos_update_castle_perm(pos, CP_BQ, false);
         }
     } else if (pce_role == ROOK) {
         // rook moved, reset castle permissions
@@ -437,10 +445,10 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
         if (side == WHITE) {
             switch (from_sq) {
             case a1:
-                cast_perm_set_permission(CP_WQ, &pos->castle_perm_container, false);
+                pos_update_castle_perm(pos, CP_WQ, false);
                 break;
             case h1:
-                cast_perm_set_permission(CP_WK, &pos->castle_perm_container, false);
+                pos_update_castle_perm(pos, CP_WK, false);
                 break;
             default:
                 break;
@@ -448,10 +456,10 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
         } else {
             switch (from_sq) {
             case a8:
-                cast_perm_set_permission(CP_BQ, &pos->castle_perm_container, false);
+                pos_update_castle_perm(pos, CP_BQ, false);
                 break;
             case h8:
-                cast_perm_set_permission(CP_BK, &pos->castle_perm_container, false);
+                pos_update_castle_perm(pos, CP_BK, false);
                 break;
             default:
                 break;
@@ -462,16 +470,16 @@ static void update_castle_perms(struct position *pos, const struct move mv, cons
     if (move_is_capture(mv)) {
         switch (to_sq) {
         case a8:
-            cast_perm_set_permission(CP_BQ, &pos->castle_perm_container, false);
+            pos_update_castle_perm(pos, CP_BQ, false);
             break;
         case h8:
-            cast_perm_set_permission(CP_BK, &pos->castle_perm_container, false);
+            pos_update_castle_perm(pos, CP_BK, false);
             break;
         case a1:
-            cast_perm_set_permission(CP_WQ, &pos->castle_perm_container, false);
+            pos_update_castle_perm(pos, CP_WQ, false);
             break;
         case h1:
-            cast_perm_set_permission(CP_WK, &pos->castle_perm_container, false);
+            pos_update_castle_perm(pos, CP_WK, false);
             break;
         default:
             break;
@@ -549,29 +557,29 @@ static void make_castle_piece_moves(struct position *pos, const struct move cast
     switch (side) {
     case WHITE:
         if (is_king_side) {
-            brd_move_piece(pos->brd, pce_wk, e1, g1);
-            brd_move_piece(pos->brd, pce_wr, h1, f1);
+            pos_move_piece(pos, pce_wk, e1, g1);
+            pos_move_piece(pos, pce_wr, h1, f1);
         } else if (is_queen_side) {
-            brd_move_piece(pos->brd, pce_wk, e1, c1);
-            brd_move_piece(pos->brd, pce_wr, a1, d1);
+            pos_move_piece(pos, pce_wk, e1, c1);
+            pos_move_piece(pos, pce_wr, a1, d1);
         } else {
             assert(false);
         }
-        cast_perm_set_permission(CP_WK, &pos->castle_perm_container, false);
-        cast_perm_set_permission(CP_WQ, &pos->castle_perm_container, false);
+        pos_update_castle_perm(pos, CP_WK, false);
+        pos_update_castle_perm(pos, CP_WQ, false);
         break;
     case BLACK:
         if (is_king_side) {
-            brd_move_piece(pos->brd, pce_bk, e8, g8);
-            brd_move_piece(pos->brd, pce_br, h8, f8);
+            pos_move_piece(pos, pce_bk, e8, g8);
+            pos_move_piece(pos, pce_br, h8, f8);
         } else if (is_queen_side) {
-            brd_move_piece(pos->brd, pce_bk, e8, c8);
-            brd_move_piece(pos->brd, pce_br, a8, d8);
+            pos_move_piece(pos, pce_bk, e8, c8);
+            pos_move_piece(pos, pce_br, a8, d8);
         } else {
             assert(false);
         }
-        cast_perm_set_permission(CP_BK, &pos->castle_perm_container, false);
-        cast_perm_set_permission(CP_BQ, &pos->castle_perm_container, false);
+        pos_update_castle_perm(pos, CP_BK, false);
+        pos_update_castle_perm(pos, CP_BQ, false);
         break;
     default:
         assert(false);
@@ -617,8 +625,8 @@ static void make_en_passant_move(struct position *pos, const struct move en_pass
         return;
     }
 
-    brd_remove_piece(pos->brd, pce_to_remove, sq_with_piece);
-    brd_move_piece(pos->brd, pce_to_move, from_sq, to_sq);
+    pos_remove_piece(pos, pce_to_remove, sq_with_piece);
+    pos_move_piece(pos, pce_to_move, from_sq, to_sq);
 }
 
 static void populate_position_from_fen(struct position *pos, const struct parsed_fen *fen) {
@@ -642,7 +650,7 @@ static void populate_position_from_fen(struct position *pos, const struct parsed
         enum piece pce;
         bool found_pce = fen_try_get_piece_on_sq(fen, sq, &pce);
         if (found_pce) {
-            brd_add_piece(pos->brd, pce, sq);
+            pos_add_piece(pos, pce, sq);
         }
     }
 }
@@ -664,22 +672,25 @@ static bool validate_en_passant_pce_and_sq(const struct position *pos) {
 
 static void set_up_castle_permissions(struct position *pos, const struct parsed_fen *fen) {
 
-    struct cast_perm_container *cp = &pos->castle_perm_container;
-
-    cast_perm_set_permission(CP_NONE, cp, true);
+    pos_update_castle_perm(pos, CP_NONE, true);
 
     if (fen_has_wk_castle_perms(fen)) {
-        cast_perm_set_permission(CP_WK, cp, true);
+        pos_update_castle_perm(pos, CP_WK, true);
     }
     if (fen_has_wq_castle_perms(fen)) {
-        cast_perm_set_permission(CP_WQ, cp, true);
+        pos_update_castle_perm(pos, CP_WQ, true);
     }
     if (fen_has_bk_castle_perms(fen)) {
-        cast_perm_set_permission(CP_BK, cp, true);
+        pos_update_castle_perm(pos, CP_BK, true);
     }
     if (fen_has_bq_castle_perms(fen)) {
-        cast_perm_set_permission(CP_BQ, cp, true);
+        pos_update_castle_perm(pos,CP_BQ, true);
     }
+}
+
+static void pos_update_castle_perm(struct position *pos, const enum castle_permission perm, const bool perm_state) {
+    cast_perm_set_permission(perm, &pos->castle_perm_container, perm_state);
+    pos->hashkey = hash_castle_perm(perm, pos->hashkey);
 }
 
 static enum square get_en_pass_sq(const enum colour side, const enum square from_sq) {
@@ -694,3 +705,23 @@ static enum square get_en_pass_sq(const enum colour side, const enum square from
 
     return retval;
 }
+
+//
+// functions to manipulate pieces and update hashes
+//
+static void pos_move_piece(struct position *pos, const enum piece pce, const enum square from_sq,
+                           const enum square to_sq) {
+    brd_move_piece(pos->brd, pce, from_sq, to_sq);
+    pos->hashkey = hash_piece_update_move(pce, from_sq, to_sq, pos->hashkey);
+}
+
+static void pos_remove_piece(struct position *pos, const enum piece pce, const enum square sq) {
+    brd_remove_piece(pos->brd, pce, sq);
+    pos->hashkey = hash_piece_update(pce, sq, pos->hashkey);
+}
+
+static void pos_add_piece(struct position *pos, const enum piece pce, const enum square sq) {
+    brd_add_piece(pos->brd, pce, sq);
+    pos->hashkey = hash_piece_update(pce, sq, pos->hashkey);
+}
+////////////////////////////////////////////////////

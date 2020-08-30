@@ -99,6 +99,33 @@ struct hashkey hash_piece_update(const enum piece pce, const enum square sq, con
     return retval;
 }
 
+bool hash_compare(const struct hashkey hashkey1, const struct hashkey hashkey2) {
+    return hashkey1.hash == hashkey2.hash;
+}
+
+/**
+ * @brief               Flips the hash based on the piece and from- and to-square
+ * @param pce           The piece 
+ * @param from_sq       The from square
+ * @param to_sq         The to square
+ * @param key_to_modify The hashkey to modify
+ * @return              The updated hash key
+ */
+struct hashkey hash_piece_update_move(const enum piece pce, const enum square from_sq, const enum square to_sq,
+                                      const struct hashkey key_to_modify) {
+
+    assert(validate_piece(pce));
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
+
+    const uint8_t pce_off = pce_get_array_idx(pce);
+    const uint64_t from_hash = key_to_modify.hash ^ piece_keys[pce_off][from_sq].hash;
+    const uint64_t to_hash = from_hash ^ piece_keys[pce_off][to_sq].hash;
+
+    const struct hashkey retval = {.hash = to_hash};
+    return retval;
+}
+
 /**
  * @brief               Flips the hash for the side
  * @param key_to_modify The hashkey to modify

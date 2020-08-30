@@ -35,6 +35,7 @@
 #include "position_hist.h"
 #include "board.h"
 #include "castle_perms.h"
+#include "hashkeys.h"
 #include "move.h"
 #include "position.h"
 #include <assert.h>
@@ -42,7 +43,7 @@
 
 struct move_state {
     //position hash
-    uint64_t hashkey;
+    struct hashkey hashkey;
     // storage for cloned board
     uint8_t board[BOARD_SIZE_BYTES];
     // the move being made
@@ -98,7 +99,7 @@ void position_hist_release_memory(struct position_hist *mh) {
 }
 
 void position_hist_push(struct position_hist *pos_history, const struct move mv, const uint8_t fifty_move_counter,
-                        const struct en_pass_active en_passant, const uint64_t hashkey,
+                        const struct en_pass_active en_passant, const struct hashkey hashkey,
                         const struct cast_perm_container castle_perm_cont, const struct board *brd) {
 
     assert(validate_move_history(pos_history));
@@ -120,7 +121,7 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
 }
 
 void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8_t *fifty_move_counter,
-                       struct en_pass_active *en_passant, uint64_t *hashkey,
+                       struct en_pass_active *en_passant, struct hashkey *hashkey,
                        struct cast_perm_container *castle_perm_container, struct board *brd) {
 
     assert(pos_history != NULL);
@@ -200,7 +201,7 @@ static bool compare_move_states(const struct move_state *ms1, const struct move_
         return false;
     }
 
-    if (ms1->hashkey != ms2->hashkey) {
+    if (hash_compare(ms1->hashkey, ms2->hashkey) != true) {
         return false;
     }
 

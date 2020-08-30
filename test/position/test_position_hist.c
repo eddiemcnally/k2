@@ -27,6 +27,7 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 #include "test_position_hist.h"
+#include "hashkeys.h"
 #include "position.h"
 #include "position_hist.h"
 #include <assert.h>
@@ -61,7 +62,9 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(void **state) 
         struct cast_perm_container cp;
         cast_perm_set_permission(CP_WK, &cp, true);
 
-        position_hist_push(mh, mv, (uint8_t)i, en_pass, (uint64_t)(i * i), cp, pos_get_board(pos));
+        struct hashkey hashkey;
+        hashkey.hash = (uint64_t)(i * i);
+        position_hist_push(mh, mv, (uint8_t)i, en_pass, hashkey, cp, pos_get_board(pos));
 
         assert_true(position_hist_get_num(mh) == i + 1);
     }
