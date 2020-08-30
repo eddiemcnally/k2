@@ -92,6 +92,7 @@ static void pos_move_piece(struct position *pos, const enum piece pce, const enu
 static void pos_remove_piece(struct position *pos, const enum piece pce, const enum square sq);
 static void pos_add_piece(struct position *pos, const enum piece pce, const enum square sq);
 static void pos_update_castle_perm(struct position *pos, const enum castle_permission perm, const bool perm_state);
+static void swap_side(struct position *pos);
 
 // set up bitboards for all squares that need to be checked when
 // testing castle move validity
@@ -294,8 +295,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     // clean out any castle permissions
     update_castle_perms(pos, mv, pce_to_move);
 
-    // swap sides
-    pos->side_to_move = pce_swap_side(pos->side_to_move);
+    swap_side(pos);
 
     return legality;
 }
@@ -309,11 +309,19 @@ struct move pos_take_move(struct position *pos) {
     position_hist_pop(pos->position_history, &mv, &pos->fifty_move_counter, &pos->en_passant, &pos->hashkey,
                       &pos->castle_perm_container, pos->brd);
 
-    // swap sides
-    pos->side_to_move = pce_swap_side(pos->side_to_move);
+    swap_side(pos);
 
     return mv;
 }
+
+
+static void swap_side(struct position *pos){
+    pos->side_to_move = pce_swap_side(pos->side_to_move);
+    pos->hashkey = hash_side_update(pos->hashkey);
+}
+
+
+
 
 /**
  * @brief               Compares 2 positions for equivalency
@@ -627,6 +635,7 @@ static void make_en_passant_move(struct position *pos, const struct move en_pass
 
     pos_remove_piece(pos, pce_to_remove, sq_with_piece);
     pos_move_piece(pos, pce_to_move, from_sq, to_sq);
+    pos->hashkey = hash_en_passant(to_sq, pos->hashkey);
 }
 
 static void populate_position_from_fen(struct position *pos, const struct parsed_fen *fen) {
