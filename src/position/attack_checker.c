@@ -43,14 +43,28 @@
 #include <stdint.h>
 
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
-                                                const enum square sq, const enum rank sq_rank, const enum file sq_file);
+                                                const enum square sq);
 static uint64_t in_between(const enum square sq1, const enum square sq2);
 static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
-static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file);
-static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file);
+static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
+static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
 static bool is_pawn_attacking(const uint64_t pawn_bb, const enum rank r, const enum file f);
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
 static bool is_king_attacking(const uint64_t king_bb, const enum square sq);
+
+struct pce_colours {
+    enum piece rook;
+    enum piece bishop;
+    enum piece queen;
+    enum piece knight;
+    enum piece king;
+};
+
+static struct pce_colours white_pce_colours = {
+    .rook = WHITE_ROOK, .bishop = WHITE_BISHOP, .queen = WHITE_QUEEN, .knight = WHITE_KNIGHT, .king = WHITE_KING};
+
+static struct pce_colours black_pce_colours = {
+    .rook = BLACK_ROOK, .bishop = BLACK_BISHOP, .queen = BLACK_QUEEN, .knight = BLACK_KNIGHT, .king = BLACK_KING};
 
 bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const enum colour attacking_side) {
 
@@ -58,94 +72,87 @@ bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const
     assert(validate_square(sq));
     assert(validate_colour(attacking_side));
 
-    const enum rank sq_rank = sq_get_rank(sq);
-    const enum file sq_file = sq_get_file(sq);
+    struct pce_colours *pieces;
 
-    enum piece rook;
-    enum piece bishop;
-    enum piece queen;
-    enum piece knight;
-    enum piece king;
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
     if (attacking_side == WHITE) {
         const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
-        if (is_white_pawn_attacking(wp_bb, sq_rank, sq_file)) {
+        if (is_white_pawn_attacking(wp_bb, sq)) {
             return true;
         }
 
-        rook = WHITE_ROOK;
-        bishop = WHITE_BISHOP;
-        queen = WHITE_QUEEN;
-        knight = WHITE_KNIGHT;
-        king = WHITE_KING;
-
+        pieces = &white_pce_colours;
     } else {
         const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
-        if (is_black_pawn_attacking(bp_bb, sq_rank, sq_file)) {
+        if (is_black_pawn_attacking(bp_bb, sq)) {
             return true;
         }
 
-        rook = BLACK_ROOK;
-        bishop = BLACK_BISHOP;
-        queen = BLACK_QUEEN;
-        knight = BLACK_KNIGHT;
-        king = BLACK_KING;
+        pieces = &black_pce_colours;
     }
 
     // conflate rook and queen
-    const uint64_t rook_queen_bb = brd_get_piece_bb(brd, rook) | brd_get_piece_bb(brd, queen);
-    if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq, sq_rank, sq_file)) {
+    const uint64_t rook_queen_bb = brd_get_piece_bb(brd, pieces->rook) | brd_get_piece_bb(brd, pieces->queen);
+    if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
         return true;
     }
 
     // conflate bishop and queen
-    const uint64_t bishop_queen_bb = brd_get_piece_bb(brd, bishop) | brd_get_piece_bb(brd, queen);
+    const uint64_t bishop_queen_bb = brd_get_piece_bb(brd, pieces->bishop) | brd_get_piece_bb(brd, pieces->queen);
     if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
         return true;
     }
 
-    if (is_knight_attacking(brd_get_piece_bb(brd, knight), sq)) {
+    if (is_knight_attacking(brd_get_piece_bb(brd, pieces->knight), sq)) {
         return true;
     }
 
-    if (is_king_attacking(brd_get_piece_bb(brd, king), sq)) {
+    if (is_king_attacking(brd_get_piece_bb(brd, pieces->king), sq)) {
         return true;
     }
 
     return false;
 }
 
-static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file) {
+static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
     if (pawn_bb == 0) {
         return false;
     }
 
+    const enum rank sq_rank = sq_get_rank(sq);
+    const enum file sq_file = sq_get_file(sq);
+    const enum rank target_rank = sq_rank - 1;
+
     // check down and left
-    if (is_pawn_attacking(pawn_bb, sq_rank - 1, sq_file - 1)) {
+    if (is_pawn_attacking(pawn_bb, target_rank, sq_file - 1)) {
         return true;
     }
 
     // check down and right
-    if (is_pawn_attacking(pawn_bb, sq_rank - 1, sq_file + 1)) {
+    if (is_pawn_attacking(pawn_bb, target_rank, sq_file + 1)) {
         return true;
     }
 
     return false;
 }
 
-static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum rank sq_rank, const enum file sq_file) {
+static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
     if (pawn_bb == 0) {
         return false;
     }
 
+    const enum rank sq_rank = sq_get_rank(sq);
+    const enum file sq_file = sq_get_file(sq);
+    const enum rank target_rank = sq_rank + 1;
+
     // check up and left
-    if (is_pawn_attacking(pawn_bb, sq_rank + 1, sq_file - 1)) {
+    if (is_pawn_attacking(pawn_bb, target_rank, sq_file - 1)) {
         return true;
     }
 
     // check up and right
-    if (is_pawn_attacking(pawn_bb, sq_rank + 1, sq_file + 1)) {
+    if (is_pawn_attacking(pawn_bb, target_rank, sq_file + 1)) {
         return true;
     }
 
@@ -186,8 +193,9 @@ static bool is_king_attacking(const uint64_t king_bb, const enum square sq) {
 }
 
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
-                                                const enum square sq, const enum rank sq_rank,
-                                                const enum file sq_file) {
+                                                const enum square sq) {
+    const enum rank sq_rank = sq_get_rank(sq);
+    const enum file sq_file = sq_get_file(sq);
 
     uint64_t bb = attacking_pce_bb;
     while (bb != 0) {
@@ -195,10 +203,10 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
         bb = bb_clear_square(bb, pce_sq);
 
         if ((sq_get_rank(pce_sq) == sq_rank) || (sq_get_file(pce_sq) == sq_file)) {
-            // possible attack
+            // possible attack, shared rank and/or file
             const uint64_t inter_sq = in_between(pce_sq, sq);
             if ((inter_sq & all_pce_bb) == 0) {
-                // no blocking pieces
+                // no blocking pieces, is attacked
                 return true;
             }
         }
@@ -232,17 +240,16 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
 // The code is taken from :
 // https://www.chessprogramming.org/Square_Attacked_By#LegalityTest
 //
-static uint64_t in_between(const enum square sq1, const enum square sq2) {
+inline static uint64_t in_between(const enum square sq1, const enum square sq2) {
     const uint64_t m1 = 0xffffffffffffffff;
     const uint64_t a2a7 = 0x0001010101010100;
     const uint64_t b2g7 = 0x0040201008040200;
     const uint64_t h1b7 = 0x0002040810204080;
-    uint64_t btwn, line, rank, file;
 
-    btwn = (m1 << sq1) ^ (m1 << sq2);
-    file = (sq2 & 7) - (sq1 & 7);
-    rank = ((sq2 | 7) - sq1) >> 3;
-    line = ((file & 7) - 1) & a2a7;            /* a2a7 if same file */
+    const uint64_t btwn = (m1 << sq1) ^ (m1 << sq2);
+    const uint64_t file = (sq2 & 7) - (sq1 & 7);
+    const uint64_t rank = ((sq2 | 7) - sq1) >> 3;
+    uint64_t line = ((file & 7) - 1) & a2a7;   /* a2a7 if same file */
     line += 2 * (((rank & 7) - 1) >> 58);      /* b1g1 if same rank */
     line += (((rank - file) & 15) - 1) & b2g7; /* b2g7 if same diagonal */
     line += (((rank + file) & 15) - 1) & h1b7; /* h1b7 if same antidiag */

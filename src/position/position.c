@@ -314,14 +314,10 @@ struct move pos_take_move(struct position *pos) {
     return mv;
 }
 
-
-static void swap_side(struct position *pos){
+static void swap_side(struct position *pos) {
     pos->side_to_move = pce_swap_side(pos->side_to_move);
     pos->hashkey = hash_side_update(pos->hashkey);
 }
-
-
-
 
 /**
  * @brief               Compares 2 positions for equivalency
@@ -693,7 +689,7 @@ static void set_up_castle_permissions(struct position *pos, const struct parsed_
         pos_update_castle_perm(pos, CASTLE_PERM_BK, true);
     }
     if (fen_has_bq_castle_perms(fen)) {
-        pos_update_castle_perm(pos,CASTLE_PERM_BQ, true);
+        pos_update_castle_perm(pos, CASTLE_PERM_BQ, true);
     }
 }
 
