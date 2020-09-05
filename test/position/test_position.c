@@ -28,6 +28,7 @@
 
 #include "test_position.h"
 #include "board.h"
+#include "hashkeys.h"
 #include "position.h"
 #include <cmocka.h>
 
@@ -1305,6 +1306,154 @@ void test_position_make_move_sparse_board_black_to_move(void **state) {
     const struct move mv = move_encode_capture(b2, a1);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_white_pawn_quiet_move(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+    const struct move pawn_move = move_encode_quiet(g5, g6);
+    pos_make_move(pos, pawn_move);
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+}
+
+void test_position_hash_updated_black_pawn_quiet_move(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 b - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+    const struct move pawn_move = move_encode_quiet(d5, d4);
+    pos_make_move(pos, pawn_move);
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+}
+
+void test_position_hash_updated_white_pawn_capture_move(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 w - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+    const struct move pawn_move = move_encode_capture(d3, c4);
+    pos_make_move(pos, pawn_move);
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+}
+
+void test_position_hash_updated_black_pawn_capture_move(void **state) {
+    const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
+                      "1bNnrQ2 b - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+    const struct move pawn_move = move_encode_capture(h6, g5);
+    pos_make_move(pos, pawn_move);
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+}
+
+void test_position_hash_updated_white_pawn_double_first_move(void **state) {
+    const char *FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+    const struct move pawn_move = move_encode_pawn_double_first(d2, d4);
+    pos_make_move(pos, pawn_move);
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+}
+
+void test_position_hash_updated_black_pawn_double_first_move(void **state) {
+    const char *FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+    const struct move pawn_move = move_encode_pawn_double_first(d7, d5);
+    pos_make_move(pos, pawn_move);
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+}
+
+void test_position_hash_updated_black_en_passant(void **state) {
+    const char *test_fen = "4k3/8/8/8/1p6/8/2P5/4K3 w - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    // double first move
+    const struct move mv = move_encode_pawn_double_first(c2, c4);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    // en passant move
+    const struct move en_pass_mv = move_encode_enpassant(b4, c3);
+    legality = pos_make_move(pos, en_pass_mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_white_en_passant(void **state) {
+    const char *test_fen = "4k3/6p1/8/5P2/8/8/8/4K3 b - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    // double first move
+    const struct move mv = move_encode_pawn_double_first(g7, g5);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    // en passant move
+    const struct move en_pass_mv = move_encode_enpassant(f5, g6);
+    legality = pos_make_move(pos, en_pass_mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
 }

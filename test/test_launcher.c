@@ -134,6 +134,14 @@ int main(void) {
         cmocka_unit_test(test_position_make_move_sparse_board_black_to_move),
         cmocka_unit_test(test_basic_evaluator_sample_white_position),
         cmocka_unit_test(test_basic_evaluator_sample_black_position),
+        cmocka_unit_test(test_position_hash_updated_white_pawn_quiet_move),
+        cmocka_unit_test(test_position_hash_updated_black_pawn_quiet_move),
+        cmocka_unit_test(test_position_hash_updated_white_pawn_capture_move),
+        cmocka_unit_test(test_position_hash_updated_black_pawn_capture_move),
+        cmocka_unit_test(test_position_hash_updated_white_pawn_double_first_move),
+        cmocka_unit_test(test_position_hash_updated_black_pawn_double_first_move),
+        cmocka_unit_test(test_position_hash_updated_black_en_passant),
+        cmocka_unit_test(test_position_hash_updated_white_en_passant),
 
         // search
         cmocka_unit_test(test_transposition_table_create_different_sizes_as_expected),

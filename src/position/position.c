@@ -113,6 +113,8 @@ struct position *pos_create() {
     struct board *brd = brd_allocate();
     retval->brd = brd;
 
+    init_key_mgmt();
+
     return retval;
 }
 
@@ -124,7 +126,6 @@ struct position *pos_create() {
  */
 void pos_initialise(const char *fen, struct position *pos) {
     struct parsed_fen *parsed_fen = fen_parse(fen);
-
     populate_position_from_fen(pos, parsed_fen);
 }
 
@@ -377,6 +378,10 @@ bool pos_compare(const struct position *first, const struct position *second) {
     }
 
     return true;
+}
+
+struct hashkey pos_get_hash(const struct position *pos) {
+    return pos->hashkey;
 }
 
 // ==================================================================

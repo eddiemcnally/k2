@@ -68,3 +68,5 @@ bool validate_position(const struct position *pos);
 bool pos_compare(const struct position *first, const struct position *second);
 
 uint16_t pos_get_ply(const struct position *pos);
+
+struct hashkey pos_get_hash(const struct position *pos);
