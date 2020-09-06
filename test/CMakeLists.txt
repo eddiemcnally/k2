@@ -42,7 +42,7 @@ set (TEST_RUNNER_COMPILER_WARNS "-std=c11 \
         -fsanitize=undefined \
         -fshort-enums \
         -m64 \
-        -o3 \
+        -ofast \
         -Waggregate-return \
         -Wall \
         -Wcast-align \

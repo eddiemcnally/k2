@@ -1652,7 +1652,7 @@ void test_position_hash_updated_black_promotion_capture(void **state) {
     }
 }
 
-void test_position_hash_updated_white_bishop_move_quiet(void **state) {
+void test_position_hash_updated_white_move_quiet(void **state) {
     const char *test_fen = "8/8/3p4/2P4k/8/1B3K2/8/3N4 w - - 0 1\n";
 
     const enum square FROM_SQ = b3;
@@ -1679,7 +1679,35 @@ void test_position_hash_updated_white_bishop_move_quiet(void **state) {
     pos_destroy(pos);
 }
 
-void test_position_hash_updated_black_bishop_move_quiet(void **state) {
+void test_position_hash_updated_white_move_capture(void **state) {
+    const char *test_fen = "8/8/8/2Pp3k/8/1B3K2/8/3N4 w - - 0 1\n";
+
+    const enum square FROM_SQ = b3;
+    const enum square TO_SQ = d5;
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_capture(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
+    expected_hash = hash_piece_update_move(WHITE_BISHOP, FROM_SQ, TO_SQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_black_move_quiet(void **state) {
     const char *test_fen = "8/5b2/3p4/2P4k/8/5K2/8/3N4 b - - 0 1\n";
 
     const enum square FROM_SQ = f7;
@@ -1694,6 +1722,142 @@ void test_position_hash_updated_black_bishop_move_quiet(void **state) {
     const struct move mv = move_encode_quiet(FROM_SQ, TO_SQ);
 
     struct hashkey expected_hash = hash_piece_update_move(BLACK_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_black_move_capture(void **state) {
+    const char *test_fen = "2r5/8/8/2Pp3k/8/1B3K2/8/3N4 b - - 0 1\n";
+
+    const enum square FROM_SQ = c8;
+    const enum square TO_SQ = c5;
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_capture(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
+    expected_hash = hash_piece_update_move(BLACK_ROOK, FROM_SQ, TO_SQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_white_king_castle(void **state) {
+    const char *test_fen = "r3k2r/8/8/2Pp4/8/1B6/5N2/R3K2R w KQkq - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_castle_kingside(WHITE);
+
+    struct hashkey expected_hash = hash_piece_update_move(WHITE_ROOK, h1, f1, orig_pos_hash);
+    expected_hash = hash_piece_update_move(WHITE_KING, e1, g1, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_WK, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_WQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_white_queen_castle(void **state) {
+    const char *test_fen = "r3k2r/8/8/2Pp4/8/1B6/5N2/R3K2R w KQkq - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_castle_queenside(WHITE);
+
+    struct hashkey expected_hash = hash_piece_update_move(WHITE_ROOK, a1, d1, orig_pos_hash);
+    expected_hash = hash_piece_update_move(WHITE_KING, e1, c1, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_WK, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_WQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_black_king_castle(void **state) {
+    const char *test_fen = "r3k2r/8/8/2Pp4/8/1B6/5N2/R3K2R b KQkq - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_castle_kingside(BLACK);
+
+    struct hashkey expected_hash = hash_piece_update_move(BLACK_ROOK, h8, f8, orig_pos_hash);
+    expected_hash = hash_piece_update_move(BLACK_KING, e8, g8, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_BK, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_BQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_black_queen_castle(void **state) {
+    const char *test_fen = "r3k2r/8/8/2Pp4/8/1B6/5N2/R3K2R b KQkq - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_castle_queenside(BLACK);
+
+    struct hashkey expected_hash = hash_piece_update_move(BLACK_ROOK, a8, d8, orig_pos_hash);
+    expected_hash = hash_piece_update_move(BLACK_KING, e8, c8, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_BK, expected_hash);
+    expected_hash = hash_castle_perm(CASTLE_PERM_BQ, expected_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, mv);
