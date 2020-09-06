@@ -1513,3 +1513,195 @@ void test_position_hash_updated_black_en_passant(void **state) {
 
     pos_destroy(pos);
 }
+
+void test_position_hash_updated_white_promotion_quiet(void **state) {
+    const char *test_fen = "8/2P5/8/7k/1p6/8/8/4K3 w - - 0 1\n";
+
+    const enum piece prom_pces[] = {WHITE_QUEEN, WHITE_KNIGHT, WHITE_ROOK, WHITE_BISHOP};
+
+    for (int i = 0; i < 4; i++) {
+        const enum piece PROMOTION_PCE = prom_pces[i];
+        const enum square FROM_SQ = c7;
+        const enum square TO_SQ = c8;
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+
+        const enum piece_role role = pce_get_piece_role(PROMOTION_PCE);
+        const struct hashkey orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash.hash != 0);
+
+        const struct move mv = move_encode_promoted(FROM_SQ, TO_SQ, role, false);
+
+        struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
+        expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
+        expected_hash = hash_side_update(expected_hash);
+
+        pos_make_move(pos, mv);
+
+        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash.hash != 0);
+        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_hash_updated_black_promotion_quiet(void **state) {
+    const char *test_fen = "8/8/8/7k/2P5/5K2/1p6/8 b - - 0 1\n";
+
+    const enum piece prom_pces[] = {BLACK_QUEEN, BLACK_KNIGHT, BLACK_ROOK, BLACK_BISHOP};
+
+    for (int i = 0; i < 4; i++) {
+        const enum piece PROMOTION_PCE = prom_pces[i];
+        const enum square FROM_SQ = b2;
+        const enum square TO_SQ = b1;
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+
+        const enum piece_role role = pce_get_piece_role(PROMOTION_PCE);
+        const struct hashkey orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash.hash != 0);
+
+        const struct move mv = move_encode_promoted(FROM_SQ, TO_SQ, role, false);
+
+        struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
+        expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
+        expected_hash = hash_side_update(expected_hash);
+
+        pos_make_move(pos, mv);
+
+        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash.hash != 0);
+        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_hash_updated_white_promotion_capture(void **state) {
+    const char *test_fen = "3n4/2P5/8/7k/1p6/5K2/8/8 w - - 0 1\n";
+
+    const enum piece prom_pces[] = {WHITE_QUEEN, WHITE_KNIGHT, WHITE_ROOK, WHITE_BISHOP};
+
+    for (int i = 0; i < 4; i++) {
+        const enum piece PROMOTION_PCE = prom_pces[i];
+        const enum square FROM_SQ = c7;
+        const enum square TO_SQ = d8;
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+
+        const enum piece_role role = pce_get_piece_role(PROMOTION_PCE);
+        const struct hashkey orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash.hash != 0);
+
+        const struct move mv = move_encode_promoted(FROM_SQ, TO_SQ, role, true);
+
+        struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
+        expected_hash = hash_piece_update(BLACK_KNIGHT, TO_SQ, expected_hash);
+        expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
+        expected_hash = hash_side_update(expected_hash);
+
+        pos_make_move(pos, mv);
+
+        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash.hash != 0);
+        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_hash_updated_black_promotion_capture(void **state) {
+    const char *test_fen = "38/8/8/2P4k/8/5K2/2p5/3N4 b - - 0 1\n";
+
+    const enum piece prom_pces[] = {BLACK_QUEEN, BLACK_KNIGHT, BLACK_ROOK, BLACK_BISHOP};
+
+    for (int i = 0; i < 4; i++) {
+        const enum piece PROMOTION_PCE = prom_pces[i];
+        const enum square FROM_SQ = c2;
+        const enum square TO_SQ = d1;
+
+        struct position *pos = pos_create();
+        pos_initialise(test_fen, pos);
+
+        const enum piece_role role = pce_get_piece_role(PROMOTION_PCE);
+        const struct hashkey orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash.hash != 0);
+
+        const struct move mv = move_encode_promoted(FROM_SQ, TO_SQ, role, true);
+
+        struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
+        expected_hash = hash_piece_update(WHITE_KNIGHT, TO_SQ, expected_hash);
+        expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
+        expected_hash = hash_side_update(expected_hash);
+
+        pos_make_move(pos, mv);
+
+        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash.hash != 0);
+        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+        pos_destroy(pos);
+    }
+}
+
+void test_position_hash_updated_white_bishop_move_quiet(void **state) {
+    const char *test_fen = "8/8/3p4/2P4k/8/1B3K2/8/3N4 w - - 0 1\n";
+
+    const enum square FROM_SQ = b3;
+    const enum square TO_SQ = f7;
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_quiet(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update_move(WHITE_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}
+
+void test_position_hash_updated_black_bishop_move_quiet(void **state) {
+    const char *test_fen = "8/5b2/3p4/2P4k/8/5K2/8/3N4 b - - 0 1\n";
+
+    const enum square FROM_SQ = f7;
+    const enum square TO_SQ = b3;
+
+    struct position *pos = pos_create();
+    pos_initialise(test_fen, pos);
+
+    const struct hashkey orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash.hash != 0);
+
+    const struct move mv = move_encode_quiet(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update_move(BLACK_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, mv);
+
+    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
+
+    pos_destroy(pos);
+}

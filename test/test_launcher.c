@@ -142,6 +142,12 @@ int main(void) {
         cmocka_unit_test(test_position_hash_updated_black_pawn_double_first_move),
         cmocka_unit_test(test_position_hash_updated_black_en_passant),
         cmocka_unit_test(test_position_hash_updated_white_en_passant),
+        cmocka_unit_test(test_position_hash_updated_white_promotion_quiet),
+        cmocka_unit_test(test_position_hash_updated_black_promotion_quiet),
+        cmocka_unit_test(test_position_hash_updated_white_promotion_capture),
+        cmocka_unit_test(test_position_hash_updated_black_promotion_capture),
+        cmocka_unit_test(test_position_hash_updated_white_bishop_move_quiet),
+        cmocka_unit_test(test_position_hash_updated_black_bishop_move_quiet),
 
         // search
         cmocka_unit_test(test_transposition_table_create_different_sizes_as_expected),
