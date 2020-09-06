@@ -156,7 +156,7 @@ struct move move_encode_promoted(const enum square from_sq, const enum square to
         break;
     }
 
-    mv.val = set_flag(mv.val, flg);
+    mv.val = set_flag(mv.val, (uint16_t)flg);
     if (is_capture) {
         mv.val = set_flag(mv.val, MV_FLG_BIT_CAPTURE);
     }

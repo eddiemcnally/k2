@@ -397,7 +397,6 @@ bool brd_compare(const struct board *first, const struct board *second) {
  */
 void brd_clone(const struct board *source, struct board *dest) {
     assert(validate_board(source));
-
     memcpy(dest, source, sizeof(struct board));
 }
 

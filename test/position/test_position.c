@@ -1314,15 +1314,23 @@ void test_position_hash_updated_white_pawn_quiet_move(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 w - - 0 1\n";
 
+    const enum square FROM_SQ = g5;
+    const enum square TO_SQ = g6;
+
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
-    const struct move pawn_move = move_encode_quiet(g5, g6);
+    const struct move pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    expected_hash = hash_side_update(expected_hash);
+
     pos_make_move(pos, pawn_move);
+
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1330,15 +1338,23 @@ void test_position_hash_updated_black_pawn_quiet_move(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 b - - 0 1\n";
 
+    const enum square FROM_SQ = d5;
+    const enum square TO_SQ = d4;
+
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
-    const struct move pawn_move = move_encode_quiet(d5, d4);
+    const struct move pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    expected_hash = hash_side_update(expected_hash);
+
     pos_make_move(pos, pawn_move);
+
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1346,15 +1362,23 @@ void test_position_hash_updated_white_pawn_capture_move(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 w - - 0 1\n";
 
+    const enum square FROM_SQ = d3;
+    const enum square TO_SQ = c4;
+
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
-    const struct move pawn_move = move_encode_capture(d3, c4);
+    const struct move pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
+    expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
     pos_make_move(pos, pawn_move);
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1362,97 +1386,129 @@ void test_position_hash_updated_black_pawn_capture_move(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 b - - 0 1\n";
 
+    const enum square FROM_SQ = h6;
+    const enum square TO_SQ = g5;
+
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
-    const struct move pawn_move = move_encode_capture(h6, g5);
+    const struct move pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
+    expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
     pos_make_move(pos, pawn_move);
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
 void test_position_hash_updated_white_pawn_double_first_move(void **state) {
     const char *FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n";
 
+    const enum square FROM_SQ = d2;
+    const enum square TO_SQ = d4;
+
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
-    const struct move pawn_move = move_encode_pawn_double_first(d2, d4);
+    const struct move pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    expected_hash = hash_side_update(expected_hash);
+
     pos_make_move(pos, pawn_move);
+
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
 void test_position_hash_updated_black_pawn_double_first_move(void **state) {
     const char *FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1\n";
 
+    const enum square FROM_SQ = d7;
+    const enum square TO_SQ = d5;
+
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
-    const struct move pawn_move = move_encode_pawn_double_first(d7, d5);
+    const struct move pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    expected_hash = hash_side_update(expected_hash);
+
     pos_make_move(pos, pawn_move);
+
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
-void test_position_hash_updated_black_en_passant(void **state) {
-    const char *test_fen = "4k3/8/8/8/1p6/8/2P5/4K3 w - - 0 1\n";
+void test_position_hash_updated_white_en_passant(void **state) {
+    const char *test_fen = "4k3/8/8/5Pp1/8/8/8/4K3 w - g6 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
-
-    // double first move
-    const struct move mv = move_encode_pawn_double_first(c2, c4);
-    enum move_legality legality = pos_make_move(pos, mv);
-    assert_true(legality == LEGAL_MOVE);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
 
     // en passant move
-    const struct move en_pass_mv = move_encode_enpassant(b4, c3);
-    legality = pos_make_move(pos, en_pass_mv);
-    assert_true(legality == LEGAL_MOVE);
+    const enum square FROM_SQ = f5;
+    const enum square TO_SQ = g6;
+    const enum square EN_PASS_SQ = TO_SQ;
+    const enum square BLK_PAWN_SQ = g5;
+    const struct move en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, BLK_PAWN_SQ, orig_pos_hash);
+    expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, expected_hash);
+    expected_hash = hash_en_passant(EN_PASS_SQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, en_pass_mv);
 
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
     assert_true(after_move_pos_hash.hash != 0);
-
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
 }
 
-void test_position_hash_updated_white_en_passant(void **state) {
-    const char *test_fen = "4k3/6p1/8/5P2/8/8/8/4K3 b - - 0 1\n";
+void test_position_hash_updated_black_en_passant(void **state) {
+    const char *test_fen = "4k3/8/8/8/1pP5/8/8/4K3 b - c3 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
-
-    // double first move
-    const struct move mv = move_encode_pawn_double_first(g7, g5);
-    enum move_legality legality = pos_make_move(pos, mv);
-    assert_true(legality == LEGAL_MOVE);
 
     const struct hashkey orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash.hash != 0);
 
     // en passant move
-    const struct move en_pass_mv = move_encode_enpassant(f5, g6);
-    legality = pos_make_move(pos, en_pass_mv);
-    assert_true(legality == LEGAL_MOVE);
+    const enum square FROM_SQ = b4;
+    const enum square TO_SQ = c3;
+    const enum square EN_PASS_SQ = TO_SQ;
+    const enum square WHITE_PAWN_SQ = c4;
+    const struct move en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
+
+    struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, WHITE_PAWN_SQ, orig_pos_hash);
+    expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, expected_hash);
+    expected_hash = hash_en_passant(EN_PASS_SQ, expected_hash);
+    expected_hash = hash_side_update(expected_hash);
+
+    pos_make_move(pos, en_pass_mv);
 
     const struct hashkey after_move_pos_hash = pos_get_hash(pos);
     assert_true(after_move_pos_hash.hash != 0);
-
+    assert_true(after_move_pos_hash.hash == expected_hash.hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);

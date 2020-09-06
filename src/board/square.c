@@ -119,10 +119,10 @@ inline enum square sq_gen_from_rank_file(const enum rank rank, const enum file f
 char *print_square(const enum square sq) {
     assert(validate_square(sq));
 
-    int file = sq_get_file(sq);
-    int rank = sq_get_rank(sq);
+    enum file f = sq_get_file(sq);
+    enum rank r = sq_get_rank(sq);
 
-    sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
+    sprintf(square_text, "%c%c", ('a' + (int)f), ('1' + (int)r));
 
     return square_text;
 }
