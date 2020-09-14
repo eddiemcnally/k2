@@ -33,6 +33,7 @@
 #include "piece.h"
 #include "position.h"
 #include "square.h"
+#include "utils.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -57,11 +58,15 @@ int main(void) {
     // // enum piece_role role = pce_get_piece_role(pce);
     // // printf("role = 0x%x\n", role);
 
-    const char *RANDOM_FEN_1 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/"
-                               "PPPBBPPP/R3K2R w KQkq - 0 1\n";
+    const char *RANDOM_FEN_1 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq – 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
 
-    do_perft(4, pos);
+    const double start_time_in_secs = get_time_of_day_in_secs();
+
+    do_perft(5, pos);
+
+    const double elapsed_in_secs = get_elapsed_time_in_secs(start_time_in_secs);
+    printf("Elapsed time : %f\n", elapsed_in_secs);
 }

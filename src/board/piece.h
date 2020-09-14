@@ -36,57 +36,50 @@ enum colour {
     BLACK = 1,
 };
 
-// ---- -XXX    ROLE
-// ---- X---    Colour 0-> White, 1 -> Black
-// XXXX ----    Offset when used in an array
+// -XXX ----   ROLE
+// X--- ----   Colour 0-> White, 1 -> Black
+// ---- XXXX   Offset when used in an array
 //===========================================
-// ---- -000    Pawn
-// ---- -001    Bishop
-// ---- -010    Knight
-// ---- -011    Rook
-// ---- -100    Queen
-// ---- -101    King
-// ---- 1---    BLACK
-// 0000 ----    White   Pawn Offset
-// 0001 ----            Bishop Offset
-// 0010 ----            Knight Offset
-// 0011 ----            Rook Offset
-// 0100 ----            Queen Offset
-// 0101 ----            King Offset
-// 0110 ----    Black   Pawn offset
-// 0111 ----            Bishop Offset
-// 1000 ----            Knight Offset
-// 1001 ----            Rook offset
-// 1010 ----            Queen Offset
-// 1011 ----            King Offset
+// -000 ----   Pawn
+// -001 ----   Bishop
+// -010 ----   Knight
+// -011 ----   Rook
+// -100 ----   Queen
+// -101 ----   King
+// 1--- ----   BLACK = 1, WHITE = 0
+// ---- 0000   White   Pawn Offset
+// ---- 0001           Bishop Offset
+// ---- 0010           Knight Offset
+// ---- 0011           Rook Offset
+// ---- 0100           Queen Offset
+// ---- 0101           King Offset
+// ---- 0110   Black   Pawn offset
+// ---- 0111           Bishop Offset
+// ---- 1000           Knight Offset
+// ---- 1001           Rook offset
+// ---- 1010           Queen Offset
+// ---- 1011           King Offset
 
-enum piece_role { PAWN = 0x00, BISHOP = 0x01, KNIGHT = 0x02, ROOK = 0x03, QUEEN = 0x04, KING = 0x05 };
+enum piece_role { PAWN = 0x00, BISHOP = 0x10, KNIGHT = 0x20, ROOK = 0x30, QUEEN = 0x40, KING = 0x50 };
 
 enum {
     WP_OFF = 0x00,
-    WB_OFF = 0x10,
-    WN_OFF = 0x20,
-    WR_OFF = 0x30,
-    WQ_OFF = 0x40,
-    WK_OFF = 0x50,
-    BP_OFF = 0x60,
-    BB_OFF = 0x70,
-    BN_OFF = 0x80,
-    BR_OFF = 0x90,
-    BQ_OFF = 0xA0,
-    BK_OFF = 0xB0,
+    WB_OFF = 0x01,
+    WN_OFF = 0x02,
+    WR_OFF = 0x03,
+    WQ_OFF = 0x04,
+    WK_OFF = 0x05,
+    BP_OFF = 0x06,
+    BB_OFF = 0x07,
+    BN_OFF = 0x08,
+    BR_OFF = 0x09,
+    BQ_OFF = 0x0A,
+    BK_OFF = 0x0B,
 };
 
-#define COLOUR_MASK ((uint8_t)0x08)
-
-enum piece_offset {
-    WHITE_OFFSET = 0,
-    BLACK_OFFSET = 1,
-};
-
-#define IDX_SHIFT 4
-#define ROLE_MASK ((uint8_t)0x07)
-#define OFFSET_MASK ((uint8_t)0xF0)
+#define COLOUR_MASK ((uint8_t)0x80)
+#define ROLE_MASK ((uint8_t)0x70)
+#define OFFSET_MASK ((uint8_t)0x0F)
 
 enum piece {
     WHITE_PAWN = (uint8_t)(PAWN | (uint8_t)(WP_OFF)),

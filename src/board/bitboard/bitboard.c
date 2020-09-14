@@ -36,7 +36,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define BIT_0 ((uint64_t)0x0000000000000001)
+#define BIT_0 ((uint64_t)0x01)
 static const uint64_t EMPTY_BITBOARD = 0;
 
 /**
