@@ -36,7 +36,7 @@
 #include <assert.h>
 
 // Temp storage when generating a string representation of a square
-#define MAX_SQUARE_TEXT 4
+#define MAX_SQUARE_TEXT (4)
 static char square_text[MAX_SQUARE_TEXT];
 
 // ==================================================================

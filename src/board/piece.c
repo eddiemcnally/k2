@@ -52,8 +52,8 @@ enum piece_values {
 };
 #define NO_PIECE ((uint8_t)0xFF)
 
-#define COLOUR_SHIFT 7
-#define OFFSET_SHIFT 0
+#define COLOUR_SHIFT (7)
+#define OFFSET_SHIFT (0)
 
 #define extract_colour(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))
 #define extract_piece_role(pce) ((enum piece_role)(pce & ROLE_MASK))
