@@ -29,8 +29,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define NUM_RANKS 8
-#define NUM_FILES 8
 #define NUM_SQUARES 64
 
 enum square {
@@ -97,7 +95,8 @@ enum square {
     e8,
     f8,
     g8,
-    h8
+    h8,
+    NO_SQUARE
 };
 
 enum rank { RANK_1 = 0, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
@@ -109,7 +108,7 @@ enum file sq_get_file(const enum square sq);
 enum square sq_gen_from_rank_file(const enum rank rank, const enum file file);
 enum square sq_get_square_plus_1_rank(const enum square from_sq);
 enum square sq_get_square_minus_1_rank(const enum square from_sq);
-bool sq_try_get_sq(const enum rank r, const enum file f, enum square *sq);
+enum square sq_try_get_sq(const enum rank r, const enum file f);
 char *print_square(const enum square sq);
 bool validate_square(const enum square sq);
 bool validate_rank(const enum rank rank);

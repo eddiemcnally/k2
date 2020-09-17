@@ -37,7 +37,6 @@
 #include "board.h"
 #include "occupancy_mask.h"
 #include "square.h"
-
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -160,9 +159,8 @@ static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq
 }
 
 static bool is_pawn_attacking(const uint64_t pawn_bb, const enum rank r, const enum file f) {
-    enum square pawn_sq;
-    const bool is_valid = sq_try_get_sq(r, f, &pawn_sq);
-    if (is_valid) {
+    enum square pawn_sq = sq_try_get_sq(r, f);
+    if (pawn_sq != NO_SQUARE) {
         return bb_is_set(pawn_bb, pawn_sq);
     }
     return false;

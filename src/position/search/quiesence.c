@@ -43,7 +43,7 @@ static bool is_mvl_init = false;
 int32_t quiescence(struct position *pos, struct search_data *search, int32_t alpha, int32_t beta) {
     if (is_mvl_init == false) {
         is_mvl_init = true;
-        mvl_initialise(&mvl);
+        mvl = mvl_initialise();
     }
     mvl_reset(&mvl);
 

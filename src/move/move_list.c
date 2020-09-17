@@ -48,11 +48,12 @@ static const uint16_t MOVE_LIST_INIT_KEY = 0xdead;
 
 /**
  * @brief       Allocates and initialises a new move list
- * @param       Ptr to struct to initialise
+ * @return      An initialised move_list struct
  */
-void mvl_initialise(struct move_list *mvl) {
-    memset(mvl, 0, sizeof(struct move_list));
-    mvl->struct_init_key = MOVE_LIST_INIT_KEY;
+struct move_list mvl_initialise(void) {
+    struct move_list mvl = {0};
+    mvl.struct_init_key = MOVE_LIST_INIT_KEY;
+    return mvl;
 }
 
 /**

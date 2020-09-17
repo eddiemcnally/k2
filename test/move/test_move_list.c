@@ -30,8 +30,7 @@
 #include <cmocka.h>
 
 void test_move_list_init(void **state) {
-    struct move_list mvl;
-    mvl_initialise(&mvl);
+    struct move_list mvl = mvl_initialise();
 
     uint16_t count = mvl_get_move_count(&mvl);
     assert_true(count == 0);
@@ -41,8 +40,7 @@ void test_move_list_bulk_add_moves(void **state) {
     const uint16_t max_moves = mvl_get_mvl_max_size() - 1;
     const uint16_t mv_offset = 1234;
 
-    struct move_list mvl;
-    mvl_initialise(&mvl);
+    struct move_list mvl = mvl_initialise();
 
     // add moves
     for (int i = 0; i < max_moves; i++) {
@@ -63,8 +61,7 @@ void test_move_list_bulk_add_moves(void **state) {
 
 void test_move_list_contains_move(void **state) {
     const uint16_t num_moves = 250;
-    struct move_list mvl;
-    mvl_initialise(&mvl);
+    struct move_list mvl = mvl_initialise();
 
     // add moves
     for (int i = 0; i < num_moves; i++) {
@@ -86,8 +83,7 @@ void test_move_list_contains_move(void **state) {
 
 void test_move_list_reset_list(void **state) {
     const uint16_t num_moves = 30;
-    struct move_list mvl;
-    mvl_initialise(&mvl);
+    struct move_list mvl = mvl_initialise();
 
     // add moves
     for (int i = 0; i < num_moves; i++) {
@@ -103,10 +99,8 @@ void test_move_list_reset_list(void **state) {
 
 void test_move_list_compare(void **state) {
     const uint16_t num_moves = 30;
-    struct move_list mvl1;
-    mvl_initialise(&mvl1);
-    struct move_list mvl2;
-    mvl_initialise(&mvl2);
+    struct move_list mvl1 = mvl_initialise();
+    struct move_list mvl2 = mvl_initialise();
 
     // add moves
     for (int i = 0; i < num_moves; i++) {

@@ -186,16 +186,12 @@ bool validate_en_pass_sq(const enum square sq_to_check) {
  * 
  * @param r     rank
  * @param f     file
- * @param sq    a pointer to the square 
- * @return true if valid square generated
- * @return false rank and/or file are invalie
+ * @return      valid square or NO_SQUARE
  */
-inline bool sq_try_get_sq(const enum rank r, const enum file f, enum square *sq) {
-
+inline enum square sq_try_get_sq(const enum rank r, const enum file f) {
     if (sq_is_valid_rank(r) && sq_is_valid_file(f)) {
-        *sq = sq_gen_from_rank_file(r, f);
-        return true;
+        return sq_gen_from_rank_file(r, f);
     }
 
-    return false;
+    return NO_SQUARE;
 }

@@ -277,33 +277,31 @@ void test_sq_try_get_sq_rank_and_file_invalid_returns_false(void **state) {
     // ============
     enum rank r = (enum rank)(RANK_1 - 1);
     enum file f = (enum file)(FILE_A - 1);
-    enum square sq;
-    assert_false(sq_try_get_sq(r, f, &sq));
+    assert_true(sq_try_get_sq(r, f) == NO_SQUARE);
 
     r = (enum rank)(RANK_8 + 1);
     f = (enum file)(FILE_H + 1);
-    assert_false(sq_try_get_sq(r, f, &sq));
+    assert_true(sq_try_get_sq(r, f) == NO_SQUARE);
 
     // rank valid, file invalid
     // ========================
     r = RANK_1;
     f = (enum file)(FILE_A - 1);
-    assert_false(sq_try_get_sq(r, f, &sq));
+    assert_true(sq_try_get_sq(r, f) == NO_SQUARE);
     f = (enum file)(FILE_H + 1);
-    assert_false(sq_try_get_sq(r, f, &sq));
+    assert_true(sq_try_get_sq(r, f) == NO_SQUARE);
 
     // rank invalid, file valid
     // ========================
     r = (enum rank)(RANK_1 - 1);
     f = FILE_A;
-    assert_false(sq_try_get_sq(r, f, &sq));
+    assert_true(sq_try_get_sq(r, f) == NO_SQUARE);
     r = RANK_8 + 1;
-    assert_false(sq_try_get_sq(r, f, &sq));
+    assert_true(sq_try_get_sq(r, f) == NO_SQUARE);
 }
 
 void test_sq_try_get_sq_rank_and_file_valid_returns_true(void **state) {
     enum rank r = RANK_1;
     enum file f = FILE_A;
-    enum square sq;
-    assert_true(sq_try_get_sq(r, f, &sq));
+    assert_true(sq_try_get_sq(r, f) != NO_SQUARE);
 }
