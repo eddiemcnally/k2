@@ -75,7 +75,7 @@ inline enum file sq_get_file(const enum square sq) {
 inline enum square sq_get_square_plus_1_rank(const enum square sq) {
     assert(validate_square(sq));
     assert(sq < a8);
-    return sq + 8;
+    return (enum square)(sq + 8);
 }
 
 /**
@@ -87,7 +87,7 @@ inline enum square sq_get_square_minus_1_rank(const enum square sq) {
     assert(validate_square(sq));
     assert(sq > a1);
 
-    return sq - 8;
+    return (enum square)(sq - 8);
 }
 
 inline bool sq_is_valid_rank(const enum rank r) {
@@ -193,5 +193,5 @@ inline enum square sq_try_get_sq(const enum rank r, const enum file f) {
         return sq_gen_from_rank_file(r, f);
     }
 
-    return NO_SQUARE;
+    return (enum square)NO_SQUARE;
 }

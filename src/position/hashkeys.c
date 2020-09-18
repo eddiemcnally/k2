@@ -36,12 +36,13 @@
 #include "piece.h"
 #include "rand.h"
 #include "square.h"
+#include "utils.h"
 #include <assert.h>
 
-static struct hashkey piece_keys[NUM_PIECES][NUM_SQUARES];
-static struct hashkey side_key;
-static struct hashkey castle_keys[NUM_CASTLE_PERMS];
-static struct hashkey en_passant_sq_keys[NUM_SQUARES];
+static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES];
+static uint64_t side_key;
+static uint64_t castle_keys[NUM_CASTLE_PERMS];
+static uint64_t en_passant_sq_keys[NUM_SQUARES];
 
 /**
  * @brief       Initialises the position hashkeys
@@ -57,25 +58,25 @@ struct hashkey init_key_mgmt(void) {
     for (int num_pces = 0; num_pces < NUM_PIECES; num_pces++) {
         for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
             const uint64_t rnd = genrand64_int64();
-            piece_keys[num_pces][num_sq].hash = rnd;
+            piece_keys[num_pces][num_sq] = rnd;
 
-            hashkey.hash ^= piece_keys[num_pces][num_sq].hash;
+            hashkey.hash ^= piece_keys[num_pces][num_sq];
         }
     }
 
-    side_key.hash = genrand64_int64();
-    hashkey.hash ^= side_key.hash;
+    side_key = genrand64_int64();
+    hashkey.hash ^= side_key;
 
     for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
-        en_passant_sq_keys[num_sq].hash = genrand64_int64();
+        en_passant_sq_keys[num_sq] = genrand64_int64();
 
-        hashkey.hash ^= en_passant_sq_keys[num_sq].hash;
+        hashkey.hash ^= en_passant_sq_keys[num_sq];
     }
 
     for (int i = 0; i < NUM_CASTLE_PERMS; i++) {
-        castle_keys[i].hash = genrand64_int64();
+        castle_keys[i] = genrand64_int64();
 
-        hashkey.hash ^= castle_keys[i].hash;
+        hashkey.hash ^= castle_keys[i];
     }
     return hashkey;
 }
@@ -93,7 +94,7 @@ struct hashkey hash_piece_update(const enum piece pce, const enum square sq, con
     assert(validate_square(sq));
 
     const uint8_t pce_off = pce_get_array_idx(pce);
-    const uint64_t new_hash = key_to_modify.hash ^ piece_keys[pce_off][sq].hash;
+    const uint64_t new_hash = key_to_modify.hash ^ piece_keys[pce_off][sq];
 
     const struct hashkey retval = {.hash = new_hash};
     return retval;
@@ -119,8 +120,8 @@ struct hashkey hash_piece_update_move(const enum piece pce, const enum square fr
     assert(validate_square(to_sq));
 
     const uint8_t pce_off = pce_get_array_idx(pce);
-    const uint64_t from_hash = key_to_modify.hash ^ piece_keys[pce_off][from_sq].hash;
-    const uint64_t to_hash = from_hash ^ piece_keys[pce_off][to_sq].hash;
+    const uint64_t from_hash = key_to_modify.hash ^ piece_keys[pce_off][from_sq];
+    const uint64_t to_hash = from_hash ^ piece_keys[pce_off][to_sq];
 
     const struct hashkey retval = {.hash = to_hash};
     return retval;
@@ -132,7 +133,7 @@ struct hashkey hash_piece_update_move(const enum piece pce, const enum square fr
  * @return              The updated hash key
  */
 struct hashkey hash_side_update(const struct hashkey key_to_modify) {
-    const uint64_t new_hash = key_to_modify.hash ^ side_key.hash;
+    const uint64_t new_hash = key_to_modify.hash ^ side_key;
 
     const struct hashkey retval = {.hash = new_hash};
     return retval;
@@ -146,7 +147,7 @@ struct hashkey hash_side_update(const struct hashkey key_to_modify) {
 struct hashkey hash_en_passant(const enum square sq, const struct hashkey key_to_modify) {
     assert(validate_square(sq));
 
-    const uint64_t new_hash = key_to_modify.hash ^ en_passant_sq_keys[sq].hash;
+    const uint64_t new_hash = key_to_modify.hash ^ en_passant_sq_keys[sq];
     const struct hashkey retval = {.hash = new_hash};
     return retval;
 }
@@ -163,7 +164,7 @@ struct hashkey hash_castle_perm(const enum castle_permission cp, const struct ha
     assert(validate_castle_permission(cp));
 
     const uint8_t cp_off = cast_perm_get_offset(cp);
-    const uint64_t new_hash = key_to_modify.hash ^ castle_keys[cp_off].hash;
+    const uint64_t new_hash = key_to_modify.hash ^ castle_keys[cp_off];
     const struct hashkey retval = {.hash = new_hash};
     return retval;
 }

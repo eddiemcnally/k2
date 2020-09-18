@@ -49,7 +49,7 @@ int32_t quiescence(struct position *pos, struct search_data *search, int32_t alp
 
     // todo
     // - check for time limit every 'n' moves
-    // - check on move repetitpon and 50-move counter
+    // - check on move repetiton and 50-move counter
 
     if (pos_get_ply(pos) > MAX_SEARCH_DEPTH - 1) {
         return evaluate_position_basic(pos);
