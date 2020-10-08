@@ -38,8 +38,27 @@
 #include "square.h"
 #include <assert.h>
 
-#define FILE_MASK ((uint64_t)0x00000000000000ff)
-#define RANK_MASK ((uint64_t)0x0101010101010101)
+#define RANK_MASK ((uint64_t)0x00000000000000ff)
+#define FILE_MASK ((uint64_t)0x0101010101010101)
+
+#define FILE_A_BB FILE_MASK
+// #define FILE_B_BB   (FILE_A_BB << 1)
+// #define FILE_C_BB   (FILE_A_BB << 2)
+// #define FILE_D_BB   (FILE_A_BB << 3)
+// #define FILE_E_BB   (FILE_A_BB << 4)
+// #define FILE_F_BB   (FILE_A_BB << 5)
+// #define FILE_G_BB   (FILE_A_BB << 6)
+#define FILE_H_BB (FILE_A_BB << 7)
+
+// #define NORTH(bb)   (bb << 8)
+// #define SOUTH(bb)   (bb >> 8)
+// #define EAST(bb)    ((bb & ~FILE_H_BB) << 1)
+// #define WEST(bb)    ((bb & ~FILE_A_BB) >> 1)
+
+#define NORTH_EAST(bb) ((bb & ~FILE_H_BB) << 9)
+#define SOUTH_EAST(bb) ((bb & ~FILE_H_BB) >> 7)
+#define NORTH_WEST(bb) ((bb & ~FILE_A_BB) << 7)
+#define SOUTH_WEST(bb) ((bb & ~FILE_A_BB) >> 9)
 
 //
 //
@@ -122,37 +141,6 @@ static const uint64_t rook_occupancy_masks[NUM_SQUARES] = {
     0x807f808080808080, 0xfe01010101010101, 0xfd02020202020202, 0xfb04040404040404, 0xf708080808080808,
     0xef10101010101010, 0xdf20202020202020, 0xbf40404040404040, 0x7f80808080808080};
 
-static const uint64_t white_pawn_capture_non_first_double_move[NUM_SQUARES] = {
-    0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
-    0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000020000, 0x0000000000050000,
-    0x00000000000a0000, 0x0000000000140000, 0x0000000000280000, 0x0000000000500000, 0x0000000000a00000,
-    0x0000000000400000, 0x0000000002000000, 0x0000000005000000, 0x000000000a000000, 0x0000000014000000,
-    0x0000000028000000, 0x0000000050000000, 0x00000000a0000000, 0x0000000040000000, 0x0000000200000000,
-    0x0000000500000000, 0x0000000a00000000, 0x0000001400000000, 0x0000002800000000, 0x0000005000000000,
-    0x000000a000000000, 0x0000004000000000, 0x0000020000000000, 0x0000050000000000, 0x00000a0000000000,
-    0x0000140000000000, 0x0000280000000000, 0x0000500000000000, 0x0000a00000000000, 0x0000400000000000,
-    0x0002000000000000, 0x0005000000000000, 0x000a000000000000, 0x0014000000000000, 0x0028000000000000,
-    0x0050000000000000, 0x00a0000000000000, 0x0040000000000000, 0x0200000000000000, 0x0500000000000000,
-    0x0a00000000000000, 0x1400000000000000, 0x2800000000000000, 0x5000000000000000, 0xa000000000000000,
-    0x4000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
-    0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
-};
-
-static const uint64_t black_pawn_capture_non_first_double_move[NUM_SQUARES] = {
-    0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
-    0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000002, 0x0000000000000005,
-    0x000000000000000a, 0x0000000000000014, 0x0000000000000028, 0x0000000000000050, 0x00000000000000a0,
-    0x0000000000000040, 0x0000000000000200, 0x0000000000000500, 0x0000000000000a00, 0x0000000000001400,
-    0x0000000000002800, 0x0000000000005000, 0x000000000000a000, 0x0000000000004000, 0x0000000000020000,
-    0x0000000000050000, 0x00000000000a0000, 0x0000000000140000, 0x0000000000280000, 0x0000000000500000,
-    0x0000000000a00000, 0x0000000000400000, 0x0000000002000000, 0x0000000005000000, 0x000000000a000000,
-    0x0000000014000000, 0x0000000028000000, 0x0000000050000000, 0x00000000a0000000, 0x0000000040000000,
-    0x0000000200000000, 0x0000000500000000, 0x0000000a00000000, 0x0000001400000000, 0x0000002800000000,
-    0x0000005000000000, 0x000000a000000000, 0x0000004000000000, 0x0000020000000000, 0x0000050000000000,
-    0x00000a0000000000, 0x0000140000000000, 0x0000280000000000, 0x0000500000000000, 0x0000a00000000000,
-    0x0000400000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000,
-    0x0000000000000000, 0x0000000000000000, 0x0000000000000000, 0x0000000000000000};
-
 /* indexed using enum square
  * Represents the bottom-left to top-right diagonals that a bishop can move to, when
  * on a specific square
@@ -205,14 +193,14 @@ inline uint64_t occ_mask_get_vertical(const enum square sq) {
     assert(validate_square(sq));
 
     const enum file f = sq_get_file(sq);
-    return RANK_MASK << f;
+    return FILE_MASK << f;
 }
 
 inline uint64_t occ_mask_get_horizontal(const enum square sq) {
     assert(validate_square(sq));
 
     const enum rank r = sq_get_rank(sq);
-    return FILE_MASK << (r << 3);
+    return RANK_MASK << (r << 3);
 }
 
 /**
@@ -221,9 +209,14 @@ inline uint64_t occ_mask_get_horizontal(const enum square sq) {
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq) {
+inline uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
-    return white_pawn_capture_non_first_double_move[sq];
+
+    const uint64_t sq_bb = bb_set_square(0, sq);
+    const uint64_t north_east_attack = NORTH_EAST(sq_bb);
+    const uint64_t north_west_attack = NORTH_WEST(sq_bb);
+
+    return north_east_attack | north_west_attack;
 }
 
 /**
@@ -232,9 +225,14 @@ uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq) {
+inline uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
-    return black_pawn_capture_non_first_double_move[sq];
+
+    const uint64_t sq_bb = bb_set_square(0, sq);
+    const uint64_t south_east_attack = SOUTH_EAST(sq_bb);
+    const uint64_t south_west_attack = SOUTH_WEST(sq_bb);
+
+    return south_east_attack | south_west_attack;
 }
 
 /**
