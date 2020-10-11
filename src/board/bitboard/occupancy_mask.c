@@ -126,21 +126,6 @@ static const uint64_t king_occupancy_masks[NUM_SQUARES] = {
     0xc040c00000000000, 0x0203000000000000, 0x0507000000000000, 0x0a0e000000000000, 0x141c000000000000,
     0x2838000000000000, 0x5070000000000000, 0xa0e0000000000000, 0x40c0000000000000};
 
-static const uint64_t rook_occupancy_masks[NUM_SQUARES] = {
-    0x01010101010101fe, 0x02020202020202fd, 0x04040404040404fb, 0x08080808080808f7, 0x10101010101010ef,
-    0x20202020202020df, 0x40404040404040bf, 0x808080808080807f, 0x010101010101fe01, 0x020202020202fd02,
-    0x040404040404fb04, 0x080808080808f708, 0x101010101010ef10, 0x202020202020df20, 0x404040404040bf40,
-    0x8080808080807f80, 0x0101010101fe0101, 0x0202020202fd0202, 0x0404040404fb0404, 0x0808080808f70808,
-    0x1010101010ef1010, 0x2020202020df2020, 0x4040404040bf4040, 0x80808080807f8080, 0x01010101fe010101,
-    0x02020202fd020202, 0x04040404fb040404, 0x08080808f7080808, 0x10101010ef101010, 0x20202020df202020,
-    0x40404040bf404040, 0x808080807f808080, 0x010101fe01010101, 0x020202fd02020202, 0x040404fb04040404,
-    0x080808f708080808, 0x101010ef10101010, 0x202020df20202020, 0x404040bf40404040, 0x8080807f80808080,
-    0x0101fe0101010101, 0x0202fd0202020202, 0x0404fb0404040404, 0x0808f70808080808, 0x1010ef1010101010,
-    0x2020df2020202020, 0x4040bf4040404040, 0x80807f8080808080, 0x01fe010101010101, 0x02fd020202020202,
-    0x04fb040404040404, 0x08f7080808080808, 0x10ef101010101010, 0x20df202020202020, 0x40bf404040404040,
-    0x807f808080808080, 0xfe01010101010101, 0xfd02020202020202, 0xfb04040404040404, 0xf708080808080808,
-    0xef10101010101010, 0xdf20202020202020, 0xbf40404040404040, 0x7f80808080808080};
-
 /* indexed using enum square
  * Represents the bottom-left to top-right diagonals that a bishop can move to, when
  * on a specific square
@@ -200,7 +185,7 @@ inline uint64_t occ_mask_get_horizontal(const enum square sq) {
     assert(validate_square(sq));
 
     const enum rank r = sq_get_rank(sq);
-    return RANK_MASK << (r << 3);
+    return RANK_MASK << (r << 3); // rank * 8
 }
 
 /**
@@ -285,7 +270,10 @@ uint64_t occ_mask_get_queen(const enum square sq) {
  * @param sq    The square containing the Rook
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_rook(const enum square sq) {
+inline uint64_t occ_mask_get_rook(const enum square sq) {
     assert(validate_square(sq));
-    return rook_occupancy_masks[sq];
+
+    const uint64_t horiz_mask = occ_mask_get_horizontal(sq);
+    const uint64_t vert_mask = occ_mask_get_vertical(sq);
+    return (horiz_mask | vert_mask);
 }

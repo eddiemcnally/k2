@@ -145,23 +145,28 @@ inline enum piece pce_get_no_piece(void) {
 inline uint32_t pce_get_value(const enum piece_role pt) {
     assert(validate_piece_role(pt));
 
-    switch (pt) {
-    case PAWN:
+    const uint8_t offset = ROLE_AS_INDEX(pt);
+
+    switch (offset) {
+    case ROLE_AS_INDEX(PAWN):
         return PCE_VAL_PAWN;
-    case BISHOP:
+    case ROLE_AS_INDEX(BISHOP):
         return PCE_VAL_BISHOP;
-    case KNIGHT:
+    case ROLE_AS_INDEX(KNIGHT):
         return PCE_VAL_KNIGHT;
-    case ROOK:
+    case ROLE_AS_INDEX(ROOK):
         return PCE_VAL_ROOK;
-    case QUEEN:
+    case ROLE_AS_INDEX(QUEEN):
         return PCE_VAL_QUEEN;
-    case KING:
+    case ROLE_AS_INDEX(KING):
         return PCE_VAL_KING;
     default:
         assert(false);
         break;
     }
+    // todo, handle errors, write to syslog?
+    printf("INVALID piece role\n");
+    return 0;
 }
 
 /**

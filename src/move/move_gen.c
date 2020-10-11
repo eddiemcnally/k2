@@ -189,18 +189,51 @@ static void mv_gen_white_pawn_moves(const struct position *pos, const struct boa
 
     uint64_t pawns_excl_rank7_bb = all_pawns_bb & (~RANK_7_BB);
 
+    // quiet moves
+    if (gen_type == ALL_MOVES) {
+        const uint64_t plus_one_rank = pawns_excl_rank7_bb << 8;
+        uint64_t white_quiet_dest_bb = plus_one_rank & ~all_pce_bb;
+        while (white_quiet_dest_bb != 0) {
+            const enum square dest_sq = bb_pop_1st_bit(white_quiet_dest_bb);
+            white_quiet_dest_bb = bb_clear_square(white_quiet_dest_bb, dest_sq);
+
+            const enum square pwn_quiet_from_sq = sq_get_square_minus_1_rank(dest_sq);
+
+            struct move quiet_move = move_encode_quiet(pwn_quiet_from_sq, dest_sq);
+            mvl_add(mvl, quiet_move);
+        }
+
+        // mask out all pawns other than on rank 2
+        uint64_t pawns_on_rank_2 = all_pawns_bb & RANK_2_BB;
+
+        while (pawns_on_rank_2 != 0) {
+            const enum square from_sq = bb_pop_1st_bit(pawns_on_rank_2);
+            pawns_on_rank_2 = bb_clear_square(pawns_on_rank_2, from_sq);
+            const enum square from_plus_1 = sq_get_square_plus_1_rank(from_sq);
+            const enum square from_plus_2 = sq_get_square_plus_1_rank(from_plus_1);
+
+            try_encode_double_pawn_move(brd, from_sq, from_plus_1, from_plus_2, mvl);
+        }
+    }
+
+    if (is_en_pass_active) {
+        // See if there is a pawn attacking the enp square
+        // Easiest way is to pretend a BLACK piece is on the enp
+        // square, and see if it is attacking a pawn
+        const uint64_t blk_attack_mask = occ_mask_get_black_pawn_capture_non_first_double_move(en_pass_sq);
+        uint64_t attacking_wp_bb = blk_attack_mask & all_pawns_bb;
+        while (attacking_wp_bb != 0) {
+            const enum square wp_from_sq = bb_pop_1st_bit(attacking_wp_bb);
+            attacking_wp_bb = bb_clear_square(attacking_wp_bb, wp_from_sq);
+
+            const struct move en_pass_move = move_encode_enpassant(wp_from_sq, en_pass_sq);
+            mvl_add(mvl, en_pass_move);
+        }
+    }
+
     while (pawns_excl_rank7_bb != 0) {
-        // quiet moves
         const enum square from_sq = bb_pop_1st_bit(pawns_excl_rank7_bb);
         pawns_excl_rank7_bb = bb_clear_square(pawns_excl_rank7_bb, from_sq);
-
-        const enum square to_sq = sq_get_square_plus_1_rank(from_sq);
-        if (gen_type == ALL_MOVES) {
-            if (bb_is_set(all_pce_bb, to_sq) == false) {
-                struct move quiet_move = move_encode_quiet(from_sq, to_sq);
-                mvl_add(mvl, quiet_move);
-            }
-        }
 
         // capture moves
         const uint64_t occ_mask = occ_mask_get_white_pawn_capture_non_first_double_move(from_sq);
@@ -210,15 +243,6 @@ static void mv_gen_white_pawn_moves(const struct position *pos, const struct boa
             capt_bb = bb_clear_square(capt_bb, capt_to_sq);
             struct move capt_move = move_encode_capture(from_sq, capt_to_sq);
             mvl_add(mvl, capt_move);
-        }
-
-        if (is_en_pass_active) {
-            const uint64_t en_pass_bb = bb_get_sq_mask(en_pass_sq);
-            if ((en_pass_bb & occ_mask) != 0) {
-                // en passant move available from this square
-                struct move en_pass_move = move_encode_enpassant(from_sq, en_pass_sq);
-                mvl_add(mvl, en_pass_move);
-            }
         }
     }
 
@@ -245,20 +269,6 @@ static void mv_gen_white_pawn_moves(const struct position *pos, const struct boa
             gen_promotions(prom_from_sq, prom_capt_to_sq, mvl, true);
         }
     }
-
-    if (gen_type == ALL_MOVES) {
-        // mask out all pawns other than on rank 2
-        uint64_t pawns_on_rank_2 = all_pawns_bb & RANK_2_BB;
-
-        while (pawns_on_rank_2 != 0) {
-            const enum square from_sq = bb_pop_1st_bit(pawns_on_rank_2);
-            pawns_on_rank_2 = bb_clear_square(pawns_on_rank_2, from_sq);
-            const enum square from_plus_1 = sq_get_square_plus_1_rank(from_sq);
-            const enum square from_plus_2 = sq_get_square_plus_1_rank(from_plus_1);
-
-            try_encode_double_pawn_move(brd, from_sq, from_plus_1, from_plus_2, mvl);
-        }
-    }
 }
 
 /**
@@ -283,18 +293,50 @@ static void mv_gen_black_pawn_moves(const struct position *pos, const struct boa
 
     uint64_t pawns_excl_rank2_bb = all_pawns_bb & (~RANK_2_BB);
 
+    // do all quiet moves in parallel
+    if (gen_type == ALL_MOVES) {
+        const uint64_t minus_one_rank = pawns_excl_rank2_bb >> 8;
+        uint64_t black_quiet_dest_bb = minus_one_rank & ~all_pce_bb;
+        while (black_quiet_dest_bb != 0) {
+            const enum square dest_sq = bb_pop_1st_bit(black_quiet_dest_bb);
+            black_quiet_dest_bb = bb_clear_square(black_quiet_dest_bb, dest_sq);
+
+            const enum square pwn_quiet_from_sq = sq_get_square_plus_1_rank(dest_sq);
+
+            struct move quiet_move = move_encode_quiet(pwn_quiet_from_sq, dest_sq);
+            mvl_add(mvl, quiet_move);
+        }
+        // mask out all pawns other than on rank 7
+        uint64_t pawns_on_rank_7 = all_pawns_bb & RANK_7_BB;
+
+        while (pawns_on_rank_7 != 0) {
+            const enum square from_sq = bb_pop_1st_bit(pawns_on_rank_7);
+            pawns_on_rank_7 = bb_clear_square(pawns_on_rank_7, from_sq);
+            const enum square from_minus_1 = sq_get_square_minus_1_rank(from_sq);
+            const enum square from_minus_2 = sq_get_square_minus_1_rank(from_minus_1);
+
+            try_encode_double_pawn_move(brd, from_sq, from_minus_1, from_minus_2, mvl);
+        }
+    }
+
+    if (is_en_pass_active) {
+        // See if there is a pawn attacking the enp square
+        // Easiest way is to pretend a WHITE piece is on the enp
+        // square, and see if it is attacking a pawn
+        const uint64_t white_attack_mask = occ_mask_get_white_pawn_capture_non_first_double_move(en_pass_sq);
+        uint64_t attacking_bp_bb = white_attack_mask & all_pawns_bb;
+        while (attacking_bp_bb != 0) {
+            const enum square bp_from_sq = bb_pop_1st_bit(attacking_bp_bb);
+            attacking_bp_bb = bb_clear_square(attacking_bp_bb, bp_from_sq);
+
+            const struct move en_pass_move = move_encode_enpassant(bp_from_sq, en_pass_sq);
+            mvl_add(mvl, en_pass_move);
+        }
+    }
+
     while (pawns_excl_rank2_bb != 0) {
-        // quiet moves
         const enum square from_sq = bb_pop_1st_bit(pawns_excl_rank2_bb);
         pawns_excl_rank2_bb = bb_clear_square(pawns_excl_rank2_bb, from_sq);
-
-        const enum square to_sq = sq_get_square_minus_1_rank(from_sq);
-        if (gen_type == ALL_MOVES) {
-            if (bb_is_set(all_pce_bb, to_sq) == false) {
-                struct move quiet_move = move_encode_quiet(from_sq, to_sq);
-                mvl_add(mvl, quiet_move);
-            }
-        }
 
         // capture moves
         const uint64_t occ_mask = occ_mask_get_black_pawn_capture_non_first_double_move(from_sq);
@@ -305,15 +347,6 @@ static void mv_gen_black_pawn_moves(const struct position *pos, const struct boa
 
             struct move capt_move = move_encode_capture(from_sq, capt_to_sq);
             mvl_add(mvl, capt_move);
-        }
-
-        if (is_en_pass_active) {
-            const uint64_t en_pass_bb = bb_get_sq_mask(en_pass_sq);
-            if ((en_pass_bb & occ_mask) != 0) {
-                // en passant move available from this square
-                struct move en_pass_move = move_encode_enpassant(from_sq, en_pass_sq);
-                mvl_add(mvl, en_pass_move);
-            }
         }
     }
 
@@ -339,20 +372,6 @@ static void mv_gen_black_pawn_moves(const struct position *pos, const struct boa
             capt_bb = bb_clear_square(capt_bb, prom_capt_to_sq);
 
             gen_promotions(prom_from_sq, prom_capt_to_sq, mvl, true);
-        }
-    }
-
-    if (gen_type == ALL_MOVES) {
-        // mask out all pawns other than on rank 7
-        uint64_t pawns_on_rank_7 = all_pawns_bb & RANK_7_BB;
-
-        while (pawns_on_rank_7 != 0) {
-            const enum square from_sq = bb_pop_1st_bit(pawns_on_rank_7);
-            pawns_on_rank_7 = bb_clear_square(pawns_on_rank_7, from_sq);
-            const enum square from_minus_1 = sq_get_square_minus_1_rank(from_sq);
-            const enum square from_minus_2 = sq_get_square_minus_1_rank(from_minus_1);
-
-            try_encode_double_pawn_move(brd, from_sq, from_minus_1, from_minus_2, mvl);
         }
     }
 }

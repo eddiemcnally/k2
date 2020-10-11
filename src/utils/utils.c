@@ -127,3 +127,12 @@ uint64_t round_down_to_nearest_power_2(uint64_t n) {
     }
     return res;
 }
+
+/**
+ * @brief Issues a cache pre-fetch instruction for the given address
+ * 
+ * @param addr The address to prefetch.
+ */
+void prefetch(void *addr) {
+    __builtin_prefetch(addr);
+}

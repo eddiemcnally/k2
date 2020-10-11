@@ -33,3 +33,4 @@ void print_stacktrace(void);
 double get_time_of_day_in_secs(void);
 double get_elapsed_time_in_secs(double start_time);
 uint64_t round_down_to_nearest_power_2(uint64_t n);
+void prefetch(void *addr);

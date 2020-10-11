@@ -62,6 +62,8 @@ enum colour {
 
 enum piece_role { PAWN = 0x00, BISHOP = 0x10, KNIGHT = 0x20, ROOK = 0x30, QUEEN = 0x40, KING = 0x50 };
 
+#define ROLE_AS_INDEX(r) ((uint8_t)(r >> 4))
+
 enum {
     WP_OFF = 0x00,
     WB_OFF = 0x01,
