@@ -110,7 +110,10 @@ void brd_deallocate(struct board *brd) {
 inline uint64_t brd_get_board_bb(const struct board *brd) {
     assert(validate_board(brd));
 
-    return brd->bb_colour[WHITE] | brd->bb_colour[BLACK];
+    const uint8_t w_off = PCE_COL_GET_ARRAY_INDEX(WHITE);
+    const uint8_t b_off = PCE_COL_GET_ARRAY_INDEX(BLACK);
+
+    return brd->bb_colour[w_off] | brd->bb_colour[b_off];
 }
 
 /**
@@ -156,9 +159,9 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
     assert(validate_square_empty(brd, sq));
 
     // set bitboards
-    const uint8_t pce_off = pce_get_array_idx(pce);
+    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
     const enum colour col = pce_get_colour(pce);
-    const uint8_t col_off = pce_col_get_array_idx(col);
+    const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
     uint64_t *pce_bb = &brd->pce_bitboards.pce_bb[pce_off];
     uint64_t *col_bb = &brd->bb_colour[col_off];
@@ -184,7 +187,7 @@ uint32_t brd_get_material(const struct board *brd, const enum colour side) {
     assert(validate_board(brd));
     assert(validate_colour(side));
 
-    uint8_t idx = pce_col_get_array_idx(side);
+    uint8_t idx = PCE_COL_GET_ARRAY_INDEX(side);
     return brd->material[idx];
 }
 
@@ -203,9 +206,9 @@ void brd_remove_piece(struct board *brd, const enum piece pce, const enum square
     assert(validate_piece(pce));
     assert(validate_pce_on_sq(brd, pce, sq));
 
-    const uint8_t pce_off = pce_get_array_idx(pce);
+    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
     const enum colour col = pce_get_colour(pce);
-    const uint8_t col_off = pce_col_get_array_idx(col);
+    const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
     uint64_t *pce_bb = &brd->pce_bitboards.pce_bb[pce_off];
     uint64_t *col_bb = &brd->bb_colour[col_off];
@@ -234,9 +237,9 @@ void brd_move_piece(struct board *brd, const enum piece pce, const enum square f
     assert(brd_is_sq_occupied(brd, to_sq) == false);
     assert(brd_is_sq_occupied(brd, from_sq));
 
-    const uint8_t pce_off = pce_get_array_idx(pce);
+    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
     const enum colour col = pce_get_colour(pce);
-    const uint8_t col_off = pce_col_get_array_idx(col);
+    const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
     uint64_t *pce_bb = &brd->pce_bitboards.pce_bb[pce_off];
     uint64_t *col_bb = &brd->bb_colour[col_off];
@@ -262,7 +265,7 @@ uint64_t brd_get_colour_bb(const struct board *brd, const enum colour colour) {
     assert(validate_colour(colour));
     assert(validate_board(brd));
 
-    uint8_t offset = pce_col_get_array_idx(colour);
+    uint8_t offset = PCE_COL_GET_ARRAY_INDEX(colour);
     return brd->bb_colour[offset];
 }
 
@@ -278,8 +281,56 @@ uint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce) {
     assert(validate_board(brd));
     assert(validate_piece(pce));
 
-    uint8_t offset = pce_get_array_idx(pce);
+    const uint8_t offset = PCE_GET_ARRAY_INDEX(pce);
     return brd->pce_bitboards.pce_bb[offset];
+}
+
+/**
+ * @brief Returns a bitboard representing the WHITE rook and queen positions
+ * 
+ * @param brd 
+ * @return uint64_t The rook and queen bitboard
+ */
+uint64_t brd_get_white_rook_queen_bb(const struct board *brd) {
+    const uint8_t wr_off = PCE_GET_ARRAY_INDEX(WHITE_ROOK);
+    const uint8_t wq_off = PCE_GET_ARRAY_INDEX(WHITE_QUEEN);
+    return brd->pce_bitboards.pce_bb[wr_off] | brd->pce_bitboards.pce_bb[wq_off];
+}
+
+/**
+ * @brief Returns a bitboard representing the BLACK rook and queen positions
+ * 
+ * @param brd 
+ * @return uint64_t The rook and queen bitboard
+ */
+uint64_t brd_get_black_rook_queen_bb(const struct board *brd) {
+    const uint8_t br_off = PCE_GET_ARRAY_INDEX(BLACK_ROOK);
+    const uint8_t bq_off = PCE_GET_ARRAY_INDEX(BLACK_QUEEN);
+    return brd->pce_bitboards.pce_bb[br_off] | brd->pce_bitboards.pce_bb[bq_off];
+}
+
+/**
+ * @brief Returns a bitboard representing the WHITE bishop and queen positions
+ * 
+ * @param brd 
+ * @return uint64_t The bishop and queen bitboard
+ */
+uint64_t brd_get_white_bishop_queen_bb(const struct board *brd) {
+    const uint8_t wb_off = PCE_GET_ARRAY_INDEX(WHITE_BISHOP);
+    const uint8_t wq_off = PCE_GET_ARRAY_INDEX(WHITE_QUEEN);
+    return brd->pce_bitboards.pce_bb[wb_off] | brd->pce_bitboards.pce_bb[wq_off];
+}
+
+/**
+ * @brief Returns a bitboard representing the BLACK bishop and queen positions
+ * 
+ * @param brd 
+ * @return uint64_t The bishop and queen bitboard
+ */
+uint64_t brd_get_black_bishop_queen_bb(const struct board *brd) {
+    const uint8_t bb_off = PCE_GET_ARRAY_INDEX(BLACK_BISHOP);
+    const uint8_t bq_off = PCE_GET_ARRAY_INDEX(BLACK_QUEEN);
+    return brd->pce_bitboards.pce_bb[bb_off] | brd->pce_bitboards.pce_bb[bq_off];
 }
 
 /**
@@ -292,8 +343,8 @@ bool validate_board(const struct board *brd) {
 #pragma GCC diagnostic ignored "-Wunused-variable"
     enum square sq;
 
-    const uint8_t white_idx = pce_col_get_array_idx(WHITE);
-    const uint8_t black_idx = pce_col_get_array_idx(BLACK);
+    const uint8_t white_idx = PCE_COL_GET_ARRAY_INDEX(WHITE);
+    const uint8_t black_idx = PCE_COL_GET_ARRAY_INDEX(BLACK);
 
     // conflate colour bitboards
     const uint64_t white_bb = brd->bb_colour[white_idx];
@@ -337,7 +388,7 @@ bool validate_board(const struct board *brd) {
     for (int i = 0; i < NUM_PIECES; i++) {
         enum piece p = pce_array[i];
 
-        uint8_t offset = pce_get_array_idx(p);
+        const uint8_t offset = PCE_GET_ARRAY_INDEX(p);
         conflated_pce_bb |= brd->pce_bitboards.pce_bb[offset];
         total_bit_count += (uint8_t)__builtin_popcountll(brd->pce_bitboards.pce_bb[offset]);
     }
@@ -379,7 +430,7 @@ bool brd_compare(const struct board *first, const struct board *second) {
     pce_get_all_pieces(pce_array);
     for (int i = 0; i < NUM_PIECES; i++) {
         enum piece p = pce_array[i];
-        uint8_t offset = pce_get_array_idx(p);
+        const uint8_t offset = PCE_GET_ARRAY_INDEX(p);
 
         if (first->pce_bitboards.pce_bb[offset] != second->pce_bitboards.pce_bb[offset]) {
             return false;
@@ -400,6 +451,11 @@ void brd_clone(const struct board *source, struct board *dest) {
     memcpy(dest, source, sizeof(struct board));
 }
 
+/**
+ * @brief Prints a representation of the board
+ * 
+ * @param brd 
+ */
 void brd_print(const struct board *brd) {
 
     printf("\nGame Board:\n\n");

@@ -189,6 +189,28 @@ inline uint64_t occ_mask_get_horizontal(const enum square sq) {
 }
 
 /**
+ * @brief Returns a bitboard representing WHITE pawns that can attack the given square
+ * 
+ * @param sq The square being attacked
+ * @return uint64_t A bitboard representing WHITE pawns that can attack the square
+ */
+uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
+    const uint64_t bb = bb_get_sq_mask(sq);
+    return SOUTH_EAST(bb) | SOUTH_WEST(bb);
+}
+
+/**
+ * @brief Returns a bitboard representing BLACK pawns that can attack the given square
+ * 
+ * @param sq The square being attacked
+ * @return uint64_t A bitboard representing BLACK pawns that can attack the square
+ */
+uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
+    const uint64_t bb = bb_get_sq_mask(sq);
+    return NORTH_EAST(bb) | NORTH_WEST(bb);
+}
+
+/**
  * @brief               Get white pawn capture non-first move occupancy mask
  *
  * @param sq    The square containing the pawn
@@ -198,10 +220,7 @@ inline uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum
     assert(validate_square(sq));
 
     const uint64_t sq_bb = bb_set_square(0, sq);
-    const uint64_t north_east_attack = NORTH_EAST(sq_bb);
-    const uint64_t north_west_attack = NORTH_WEST(sq_bb);
-
-    return north_east_attack | north_west_attack;
+    return NORTH_EAST(sq_bb) | NORTH_WEST(sq_bb);
 }
 
 /**
@@ -214,10 +233,7 @@ inline uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum
     assert(validate_square(sq));
 
     const uint64_t sq_bb = bb_set_square(0, sq);
-    const uint64_t south_east_attack = SOUTH_EAST(sq_bb);
-    const uint64_t south_west_attack = SOUTH_WEST(sq_bb);
-
-    return south_east_attack | south_west_attack;
+    return SOUTH_EAST(sq_bb) | SOUTH_WEST(sq_bb);
 }
 
 /**

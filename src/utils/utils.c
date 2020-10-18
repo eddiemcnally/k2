@@ -53,13 +53,11 @@ void set_priority_and_affinity(void) {
     CPU_ZERO(&my_set);
     CPU_SET(1, &my_set);
     if (sched_setaffinity(0, sizeof(cpu_set_t), &my_set) > 0) {
-        printf("affinity error");
-        exit(-1);
+        fprintf(stderr, "%s", "affinity error");
     }
     // set process priority to max
     if (setpriority(PRIO_PROCESS, 0, PRIO_MAX) != 0) {
-        printf("process priority error");
-        exit(-1);
+        fprintf(stderr, "%s", "process priority error");
     }
 }
 

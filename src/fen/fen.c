@@ -36,6 +36,7 @@
 #include "piece.h"
 #include "position.h"
 #include "square.h"
+#include "utils.h"
 #include <assert.h>
 
 #define MAX_FEN 255
@@ -320,9 +321,7 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms) {
             pf->castle_permissions.has_bq_cast_perm = true;
             break;
         default:
-            assert(true);
-            printf("FEN.C : invalid Castle Permission character %c\n", *perms);
-            break;
+            REQUIRE(false, "invalid Castle Permission character");
         }
         perms++;
     }

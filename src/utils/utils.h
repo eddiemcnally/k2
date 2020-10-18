@@ -27,6 +27,15 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define REQUIRE(cond, text)                                                                                            \
+    if (!(cond)) {                                                                                                     \
+        fprintf(stderr, "Function : %s\n", __func__);                                                                  \
+        fprintf(stderr, "%s\n", text);                                                                                 \
+        exit(EXIT_FAILURE);                                                                                            \
+    }
 
 void set_priority_and_affinity(void);
 void print_stacktrace(void);

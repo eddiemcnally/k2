@@ -93,7 +93,7 @@ struct hashkey hash_piece_update(const enum piece pce, const enum square sq, con
     assert(validate_piece(pce));
     assert(validate_square(sq));
 
-    const uint8_t pce_off = pce_get_array_idx(pce);
+    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
     const uint64_t new_hash = key_to_modify.hash ^ piece_keys[pce_off][sq];
 
     const struct hashkey retval = {.hash = new_hash};
@@ -119,7 +119,7 @@ struct hashkey hash_piece_update_move(const enum piece pce, const enum square fr
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    const uint8_t pce_off = pce_get_array_idx(pce);
+    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
     const uint64_t from_hash = key_to_modify.hash ^ piece_keys[pce_off][from_sq];
     const uint64_t to_hash = from_hash ^ piece_keys[pce_off][to_sq];
 

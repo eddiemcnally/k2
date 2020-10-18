@@ -1133,9 +1133,8 @@ void test_position_make_move_white_promotion(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        enum piece expected_prom_pce;
-        bool decoded = try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
-        assert_true(decoded);
+        enum piece expected_prom_pce = move_decode_promotion_piece(mv, WHITE);
+
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
@@ -1170,9 +1169,7 @@ void test_position_make_move_black_promotion(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        enum piece expected_prom_pce;
-        bool decoded = try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
-        assert_true(decoded);
+        enum piece expected_prom_pce = move_decode_promotion_piece(mv, BLACK);
 
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
@@ -1208,9 +1205,7 @@ void test_position_make_move_white_promotion_capture(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        enum piece expected_prom_pce;
-        bool decoded = try_move_decode_promotion_piece(mv, WHITE, &expected_prom_pce);
-        assert_true(decoded);
+        enum piece expected_prom_pce = move_decode_promotion_piece(mv, WHITE);
 
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
@@ -1246,9 +1241,7 @@ void test_position_make_move_black_promotion_capture(void **state) {
     const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
     for (int i = 0; i < mv_sz; i++) {
         const struct move mv = mv_list[i];
-        enum piece expected_prom_pce;
-        bool decoded = try_move_decode_promotion_piece(mv, BLACK, &expected_prom_pce);
-        assert_true(decoded);
+        enum piece expected_prom_pce = move_decode_promotion_piece(mv, BLACK);
 
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);

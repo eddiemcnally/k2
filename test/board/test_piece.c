@@ -140,18 +140,18 @@ void test_piece_get_colour_black_pieces(void **state) {
 }
 
 void test_piece_get_array_idx(void **state) {
-    assert_true(pce_get_array_idx(WHITE_PAWN) == 0);
-    assert_true(pce_get_array_idx(WHITE_BISHOP) == 1);
-    assert_true(pce_get_array_idx(WHITE_KNIGHT) == 2);
-    assert_true(pce_get_array_idx(WHITE_ROOK) == 3);
-    assert_true(pce_get_array_idx(WHITE_QUEEN) == 4);
-    assert_true(pce_get_array_idx(WHITE_KING) == 5);
-    assert_true(pce_get_array_idx(BLACK_PAWN) == 6);
-    assert_true(pce_get_array_idx(BLACK_BISHOP) == 7);
-    assert_true(pce_get_array_idx(BLACK_KNIGHT) == 8);
-    assert_true(pce_get_array_idx(BLACK_ROOK) == 9);
-    assert_true(pce_get_array_idx(BLACK_QUEEN) == 10);
-    assert_true(pce_get_array_idx(BLACK_KING) == 11);
+    assert_true(PCE_GET_ARRAY_INDEX(WHITE_PAWN) == 0);
+    assert_true(PCE_GET_ARRAY_INDEX(WHITE_BISHOP) == 1);
+    assert_true(PCE_GET_ARRAY_INDEX(WHITE_KNIGHT) == 2);
+    assert_true(PCE_GET_ARRAY_INDEX(WHITE_ROOK) == 3);
+    assert_true(PCE_GET_ARRAY_INDEX(WHITE_QUEEN) == 4);
+    assert_true(PCE_GET_ARRAY_INDEX(WHITE_KING) == 5);
+    assert_true(PCE_GET_ARRAY_INDEX(BLACK_PAWN) == 6);
+    assert_true(PCE_GET_ARRAY_INDEX(BLACK_BISHOP) == 7);
+    assert_true(PCE_GET_ARRAY_INDEX(BLACK_KNIGHT) == 8);
+    assert_true(PCE_GET_ARRAY_INDEX(BLACK_ROOK) == 9);
+    assert_true(PCE_GET_ARRAY_INDEX(BLACK_QUEEN) == 10);
+    assert_true(PCE_GET_ARRAY_INDEX(BLACK_KING) == 11);
 }
 
 void test_piece_swap_side(void **state) {

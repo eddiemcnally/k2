@@ -33,6 +33,7 @@
  */
 
 #include "piece.h"
+#include "utils.h"
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -50,10 +51,9 @@ enum piece_values {
     PCE_VAL_QUEEN = 900,
     PCE_VAL_KING = 20000
 };
-#define NO_PIECE ((uint8_t)0xFF)
+#define NO_PIECE ((enum piece)0xFF)
 
 #define COLOUR_SHIFT (7)
-#define OFFSET_SHIFT (0)
 
 #define extract_colour(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))
 #define extract_piece_role(pce) ((enum piece_role)(pce & ROLE_MASK))
@@ -161,36 +161,10 @@ inline uint32_t pce_get_value(const enum piece_role pt) {
     case ROLE_AS_INDEX(KING):
         return PCE_VAL_KING;
     default:
-        assert(false);
-        break;
+        REQUIRE(false, "Invalid Piece Role");
     }
-    // todo, handle errors, write to syslog?
-    printf("INVALID piece role\n");
-    return 0;
-}
 
-/**
-* @brief            Converts the piece-type to an array index for use by various modules
-*
-* @param pt         The piece
-* @return           uint8_t The array index
-*/
-inline uint8_t pce_get_array_idx(const enum piece pce) {
-    assert(validate_piece(pce));
-
-    return (pce & OFFSET_MASK) >> OFFSET_SHIFT;
-}
-
-/**
-* @brief        Converts ths given colour to an array index.
-*
-* @param col    p_col The colour
-* @return uint8_t The array index
-*/
-inline uint8_t pce_col_get_array_idx(const enum colour col) {
-    assert(validate_colour(col));
-
-    return (uint8_t)col;
+    REQUIRE(false, "Invalid Piece Role");
 }
 
 /**
@@ -250,8 +224,7 @@ char pce_get_label(const enum piece pce) {
         retval = 'k';
         break;
     default:
-        assert(false);
-        return '-';
+        REQUIRE(false, "Invalid Piece");
     }
 
     if (col == WHITE) {
@@ -301,8 +274,9 @@ enum piece pce_get_from_label(const char c) {
     case 'k':
         return BLACK_KING;
     default:
-        assert(false);
+        REQUIRE(false, "Invalid Piece label char");
     }
+
 #pragma GCC diagnostic pop
     return retval;
 }

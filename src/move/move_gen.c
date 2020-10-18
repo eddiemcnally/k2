@@ -59,25 +59,22 @@ enum move_gen_type {
 };
 
 static void mv_gen_white_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
-                                    const enum move_gen_type gen_type, const uint64_t black_pce_bb,
-                                    const uint64_t all_pce_bb);
+                                    const enum move_gen_type gen_type);
 static void mv_gen_black_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
-                                    const enum move_gen_type gen_type, const uint64_t white_pce_bb,
-                                    const uint64_t all_pce_bb);
+                                    const enum move_gen_type gen_type);
 static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, const uint64_t queen_bishop_bb,
-                                                    struct move_list *mvl, const enum move_gen_type gen_type,
-                                                    const uint64_t side_to_move_pce_bb, const uint64_t all_pce_bb);
-static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t rook_queen_bb, struct move_list *mvl,
-                                        const enum move_gen_type gen_type, uint64_t side_to_move_pce_bb,
-                                        const uint64_t all_pce_bb);
+                                                    const enum colour side_to_move, struct move_list *mvl,
+                                                    const enum move_gen_type gen_type);
+static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t rook_queen_bb,
+                                        const enum colour side_to_move, struct move_list *mvl,
+                                        const enum move_gen_type gen_type);
 static void encode_quiet_or_capt_move(const struct board *brd, const enum square from_sq, const enum square to_sq,
                                       struct move_list *mvl, const enum move_gen_type gen_type);
 static void try_encode_double_pawn_move(const struct board *brd, const enum square from_sq, const enum square plus_1,
                                         const enum square plus_2, struct move_list *mvl);
 static void gen_promotions(const enum square from_sq, const enum square to_sq, struct move_list *mvl,
                            const bool is_capture);
-static void mv_gen_king_knight_moves(const struct board *brd, const enum piece king_pce, const enum piece knight_pce,
-                                     const uint64_t opposite_pce_bb, const uint64_t all_pce_bb, struct move_list *mvl,
+static void mv_gen_king_knight_moves(const struct board *brd, const enum colour side_to_move, struct move_list *mvl,
                                      const enum move_gen_type gen_type);
 static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq, struct move_list *mvl);
 static void mv_gen_encode_multiple_capture(uint64_t bb, const enum square from_sq, struct move_list *mvl);
@@ -120,49 +117,39 @@ static void mv_gen_moves(const struct position *pos, struct move_list *mvl, cons
     struct board *brd = pos_get_board(pos);
     enum colour side_to_move = pos_get_side_to_move(pos);
 
-    const uint64_t black_pce_bb = brd_get_colour_bb(brd, BLACK);
-    const uint64_t white_pce_bb = brd_get_colour_bb(brd, WHITE);
-    const uint64_t all_occupied_squares_bb = brd_get_board_bb(brd);
-
     switch (side_to_move) {
     case WHITE:
 
-        mv_gen_king_knight_moves(brd, WHITE_KING, WHITE_KNIGHT, black_pce_bb, all_occupied_squares_bb, mvl, gen_type);
+        mv_gen_king_knight_moves(brd, WHITE, mvl, gen_type);
 
         // conflate bishop and queen
-        const uint64_t white_queen_bishop_bb = brd_get_piece_bb(brd, WHITE_QUEEN) | brd_get_piece_bb(brd, WHITE_BISHOP);
-        get_sliding_diagonal_antidiagonal_moves(brd, white_queen_bishop_bb, mvl, gen_type, white_pce_bb,
-                                                all_occupied_squares_bb);
+        const uint64_t white_queen_bishop_bb = brd_get_white_bishop_queen_bb(brd);
+        get_sliding_diagonal_antidiagonal_moves(brd, white_queen_bishop_bb, WHITE, mvl, gen_type);
 
-        const uint64_t white_rook_queen_bb = brd_get_piece_bb(brd, WHITE_QUEEN) | brd_get_piece_bb(brd, WHITE_ROOK);
-        get_sliding_rank_file_moves(brd, white_rook_queen_bb, mvl, gen_type, white_pce_bb, all_occupied_squares_bb);
+        const uint64_t white_rook_queen_bb = brd_get_white_rook_queen_bb(brd);
+        get_sliding_rank_file_moves(brd, white_rook_queen_bb, WHITE, mvl, gen_type);
 
         if (gen_type == ALL_MOVES) {
             mv_gen_white_castle_moves(pos, mvl);
         }
-        mv_gen_white_pawn_moves(pos, brd, mvl, gen_type, black_pce_bb, all_occupied_squares_bb);
+        mv_gen_white_pawn_moves(pos, brd, mvl, gen_type);
         break;
 
     case BLACK:
 
-        mv_gen_king_knight_moves(brd, BLACK_KING, BLACK_KNIGHT, white_pce_bb, all_occupied_squares_bb, mvl, gen_type);
+        mv_gen_king_knight_moves(brd, BLACK, mvl, gen_type);
 
         // conflate bishop and queen
-        const uint64_t black_queen_bishop_bb = brd_get_piece_bb(brd, BLACK_QUEEN) | brd_get_piece_bb(brd, BLACK_BISHOP);
-        get_sliding_diagonal_antidiagonal_moves(brd, black_queen_bishop_bb, mvl, gen_type, black_pce_bb,
-                                                all_occupied_squares_bb);
+        const uint64_t black_queen_bishop_bb = brd_get_black_bishop_queen_bb(brd);
+        get_sliding_diagonal_antidiagonal_moves(brd, black_queen_bishop_bb, BLACK, mvl, gen_type);
 
-        const uint64_t black_rook_queen_bb = brd_get_piece_bb(brd, BLACK_QUEEN) | brd_get_piece_bb(brd, BLACK_ROOK);
-        get_sliding_rank_file_moves(brd, black_rook_queen_bb, mvl, gen_type, black_pce_bb, all_occupied_squares_bb);
+        const uint64_t black_rook_queen_bb = brd_get_black_rook_queen_bb(brd);
+        get_sliding_rank_file_moves(brd, black_rook_queen_bb, BLACK, mvl, gen_type);
 
         if (gen_type == ALL_MOVES) {
             mv_gen_black_castle_moves(pos, mvl);
         }
-        mv_gen_black_pawn_moves(pos, brd, mvl, gen_type, white_pce_bb, all_occupied_squares_bb);
-        break;
-
-    default:
-        assert(false);
+        mv_gen_black_pawn_moves(pos, brd, mvl, gen_type);
         break;
     }
 }
@@ -172,18 +159,18 @@ static void mv_gen_moves(const struct position *pos, struct move_list *mvl, cons
  * @param brd   The board
  * @param mvl   the move list to append new moves to
  * @param gen_type  The move types to generate
- * @param black_pce_bb  Bitboard representing all black piece positions on the board
- * @param all_pce_bb  Bitboard representing all piece positions on the board
  * 
  */
 static void mv_gen_white_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
-                                    const enum move_gen_type gen_type, const uint64_t black_pce_bb,
-                                    const uint64_t all_pce_bb) {
+                                    const enum move_gen_type gen_type) {
     assert(validate_position(pos));
     assert(validate_board(brd));
     assert(validate_move_list(mvl));
 
     const uint64_t all_pawns_bb = brd_get_piece_bb(brd, WHITE_PAWN);
+    const uint64_t all_pce_bb = brd_get_board_bb(brd);
+    const uint64_t black_pce_bb = brd_get_colour_bb(brd, BLACK);
+
     enum square en_pass_sq;
     const bool is_en_pass_active = pos_try_get_en_pass_sq(pos, &en_pass_sq);
 
@@ -276,18 +263,18 @@ static void mv_gen_white_pawn_moves(const struct position *pos, const struct boa
  * @param brd   The board
  * @param mvl   the move list to append new moves to
  * @param gen_type  The move types to generate
- * @param white_pce_bb  Bitboard representing all white piece positions on the board
- * @param all_pce_bb  Bitboard representing all piece positions on the board
  * 
  */
 static void mv_gen_black_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
-                                    const enum move_gen_type gen_type, const uint64_t white_pce_bb,
-                                    const uint64_t all_pce_bb) {
+                                    const enum move_gen_type gen_type) {
     assert(validate_position(pos));
     assert(validate_board(brd));
     assert(validate_move_list(mvl));
 
     const uint64_t all_pawns_bb = brd_get_piece_bb(brd, BLACK_PAWN);
+    const uint64_t all_pce_bb = brd_get_board_bb(brd);
+    const uint64_t white_pce_bb = brd_get_colour_bb(brd, WHITE);
+
     enum square en_pass_sq;
     const bool is_en_pass_active = pos_try_get_en_pass_sq(pos, &en_pass_sq);
 
@@ -377,21 +364,24 @@ static void mv_gen_black_pawn_moves(const struct position *pos, const struct boa
 }
 
 /**
- * @brief Get the sliding diagonal antidiagonal moves
+ * @brief Generate sliding diagonal and antidiagonal moves 
  * 
  * @param brd The board
- * @param queen_bishop_bb   a bitboard representing squares occupied by queen and bishop 
- * @param mvl               the move list to be populated
- * @param gen_type          move types to generate
- * @param side_to_move_pce_bb Bitboard representing all piece positions for the side to move
- * @param all_pce_bb Bitboard representing all piece positions on the board
- *  
+ * @param queen_bishop_bb   A bitboard representing the conflated queen and bishop pieces 
+ * @param side_to_move The side to move
+ * @param mvl The move list
+ * @param gen_type The move type to generate
  */
 static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, const uint64_t queen_bishop_bb,
-                                                    struct move_list *mvl, const enum move_gen_type gen_type,
-                                                    const uint64_t side_to_move_pce_bb, const uint64_t all_pce_bb) {
+                                                    const enum colour side_to_move, struct move_list *mvl,
+                                                    const enum move_gen_type gen_type) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
+    assert(validate_colour(side_to_move));
+
+    const uint64_t side_to_move_pce_bb =
+        side_to_move == WHITE ? brd_get_colour_bb(brd, WHITE) : brd_get_colour_bb(brd, BLACK);
+    const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
     uint64_t pce_to_move_bb = queen_bishop_bb;
 
@@ -431,20 +421,23 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, con
 }
 
 /**
- * @brief Get the sliding rank file moves
+ * @brief Generate all sliding moves for rank and files
  * 
- * @param brd   the board
- * @param rook_queen_bb     a bitboard representing queen and rook piece locations
- * @param mvl               the move list to be populated
- * @param gen_type          The move type to generate
- * @param side_to_move_pce_bb Bitboard representing all piece positions for the side to move
- * @param all_pce_bb Bitboard representing all piece positions on the board
+ * @param brd The board
+ * @param rook_queen_bb The conflated bitboard for queen and rook pieces 
+ * @param side_to_move The side to move
+ * @param mvl The move List
+ * @param gen_type The type of moves to generate
  */
-static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t rook_queen_bb, struct move_list *mvl,
-                                        const enum move_gen_type gen_type, uint64_t side_to_move_pce_bb,
-                                        const uint64_t all_pce_bb) {
+static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t rook_queen_bb,
+                                        const enum colour side_to_move, struct move_list *mvl,
+                                        const enum move_gen_type gen_type) {
 
-    // taken from https://chessprogramming.wikispaces.com/Hyperbola+Quintessence
+    // taken from https://www.chessprogramming.org/Hyperbola_Quintessence
+
+    const uint64_t all_pce_bb = brd_get_board_bb(brd);
+    const uint64_t side_to_move_pce_bb =
+        side_to_move == WHITE ? brd_get_colour_bb(brd, WHITE) : brd_get_colour_bb(brd, BLACK);
 
     uint64_t pce_to_move_bb = rook_queen_bb;
 
@@ -527,28 +520,29 @@ static void gen_promotions(const enum square from_sq, const enum square to_sq, s
 }
 
 /**
- * @brief Generates moves for King and Knight (ie, non-sliding pieces)
- *
- * @param brd The board
- * @param king_pce The King piece
- * @param knight_pce The Kinght piece
- * @param opposite_pce_bb Opposite piece bitboard
- * @param all_pce_bb Bitboard representing all piece positions on the board
- * @param mvl A pointer to the move List, to which the moves are appended.
- * @param gen_type The move type to generate
+ * @brief Generates King and Knight moves
+ * 
+ * @param brd The current board
+ * @param side_to_move  Side to move
+ * @param mvl Move list
+ * @param gen_type Type of moves to generate
  */
-static void mv_gen_king_knight_moves(const struct board *brd, const enum piece king_pce, const enum piece knight_pce,
-                                     const uint64_t opposite_pce_bb, const uint64_t all_pce_bb, struct move_list *mvl,
+static void mv_gen_king_knight_moves(const struct board *brd, const enum colour side_to_move, struct move_list *mvl,
                                      const enum move_gen_type gen_type) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
+    assert(validate_colour(side_to_move));
 
-    uint64_t knight_bb = brd_get_piece_bb(brd, knight_pce);
-    uint64_t king_bb = brd_get_piece_bb(brd, king_pce);
+    const enum piece knight = side_to_move == WHITE ? WHITE_KNIGHT : BLACK_KNIGHT;
+    const enum piece king = side_to_move == WHITE ? WHITE_KING : BLACK_KING;
+    const uint64_t opposite_pce_bb =
+        side_to_move == WHITE ? brd_get_colour_bb(brd, BLACK) : brd_get_colour_bb(brd, WHITE);
 
+    const uint64_t all_pce_bb = brd_get_board_bb(brd);
     const uint64_t free_squares = ~all_pce_bb;
 
     // knight
+    uint64_t knight_bb = brd_get_piece_bb(brd, knight);
     while (knight_bb != 0) {
         const enum square from_sq = bb_pop_1st_bit(knight_bb);
         knight_bb = bb_clear_square(knight_bb, from_sq);
@@ -569,6 +563,7 @@ static void mv_gen_king_knight_moves(const struct board *brd, const enum piece k
     }
 
     // king
+    uint64_t king_bb = brd_get_piece_bb(brd, king);
     const enum square from_sq = bb_pop_1st_bit(king_bb);
     const uint64_t occ_mask = occ_mask_get_king(from_sq);
     switch (gen_type) {

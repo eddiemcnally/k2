@@ -27,6 +27,7 @@
 #include "move.h"
 #include "piece.h"
 #include "square.h"
+#include "utils.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -151,9 +152,7 @@ struct move move_encode_promoted(const enum square from_sq, const enum square to
         flg = MV_FLG_PROMOTE_QUEEN;
         break;
     default:
-        printf("Invalid promotion piece\n");
-        exit(-1);
-        break;
+        REQUIRE(false, "Invalid promotion piece");
     }
 
     mv.val = set_flag(mv.val, (uint16_t)flg);
@@ -165,15 +164,13 @@ struct move move_encode_promoted(const enum square from_sq, const enum square to
 }
 
 /**
- * @brief Decodes the promotion piece from the move
+ * @brief  Decodes the promotion piece from the move
  * 
- * @param mv 
- * @param side 
- * @param pce       ptr to piece to set up
- * @return true     ok
- * @return false    not ok
+ * @param mv The move
+ * @param side The side
+ * @return enum piece The decoded piece 
  */
-bool try_move_decode_promotion_piece(const struct move mv, const enum colour side, enum piece *pce) {
+enum piece move_decode_promotion_piece(const struct move mv, const enum colour side) {
     assert(validate_move(mv));
     assert(validate_colour(side));
 
@@ -183,41 +180,36 @@ bool try_move_decode_promotion_piece(const struct move mv, const enum colour sid
     case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
     case MV_FLG_PROMOTE_KNIGHT:
         if (side == WHITE) {
-            *pce = WHITE_KNIGHT;
-        } else {
-            *pce = BLACK_KNIGHT;
+            return WHITE_KNIGHT;
         }
-        return true;
+        return BLACK_KNIGHT;
+
     case MV_FLG_PROMOTE_BISHOP_CAPTURE:
     case MV_FLG_PROMOTE_BISHOP:
         if (side == WHITE) {
-            *pce = WHITE_BISHOP;
-        } else {
-            *pce = BLACK_BISHOP;
+            return WHITE_BISHOP;
         }
-        return true;
+        return BLACK_BISHOP;
+
     case MV_FLG_PROMOTE_QUEEN_CAPTURE:
     case MV_FLG_PROMOTE_QUEEN:
         if (side == WHITE) {
-            *pce = WHITE_QUEEN;
-        } else {
-            *pce = BLACK_QUEEN;
+            return WHITE_QUEEN;
         }
-        return true;
+        return BLACK_QUEEN;
+
     case MV_FLG_PROMOTE_ROOK_CAPTURE:
     case MV_FLG_PROMOTE_ROOK:
         if (side == WHITE) {
-            *pce = WHITE_ROOK;
-        } else {
-            *pce = BLACK_ROOK;
+            return WHITE_ROOK;
         }
-        return true;
+        return BLACK_ROOK;
+
     default:
-        assert(false);
+        REQUIRE(false, "Invalid promotion piece");
     }
 
-    assert(false);
-    return false;
+    REQUIRE(false, "Unexpected code path decoding promotion piece");
 }
 
 /**
@@ -254,8 +246,6 @@ struct move move_encode_castle_kingside(const enum colour side) {
         from_sq = e8;
         to_sq = g8;
         break;
-    default:
-        assert(false);
     }
 
     struct move mv = encode_from_to(from_sq, to_sq);
@@ -281,8 +271,6 @@ struct move move_encode_castle_queenside(const enum colour side) {
         from_sq = e8;
         to_sq = c8;
         break;
-    default:
-        assert(false);
     }
 
     struct move mv = encode_from_to(from_sq, to_sq);

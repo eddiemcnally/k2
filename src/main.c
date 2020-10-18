@@ -51,7 +51,7 @@ int main(void) {
 
     // // mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
 
-    // // try_move_decode_promotion_piece(mv, WHITE, &pce);
+    // // const enum piece pce = move_decode_promotion_piece(mv, WHITE);
 
     // // printf("pce = 0x%x\n", pce);
 

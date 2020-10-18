@@ -39,3 +39,5 @@ uint64_t occ_mask_get_positive_diagonal(const enum square sq);
 uint64_t occ_mask_get_negative_diagonal(const enum square sq);
 uint64_t occ_mask_get_vertical(const enum square sq);
 uint64_t occ_mask_get_horizontal(const enum square sq);
+uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq);
+uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq);

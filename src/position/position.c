@@ -40,6 +40,7 @@
 #include "hashkeys.h"
 #include "move.h"
 #include "position_hist.h"
+#include "utils.h"
 #include <assert.h>
 
 // key used to verify struct has been initialised
@@ -232,20 +233,9 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
 
     enum piece pce_to_move;
     bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
-    if (found == false) {
-        printf("Problem with move\n");
-        printf("%s\n", move_print(mv));
-        brd_print(pos->brd);
-        assert(false);
-        return false;
-    }
-    assert(found == true);
-    assert(validate_piece(pce_to_move));
 
-    if (!found) {
-        printf("Unexpected empty square\n");
-        return false;
-    }
+    REQUIRE(found, "no piece found");
+    assert(validate_piece(pce_to_move));
 
     if (move_is_quiet(mv)) {
         // normal quiet move
@@ -266,21 +256,12 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
             // promotion with capture, remove existing piece
             enum piece pce_being_captured;
             bool piece_found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_being_captured);
-            assert(piece_found == true);
-            if (piece_found == false) {
-                printf("Piece not found\n");
-                return false;
-            }
+            REQUIRE(piece_found, "no piece found for promotion");
 
             pos_remove_piece(pos, pce_being_captured, to_sq);
         }
-        enum piece pce_prom;
-        bool decoded_ok = try_move_decode_promotion_piece(mv, pos->side_to_move, &pce_prom);
-        if (!decoded_ok) {
-            printf("Promoted piece not decoded\n");
-            assert(false);
-            return false;
-        }
+        const enum piece pce_prom = move_decode_promotion_piece(mv, pos->side_to_move);
+
         pos_remove_piece(pos, pce_to_move, from_sq);
         pos_add_piece(pos, pce_prom, to_sq);
 
@@ -405,20 +386,10 @@ static void do_capture_move(struct position *pos, const struct move mv, const en
 
     enum piece pce_capt;
     bool found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_capt);
-    assert(found == true);
-    if (found == false) {
-        printf("Piece not found\n");
-        return;
-    }
+    REQUIRE(found, "Piece not found");
 
     if (move_is_promotion(mv)) {
-        enum piece pce_prom;
-        bool decoded_ok = try_move_decode_promotion_piece(mv, pos->side_to_move, &pce_prom);
-        if (!decoded_ok) {
-            printf("Promotion piece not decoded correctly\n");
-            assert(false);
-            return;
-        }
+        const enum piece pce_prom = move_decode_promotion_piece(mv, pos->side_to_move);
         pos_remove_piece(pos, pce_to_move, from_sq);
         pos_remove_piece(pos, pce_to_move, to_sq);
         pos_add_piece(pos, pce_prom, to_sq);
@@ -538,7 +509,7 @@ static bool is_castle_move_legal(const struct position *pos, const struct move m
             cast_bb = BQ_CAST_BB;
         }
     } else {
-        assert(false);
+        REQUIRE(false, "is_castle_move_legal : unexpected condition");
     }
 
     while (cast_bb != 0) {
@@ -572,8 +543,9 @@ static void make_castle_piece_moves(struct position *pos, const struct move cast
             pos_move_piece(pos, pce_wk, e1, c1);
             pos_move_piece(pos, pce_wr, a1, d1);
         } else {
-            assert(false);
+            REQUIRE(false, "Invalid castle side");
         }
+
         pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
         break;
@@ -585,28 +557,25 @@ static void make_castle_piece_moves(struct position *pos, const struct move cast
             pos_move_piece(pos, pce_bk, e8, c8);
             pos_move_piece(pos, pce_br, a8, d8);
         } else {
-            assert(false);
+            REQUIRE(false, "Invalid castle side");
         }
+
         pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
         break;
     default:
-        assert(false);
+        REQUIRE(false, "Unexpected condition");
     }
 }
 
 static void make_en_passant_move(struct position *pos, const struct move en_pass_mv, const enum square from_sq,
                                  const enum square to_sq) {
 
-    if (move_is_en_passant(en_pass_mv) == false) {
-        printf("Move isn't en passant");
-        assert(false);
-        return;
-    }
+    REQUIRE(move_is_en_passant(en_pass_mv), "Move isn't en passant");
 
     enum piece pce_to_move;
     bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
-    assert(found);
+    REQUIRE(found, "No piece found");
 
     enum square sq_with_piece;
     if (pos->side_to_move == WHITE) {
@@ -614,25 +583,14 @@ static void make_en_passant_move(struct position *pos, const struct move en_pass
     } else if (pos->side_to_move == BLACK) {
         sq_with_piece = sq_get_square_plus_1_rank(to_sq);
     } else {
-        printf("invalid side to move\n");
-        assert(false);
-        return;
+        REQUIRE(false, "invalid side to move\n");
     }
 
-    if (brd_is_sq_occupied(pos->brd, sq_with_piece) == false) {
-        printf("square isn't occupied\n");
-        assert(false);
-        return;
-    }
+    REQUIRE(brd_is_sq_occupied(pos->brd, sq_with_piece), "square isn't occupied");
 
     enum piece pce_to_remove;
     found = brd_try_get_piece_on_square(pos->brd, sq_with_piece, &pce_to_remove);
-
-    if (!found) {
-        printf("piece not found on square \n");
-        assert(false);
-        return;
-    }
+    REQUIRE(found, "piece not found on square \n");
 
     pos_remove_piece(pos, pce_to_remove, sq_with_piece);
     pos_move_piece(pos, pce_to_move, from_sq, to_sq);
@@ -734,4 +692,3 @@ static void pos_add_piece(struct position *pos, const enum piece pce, const enum
     brd_add_piece(pos->brd, pce, sq);
     pos->hashkey = hash_piece_update(pce, sq, pos->hashkey);
 }
-////////////////////////////////////////////////////

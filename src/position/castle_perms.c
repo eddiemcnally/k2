@@ -33,6 +33,7 @@
  */
 
 #include "castle_perms.h"
+#include "utils.h"
 #include <assert.h>
 
 enum cast_perm_bitmap {
@@ -78,7 +79,7 @@ bool cast_perm_has_permission(const enum castle_permission cp, const struct cast
     case CASTLE_PERM_BK:
         return (cp_cont.val & CAST_PERM_BK) != 0;
     default:
-        assert(false);
+        REQUIRE(false, "Invalid castle permissions");
     }
 }
 
@@ -114,7 +115,7 @@ void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_
         set_perm_state(cp_cont, CAST_PERM_BK, state);
         break;
     default:
-        assert(false);
+        REQUIRE(false, "Invalid castle permissions");
     }
 }
 
@@ -136,7 +137,7 @@ uint8_t cast_perm_get_offset(const enum castle_permission cp) {
     case CASTLE_PERM_BK:
         return OFFSET_CAST_PERM_BK;
     default:
-        assert(false);
+        REQUIRE(false, "Invalid castle permissions");
     }
 }
 

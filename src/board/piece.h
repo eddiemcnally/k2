@@ -103,6 +103,10 @@ enum piece {
 #define NUM_PIECE_ROLES (6)
 #define NUM_PIECES (NUM_PIECE_ROLES * NUM_COLOURS)
 
+#define OFFSET_SHIFT (0)
+#define PCE_GET_ARRAY_INDEX(pce) ((uint8_t)((pce & OFFSET_MASK) >> OFFSET_SHIFT))
+#define PCE_COL_GET_ARRAY_INDEX(col) ((uint8_t)(col))
+
 enum piece_role pce_get_piece_role(const enum piece pce);
 bool pce_is_white(const enum piece pce);
 bool pce_is_black(const enum piece pce);
@@ -111,8 +115,6 @@ enum colour pce_get_colour(const enum piece pce);
 uint32_t pce_get_value(const enum piece_role pt);
 char pce_get_label(const enum piece pce);
 enum piece pce_get_from_label(const char c);
-uint8_t pce_get_array_idx(const enum piece pce);
-uint8_t pce_col_get_array_idx(const enum colour col);
 enum piece pce_get_no_piece(void);
 bool validate_piece(const enum piece pce);
 bool validate_piece_role(const enum piece_role pt);
