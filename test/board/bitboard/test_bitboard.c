@@ -135,21 +135,6 @@ void test_bitboard_reverse_bits(void **state) {
     assert_true(reversed == 0x5500000000000000);
 }
 
-void test_bb_get_sq_mask(void **state) {
-    uint64_t bb = (uint64_t)0;
-    bool is_set = false;
-
-    for (enum square sq = a1; sq <= h8; sq++) {
-        bb = bb_get_sq_mask(sq);
-        is_set = bb_is_set(bb, sq);
-        assert_true(is_set);
-
-        bb = bb_clear_square(bb, sq);
-        is_set = bb_is_set(bb, sq);
-        assert_false(is_set);
-    }
-}
-
 void test_bitboard_set_test_clear_bit(void **state) {
     uint64_t bb = (uint64_t)0;
     bool is_set = false;

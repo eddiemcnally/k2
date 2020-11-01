@@ -173,7 +173,6 @@ int main(void) {
         cmocka_unit_test(test_bitboard_count_bits),
         cmocka_unit_test(test_bitboard_set_test_clear_bit),
         cmocka_unit_test(test_bitboard_reverse_bits),
-        cmocka_unit_test(test_bb_get_sq_mask),
 
         // board
         cmocka_unit_test(test_board_brd_allocate_deallocate),

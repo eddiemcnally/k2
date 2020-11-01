@@ -394,7 +394,7 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, con
         const uint64_t neg_diag_occ_mask = occ_mask_get_negative_diagonal(from_sq);
 
         // create slider bb for this square
-        const uint64_t bb_slider = bb_get_sq_mask(from_sq);
+        const uint64_t bb_slider = bb_set_square(0, from_sq);
 
         // diagonal move
         uint64_t diag1 = (all_pce_bb & pos_diag_occ_mask) - (2 * bb_slider);
@@ -450,7 +450,7 @@ static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t 
         const uint64_t vmask = occ_mask_get_vertical(from_sq);
 
         // create slider bb for this square
-        const uint64_t bb_slider = bb_get_sq_mask(from_sq);
+        const uint64_t bb_slider = bb_set_square(0, from_sq);
 
         const uint64_t horiz1 = all_pce_bb - (2 * bb_slider);
         const uint64_t horiz2 = bb_reverse(bb_reverse(all_pce_bb) - 2 * bb_reverse(bb_slider));

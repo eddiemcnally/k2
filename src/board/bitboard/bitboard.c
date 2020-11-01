@@ -40,19 +40,6 @@
 static const uint64_t EMPTY_BITBOARD = 0;
 
 /**
- * @brief       Returns a bitboard with a single bit set representing the given square
- *
- * @param sq    The square
- * @return      The bitboard with the set bit
- */
-inline uint64_t bb_get_sq_mask(const enum square sq) {
-    assert(validate_square(sq));
-
-    uint64_t bb = 0;
-    return bb | (BIT_0 << sq);
-}
-
-/**
  * @brief       Set bit in bitboard representing the given square
  *
  * @param bb    The bitboard

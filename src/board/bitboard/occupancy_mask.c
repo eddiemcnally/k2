@@ -195,7 +195,7 @@ inline uint64_t occ_mask_get_horizontal(const enum square sq) {
  * @return uint64_t A bitboard representing WHITE pawns that can attack the square
  */
 uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
-    const uint64_t bb = bb_get_sq_mask(sq);
+    const uint64_t bb = bb_set_square(0, sq);
     return SOUTH_EAST(bb) | SOUTH_WEST(bb);
 }
 
@@ -206,7 +206,7 @@ uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
  * @return uint64_t A bitboard representing BLACK pawns that can attack the square
  */
 uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
-    const uint64_t bb = bb_get_sq_mask(sq);
+    const uint64_t bb = bb_set_square(0, sq);
     return NORTH_EAST(bb) | NORTH_WEST(bb);
 }
 
