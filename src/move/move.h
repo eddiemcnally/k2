@@ -37,6 +37,23 @@ struct move {
     uint16_t val;
 };
 
+enum move_type {
+    MV_TYPE_QUIET = 0x0,
+    MV_TYPE_DOUBLE_PAWN = 0x1,
+    MV_TYPE_KING_CASTLE = 0x2,
+    MV_TYPE_QUEEN_CASTLE = 0x3,
+    MV_TYPE_CAPTURE = 0x4,
+    MV_TYPE_EN_PASS = 0x5,
+    MV_TYPE_PROMOTE_KNIGHT = 0x8,
+    MV_TYPE_PROMOTE_BISHOP = 0x9,
+    MV_TYPE_PROMOTE_ROOK = 0xA,
+    MV_TYPE_PROMOTE_QUEEN = 0xB,
+    MV_TYPE_PROMOTE_KNIGHT_CAPTURE = 0xC,
+    MV_TYPE_PROMOTE_BISHOP_CAPTURE = 0xD,
+    MV_TYPE_PROMOTE_ROOK_CAPTURE = 0xE,
+    MV_TYPE_PROMOTE_QUEEN_CAPTURE = 0xF,
+};
+
 struct move move_encode_quiet(const enum square from_sq, const enum square to_sq);
 struct move move_encode_promoted(const enum square from_sq, const enum square to_sq,
                                  const enum piece_role promoted_piece, const bool is_capture);
@@ -48,6 +65,7 @@ struct move move_encode_castle_queenside(const enum colour side);
 
 bool move_compare(const struct move mv1, const struct move mv2);
 
+enum move_type move_get_move_type(const struct move mv);
 enum square move_decode_from_sq(const struct move mv);
 enum square move_decode_to_sq(const struct move mv);
 enum piece move_decode_promotion_piece(const struct move mv, const enum colour side);

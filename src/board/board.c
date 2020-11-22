@@ -241,15 +241,18 @@ void brd_move_piece(struct board *brd, const enum piece pce, const enum square f
     const enum colour col = pce_get_colour(pce);
     const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
-    uint64_t *pce_bb = &brd->pce_bitboards.pce_bb[pce_off];
-    uint64_t *col_bb = &brd->bb_colour[col_off];
+    uint64_t pce_bb = brd->pce_bitboards.pce_bb[pce_off];
+    uint64_t col_bb = brd->bb_colour[col_off];
 
-    *pce_bb = bb_clear_square(*pce_bb, from_sq);
-    *col_bb = bb_clear_square(*col_bb, from_sq);
+    pce_bb = bb_clear_square(pce_bb, from_sq);
+    col_bb = bb_clear_square(col_bb, from_sq);
+    pce_bb = bb_set_square(pce_bb, to_sq);
+    col_bb = bb_set_square(col_bb, to_sq);
+
+    brd->pce_bitboards.pce_bb[pce_off] = pce_bb;
+    col_bb = brd->bb_colour[col_off] = col_bb;
+
     brd->pce_square[from_sq] = pce_get_no_piece();
-
-    *pce_bb = bb_set_square(*pce_bb, to_sq);
-    *col_bb = bb_set_square(*col_bb, to_sq);
     brd->pce_square[to_sq] = pce;
 }
 
@@ -446,9 +449,10 @@ bool brd_compare(const struct board *first, const struct board *second) {
  * @param source    The source board to clone
  * @param dest      The target for the clone
  */
-void brd_clone(const struct board *source, struct board *dest) {
+__attribute__((always_inline)) void brd_clone(const struct board *source, struct board *dest) {
     assert(validate_board(source));
-    memcpy(dest, source, sizeof(struct board));
+
+    __builtin_memcpy(dest, source, sizeof(struct board));
 }
 
 /**

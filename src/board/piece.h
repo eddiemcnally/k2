@@ -80,7 +80,6 @@ enum {
 };
 
 #define COLOUR_MASK ((uint8_t)0x80)
-#define ROLE_MASK ((uint8_t)0x70)
 #define OFFSET_MASK ((uint8_t)0x0F)
 
 enum piece {

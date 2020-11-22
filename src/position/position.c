@@ -237,36 +237,50 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     REQUIRE(found, "no piece found");
     assert(validate_piece(pce_to_move));
 
-    if (move_is_quiet(mv)) {
-        // normal quiet move
+    const enum move_type mv_type = move_get_move_type(mv);
+
+    switch (mv_type) {
+    case MV_TYPE_QUIET:
         pos_move_piece(pos, pce_to_move, from_sq, to_sq);
-    } else if (move_is_double_pawn(mv)) {
+        break;
+    case MV_TYPE_CAPTURE:
+        do_capture_move(pos, mv, from_sq, to_sq, pce_to_move);
+        break;
+    case MV_TYPE_DOUBLE_PAWN:
         pos->en_passant.sq = get_en_pass_sq(pos->side_to_move, from_sq);
         pos->en_passant.is_active = true;
-
         pos_move_piece(pos, pce_to_move, from_sq, to_sq);
-
-    } else if (move_is_castle(mv)) {
-        make_castle_piece_moves(pos, mv);
-    } else if (move_is_en_passant(mv)) {
+        break;
+    case MV_TYPE_EN_PASS:
         pos->en_passant.is_active = false;
         make_en_passant_move(pos, mv, from_sq, to_sq);
-    } else if (move_is_promotion(mv)) {
-        if (move_is_capture(mv)) {
-            // promotion with capture, remove existing piece
-            enum piece pce_being_captured;
-            bool piece_found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_being_captured);
-            REQUIRE(piece_found, "no piece found for promotion");
-
-            pos_remove_piece(pos, pce_being_captured, to_sq);
-        }
+        break;
+    case MV_TYPE_QUEEN_CASTLE:
+    case MV_TYPE_KING_CASTLE:
+        make_castle_piece_moves(pos, mv);
+        break;
+    case MV_TYPE_PROMOTE_BISHOP:
+    case MV_TYPE_PROMOTE_KNIGHT:
+    case MV_TYPE_PROMOTE_QUEEN:
+    case MV_TYPE_PROMOTE_ROOK: {
         const enum piece pce_prom = move_decode_promotion_piece(mv, pos->side_to_move);
-
         pos_remove_piece(pos, pce_to_move, from_sq);
         pos_add_piece(pos, pce_prom, to_sq);
+    } break;
+    case MV_TYPE_PROMOTE_BISHOP_CAPTURE:
+    case MV_TYPE_PROMOTE_KNIGHT_CAPTURE:
+    case MV_TYPE_PROMOTE_QUEEN_CAPTURE:
+    case MV_TYPE_PROMOTE_ROOK_CAPTURE: {
+        // promotion with capture, remove existing piece
+        enum piece pce_being_captured;
+        bool piece_found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_being_captured);
+        REQUIRE(piece_found, "no piece found for promotion");
+        pos_remove_piece(pos, pce_being_captured, to_sq);
 
-    } else if (move_is_capture(mv)) {
-        do_capture_move(pos, mv, from_sq, to_sq, pce_to_move);
+        const enum piece pce_prom = move_decode_promotion_piece(mv, pos->side_to_move);
+        pos_remove_piece(pos, pce_to_move, from_sq);
+        pos_add_piece(pos, pce_prom, to_sq);
+    } break;
     }
 
     // some cleanup
@@ -677,18 +691,18 @@ static enum square get_en_pass_sq(const enum colour side, const enum square from
 //
 // functions to manipulate pieces and update hashes
 //
-static void pos_move_piece(struct position *pos, const enum piece pce, const enum square from_sq,
-                           const enum square to_sq) {
+static inline void pos_move_piece(struct position *pos, const enum piece pce, const enum square from_sq,
+                                  const enum square to_sq) {
     brd_move_piece(pos->brd, pce, from_sq, to_sq);
     pos->hashkey = hash_piece_update_move(pce, from_sq, to_sq, pos->hashkey);
 }
 
-static void pos_remove_piece(struct position *pos, const enum piece pce, const enum square sq) {
+static inline void pos_remove_piece(struct position *pos, const enum piece pce, const enum square sq) {
     brd_remove_piece(pos->brd, pce, sq);
     pos->hashkey = hash_piece_update(pce, sq, pos->hashkey);
 }
 
-static void pos_add_piece(struct position *pos, const enum piece pce, const enum square sq) {
+static inline void pos_add_piece(struct position *pos, const enum piece pce, const enum square sq) {
     brd_add_piece(pos->brd, pce, sq);
     pos->hashkey = hash_piece_update(pce, sq, pos->hashkey);
 }

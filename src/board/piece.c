@@ -52,7 +52,7 @@ enum piece_values {
     PCE_VAL_KING = 20000
 };
 #define NO_PIECE ((enum piece)0xFF)
-
+#define ROLE_MASK ((uint8_t)0x70)
 #define COLOUR_SHIFT (7)
 
 #define extract_colour(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))

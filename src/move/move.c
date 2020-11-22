@@ -74,21 +74,24 @@ enum move_bits_shifts {
     MV_SHFT_FROM_SQ = 6,
 };
 
+#define TYPE_TO_FLAG(type) ((uint16_t)(type << 12))
+#define FLAG_TO_TYPE(flag) ((enum move_type)(flag >> 12))
+
 enum move_flags {
-    MV_FLG_QUIET = 0x0000,
-    MV_FLG_DOUBLE_PAWN = 0x1000,
-    MV_FLG_KING_CASTLE = 0x2000,
-    MV_FLG_QUEEN_CASTLE = 0x3000,
-    MV_FLG_CAPTURE = 0x4000,
-    MV_FLG_EN_PASS = 0x5000,
-    MV_FLG_PROMOTE_KNIGHT = 0x8000,
-    MV_FLG_PROMOTE_BISHOP = 0x9000,
-    MV_FLG_PROMOTE_ROOK = 0xA000,
-    MV_FLG_PROMOTE_QUEEN = 0xB000,
-    MV_FLG_PROMOTE_KNIGHT_CAPTURE = 0xC000,
-    MV_FLG_PROMOTE_BISHOP_CAPTURE = 0xD000,
-    MV_FLG_PROMOTE_ROOK_CAPTURE = 0xE000,
-    MV_FLG_PROMOTE_QUEEN_CAPTURE = 0xF000,
+    MV_FLG_QUIET = TYPE_TO_FLAG(MV_TYPE_QUIET),
+    MV_FLG_DOUBLE_PAWN = TYPE_TO_FLAG(MV_TYPE_DOUBLE_PAWN),
+    MV_FLG_KING_CASTLE = TYPE_TO_FLAG(MV_TYPE_KING_CASTLE),
+    MV_FLG_QUEEN_CASTLE = TYPE_TO_FLAG(MV_TYPE_QUEEN_CASTLE),
+    MV_FLG_CAPTURE = TYPE_TO_FLAG(MV_TYPE_CAPTURE),
+    MV_FLG_EN_PASS = TYPE_TO_FLAG(MV_TYPE_EN_PASS),
+    MV_FLG_PROMOTE_KNIGHT = TYPE_TO_FLAG(MV_TYPE_PROMOTE_KNIGHT),
+    MV_FLG_PROMOTE_BISHOP = TYPE_TO_FLAG(MV_TYPE_PROMOTE_BISHOP),
+    MV_FLG_PROMOTE_ROOK = TYPE_TO_FLAG(MV_TYPE_PROMOTE_ROOK),
+    MV_FLG_PROMOTE_QUEEN = TYPE_TO_FLAG(MV_TYPE_PROMOTE_QUEEN),
+    MV_FLG_PROMOTE_KNIGHT_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_KNIGHT_CAPTURE),
+    MV_FLG_PROMOTE_BISHOP_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_BISHOP_CAPTURE),
+    MV_FLG_PROMOTE_ROOK_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_ROOK_CAPTURE),
+    MV_FLG_PROMOTE_QUEEN_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_QUEEN_CAPTURE),
 };
 
 enum move_flag_bits {
@@ -105,6 +108,11 @@ static const char *move_details(const struct move mv);
 // public functions
 //
 // ==================================================================
+
+enum move_type move_get_move_type(const struct move mv) {
+    const uint16_t flag = ((uint16_t)mv.val) & MV_MASK_FLAGS;
+    return FLAG_TO_TYPE(flag);
+}
 
 /**
  * @brief           Encodes a quiet move using the given to and from squares
