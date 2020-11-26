@@ -187,32 +187,16 @@ enum piece move_decode_promotion_piece(const struct move mv, const enum colour s
     switch (m) {
     case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
     case MV_FLG_PROMOTE_KNIGHT:
-        if (side == WHITE) {
-            return WHITE_KNIGHT;
-        }
-        return BLACK_KNIGHT;
-
+        return side == WHITE ? WHITE_KNIGHT : BLACK_KNIGHT;
     case MV_FLG_PROMOTE_BISHOP_CAPTURE:
     case MV_FLG_PROMOTE_BISHOP:
-        if (side == WHITE) {
-            return WHITE_BISHOP;
-        }
-        return BLACK_BISHOP;
-
+        return side == WHITE ? WHITE_BISHOP : BLACK_BISHOP;
     case MV_FLG_PROMOTE_QUEEN_CAPTURE:
     case MV_FLG_PROMOTE_QUEEN:
-        if (side == WHITE) {
-            return WHITE_QUEEN;
-        }
-        return BLACK_QUEEN;
-
+        return side == WHITE ? WHITE_QUEEN : BLACK_QUEEN;
     case MV_FLG_PROMOTE_ROOK_CAPTURE:
     case MV_FLG_PROMOTE_ROOK:
-        if (side == WHITE) {
-            return WHITE_ROOK;
-        }
-        return BLACK_ROOK;
-
+        return side == WHITE ? WHITE_ROOK : BLACK_ROOK;
     default:
         REQUIRE(false, "Invalid promotion piece");
     }

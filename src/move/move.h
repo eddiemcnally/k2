@@ -37,6 +37,26 @@ struct move {
     uint16_t val;
 };
 
+/**
+ * bitmap for move
+ * See https://www.chessprogramming.org/Encoding_Moves
+ *
+ * 0000     Quiet move
+ * 0001     Double Pawn push
+ * 0010     King Castle
+ * 0011     Queen Castle
+ * 0100     Capture
+ * 0101     En Passant Capture
+ * 1000     Promotion Knight
+ * 1001     Promotion Bishop
+ * 1010     Promotion Rook
+ * 1011     Promotion Queen
+ * 1100     Promotion Knight Capture
+ * 1101     Promotion Bishop Capture
+ * 1110     Promotion Rook Capture
+ * 1111     Promotion Queen Capture
+ */
+
 enum move_type {
     MV_TYPE_QUIET = 0x0,
     MV_TYPE_DOUBLE_PAWN = 0x1,

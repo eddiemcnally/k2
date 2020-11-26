@@ -38,7 +38,7 @@
 
 struct hist_data {
     struct move mv;
-    struct en_pass_active en_passant;
+    enum square en_passant_sq;
     uint64_t hashkey;
     struct cast_perm_container castle_perm_container;
     uint8_t fifty_move_counter;
@@ -58,13 +58,13 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(void **state) 
     for (int i = 0; i < NUM_TO_TEST; i++) {
         // set up some test data
         struct move mv = move_encode_quiet(a1, a3);
-        struct en_pass_active en_pass = {.is_active = false};
+        enum square en_passant_sq = b2;
         struct cast_perm_container cp;
         cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
 
         struct hashkey hashkey;
         hashkey.hash = (uint64_t)(i * i);
-        position_hist_push(mh, mv, (uint8_t)i, en_pass, hashkey, cp, pos_get_board(pos));
+        position_hist_push(mh, mv, (uint8_t)i, en_passant_sq, hashkey, cp, pos_get_board(pos));
 
         assert_true(position_hist_get_num(mh) == i + 1);
     }

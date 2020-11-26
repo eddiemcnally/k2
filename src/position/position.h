@@ -40,12 +40,6 @@ struct position;
 
 #define MAX_GAME_MOVES (1024)
 
-// container for en passant state
-struct en_pass_active {
-    enum square sq;
-    bool is_active;
-};
-
 enum move_legality { LEGAL_MOVE = 0, ILLEGAL_MOVE = 1 };
 
 #define INITIAL_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"

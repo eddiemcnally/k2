@@ -124,11 +124,9 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c17 -fshort-enums -fsanitiz
 # -fshort-enums 
 
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
--fomit-frame-pointer \
 -DNDEBUG \
 -flto=full \
--Ofast \
--funroll-loops \
+-O3 \
 -m64 \
 -Winline \
 -march=native \

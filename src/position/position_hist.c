@@ -48,8 +48,8 @@ struct move_state {
     uint8_t board[BOARD_SIZE_BYTES];
     // the move being made
     struct move mv;
-    // active/inactive en passant
-    struct en_pass_active en_passant;
+    // en passant square
+    enum square en_passant_sq;
     // side to move
     enum colour side;
     // active castle permissions
@@ -99,7 +99,7 @@ void position_hist_release_memory(struct position_hist *mh) {
 }
 
 void position_hist_push(struct position_hist *pos_history, const struct move mv, const uint8_t fifty_move_counter,
-                        const struct en_pass_active en_passant, const struct hashkey hashkey,
+                        const enum square en_passant_sq, const struct hashkey hashkey,
                         const struct cast_perm_container castle_perm_cont, const struct board *brd) {
 
     assert(validate_move_history(pos_history));
@@ -109,7 +109,7 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
 
     free_slot->mv = mv;
     free_slot->fifty_move_counter = fifty_move_counter;
-    free_slot->en_passant = en_passant;
+    free_slot->en_passant_sq = en_passant_sq;
     free_slot->hashkey = hashkey;
     free_slot->castle_perm_container = castle_perm_cont;
     brd_clone(brd, (struct board *)(&free_slot->board));
@@ -121,13 +121,12 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
 }
 
 void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8_t *fifty_move_counter,
-                       struct en_pass_active *en_passant, struct hashkey *hashkey,
+                       enum square *en_passant_sq, struct hashkey *hashkey,
                        struct cast_perm_container *castle_perm_container, struct board *brd) {
 
     assert(pos_history != NULL);
     assert(mv != NULL);
     assert(fifty_move_counter != NULL);
-    assert(en_passant != NULL);
     assert(hashkey != NULL);
     assert(castle_perm_container != NULL);
     assert(brd != NULL);
@@ -141,7 +140,7 @@ void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8
 
     *mv = free_slot->mv;
     *fifty_move_counter = free_slot->fifty_move_counter;
-    *en_passant = free_slot->en_passant;
+    *en_passant_sq = free_slot->en_passant_sq;
     *hashkey = free_slot->hashkey;
     *castle_perm_container = free_slot->castle_perm_container;
 
@@ -193,11 +192,7 @@ static bool compare_move_states(const struct move_state *ms1, const struct move_
         return false;
     }
 
-    if (ms1->en_passant.sq != ms2->en_passant.sq) {
-        return false;
-    }
-
-    if (ms1->en_passant.is_active != ms2->en_passant.is_active) {
+    if (ms1->en_passant_sq != ms2->en_passant_sq) {
         return false;
     }
 
