@@ -225,19 +225,19 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
 // The code is taken from :
 // https://www.chessprogramming.org/Square_Attacked_By#LegalityTest
 //
-inline static uint64_t in_between(const enum square sq1, const enum square sq2) {
-    const uint64_t m1 = 0xffffffffffffffff;
-    const uint64_t a2a7 = 0x0001010101010100;
-    const uint64_t b2g7 = 0x0040201008040200;
-    const uint64_t h1b7 = 0x0002040810204080;
+__attribute__((always_inline)) uint64_t in_between(const enum square sq1, const enum square sq2) {
+#define M1 0xffffffffffffffff
+#define A2A7 0x0001010101010100
+#define B2G7 0x0040201008040200
+#define H1B7 0x0002040810204080
 
-    const uint64_t btwn = (m1 << sq1) ^ (m1 << sq2);
+    const uint64_t btwn = (M1 << sq1) ^ (M1 << sq2);
     const uint64_t file = (sq2 & 7) - (sq1 & 7);
     const uint64_t rank = ((sq2 | 7) - sq1) >> 3;
-    uint64_t line = ((file & 7) - 1) & a2a7;   /* a2a7 if same file */
+    uint64_t line = ((file & 7) - 1) & A2A7;   /* a2a7 if same file */
     line += 2 * (((rank & 7) - 1) >> 58);      /* b1g1 if same rank */
-    line += (((rank - file) & 15) - 1) & b2g7; /* b2g7 if same diagonal */
-    line += (((rank + file) & 15) - 1) & h1b7; /* h1b7 if same antidiag */
+    line += (((rank - file) & 15) - 1) & B2G7; /* b2g7 if same diagonal */
+    line += (((rank + file) & 15) - 1) & H1B7; /* h1b7 if same antidiag */
     line *= btwn & -btwn;                      /* mul acts like shift by smaller square */
 
     return line & btwn; /* return the bits on that line in-between */

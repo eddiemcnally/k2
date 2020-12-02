@@ -103,6 +103,14 @@ static uint16_t set_flag(const uint16_t mv, const uint16_t flag);
 static struct move encode_from_to(const enum square from_sq, const enum square to_sq);
 static const char *move_details(const struct move mv);
 
+#define ENCODE_TO_SQ(to_sq) ((uint16_t)((to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ))
+#define ENCODE_FROM_SQ(from_sq) ((uint16_t)((from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ))
+
+#define ENCODE_KING_CASTLE_WHITE (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(g1) | MV_FLG_KING_CASTLE)
+#define ENCODE_KING_CASTLE_BLACK (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(g8) | MV_FLG_KING_CASTLE)
+#define ENCODE_QUEEN_CASTLE_WHITE (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(c1) | MV_FLG_QUEEN_CASTLE)
+#define ENCODE_QUEEN_CASTLE_BLACK (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(c8) | MV_FLG_QUEEN_CASTLE)
+
 // ==================================================================
 //
 // public functions
@@ -226,23 +234,9 @@ struct move move_encode_capture(const enum square from_sq, const enum square to_
  * @return      The encoded move
  */
 struct move move_encode_castle_kingside(const enum colour side) {
-    enum square from_sq;
-    enum square to_sq;
-
-    switch (side) {
-    case WHITE:
-        from_sq = e1;
-        to_sq = g1;
-        break;
-    case BLACK:
-        from_sq = e8;
-        to_sq = g8;
-        break;
-    }
-
-    struct move mv = encode_from_to(from_sq, to_sq);
-    mv.val = set_flag(mv.val, MV_FLG_KING_CASTLE);
-    return mv;
+    struct move retval = {0};
+    retval.val = side == WHITE ? ENCODE_KING_CASTLE_WHITE : ENCODE_KING_CASTLE_BLACK;
+    return retval;
 }
 
 /**
@@ -251,23 +245,9 @@ struct move move_encode_castle_kingside(const enum colour side) {
  * @return      The encoded move
  */
 struct move move_encode_castle_queenside(const enum colour side) {
-    enum square from_sq;
-    enum square to_sq;
-
-    switch (side) {
-    case WHITE:
-        from_sq = e1;
-        to_sq = c1;
-        break;
-    case BLACK:
-        from_sq = e8;
-        to_sq = c8;
-        break;
-    }
-
-    struct move mv = encode_from_to(from_sq, to_sq);
-    mv.val = set_flag(mv.val, MV_FLG_QUEEN_CASTLE);
-    return mv;
+    struct move retval = {0};
+    retval.val = side == WHITE ? ENCODE_QUEEN_CASTLE_WHITE : ENCODE_QUEEN_CASTLE_BLACK;
+    return retval;
 }
 
 /**
@@ -525,17 +505,13 @@ bool validate_move(const struct move mv) {
 //
 // ==================================================================
 
-static inline struct move encode_from_to(const enum square from_sq, const enum square to_sq) {
-
-    const uint16_t from_mv = (uint16_t)((from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ);
-    const uint16_t to_mv = (uint16_t)((to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ);
-
-    const uint16_t mv = from_mv | to_mv;
-    const struct move mov = {.val = mv};
+__attribute__((always_inline)) struct move encode_from_to(const enum square from_sq, const enum square to_sq) {
+    struct move mov = {0};
+    mov.val = ENCODE_FROM_SQ(from_sq) | ENCODE_TO_SQ(to_sq);
 
     return mov;
 }
 
-static inline uint16_t set_flag(const uint16_t mv, const uint16_t flag_bit) {
+__attribute__((always_inline)) uint16_t set_flag(const uint16_t mv, const uint16_t flag_bit) {
     return mv | flag_bit;
 }

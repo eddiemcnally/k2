@@ -132,9 +132,18 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fsh
 -march=native \
 -mtune=native")
 
+# ---- Profiling ----
+# Replace the above 'release' command with the following for Profiling
+#
+#set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
+#-DNDEBUG \
+#-pg \
+#-mtune=native")
 
 
-# first we can indicate the documentation build as an option and set it to ON by default
+
+
+# default to ON
 option(BUILD_DOC "Build documentation" ON)
 
 # check if Doxygen is installed
@@ -155,7 +164,7 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM )
 else (DOXYGEN_FOUND)
-  message("Doxygen need to be installed to generate the doxygen documentation")
+  message("Doxygen needs to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
 
   

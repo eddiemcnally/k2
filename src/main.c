@@ -65,7 +65,7 @@ int main(void) {
 
     const double start_time_in_secs = get_time_of_day_in_secs();
 
-    do_perft(5, pos);
+    do_perft(3, pos);
 
     const double elapsed_in_secs = get_elapsed_time_in_secs(start_time_in_secs);
     printf("Elapsed time : %f\n", elapsed_in_secs);

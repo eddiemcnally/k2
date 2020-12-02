@@ -110,10 +110,7 @@ void brd_deallocate(struct board *brd) {
 inline uint64_t brd_get_board_bb(const struct board *brd) {
     assert(validate_board(brd));
 
-    const uint8_t w_off = PCE_COL_GET_ARRAY_INDEX(WHITE);
-    const uint8_t b_off = PCE_COL_GET_ARRAY_INDEX(BLACK);
-
-    return brd->bb_colour[w_off] | brd->bb_colour[b_off];
+    return brd->bb_colour[PCE_COL_ARRAY_OFFSET_WHITE] | brd->bb_colour[PCE_COL_ARRAY_OFFSET_BLACK];
 }
 
 /**
@@ -295,9 +292,8 @@ uint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce) {
  * @return uint64_t The rook and queen bitboard
  */
 uint64_t brd_get_white_rook_queen_bb(const struct board *brd) {
-    const uint8_t wr_off = PCE_GET_ARRAY_INDEX(WHITE_ROOK);
-    const uint8_t wq_off = PCE_GET_ARRAY_INDEX(WHITE_QUEEN);
-    return brd->pce_bitboards.pce_bb[wr_off] | brd->pce_bitboards.pce_bb[wq_off];
+    return brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_WHITE_ROOK] |
+           brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_WHITE_QUEEN];
 }
 
 /**
@@ -307,9 +303,8 @@ uint64_t brd_get_white_rook_queen_bb(const struct board *brd) {
  * @return uint64_t The rook and queen bitboard
  */
 uint64_t brd_get_black_rook_queen_bb(const struct board *brd) {
-    const uint8_t br_off = PCE_GET_ARRAY_INDEX(BLACK_ROOK);
-    const uint8_t bq_off = PCE_GET_ARRAY_INDEX(BLACK_QUEEN);
-    return brd->pce_bitboards.pce_bb[br_off] | brd->pce_bitboards.pce_bb[bq_off];
+    return brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_BLACK_ROOK] |
+           brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_BLACK_QUEEN];
 }
 
 /**
@@ -319,9 +314,8 @@ uint64_t brd_get_black_rook_queen_bb(const struct board *brd) {
  * @return uint64_t The bishop and queen bitboard
  */
 uint64_t brd_get_white_bishop_queen_bb(const struct board *brd) {
-    const uint8_t wb_off = PCE_GET_ARRAY_INDEX(WHITE_BISHOP);
-    const uint8_t wq_off = PCE_GET_ARRAY_INDEX(WHITE_QUEEN);
-    return brd->pce_bitboards.pce_bb[wb_off] | brd->pce_bitboards.pce_bb[wq_off];
+    return brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_WHITE_BISHOP] |
+           brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_WHITE_QUEEN];
 }
 
 /**
@@ -331,9 +325,8 @@ uint64_t brd_get_white_bishop_queen_bb(const struct board *brd) {
  * @return uint64_t The bishop and queen bitboard
  */
 uint64_t brd_get_black_bishop_queen_bb(const struct board *brd) {
-    const uint8_t bb_off = PCE_GET_ARRAY_INDEX(BLACK_BISHOP);
-    const uint8_t bq_off = PCE_GET_ARRAY_INDEX(BLACK_QUEEN);
-    return brd->pce_bitboards.pce_bb[bb_off] | brd->pce_bitboards.pce_bb[bq_off];
+    return brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_BLACK_BISHOP] |
+           brd->pce_bitboards.pce_bb[PCE_ARRAY_OFFSET_BLACK_QUEEN];
 }
 
 /**
@@ -346,13 +339,9 @@ bool validate_board(const struct board *brd) {
 #pragma GCC diagnostic ignored "-Wunused-variable"
     enum square sq;
 
-    const uint8_t white_idx = PCE_COL_GET_ARRAY_INDEX(WHITE);
-    const uint8_t black_idx = PCE_COL_GET_ARRAY_INDEX(BLACK);
-
     // conflate colour bitboards
-    const uint64_t white_bb = brd->bb_colour[white_idx];
-    const uint64_t black_bb = brd->bb_colour[black_idx];
-    const uint64_t conflated_col_bb = white_bb | black_bb;
+    const uint64_t conflated_col_bb =
+        brd->bb_colour[PCE_COL_ARRAY_OFFSET_WHITE] | brd->bb_colour[PCE_COL_ARRAY_OFFSET_BLACK];
 
     // check various bitboards agree with the pieces on the squares
     for (sq = a1; sq <= h8; sq++) {
