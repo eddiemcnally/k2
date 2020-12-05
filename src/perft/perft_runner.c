@@ -66,6 +66,7 @@ int main(void) {
             if (expected_nodes != actual_nodes) {
                 printf("*** Problem: fen=%s, depth=%d, expected=%lu, actual=%lu\n", parsed.rows[r].fen, (d + 1),
                        expected_nodes, actual_nodes);
+                exit(-1);
             }
 
             double elapsed_in_secs = get_elapsed_time_in_secs(start_in_millis);

@@ -38,6 +38,9 @@
 #include "square.h"
 #include <assert.h>
 
+static uint64_t in_between(const enum square sq1, const enum square sq2);
+static void gen_in_between_sq_mask(void);
+
 #define RANK_MASK ((uint64_t)0x00000000000000ff)
 #define FILE_MASK ((uint64_t)0x0101010101010101)
 
@@ -66,6 +69,8 @@
 //              - For these occupancy masks, element [0] is a1, and [63] is h8
 //              - The bit mask represents the set of possible target squares for a piece on a given square
 //
+static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES];
+
 static const uint64_t knight_occupancy_masks[NUM_SQUARES] = {
     0x0000000000020400, 0x0000000000050800, 0x00000000000a1100, 0x0000000000142200, 0x0000000000284400,
     0x0000000000508800, 0x0000000000a01000, 0x0000000000402000, 0x0000000002040004, 0x0000000005080008,
@@ -163,6 +168,14 @@ static const uint64_t negative_diagonal_masks[] = {
     0x0200081020408000, 0x0400102040800000, 0x0800204080000000, 0x1000408000000000, 0x2000800000000000,
     0x4000000000000000, 0x0002040810204080, 0x0004081020408000, 0x0008102040800000, 0x0010204080000000,
     0x0020408000000000, 0x0040800000000000, 0x0080000000000000, 0x0000000000000000};
+
+void occ_mask_init(void) {
+    gen_in_between_sq_mask();
+}
+
+uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2) {
+    return in_between_sq[sq1][sq2];
+}
 
 uint64_t occ_mask_get_positive_diagonal(const enum square sq) {
     assert(validate_square(sq));
@@ -292,4 +305,33 @@ inline uint64_t occ_mask_get_rook(const enum square sq) {
     const uint64_t horiz_mask = occ_mask_get_horizontal(sq);
     const uint64_t vert_mask = occ_mask_get_vertical(sq);
     return (horiz_mask | vert_mask);
+}
+
+static void gen_in_between_sq_mask(void) {
+    for (enum square i = a1; i <= h8; i++) {
+        for (enum square j = a1; j <= h8; j++) {
+            in_between_sq[i][j] = in_between(i, j);
+        }
+    }
+}
+
+// The code is taken from :
+// https://www.chessprogramming.org/Square_Attacked_By#LegalityTest
+//
+static uint64_t in_between(const enum square sq1, const enum square sq2) {
+#define M1 0xffffffffffffffff
+#define A2A7 0x0001010101010100
+#define B2G7 0x0040201008040200
+#define H1B7 0x0002040810204080
+
+    const uint64_t btwn = (M1 << sq1) ^ (M1 << sq2);
+    const uint64_t file = (sq2 & 7) - (sq1 & 7);
+    const uint64_t rank = ((sq2 | 7) - sq1) >> 3;
+    uint64_t line = ((file & 7) - 1) & A2A7;   /* a2a7 if same file */
+    line += 2 * (((rank & 7) - 1) >> 58);      /* b1g1 if same rank */
+    line += (((rank - file) & 15) - 1) & B2G7; /* b2g7 if same diagonal */
+    line += (((rank + file) & 15) - 1) & H1B7; /* h1b7 if same antidiag */
+    line *= btwn & -btwn;                      /* mul acts like shift by smaller square */
+
+    return line & btwn; /* return the bits on that line in-between */
 }

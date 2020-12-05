@@ -45,7 +45,7 @@ static bool is_white_attacking(const struct board *brd, const enum square sq);
 static bool is_black_attacking(const struct board *brd, const enum square sq);
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
                                                 const enum square sq);
-static uint64_t in_between(const enum square sq1, const enum square sq2);
+//static uint64_t in_between(const enum square sq1, const enum square sq2);
 static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
 static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
 static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
@@ -189,7 +189,7 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
 
         if ((sq_get_rank(pce_sq) == sq_rank) || (sq_get_file(pce_sq) == sq_file)) {
             // possible attack, shared rank and/or file
-            const uint64_t inter_sq = in_between(pce_sq, sq);
+            const uint64_t inter_sq = occ_mask_get_inbetween(pce_sq, sq);
             if ((inter_sq & all_pce_bb) == 0) {
                 // no blocking pieces, is attacked
                 return true;
@@ -209,7 +209,7 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
 
         if (bb_is_set(occ_mask_bishop, sq)) {
             // the square is potentially attacked (on same diagonal/anti-diagonal)
-            const uint64_t intervening_sq_bb = in_between(pce_sq, sq);
+            const uint64_t intervening_sq_bb = occ_mask_get_inbetween(pce_sq, sq);
             if ((intervening_sq_bb & all_pce_bb) == 0) {
                 // no blocking pieces, so square is attacked
                 return true;
@@ -217,28 +217,4 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
         }
     }
     return false;
-}
-
-// This code returns a bitboard with bits set representing squares between
-// the given 2 squares.
-//
-// The code is taken from :
-// https://www.chessprogramming.org/Square_Attacked_By#LegalityTest
-//
-__attribute__((always_inline)) uint64_t in_between(const enum square sq1, const enum square sq2) {
-#define M1 0xffffffffffffffff
-#define A2A7 0x0001010101010100
-#define B2G7 0x0040201008040200
-#define H1B7 0x0002040810204080
-
-    const uint64_t btwn = (M1 << sq1) ^ (M1 << sq2);
-    const uint64_t file = (sq2 & 7) - (sq1 & 7);
-    const uint64_t rank = ((sq2 | 7) - sq1) >> 3;
-    uint64_t line = ((file & 7) - 1) & A2A7;   /* a2a7 if same file */
-    line += 2 * (((rank & 7) - 1) >> 58);      /* b1g1 if same rank */
-    line += (((rank - file) & 15) - 1) & B2G7; /* b2g7 if same diagonal */
-    line += (((rank + file) & 15) - 1) & H1B7; /* h1b7 if same antidiag */
-    line *= btwn & -btwn;                      /* mul acts like shift by smaller square */
-
-    return line & btwn; /* return the bits on that line in-between */
 }

@@ -39,6 +39,7 @@
 #include "fen.h"
 #include "hashkeys.h"
 #include "move.h"
+#include "occupancy_mask.h"
 #include "position_hist.h"
 #include "utils.h"
 #include <assert.h>
@@ -120,6 +121,7 @@ struct position *pos_create() {
     retval->brd = brd;
 
     init_key_mgmt();
+    occ_mask_init();
 
     return retval;
 }

@@ -28,6 +28,8 @@
 #include "square.h"
 #include <stdint.h>
 
+void occ_mask_init(void);
+uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2);
 uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq);
 uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq);
 uint64_t occ_mask_get_knight(const enum square sq);
