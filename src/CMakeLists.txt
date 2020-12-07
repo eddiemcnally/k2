@@ -17,7 +17,6 @@ message("Setting K2 Engine root directory to '${K2_PROJECT_SOURCE_DIR}'")
 # set up some base directories 
 set(BRD_DIR             ${K2_PROJECT_SOURCE_DIR}/board)
 set(BB_DIR              ${K2_PROJECT_SOURCE_DIR}/board/bitboard)
-set(OCC_GEN_DIR         ${K2_PROJECT_SOURCE_DIR}/board/bitboard/occ_mask_gen)
 set(FEN_DIR             ${K2_PROJECT_SOURCE_DIR}/fen)
 set(POSN_DIR            ${K2_PROJECT_SOURCE_DIR}/position)
 set(EVAL_DIR            ${K2_PROJECT_SOURCE_DIR}/position/evaluation)
@@ -32,7 +31,6 @@ message("Setting up K2 Engine source files...")
 set (SOURCES 
         ${BB_DIR}/bitboard.c 
         ${BB_DIR}/occupancy_mask.c
-        ${OCC_GEN_DIR}/occ_mask_gen.c   
         ${BRD_DIR}/board.c 
         ${BRD_DIR}/piece.c
         ${BRD_DIR}/square.c
@@ -59,7 +57,6 @@ message("Setting up K2 Engine include files...")
 set(INCLUDES 
         ${BB_DIR}
         ${BRD_DIR}
-        ${OCC_GEN_DIR}
         ${FEN_DIR}
         ${POSN_DIR}
         ${EVAL_DIR}

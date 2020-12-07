@@ -55,8 +55,8 @@ enum piece_values {
 #define ROLE_MASK ((uint8_t)0x70)
 #define COLOUR_SHIFT (7)
 
-#define extract_colour(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))
-#define extract_piece_role(pce) ((enum piece_role)(pce & ROLE_MASK))
+#define EXTRACT_COLOUR(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))
+#define EXTRACT_PIECE_ROLE(pce) ((enum piece_role)(pce & ROLE_MASK))
 
 // ==================================================================
 //
@@ -74,7 +74,7 @@ enum piece_values {
 inline enum piece_role pce_get_piece_role(const enum piece pce) {
     assert(validate_piece(pce));
 
-    return extract_piece_role(pce);
+    return EXTRACT_PIECE_ROLE(pce);
 }
 
 /**
@@ -86,8 +86,8 @@ inline enum piece_role pce_get_piece_role(const enum piece pce) {
 inline bool pce_is_white(const enum piece pce) {
     assert(validate_piece(pce));
 
-    enum colour col = extract_colour(pce);
-    return col == WHITE;
+    enum colour col = EXTRACT_COLOUR(pce);
+    return (col == WHITE);
 }
 
 /**
@@ -99,8 +99,8 @@ inline bool pce_is_white(const enum piece pce) {
 inline bool pce_is_black(const enum piece pce) {
     assert(validate_piece(pce));
 
-    enum colour col = extract_colour(pce);
-    return col == BLACK;
+    enum colour col = EXTRACT_COLOUR(pce);
+    return (col == BLACK);
 }
 
 /**
@@ -124,7 +124,7 @@ inline enum colour pce_swap_side(const enum colour col) {
 inline enum colour pce_get_colour(const enum piece pce) {
     assert(validate_piece(pce));
 
-    return extract_colour(pce);
+    return EXTRACT_COLOUR(pce);
 }
 
 /**
@@ -199,8 +199,8 @@ inline void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]) {
 char pce_get_label(const enum piece pce) {
     assert(validate_piece(pce));
 
-    enum colour col = extract_colour(pce);
-    enum piece_role pt = extract_piece_role(pce);
+    enum colour col = EXTRACT_COLOUR(pce);
+    enum piece_role pt = EXTRACT_PIECE_ROLE(pce);
 
     char retval;
 
@@ -287,9 +287,9 @@ enum piece pce_get_from_label(const char c) {
  * @param pce The piece
  */
 bool validate_piece(const enum piece pce) {
-    const enum piece_role pt = extract_piece_role(pce);
+    const enum piece_role pt = EXTRACT_PIECE_ROLE(pce);
     assert(validate_piece_role(pt));
-    const enum colour col = extract_colour(pce);
+    const enum colour col = EXTRACT_COLOUR(pce);
     assert(validate_colour(col));
 
     switch (pt) {

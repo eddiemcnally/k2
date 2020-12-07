@@ -28,7 +28,6 @@
 #include "move.h"
 #include "move_gen.h"
 #include "move_list.h"
-#include "occ_mask_gen.h"
 #include "perft.h"
 #include "piece.h"
 #include "position.h"

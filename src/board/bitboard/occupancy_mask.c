@@ -40,6 +40,12 @@
 
 static uint64_t in_between(const enum square sq1, const enum square sq2);
 static void gen_in_between_sq_mask(void);
+static void gen_knight_mask(void);
+static void set_dest_sq_if_valid(enum rank rank, enum file file, uint64_t *bb);
+static void gen_king_mask(void);
+static void occ_mask_gen_diagonal_occupancy_masks(void);
+static void gen_bishop_mask(void);
+static void gen_queen_mask(void);
 
 #define RANK_MASK ((uint64_t)0x00000000000000ff)
 #define FILE_MASK ((uint64_t)0x0101010101010101)
@@ -69,108 +75,23 @@ static void gen_in_between_sq_mask(void);
 //              - For these occupancy masks, element [0] is a1, and [63] is h8
 //              - The bit mask represents the set of possible target squares for a piece on a given square
 //
-static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES];
-
-static const uint64_t knight_occupancy_masks[NUM_SQUARES] = {
-    0x0000000000020400, 0x0000000000050800, 0x00000000000a1100, 0x0000000000142200, 0x0000000000284400,
-    0x0000000000508800, 0x0000000000a01000, 0x0000000000402000, 0x0000000002040004, 0x0000000005080008,
-    0x000000000a110011, 0x0000000014220022, 0x0000000028440044, 0x0000000050880088, 0x00000000a0100010,
-    0x0000000040200020, 0x0000000204000402, 0x0000000508000805, 0x0000000a1100110a, 0x0000001422002214,
-    0x0000002844004428, 0x0000005088008850, 0x000000a0100010a0, 0x0000004020002040, 0x0000020400040200,
-    0x0000050800080500, 0x00000a1100110a00, 0x0000142200221400, 0x0000284400442800, 0x0000508800885000,
-    0x0000a0100010a000, 0x0000402000204000, 0x0002040004020000, 0x0005080008050000, 0x000a1100110a0000,
-    0x0014220022140000, 0x0028440044280000, 0x0050880088500000, 0x00a0100010a00000, 0x0040200020400000,
-    0x0204000402000000, 0x0508000805000000, 0x0a1100110a000000, 0x1422002214000000, 0x2844004428000000,
-    0x5088008850000000, 0xa0100010a0000000, 0x4020002040000000, 0x0400040200000000, 0x0800080500000000,
-    0x1100110a00000000, 0x2200221400000000, 0x4400442800000000, 0x8800885000000000, 0x100010a000000000,
-    0x2000204000000000, 0x0004020000000000, 0x0008050000000000, 0x00110a0000000000, 0x0022140000000000,
-    0x0044280000000000, 0x0088500000000000, 0x0010a00000000000, 0x0020400000000000};
-
-static const uint64_t bishop_occupancy_masks[NUM_SQUARES] = {
-    0x8040201008040200, 0x0080402010080500, 0x0000804020110a00, 0x0000008041221400, 0x0000000182442800,
-    0x0000010204885000, 0x000102040810a000, 0x0102040810204000, 0x4020100804020002, 0x8040201008050005,
-    0x00804020110a000a, 0x0000804122140014, 0x0000018244280028, 0x0001020488500050, 0x0102040810a000a0,
-    0x0204081020400040, 0x2010080402000204, 0x4020100805000508, 0x804020110a000a11, 0x0080412214001422,
-    0x0001824428002844, 0x0102048850005088, 0x02040810a000a010, 0x0408102040004020, 0x1008040200020408,
-    0x2010080500050810, 0x4020110a000a1120, 0x8041221400142241, 0x0182442800284482, 0x0204885000508804,
-    0x040810a000a01008, 0x0810204000402010, 0x0804020002040810, 0x1008050005081020, 0x20110a000a112040,
-    0x4122140014224180, 0x8244280028448201, 0x0488500050880402, 0x0810a000a0100804, 0x1020400040201008,
-    0x0402000204081020, 0x0805000508102040, 0x110a000a11204080, 0x2214001422418000, 0x4428002844820100,
-    0x8850005088040201, 0x10a000a010080402, 0x2040004020100804, 0x0200020408102040, 0x0500050810204080,
-    0x0a000a1120408000, 0x1400142241800000, 0x2800284482010000, 0x5000508804020100, 0xa000a01008040201,
-    0x4000402010080402, 0x0002040810204080, 0x0005081020408000, 0x000a112040800000, 0x0014224180000000,
-    0x0028448201000000, 0x0050880402010000, 0x00a0100804020100, 0x0040201008040201};
-
-static const uint64_t queen_occupancy_masks[NUM_SQUARES] = {
-    0x81412111090503fe, 0x02824222120a07fd, 0x0404844424150efb, 0x08080888492a1cf7, 0x10101011925438ef,
-    0x2020212224a870df, 0x404142444850e0bf, 0x8182848890a0c07f, 0x412111090503fe03, 0x824222120a07fd07,
-    0x04844424150efb0e, 0x080888492a1cf71c, 0x101011925438ef38, 0x20212224a870df70, 0x4142444850e0bfe0,
-    0x82848890a0c07fc0, 0x2111090503fe0305, 0x4222120a07fd070a, 0x844424150efb0e15, 0x0888492a1cf71c2a,
-    0x1011925438ef3854, 0x212224a870df70a8, 0x42444850e0bfe050, 0x848890a0c07fc0a0, 0x11090503fe030509,
-    0x22120a07fd070a12, 0x4424150efb0e1524, 0x88492a1cf71c2a49, 0x11925438ef385492, 0x2224a870df70a824,
-    0x444850e0bfe05048, 0x8890a0c07fc0a090, 0x090503fe03050911, 0x120a07fd070a1222, 0x24150efb0e152444,
-    0x492a1cf71c2a4988, 0x925438ef38549211, 0x24a870df70a82422, 0x4850e0bfe0504844, 0x90a0c07fc0a09088,
-    0x0503fe0305091121, 0x0a07fd070a122242, 0x150efb0e15244484, 0x2a1cf71c2a498808, 0x5438ef3854921110,
-    0xa870df70a8242221, 0x50e0bfe050484442, 0xa0c07fc0a0908884, 0x03fe030509112141, 0x07fd070a12224282,
-    0x0efb0e1524448404, 0x1cf71c2a49880808, 0x38ef385492111010, 0x70df70a824222120, 0xe0bfe05048444241,
-    0xc07fc0a090888482, 0xfe03050911214181, 0xfd070a1222428202, 0xfb0e152444840404, 0xf71c2a4988080808,
-    0xef38549211101010, 0xdf70a82422212020, 0xbfe0504844424140, 0x7fc0a09088848281};
-
-static const uint64_t king_occupancy_masks[NUM_SQUARES] = {
-    0x0000000000000302, 0x0000000000000705, 0x0000000000000e0a, 0x0000000000001c14, 0x0000000000003828,
-    0x0000000000007050, 0x000000000000e0a0, 0x000000000000c040, 0x0000000000030203, 0x0000000000070507,
-    0x00000000000e0a0e, 0x00000000001c141c, 0x0000000000382838, 0x0000000000705070, 0x0000000000e0a0e0,
-    0x0000000000c040c0, 0x0000000003020300, 0x0000000007050700, 0x000000000e0a0e00, 0x000000001c141c00,
-    0x0000000038283800, 0x0000000070507000, 0x00000000e0a0e000, 0x00000000c040c000, 0x0000000302030000,
-    0x0000000705070000, 0x0000000e0a0e0000, 0x0000001c141c0000, 0x0000003828380000, 0x0000007050700000,
-    0x000000e0a0e00000, 0x000000c040c00000, 0x0000030203000000, 0x0000070507000000, 0x00000e0a0e000000,
-    0x00001c141c000000, 0x0000382838000000, 0x0000705070000000, 0x0000e0a0e0000000, 0x0000c040c0000000,
-    0x0003020300000000, 0x0007050700000000, 0x000e0a0e00000000, 0x001c141c00000000, 0x0038283800000000,
-    0x0070507000000000, 0x00e0a0e000000000, 0x00c040c000000000, 0x0302030000000000, 0x0705070000000000,
-    0x0e0a0e0000000000, 0x1c141c0000000000, 0x3828380000000000, 0x7050700000000000, 0xe0a0e00000000000,
-    0xc040c00000000000, 0x0203000000000000, 0x0507000000000000, 0x0a0e000000000000, 0x141c000000000000,
-    0x2838000000000000, 0x5070000000000000, 0xa0e0000000000000, 0x40c0000000000000};
-
-/* indexed using enum square
- * Represents the bottom-left to top-right diagonals that a bishop can move to, when
- * on a specific square
- */
-static const uint64_t positive_diagonal_masks[] = {
-    0x8040201008040200, 0x0080402010080400, 0x0000804020100800, 0x0000008040201000, 0x0000000080402000,
-    0x0000000000804000, 0x0000000000008000, 0x0000000000000000, 0x4020100804020000, 0x8040201008040001,
-    0x0080402010080002, 0x0000804020100004, 0x0000008040200008, 0x0000000080400010, 0x0000000000800020,
-    0x0000000000000040, 0x2010080402000000, 0x4020100804000100, 0x8040201008000201, 0x0080402010000402,
-    0x0000804020000804, 0x0000008040001008, 0x0000000080002010, 0x0000000000004020, 0x1008040200000000,
-    0x2010080400010000, 0x4020100800020100, 0x8040201000040201, 0x0080402000080402, 0x0000804000100804,
-    0x0000008000201008, 0x0000000000402010, 0x0804020000000000, 0x1008040001000000, 0x2010080002010000,
-    0x4020100004020100, 0x8040200008040201, 0x0080400010080402, 0x0000800020100804, 0x0000000040201008,
-    0x0402000000000000, 0x0804000100000000, 0x1008000201000000, 0x2010000402010000, 0x4020000804020100,
-    0x8040001008040201, 0x0080002010080402, 0x0000004020100804, 0x0200000000000000, 0x0400010000000000,
-    0x0800020100000000, 0x1000040201000000, 0x2000080402010000, 0x4000100804020100, 0x8000201008040201,
-    0x0000402010080402, 0x0000000000000000, 0x0001000000000000, 0x0002010000000000, 0x0004020100000000,
-    0x0008040201000000, 0x0010080402010000, 0x0020100804020100, 0x0040201008040201};
-
-/* indexed using enum square
- * Represents the top-left to bottom-right diagonals that a bishop can move to, when
- * on a specific square
- */
-static const uint64_t negative_diagonal_masks[] = {
-    0x0000000000000000, 0x0000000000000100, 0x0000000000010200, 0x0000000001020400, 0x0000000102040800,
-    0x0000010204081000, 0x0001020408102000, 0x0102040810204000, 0x0000000000000002, 0x0000000000010004,
-    0x0000000001020008, 0x0000000102040010, 0x0000010204080020, 0x0001020408100040, 0x0102040810200080,
-    0x0204081020400000, 0x0000000000000204, 0x0000000001000408, 0x0000000102000810, 0x0000010204001020,
-    0x0001020408002040, 0x0102040810004080, 0x0204081020008000, 0x0408102040000000, 0x0000000000020408,
-    0x0000000100040810, 0x0000010200081020, 0x0001020400102040, 0x0102040800204080, 0x0204081000408000,
-    0x0408102000800000, 0x0810204000000000, 0x0000000002040810, 0x0000010004081020, 0x0001020008102040,
-    0x0102040010204080, 0x0204080020408000, 0x0408100040800000, 0x0810200080000000, 0x1020400000000000,
-    0x0000000204081020, 0x0001000408102040, 0x0102000810204080, 0x0204001020408000, 0x0408002040800000,
-    0x0810004080000000, 0x1020008000000000, 0x2040000000000000, 0x0000020408102040, 0x0100040810204080,
-    0x0200081020408000, 0x0400102040800000, 0x0800204080000000, 0x1000408000000000, 0x2000800000000000,
-    0x4000000000000000, 0x0002040810204080, 0x0004081020408000, 0x0008102040800000, 0x0010204080000000,
-    0x0020408000000000, 0x0040800000000000, 0x0080000000000000, 0x0000000000000000};
+static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES] = {0};
+static uint64_t knight_occupancy_masks[NUM_SQUARES] = {0};
+static uint64_t king_occupancy_masks[NUM_SQUARES] = {0};
+static uint64_t positive_diagonal_masks[NUM_SQUARES] = {0};
+static uint64_t negative_diagonal_masks[NUM_SQUARES] = {0};
+static uint64_t bishop_occupancy_masks[NUM_SQUARES] = {0};
+static uint64_t queen_occupancy_masks[NUM_SQUARES] = {0};
 
 void occ_mask_init(void) {
     gen_in_between_sq_mask();
+    gen_knight_mask();
+    gen_king_mask();
+    occ_mask_gen_diagonal_occupancy_masks();
+    gen_bishop_mask();
+
+    // do this last...it uses bishop masks
+    gen_queen_mask();
 }
 
 uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2) {
@@ -207,7 +128,7 @@ inline uint64_t occ_mask_get_horizontal(const enum square sq) {
  * @param sq The square being attacked
  * @return uint64_t A bitboard representing WHITE pawns that can attack the square
  */
-uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
+inline uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
     const uint64_t bb = bb_set_square(0, sq);
     return SOUTH_EAST(bb) | SOUTH_WEST(bb);
 }
@@ -218,7 +139,7 @@ uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
  * @param sq The square being attacked
  * @return uint64_t A bitboard representing BLACK pawns that can attack the square
  */
-uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
+inline uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
     const uint64_t bb = bb_set_square(0, sq);
     return NORTH_EAST(bb) | NORTH_WEST(bb);
 }
@@ -334,4 +255,267 @@ static uint64_t in_between(const enum square sq1, const enum square sq2) {
     line *= btwn & -btwn;                      /* mul acts like shift by smaller square */
 
     return line & btwn; /* return the bits on that line in-between */
+}
+
+static void gen_queen_mask() {
+    for (enum square sq = a1; sq <= h8; sq++) {
+        const uint64_t bishop_mask = bishop_occupancy_masks[sq];
+        const uint64_t rook_mask = occ_mask_get_rook(sq);
+
+        uint64_t queen = bishop_mask | rook_mask;
+        // clear our square
+        queen = bb_clear_square(queen, sq);
+        queen_occupancy_masks[sq] = queen;
+    }
+}
+
+static void gen_knight_mask(void) {
+
+    for (enum square sq = a1; sq <= h8; sq++) {
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
+
+        // 8 destination squares are:
+        // (-2 +8), (-1 + 16), (+1 + 16) (+2 + 8),
+        // (-2 -8), (-1 - 16), (+1 - 16) (+2 - 8),
+
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
+
+        uint64_t b = 0;
+
+        // left 1 file, up 2 ranks
+        dest_rank = rank + 2;
+        dest_file = file - 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // left 1 file, down 2 ranks
+        dest_rank = rank - 2;
+        dest_file = file - 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // left 2 files, up 1 rank
+        dest_rank = rank + 1;
+        dest_file = file - 2;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // left 2 files, down 1 rank
+        dest_rank = rank - 1;
+        dest_file = file - 2;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // right 1 file, up 2 ranks
+        dest_rank = rank + 2;
+        dest_file = file + 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // right 1 file, down 2 ranks
+        dest_rank = rank - 2;
+        dest_file = file + 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // right 2 files, up 1 rank
+        dest_rank = rank + 1;
+        dest_file = file + 2;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // right 2 files, down 1 rank
+        dest_rank = rank - 1;
+        dest_file = file + 2;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        knight_occupancy_masks[sq] = b;
+    }
+}
+
+static void gen_king_mask(void) {
+    for (enum square sq = a1; sq <= h8; sq++) {
+        // valid king moves, and resulting distance vector
+        // +7, +8, +9
+        // -1,  K, +1
+        // -9, -8, -7
+
+        // the equates to ranks and files as follows (rank/file):
+        //      (+1, -1),       (+1, 0),        (+1, +1)
+        //       (0, -1),       XXX,            (0, +1)
+        // etc
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
+
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
+
+        uint64_t b = 0;
+
+        // left 1 file, up 1 rank
+        dest_rank = rank + 1;
+        dest_file = file - 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // no file move, up 1 rank
+        dest_rank = rank + 1;
+        dest_file = file;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // right 1 file, up 1 rank
+        dest_rank = rank + 1;
+        dest_file = file + 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // left 1 file, no rank change
+        dest_rank = rank;
+        dest_file = file - 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // right 1 file, no rank change
+        dest_rank = rank;
+        dest_file = file + 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // right 1 file, down 1 rank
+        dest_rank = rank - 1;
+        dest_file = file + 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // no file move, down 1 rank
+        dest_rank = rank - 1;
+        dest_file = file;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        // left 1 file, down 1 rank
+        dest_rank = rank - 1;
+        dest_file = file - 1;
+        set_dest_sq_if_valid(dest_rank, dest_file, &b);
+
+        king_occupancy_masks[sq] = b;
+    }
+}
+
+static void occ_mask_gen_diagonal_occupancy_masks(void) {
+    for (enum square sq = a1; sq <= h8; sq++) {
+
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
+
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
+        uint64_t b = 0;
+
+        // move SW
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank--;
+            dest_file--;
+        }
+        // clear our square
+        b = bb_clear_square(b, sq);
+        positive_diagonal_masks[sq] |= b;
+
+        // move NW
+        b = 0;
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank++;
+            dest_file--;
+        }
+        // clear our square
+        b = bb_clear_square(b, sq);
+        negative_diagonal_masks[sq] |= b;
+
+        // move SE
+        b = 0;
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank--;
+            dest_file++;
+        }
+        // clear our square
+        b = bb_clear_square(b, sq);
+        negative_diagonal_masks[sq] |= b;
+
+        // move NE
+        b = 0;
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank++;
+            dest_file++;
+        }
+        // clear our square
+        b = bb_clear_square(b, sq);
+        positive_diagonal_masks[sq] |= b;
+    }
+}
+
+static void gen_bishop_mask(void) {
+
+    for (enum square sq = a1; sq <= h8; sq++) {
+
+        enum rank rank = sq_get_rank(sq);
+        enum file file = sq_get_file(sq);
+
+        //printf("rank/file : %d/%d\n", rank, file);
+
+        enum rank dest_rank = 0;
+        enum file dest_file = 0;
+        uint64_t b = 0;
+
+        // move left and down
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank--;
+            dest_file--;
+        }
+
+        // move left and up
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank++;
+            dest_file--;
+        }
+
+        // move right and down
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank--;
+            dest_file++;
+        }
+
+        // move right and up
+        dest_rank = rank;
+        dest_file = file;
+        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
+            set_dest_sq_if_valid(dest_rank, dest_file, &b);
+            dest_rank++;
+            dest_file++;
+        }
+
+        // clear our square
+        b = bb_clear_square(b, sq);
+
+        bishop_occupancy_masks[sq] = b;
+    }
+}
+
+static void set_dest_sq_if_valid(enum rank rank, enum file file, uint64_t *bb) {
+    if (sq_is_valid_file(file) && sq_is_valid_rank(rank)) {
+        enum square dest_sq = sq_gen_from_rank_file(rank, file);
+        *bb = bb_set_square(*bb, (enum square)dest_sq);
+        //printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
+    } else {
+        //printf("XXXX bad rank/file: %d/%d\n", rank, file);
+    }
 }

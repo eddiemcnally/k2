@@ -74,14 +74,23 @@ enum move_type {
     MV_TYPE_PROMOTE_QUEEN_CAPTURE = 0xF,
 };
 
+struct move move_encode_promote_knight(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promote_knight_with_capture(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promote_bishop(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promote_bishop_with_capture(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promote_rook(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promote_rook_with_capture(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promote_queen(const enum square from_sq, const enum square to_sq);
+struct move move_encode_promote_queen_with_capture(const enum square from_sq, const enum square to_sq);
+
 struct move move_encode_quiet(const enum square from_sq, const enum square to_sq);
-struct move move_encode_promoted(const enum square from_sq, const enum square to_sq,
-                                 const enum piece_role promoted_piece, const bool is_capture);
 struct move move_encode_capture(const enum square from_sq, const enum square to_sq);
 struct move move_encode_enpassant(const enum square from_sq, const enum square to_sq);
 struct move move_encode_pawn_double_first(const enum square from_sq, const enum square to_sq);
-struct move move_encode_castle_kingside(const enum colour side);
-struct move move_encode_castle_queenside(const enum colour side);
+struct move move_encode_castle_kingside_white(void);
+struct move move_encode_castle_kingside_black(void);
+struct move move_encode_castle_queenside_white(void);
+struct move move_encode_castle_queenside_black(void);
 
 bool move_compare(const struct move mv1, const struct move mv2);
 

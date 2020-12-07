@@ -60,7 +60,7 @@ void test_move_promoted_capture_move_encode_decode(void **state) {
                 continue;
             }
 
-            struct move mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
+            struct move mv = move_encode_promote_queen_with_capture(from_sq, to_sq);
 
             enum square decoded_from = move_decode_from_sq(mv);
             enum square decoded_to = move_decode_to_sq(mv);
@@ -81,7 +81,7 @@ void test_move_promoted_non_capture_move_encode_decode(void **state) {
                 continue;
             }
 
-            struct move mv = move_encode_promoted(from_sq, to_sq, QUEEN, false);
+            struct move mv = move_encode_promote_queen(from_sq, to_sq);
 
             enum square decoded_from = move_decode_from_sq(mv);
             enum square decoded_to = move_decode_to_sq(mv);
@@ -125,25 +125,25 @@ void test_move_decode_promotion_piece_white(void **state) {
     struct move mv;
     enum piece pce;
 
-    mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
+    mv = move_encode_promote_knight_with_capture(from_sq, to_sq);
     pce = move_decode_promotion_piece(mv, WHITE);
     assert_true(pce == WHITE_KNIGHT);
     assert_true(pce_get_piece_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
+    mv = move_encode_promote_bishop_with_capture(from_sq, to_sq);
     pce = move_decode_promotion_piece(mv, WHITE);
     assert_true(pce == WHITE_BISHOP);
     assert_true(pce_get_piece_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
+    mv = move_encode_promote_rook_with_capture(from_sq, to_sq);
     pce = move_decode_promotion_piece(mv, WHITE);
     assert_true(pce == WHITE_ROOK);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
+    mv = move_encode_promote_queen_with_capture(from_sq, to_sq);
     pce = move_decode_promotion_piece(mv, WHITE);
     assert_true(pce == WHITE_QUEEN);
     assert_true(pce_get_piece_role(pce) == QUEEN);
@@ -154,25 +154,25 @@ void test_move_decode_promotion_piece_black(void **state) {
     const enum square from_sq = a7;
     const enum square to_sq = a8;
 
-    struct move mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
+    struct move mv = move_encode_promote_knight_with_capture(from_sq, to_sq);
     enum piece pce = move_decode_promotion_piece(mv, BLACK);
     assert_true(pce == BLACK_KNIGHT);
     assert_true(pce_get_piece_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    mv = move_encode_promoted(from_sq, to_sq, BISHOP, true);
+    mv = move_encode_promote_bishop_with_capture(from_sq, to_sq);
     pce = move_decode_promotion_piece(mv, BLACK);
     assert_true(pce == BLACK_BISHOP);
     assert_true(pce_get_piece_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    mv = move_encode_promoted(from_sq, to_sq, ROOK, true);
+    mv = move_encode_promote_rook_with_capture(from_sq, to_sq);
     pce = move_decode_promotion_piece(mv, BLACK);
     assert_true(pce == BLACK_ROOK);
     assert_true(pce_get_piece_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    mv = move_encode_promoted(from_sq, to_sq, QUEEN, true);
+    mv = move_encode_promote_queen_with_capture(from_sq, to_sq);
     pce = move_decode_promotion_piece(mv, BLACK);
     assert_true(pce == BLACK_QUEEN);
     assert_true(pce_get_piece_role(pce) == QUEEN);
@@ -200,7 +200,7 @@ void test_move_is_double_pawn_black(void **state) {
 }
 
 void test_white_king_castle_encode_and_test(void **state) {
-    struct move mv = move_encode_castle_kingside(WHITE);
+    struct move mv = move_encode_castle_kingside_white();
 
     enum square from_sq = move_decode_from_sq(mv);
     enum square to_sq = move_decode_to_sq(mv);
@@ -211,7 +211,7 @@ void test_white_king_castle_encode_and_test(void **state) {
 }
 
 void test_white_queen_castle_encode_and_test(void **state) {
-    struct move mv = move_encode_castle_queenside(WHITE);
+    struct move mv = move_encode_castle_queenside_white();
 
     enum square from_sq = move_decode_from_sq(mv);
     enum square to_sq = move_decode_to_sq(mv);
@@ -222,7 +222,7 @@ void test_white_queen_castle_encode_and_test(void **state) {
 }
 
 void test_black_king_castle_encode_and_test(void **state) {
-    struct move mv = move_encode_castle_kingside(BLACK);
+    struct move mv = move_encode_castle_kingside_black();
 
     enum square from_sq = move_decode_from_sq(mv);
     enum square to_sq = move_decode_to_sq(mv);
@@ -233,7 +233,7 @@ void test_black_king_castle_encode_and_test(void **state) {
 }
 
 void test_black_queen_castle_encode_and_test(void **state) {
-    struct move mv = move_encode_castle_queenside(BLACK);
+    struct move mv = move_encode_castle_queenside_black();
 
     enum square from_sq = move_decode_from_sq(mv);
     enum square to_sq = move_decode_to_sq(mv);
@@ -274,7 +274,7 @@ void test_move_capture_encode_decode(void **state) {
 }
 
 void test_move_white_king_castle_encode_decode(void **state) {
-    const struct move mv = move_encode_castle_kingside(WHITE);
+    const struct move mv = move_encode_castle_kingside_white();
 
     assert_false(move_is_quiet(mv));
     assert_false(move_is_double_pawn(mv));
@@ -284,7 +284,7 @@ void test_move_white_king_castle_encode_decode(void **state) {
 }
 
 void test_move_white_queen_castle_encode_decode(void **state) {
-    const struct move mv = move_encode_castle_queenside(WHITE);
+    const struct move mv = move_encode_castle_queenside_white();
 
     assert_false(move_is_quiet(mv));
     assert_false(move_is_double_pawn(mv));
@@ -294,7 +294,7 @@ void test_move_white_queen_castle_encode_decode(void **state) {
 }
 
 void test_move_black_king_castle_encode_decode(void **state) {
-    const struct move mv = move_encode_castle_kingside(BLACK);
+    const struct move mv = move_encode_castle_kingside_black();
 
     assert_false(move_is_quiet(mv));
     assert_false(move_is_double_pawn(mv));
@@ -304,7 +304,7 @@ void test_move_black_king_castle_encode_decode(void **state) {
 }
 
 void test_move_black_queen_castle_encode_decode(void **state) {
-    const struct move mv = move_encode_castle_queenside(BLACK);
+    const struct move mv = move_encode_castle_queenside_black();
 
     assert_false(move_is_quiet(mv));
     assert_false(move_is_double_pawn(mv));
