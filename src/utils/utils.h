@@ -30,10 +30,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @brief A non-debug mode runtime assert.
+ * 
+ */
 #define REQUIRE(cond, text)                                                                                            \
     if (!(cond)) {                                                                                                     \
-        fprintf(stderr, "Function : %s\n", __func__);                                                                  \
-        fprintf(stderr, "%s\n", text);                                                                                 \
+        fprintf(stderr, "\n");                                                                                         \
+        fprintf(stderr, "========================\n");                                                                 \
+        fprintf(stderr, "FATAL: Error condition\n");                                                                   \
+        fprintf(stderr, "\tFile : %s\n", __FILE__);                                                                    \
+        fprintf(stderr, "\tLine : %d\n", __LINE__);                                                                    \
+        fprintf(stderr, "\tFunction : %s\n", __func__);                                                                \
+        fprintf(stderr, "\tText : %s\n", text);                                                                        \
         exit(EXIT_FAILURE);                                                                                            \
     }
 

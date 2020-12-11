@@ -37,6 +37,11 @@ struct mv_from_to {
     enum square to_sq;
 };
 
+struct decode_move {
+    struct move mv;
+    enum piece decoded_piece;
+};
+
 void test_position_get_set_castle_permissions(void **state) {
     struct cast_perm_container cp = {.val = 0};
     cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
@@ -209,10 +214,10 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
+    assert_true(cast_perm_has_white_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_white_queenside_permissions(start_cp));
+    assert_true(cast_perm_has_black_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
     struct move wk_castle = move_encode_castle_kingside_white();
 
@@ -233,10 +238,10 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    assert_false(cast_perm_has_white_kingside_permissions(cp));
+    assert_false(cast_perm_has_white_queenside_permissions(cp));
+    assert_true(cast_perm_has_black_kingside_permissions(cp));
+    assert_true(cast_perm_has_black_queenside_permissions(cp));
 }
 
 void test_position_make_move_castle_white_queenside_move_valid_position_updated(void **state) {
@@ -265,10 +270,10 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
+    assert_true(cast_perm_has_white_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_white_queenside_permissions(start_cp));
+    assert_true(cast_perm_has_black_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
     struct move wk_castle = move_encode_castle_queenside_white();
 
@@ -289,10 +294,10 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    assert_false(cast_perm_has_white_kingside_permissions(cp));
+    assert_false(cast_perm_has_white_queenside_permissions(cp));
+    assert_true(cast_perm_has_black_kingside_permissions(cp));
+    assert_true(cast_perm_has_black_queenside_permissions(cp));
 }
 
 void test_position_make_move_castle_black_queenside_move_valid_position_updated(void **state) {
@@ -323,10 +328,10 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
+    assert_true(cast_perm_has_white_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_white_queenside_permissions(start_cp));
+    assert_true(cast_perm_has_black_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
     struct move bq_castle = move_encode_castle_queenside_black();
 
@@ -347,10 +352,10 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    assert_true(cast_perm_has_white_kingside_permissions(cp));
+    assert_true(cast_perm_has_white_queenside_permissions(cp));
+    assert_false(cast_perm_has_black_kingside_permissions(cp));
+    assert_false(cast_perm_has_black_queenside_permissions(cp));
 }
 
 void test_position_make_move_castle_black_kingside_move_valid_position_updated(void **state) {
@@ -379,10 +384,10 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
 
     // validate initial castling permissions
     struct cast_perm_container start_cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, start_cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, start_cp));
+    assert_true(cast_perm_has_white_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_white_queenside_permissions(start_cp));
+    assert_true(cast_perm_has_black_kingside_permissions(start_cp));
+    assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
     struct move bk_castle = move_encode_castle_kingside_black();
 
@@ -403,10 +408,10 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
 
     // check castle permissions are updated
     struct cast_perm_container cp = pos_get_cast_perm(pos);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, cp));
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    assert_true(cast_perm_has_white_kingside_permissions(cp));
+    assert_true(cast_perm_has_white_queenside_permissions(cp));
+    assert_false(cast_perm_has_black_kingside_permissions(cp));
+    assert_false(cast_perm_has_black_queenside_permissions(cp));
 }
 
 void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
@@ -1123,17 +1128,16 @@ void test_position_make_move_white_en_passant(void **state) {
 void test_position_make_move_white_promotion(void **state) {
     const char *test_fen = "4k3/1P6/8/8/8/8/8/4K3 w - - 0 1\n";
 
-    struct move mv_list[] = {
-        move_encode_promote_knight(b7, b8),
-        move_encode_promote_bishop(b7, b8),
-        move_encode_promote_rook(b7, b8),
-        move_encode_promote_queen(b7, b8),
+    struct decode_move mv_list[] = {
+        {.mv = move_encode_promote_knight(b7, b8), .decoded_piece = WHITE_KNIGHT},
+        {.mv = move_encode_promote_bishop(b7, b8), .decoded_piece = WHITE_BISHOP},
+        {.mv = move_encode_promote_rook(b7, b8), .decoded_piece = WHITE_ROOK},
+        {.mv = move_encode_promote_queen(b7, b8), .decoded_piece = WHITE_QUEEN},
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
-    for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
-        enum piece expected_prom_pce = move_decode_promotion_piece(mv, WHITE);
+    for (int i = 0; i < 4; i++) {
+        const struct move mv = mv_list[i].mv;
+        enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
@@ -1159,17 +1163,16 @@ void test_position_make_move_white_promotion(void **state) {
 void test_position_make_move_black_promotion(void **state) {
     const char *test_fen = "4k3/8/8/8/8/8/5p2/1K6 b - - 0 1\n";
 
-    struct move mv_list[] = {
-        move_encode_promote_knight(f2, f1),
-        move_encode_promote_bishop(f2, f1),
-        move_encode_promote_rook(f2, f1),
-        move_encode_promote_queen(f2, f1),
+    struct decode_move mv_list[] = {
+        {.mv = move_encode_promote_knight(f2, f1), .decoded_piece = BLACK_KNIGHT},
+        {.mv = move_encode_promote_bishop(f2, f1), .decoded_piece = BLACK_BISHOP},
+        {.mv = move_encode_promote_rook(f2, f1), .decoded_piece = BLACK_ROOK},
+        {.mv = move_encode_promote_queen(f2, f1), .decoded_piece = BLACK_QUEEN},
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
-    for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
-        enum piece expected_prom_pce = move_decode_promotion_piece(mv, BLACK);
+    for (int i = 0; i < 4; i++) {
+        const struct move mv = mv_list[i].mv;
+        enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
@@ -1195,17 +1198,16 @@ void test_position_make_move_black_promotion(void **state) {
 void test_position_make_move_white_promotion_capture(void **state) {
     const char *test_fen = "2r1k3/1P6/8/8/8/8/8/1K6 w - - 0 1\n";
 
-    struct move mv_list[] = {
-        move_encode_promote_knight_with_capture(b7, c8),
-        move_encode_promote_bishop_with_capture(b7, c8),
-        move_encode_promote_rook_with_capture(b7, c8),
-        move_encode_promote_queen_with_capture(b7, c8),
+    struct decode_move mv_list[] = {
+        {.mv = move_encode_promote_knight_with_capture(b7, c8), .decoded_piece = WHITE_KNIGHT},
+        {.mv = move_encode_promote_bishop_with_capture(b7, c8), .decoded_piece = WHITE_BISHOP},
+        {.mv = move_encode_promote_rook_with_capture(b7, c8), .decoded_piece = WHITE_ROOK},
+        {.mv = move_encode_promote_queen_with_capture(b7, c8), .decoded_piece = WHITE_QUEEN},
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
-    for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
-        enum piece expected_prom_pce = move_decode_promotion_piece(mv, WHITE);
+    for (int i = 0; i < 4; i++) {
+        const struct move mv = mv_list[i].mv;
+        enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
@@ -1231,17 +1233,16 @@ void test_position_make_move_white_promotion_capture(void **state) {
 void test_position_make_move_black_promotion_capture(void **state) {
     const char *test_fen = "4k3/8/8/8/8/8/4p3/1K3B2 b - - 0 1\n";
 
-    struct move mv_list[] = {
-        move_encode_promote_knight_with_capture(e2, f1),
-        move_encode_promote_bishop_with_capture(e2, f1),
-        move_encode_promote_rook_with_capture(e2, f1),
-        move_encode_promote_queen_with_capture(e2, f1),
+    struct decode_move mv_list[] = {
+        {.mv = move_encode_promote_knight_with_capture(e2, f1), .decoded_piece = BLACK_KNIGHT},
+        {.mv = move_encode_promote_bishop_with_capture(e2, f1), .decoded_piece = BLACK_BISHOP},
+        {.mv = move_encode_promote_rook_with_capture(e2, f1), .decoded_piece = BLACK_ROOK},
+        {.mv = move_encode_promote_queen_with_capture(e2, f1), .decoded_piece = BLACK_QUEEN},
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
-    for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
-        enum piece expected_prom_pce = move_decode_promotion_piece(mv, BLACK);
+    for (int i = 0; i < 4; i++) {
+        const struct move mv = mv_list[i].mv;
+        enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);

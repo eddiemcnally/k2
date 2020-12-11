@@ -34,24 +34,24 @@ void test_castle_permissions_get_set(void **state) {
     struct cast_perm_container cp = {.val = 0};
 
     cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    assert_true(cast_perm_has_white_kingside_permissions(cp));
     cast_perm_set_permission(CASTLE_PERM_WK, &cp, false);
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
+    assert_false(cast_perm_has_white_kingside_permissions(cp));
 
     cast_perm_set_permission(CASTLE_PERM_WQ, &cp, true);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    assert_true(cast_perm_has_white_queenside_permissions(cp));
     cast_perm_set_permission(CASTLE_PERM_WQ, &cp, false);
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
+    assert_false(cast_perm_has_white_queenside_permissions(cp));
 
     cast_perm_set_permission(CASTLE_PERM_BK, &cp, true);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    assert_true(cast_perm_has_black_kingside_permissions(cp));
     cast_perm_set_permission(CASTLE_PERM_BK, &cp, false);
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
+    assert_false(cast_perm_has_black_kingside_permissions(cp));
 
     cast_perm_set_permission(CASTLE_PERM_BQ, &cp, true);
-    assert_true(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    assert_true(cast_perm_has_black_queenside_permissions(cp));
     cast_perm_set_permission(CASTLE_PERM_BQ, &cp, false);
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    assert_false(cast_perm_has_black_queenside_permissions(cp));
 }
 
 void test_castle_permissions_no_perms_get_set(void **state) {
@@ -59,10 +59,10 @@ void test_castle_permissions_no_perms_get_set(void **state) {
     struct cast_perm_container cp = {.val = 0};
 
     cast_perm_set_permission(CASTLE_PERM_NONE, &cp, true);
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WK, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_WQ, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BK, cp));
-    assert_false(cast_perm_has_permission(CASTLE_PERM_BQ, cp));
+    assert_false(cast_perm_has_white_kingside_permissions(cp));
+    assert_false(cast_perm_has_white_queenside_permissions(cp));
+    assert_false(cast_perm_has_black_kingside_permissions(cp));
+    assert_false(cast_perm_has_black_queenside_permissions(cp));
 
-    assert_true(cast_perm_has_permission(CASTLE_PERM_NONE, cp));
+    assert_true(cast_perm_has_no_permissions(cp));
 }

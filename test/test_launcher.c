@@ -61,8 +61,6 @@ int main(void) {
         cmocka_unit_test(test_move_promoted_capture_move_encode_decode),
         cmocka_unit_test(test_move_promoted_non_capture_move_encode_decode),
         cmocka_unit_test(test_move_en_passant_move_encode_decode),
-        cmocka_unit_test(test_move_decode_promotion_piece_white),
-        cmocka_unit_test(test_move_decode_promotion_piece_black),
         cmocka_unit_test(test_move_is_double_pawn_white),
         cmocka_unit_test(test_move_is_double_pawn_black),
         cmocka_unit_test(test_white_king_castle_encode_and_test),

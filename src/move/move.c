@@ -110,6 +110,11 @@ static const char *move_details(const struct move mv);
 #define ENCODE_QUEEN_CASTLE_WHITE (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(c1) | MV_FLG_QUEEN_CASTLE)
 #define ENCODE_QUEEN_CASTLE_BLACK (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(c8) | MV_FLG_QUEEN_CASTLE)
 
+static const struct move MV_KING_CASTLE_WHITE = {.val = ENCODE_KING_CASTLE_WHITE};
+static const struct move MV_KING_CASTLE_BLACK = {.val = ENCODE_KING_CASTLE_BLACK};
+static const struct move MV_QUEEN_CASTLE_WHITE = {.val = ENCODE_QUEEN_CASTLE_WHITE};
+static const struct move MV_QUEEN_CASTLE_BLACK = {.val = ENCODE_QUEEN_CASTLE_BLACK};
+
 // ==================================================================
 //
 // public functions
@@ -264,39 +269,6 @@ struct move move_encode_promote_queen_with_capture(const enum square from_sq, co
 }
 
 /**
- * @brief  Decodes the promotion piece from the move
- * 
- * @param mv The move
- * @param side The side
- * @return enum piece The decoded piece 
- */
-enum piece move_decode_promotion_piece(const struct move mv, const enum colour side) {
-    assert(validate_move(mv));
-    assert(validate_colour(side));
-
-    const uint16_t m = mv.val & MV_MASK_FLAGS;
-
-    switch (m) {
-    case MV_FLG_PROMOTE_KNIGHT_CAPTURE:
-    case MV_FLG_PROMOTE_KNIGHT:
-        return side == WHITE ? WHITE_KNIGHT : BLACK_KNIGHT;
-    case MV_FLG_PROMOTE_BISHOP_CAPTURE:
-    case MV_FLG_PROMOTE_BISHOP:
-        return side == WHITE ? WHITE_BISHOP : BLACK_BISHOP;
-    case MV_FLG_PROMOTE_QUEEN_CAPTURE:
-    case MV_FLG_PROMOTE_QUEEN:
-        return side == WHITE ? WHITE_QUEEN : BLACK_QUEEN;
-    case MV_FLG_PROMOTE_ROOK_CAPTURE:
-    case MV_FLG_PROMOTE_ROOK:
-        return side == WHITE ? WHITE_ROOK : BLACK_ROOK;
-    default:
-        REQUIRE(false, "Invalid promotion piece");
-    }
-
-    REQUIRE(false, "Unexpected code path decoding promotion piece");
-}
-
-/**
  * @brief       Encodes a capture move using the given squares
  *
  * @param from_sq The from square
@@ -318,9 +290,7 @@ struct move move_encode_capture(const enum square from_sq, const enum square to_
  * @return      The encoded move
  */
 struct move move_encode_castle_kingside_white(void) {
-    struct move retval = {0};
-    retval.val = ENCODE_KING_CASTLE_WHITE;
-    return retval;
+    return MV_KING_CASTLE_WHITE;
 }
 
 /**
@@ -329,9 +299,7 @@ struct move move_encode_castle_kingside_white(void) {
  * @return      The encoded move
  */
 struct move move_encode_castle_kingside_black(void) {
-    struct move retval = {0};
-    retval.val = ENCODE_KING_CASTLE_BLACK;
-    return retval;
+    return MV_KING_CASTLE_BLACK;
 }
 
 /**
@@ -340,9 +308,7 @@ struct move move_encode_castle_kingside_black(void) {
  * @return      The encoded move
  */
 struct move move_encode_castle_queenside_white(void) {
-    struct move retval = {0};
-    retval.val = ENCODE_QUEEN_CASTLE_WHITE;
-    return retval;
+    return MV_QUEEN_CASTLE_WHITE;
 }
 
 /**
@@ -351,9 +317,7 @@ struct move move_encode_castle_queenside_white(void) {
  * @return      The encoded move
  */
 struct move move_encode_castle_queenside_black(void) {
-    struct move retval = {0};
-    retval.val = ENCODE_QUEEN_CASTLE_BLACK;
-    return retval;
+    return MV_QUEEN_CASTLE_BLACK;
 }
 
 /**

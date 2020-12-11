@@ -36,8 +36,6 @@ void test_move_quiet_move_encode_decode(void **state);
 void test_move_promoted_capture_move_encode_decode(void **state);
 void test_move_promoted_non_capture_move_encode_decode(void **state);
 void test_move_en_passant_move_encode_decode(void **state);
-void test_move_decode_promotion_piece_white(void **state);
-void test_move_decode_promotion_piece_black(void **state);
 void test_move_is_double_pawn_white(void **state);
 void test_move_is_double_pawn_black(void **state);
 void test_white_king_castle_encode_and_test(void **state);

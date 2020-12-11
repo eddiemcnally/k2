@@ -86,8 +86,7 @@ inline enum piece_role pce_get_piece_role(const enum piece pce) {
 inline bool pce_is_white(const enum piece pce) {
     assert(validate_piece(pce));
 
-    enum colour col = EXTRACT_COLOUR(pce);
-    return (col == WHITE);
+    return (EXTRACT_COLOUR(pce) == WHITE);
 }
 
 /**
@@ -99,8 +98,7 @@ inline bool pce_is_white(const enum piece pce) {
 inline bool pce_is_black(const enum piece pce) {
     assert(validate_piece(pce));
 
-    enum colour col = EXTRACT_COLOUR(pce);
-    return (col == BLACK);
+    return (EXTRACT_COLOUR(pce) == BLACK);
 }
 
 /**

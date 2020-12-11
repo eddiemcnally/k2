@@ -43,15 +43,8 @@ enum cast_perm_bitmap {
     CAST_PERM_BQ = 0x01 << 3,
 };
 
-enum cast_perm_array_offsets {
-    OFFSET_CAST_PERM_NONE = 0,
-    OFFSET_CAST_PERM_WK = 1,
-    OFFSET_CAST_PERM_WQ = 2,
-    OFFSET_CAST_PERM_BK = 3,
-    OFFSET_CAST_PERM_BQ = 4,
-};
-
-static void set_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm, const bool state);
+static void set_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
+static void clear_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
 static void set_perm(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
 static void clear_perm(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
 
@@ -61,35 +54,77 @@ struct cast_perm_container cast_perm_init(void) {
 }
 
 /**
- * @brief               Tests if a given Castle permission is available
- * @param cp            The Castle Permission to test for
- * @param cp_cont       The Castle permission container
- * @return              True if castle permission is available, false otherwise
+ * @brief Tests if there are any castle permissions active
+ * 
+ * @param cp_cont The castle permission struct
+ * @return true If there are no castle permissions active
+ * @return false If there are castle permissions active
  */
-bool cast_perm_has_permission(const enum castle_permission cp, const struct cast_perm_container cp_cont) {
-    switch (cp) {
-    case CASTLE_PERM_NONE:
-        return cp_cont.val == 0;
-    case CASTLE_PERM_WQ:
-        return (cp_cont.val & CAST_PERM_WQ) != 0;
-    case CASTLE_PERM_WK:
-        return (cp_cont.val & CAST_PERM_WK) != 0;
-    case CASTLE_PERM_BQ:
-        return (cp_cont.val & CAST_PERM_BQ) != 0;
-    case CASTLE_PERM_BK:
-        return (cp_cont.val & CAST_PERM_BK) != 0;
-    default:
-        REQUIRE(false, "Invalid castle permissions");
-    }
+bool cast_perm_has_no_permissions(const struct cast_perm_container cp_cont) {
+    return cp_cont.val == 0;
 }
 
-void cast_perm_clear_white_permissions(struct cast_perm_container *cp_cont) {
-    set_perm_state(cp_cont, CAST_PERM_WK, false);
-    set_perm_state(cp_cont, CAST_PERM_WQ, false);
+/**
+ * @brief Tests if there is White King-side permissions active
+ * 
+ * @param cp_cont The castle permission struct
+ * @return true If there are white king-side castle permissions active
+ * @return false If there are no white king-side castle permissions active
+ */
+bool cast_perm_has_white_kingside_permissions(const struct cast_perm_container cp_cont) {
+    return (cp_cont.val & CAST_PERM_WK) != 0;
 }
+
+/**
+ * @brief Tests if there is White Queen-side permissions active
+ * 
+ * @param cp_cont The castle permission struct
+ * @return true If there are white Queen-side castle permissions active
+ * @return false If there are no white Queen-side castle permissions active
+ */
+bool cast_perm_has_white_queenside_permissions(const struct cast_perm_container cp_cont) {
+    return (cp_cont.val & CAST_PERM_WQ) != 0;
+}
+
+/**
+ * @brief Tests if there is Black King-side permissions active
+ * 
+ * @param cp_cont The castle permission struct
+ * @return true If there are black king-side castle permissions active
+ * @return false If there are no black king-side castle permissions active
+ */
+bool cast_perm_has_black_kingside_permissions(const struct cast_perm_container cp_cont) {
+    return (cp_cont.val & CAST_PERM_BK) != 0;
+}
+
+/**
+ * @brief Tests if there is Black Queen-side permissions active
+ * 
+ * @param cp_cont The castle permission struct
+ * @return true If there are black Queen-side castle permissions active
+ * @return false If there are no black Queen-side castle permissions active
+ */
+bool cast_perm_has_black_queenside_permissions(const struct cast_perm_container cp_cont) {
+    return (cp_cont.val & CAST_PERM_BQ) != 0;
+}
+
+/**
+ * @brief Clears White castle permissions
+ * 
+ * @param cp_cont The permission container
+ */
+void cast_perm_clear_white_permissions(struct cast_perm_container *cp_cont) {
+    clear_perm_state(cp_cont, CAST_PERM_WK);
+    clear_perm_state(cp_cont, CAST_PERM_WQ);
+}
+/**
+ * @brief Clears black castle permissions
+ * 
+ * @param cp_cont The castle permission container 
+ */
 void cast_perm_clear_black_permissions(struct cast_perm_container *cp_cont) {
-    set_perm_state(cp_cont, CAST_PERM_BK, false);
-    set_perm_state(cp_cont, CAST_PERM_BQ, false);
+    clear_perm_state(cp_cont, CAST_PERM_BK);
+    clear_perm_state(cp_cont, CAST_PERM_BQ);
 }
 
 /**
@@ -98,24 +133,46 @@ void cast_perm_clear_black_permissions(struct cast_perm_container *cp_cont) {
  * @param cp_cont       The Castle permission container
  */
 void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *cp_cont, const bool state) {
-    switch (cp) {
-    case CASTLE_PERM_NONE:
-        cp_cont->val = 0;
-        break;
-    case CASTLE_PERM_WQ:
-        set_perm_state(cp_cont, CAST_PERM_WQ, state);
-        break;
-    case CASTLE_PERM_WK:
-        set_perm_state(cp_cont, CAST_PERM_WK, state);
-        break;
-    case CASTLE_PERM_BQ:
-        set_perm_state(cp_cont, CAST_PERM_BQ, state);
-        break;
-    case CASTLE_PERM_BK:
-        set_perm_state(cp_cont, CAST_PERM_BK, state);
-        break;
-    default:
-        REQUIRE(false, "Invalid castle permissions");
+    if (state) {
+        switch (cp) {
+        case CASTLE_PERM_NONE:
+            cp_cont->val = 0;
+            break;
+        case CASTLE_PERM_WQ:
+            set_perm_state(cp_cont, CAST_PERM_WQ);
+            break;
+        case CASTLE_PERM_WK:
+            set_perm_state(cp_cont, CAST_PERM_WK);
+            break;
+        case CASTLE_PERM_BQ:
+            set_perm_state(cp_cont, CAST_PERM_BQ);
+            break;
+        case CASTLE_PERM_BK:
+            set_perm_state(cp_cont, CAST_PERM_BK);
+            break;
+        default:
+            REQUIRE(false, "Invalid castle permissions");
+        }
+    } else {
+        switch (cp) {
+        case CASTLE_PERM_NONE:
+            cp_cont->val = 0;
+            break;
+        case CASTLE_PERM_WQ:
+            clear_perm_state(cp_cont, CAST_PERM_WQ);
+            break;
+        case CASTLE_PERM_WK:
+            clear_perm_state(cp_cont, CAST_PERM_WK);
+            break;
+        case CASTLE_PERM_BQ:
+            clear_perm_state(cp_cont, CAST_PERM_BQ);
+            break;
+        case CASTLE_PERM_BK:
+            clear_perm_state(cp_cont, CAST_PERM_BK);
+            break;
+        default:
+            REQUIRE(false, "Invalid castle permissions");
+        }
     }
 }
 
@@ -125,20 +182,8 @@ void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_
  * @return              Array offset
  */
 uint8_t cast_perm_get_offset(const enum castle_permission cp) {
-    switch (cp) {
-    case CASTLE_PERM_NONE:
-        return OFFSET_CAST_PERM_NONE;
-    case CASTLE_PERM_WQ:
-        return OFFSET_CAST_PERM_WQ;
-    case CASTLE_PERM_WK:
-        return OFFSET_CAST_PERM_WK;
-    case CASTLE_PERM_BQ:
-        return OFFSET_CAST_PERM_BQ;
-    case CASTLE_PERM_BK:
-        return OFFSET_CAST_PERM_BK;
-    default:
-        REQUIRE(false, "Invalid castle permissions");
-    }
+    assert(validate_castle_permission(cp));
+    return (uint8_t)cp;
 }
 
 bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2) {
@@ -164,12 +209,12 @@ bool validate_castle_permission(const enum castle_permission cp) {
     }
 }
 
-static void set_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm, const bool state) {
-    if (state) {
-        set_perm(cp, perm);
-    } else {
-        clear_perm(cp, perm);
-    }
+static void set_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
+    set_perm(cp, perm);
+}
+
+static void clear_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
+    clear_perm(cp, perm);
 }
 
 static void set_perm(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
