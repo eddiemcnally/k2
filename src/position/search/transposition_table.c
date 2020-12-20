@@ -42,7 +42,7 @@ static void set_tt_size(uint64_t size_in_bytes);
 static inline void init_table(void);
 
 struct tt_entry {
-    struct hashkey position_hash;
+    uint64_t position_hash;
     struct move mv;
     uint8_t depth;
     bool slot_used;
@@ -71,22 +71,22 @@ size_t tt_entry_size(void) {
     return sizeof(struct tt_entry);
 }
 
-bool tt_probe_position(const struct hashkey position_hash, struct move *mv) {
-    const struct tt_entry *elem = &tt[position_hash.hash & num_tt_elems];
+bool tt_probe_position(const uint64_t position_hash, struct move *mv) {
+    const struct tt_entry *elem = &tt[position_hash & num_tt_elems];
 
-    if (elem->position_hash.hash == position_hash.hash) {
+    if (elem->position_hash == position_hash) {
         *mv = elem->mv;
         return true;
     }
     return false;
 }
 
-bool tt_add(const struct hashkey position_hash, const struct move mv, uint8_t depth) {
+bool tt_add(const uint64_t position_hash, const struct move mv, uint8_t depth) {
     assert(validate_move(mv));
     assert(tt != NULL);
     assert(num_tt_elems > 0);
 
-    struct tt_entry *entry = &tt[position_hash.hash & num_tt_elems];
+    struct tt_entry *entry = &tt[position_hash & num_tt_elems];
 
     if (entry->slot_used == true) {
         // slot is filled, only add if depth is greater

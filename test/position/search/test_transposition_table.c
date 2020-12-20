@@ -72,8 +72,7 @@ void test_transposition_table_add_multiple_all_present(void **state) {
 
     // populate tt with test entries
     for (uint64_t i = 0; i < NUM_TO_ADD; i++) {
-        struct hashkey h;
-        h.hash = i;
+        uint64_t h = i;
         const bool added = tt_add(h, mv, 5);
         assert_true(added);
     }
@@ -82,8 +81,7 @@ void test_transposition_table_add_multiple_all_present(void **state) {
     for (uint64_t i = 0; i < NUM_TO_ADD; i++) {
         struct move found_mv;
 
-        struct hashkey h;
-        h.hash = i;
+        uint64_t h = i;
 
         const bool found = tt_probe_position(h, &found_mv);
         assert_true(found);

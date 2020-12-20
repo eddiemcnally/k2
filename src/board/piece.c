@@ -51,7 +51,6 @@ enum piece_values {
     PCE_VAL_QUEEN = 900,
     PCE_VAL_KING = 20000
 };
-#define NO_PIECE ((enum piece)0xFF)
 #define ROLE_MASK ((uint8_t)0x70)
 #define COLOUR_SHIFT (7)
 
@@ -123,15 +122,6 @@ inline enum colour pce_get_colour(const enum piece pce) {
     assert(validate_piece(pce));
 
     return EXTRACT_COLOUR(pce);
-}
-
-/**
-* @brief Returns an enum value that can be used to denote "no piece"
-*
-* @return piece A "no piece" enum
-*/
-inline enum piece pce_get_no_piece(void) {
-    return (enum piece)NO_PIECE;
 }
 
 /**

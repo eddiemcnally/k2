@@ -96,6 +96,8 @@ enum piece {
     BLACK_ROOK = (uint8_t)(ROOK | COLOUR_MASK | (uint8_t)(BR_OFF)),
     BLACK_QUEEN = (uint8_t)(QUEEN | COLOUR_MASK | (uint8_t)(BQ_OFF)),
     BLACK_KING = (uint8_t)(KING | COLOUR_MASK | (uint8_t)(BK_OFF)),
+
+    NO_PIECE = (uint8_t)0xFF
 };
 
 #define NUM_COLOURS (2)
@@ -112,10 +114,12 @@ enum piece {
 #define PCE_ARRAY_OFFSET_WHITE_BISHOP ((PCE_GET_ARRAY_INDEX(WHITE_BISHOP)))
 #define PCE_ARRAY_OFFSET_WHITE_QUEEN ((PCE_GET_ARRAY_INDEX(WHITE_QUEEN)))
 #define PCE_ARRAY_OFFSET_WHITE_ROOK ((PCE_GET_ARRAY_INDEX(WHITE_ROOK)))
+#define PCE_ARRAY_OFFSET_WHITE_KING ((PCE_GET_ARRAY_INDEX(WHITE_KING)))
 
 #define PCE_ARRAY_OFFSET_BLACK_BISHOP ((PCE_GET_ARRAY_INDEX(BLACK_BISHOP)))
 #define PCE_ARRAY_OFFSET_BLACK_QUEEN ((PCE_GET_ARRAY_INDEX(BLACK_QUEEN)))
 #define PCE_ARRAY_OFFSET_BLACK_ROOK ((PCE_GET_ARRAY_INDEX(BLACK_ROOK)))
+#define PCE_ARRAY_OFFSET_BLACK_KING ((PCE_GET_ARRAY_INDEX(BLACK_KING)))
 
 enum piece_role pce_get_piece_role(const enum piece pce);
 bool pce_is_white(const enum piece pce);
@@ -125,7 +129,6 @@ enum colour pce_get_colour(const enum piece pce);
 uint32_t pce_get_value(const enum piece_role pt);
 char pce_get_label(const enum piece pce);
 enum piece pce_get_from_label(const char c);
-enum piece pce_get_no_piece(void);
 bool validate_piece(const enum piece pce);
 bool validate_piece_role(const enum piece_role pt);
 bool validate_colour(const enum colour col);

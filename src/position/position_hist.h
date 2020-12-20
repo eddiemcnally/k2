@@ -38,12 +38,12 @@ struct position_hist *position_hist_init(void);
 void position_hist_release_memory(struct position_hist *mh);
 
 void position_hist_push(struct position_hist *move_history, const struct move mv, const uint8_t fifty_move_counter,
-                        const enum square en_passant_sq, const struct hashkey hashkey,
+                        const enum square en_passant_sq, const uint64_t hashkey,
                         const struct cast_perm_container castle_perm_container, const struct board *brd);
 
 void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8_t *fifty_move_counter,
-                       enum square *en_passant_sq, struct hashkey *hashkey,
-                       struct cast_perm_container *castle_perm_container, struct board *brd);
+                       enum square *en_passant_sq, uint64_t *hashkey, struct cast_perm_container *castle_perm_container,
+                       struct board *brd);
 
 bool position_hist_compare(const struct position_hist *hist1, const struct position_hist *hist2);
 

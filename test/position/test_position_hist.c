@@ -62,8 +62,7 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(void **state) 
         struct cast_perm_container cp;
         cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
 
-        struct hashkey hashkey;
-        hashkey.hash = (uint64_t)(i * i);
+        uint64_t hashkey = (uint64_t)(i * i);
         position_hist_push(mh, mv, (uint8_t)i, en_passant_sq, hashkey, cp, pos_get_board(pos));
 
         assert_true(position_hist_get_num(mh) == i + 1);

@@ -51,18 +51,7 @@ static void gen_queen_mask(void);
 #define FILE_MASK ((uint64_t)0x0101010101010101)
 
 #define FILE_A_BB FILE_MASK
-// #define FILE_B_BB   (FILE_A_BB << 1)
-// #define FILE_C_BB   (FILE_A_BB << 2)
-// #define FILE_D_BB   (FILE_A_BB << 3)
-// #define FILE_E_BB   (FILE_A_BB << 4)
-// #define FILE_F_BB   (FILE_A_BB << 5)
-// #define FILE_G_BB   (FILE_A_BB << 6)
 #define FILE_H_BB (FILE_A_BB << 7)
-
-// #define NORTH(bb)   (bb << 8)
-// #define SOUTH(bb)   (bb >> 8)
-// #define EAST(bb)    ((bb & ~FILE_H_BB) << 1)
-// #define WEST(bb)    ((bb & ~FILE_A_BB) >> 1)
 
 #define NORTH_EAST(bb) ((bb & ~FILE_H_BB) << 9)
 #define SOUTH_EAST(bb) ((bb & ~FILE_H_BB) >> 7)
@@ -95,6 +84,8 @@ void occ_mask_init(void) {
 }
 
 uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2) {
+    assert(validate_square(sq1));
+    assert(validate_square(sq2));
     return in_between_sq[sq1][sq2];
 }
 

@@ -94,24 +94,6 @@ void test_bitboard_pop_first_bit_random_squares(void **state) {
     assert_true(val == 0);
 }
 
-void test_bitboard_count_bits(void **state) {
-    uint64_t bb = (uint64_t)0xFE100CA541;
-    uint8_t num_bits_set = bb_count_bits(bb);
-    assert_true(num_bits_set == 16);
-
-    bb = (uint64_t)0;
-    num_bits_set = bb_count_bits(bb);
-    assert_true(num_bits_set == 0);
-
-    bb = (uint64_t)1;
-    num_bits_set = bb_count_bits(bb);
-    assert_true(num_bits_set == 1);
-
-    bb = (uint64_t)0xFFFFFFFFFFFFFFFF;
-    num_bits_set = bb_count_bits(bb);
-    assert_true(num_bits_set == 64);
-}
-
 void test_bitboard_reverse_bits(void **state) {
     uint64_t test_word = 0xFA340A7314DA;
     uint64_t reversed = bb_reverse(test_word);

@@ -1314,17 +1314,17 @@ void test_position_hash_updated_white_pawn_quiet_move(void **state) {
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
     const struct move pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, pawn_move);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1338,17 +1338,17 @@ void test_position_hash_updated_black_pawn_quiet_move(void **state) {
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
     const struct move pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, pawn_move);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1362,17 +1362,17 @@ void test_position_hash_updated_white_pawn_capture_move(void **state) {
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
     const struct move pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, expected_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, pawn_move);
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1386,17 +1386,17 @@ void test_position_hash_updated_black_pawn_capture_move(void **state) {
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
     const struct move pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, expected_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, pawn_move);
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1409,17 +1409,17 @@ void test_position_hash_updated_white_pawn_double_first_move(void **state) {
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
     const struct move pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, pawn_move);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1432,17 +1432,17 @@ void test_position_hash_updated_black_pawn_double_first_move(void **state) {
     struct position *pos = pos_create();
     pos_initialise(FEN, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
     const struct move pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, pawn_move);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 }
 
@@ -1452,8 +1452,8 @@ void test_position_hash_updated_white_en_passant(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     // en passant move
     const enum square FROM_SQ = f5;
@@ -1462,16 +1462,16 @@ void test_position_hash_updated_white_en_passant(void **state) {
     const enum square BLK_PAWN_SQ = g5;
     const struct move en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, BLK_PAWN_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update(BLACK_PAWN, BLK_PAWN_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, expected_hash);
     expected_hash = hash_en_passant(EN_PASS_SQ, expected_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, en_pass_mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1483,8 +1483,8 @@ void test_position_hash_updated_black_en_passant(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     // en passant move
     const enum square FROM_SQ = b4;
@@ -1493,16 +1493,16 @@ void test_position_hash_updated_black_en_passant(void **state) {
     const enum square WHITE_PAWN_SQ = c4;
     const struct move en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, WHITE_PAWN_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update(WHITE_PAWN, WHITE_PAWN_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, expected_hash);
     expected_hash = hash_en_passant(EN_PASS_SQ, expected_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, en_pass_mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1528,20 +1528,20 @@ void test_position_hash_updated_white_promotion_quiet(void **state) {
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
-        const struct hashkey orig_pos_hash = pos_get_hash(pos);
-        assert_true(orig_pos_hash.hash != 0);
+        const uint64_t orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash != 0);
 
         const struct move mv = mv_list[i];
 
-        struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
+        uint64_t expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
         expected_hash = hash_side_update(expected_hash);
 
         pos_make_move(pos, mv);
 
-        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-        assert_true(after_move_pos_hash.hash != 0);
-        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        const uint64_t after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash != 0);
+        assert_true(after_move_pos_hash == expected_hash);
         assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
         pos_destroy(pos);
@@ -1568,20 +1568,20 @@ void test_position_hash_updated_black_promotion_quiet(void **state) {
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
-        const struct hashkey orig_pos_hash = pos_get_hash(pos);
-        assert_true(orig_pos_hash.hash != 0);
+        const uint64_t orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash != 0);
 
         const struct move mv = mv_list[i];
 
-        struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
+        uint64_t expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
         expected_hash = hash_side_update(expected_hash);
 
         pos_make_move(pos, mv);
 
-        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-        assert_true(after_move_pos_hash.hash != 0);
-        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        const uint64_t after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash != 0);
+        assert_true(after_move_pos_hash == expected_hash);
         assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
         pos_destroy(pos);
@@ -1608,21 +1608,21 @@ void test_position_hash_updated_white_promotion_capture(void **state) {
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
-        const struct hashkey orig_pos_hash = pos_get_hash(pos);
-        assert_true(orig_pos_hash.hash != 0);
+        const uint64_t orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash != 0);
 
         const struct move mv = mv_list[i];
 
-        struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
+        uint64_t expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(BLACK_KNIGHT, TO_SQ, expected_hash);
         expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
         expected_hash = hash_side_update(expected_hash);
 
         pos_make_move(pos, mv);
 
-        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-        assert_true(after_move_pos_hash.hash != 0);
-        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        const uint64_t after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash != 0);
+        assert_true(after_move_pos_hash == expected_hash);
         assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
         pos_destroy(pos);
@@ -1649,21 +1649,21 @@ void test_position_hash_updated_black_promotion_capture(void **state) {
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
-        const struct hashkey orig_pos_hash = pos_get_hash(pos);
-        assert_true(orig_pos_hash.hash != 0);
+        const uint64_t orig_pos_hash = pos_get_hash(pos);
+        assert_true(orig_pos_hash != 0);
 
         const struct move mv = mv_list[i];
 
-        struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
+        uint64_t expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(WHITE_KNIGHT, TO_SQ, expected_hash);
         expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
         expected_hash = hash_side_update(expected_hash);
 
         pos_make_move(pos, mv);
 
-        const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-        assert_true(after_move_pos_hash.hash != 0);
-        assert_true(after_move_pos_hash.hash == expected_hash.hash);
+        const uint64_t after_move_pos_hash = pos_get_hash(pos);
+        assert_true(after_move_pos_hash != 0);
+        assert_true(after_move_pos_hash == expected_hash);
         assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
         pos_destroy(pos);
@@ -1679,19 +1679,19 @@ void test_position_hash_updated_white_move_quiet(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_quiet(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update_move(WHITE_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(WHITE_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1706,20 +1706,20 @@ void test_position_hash_updated_white_move_capture(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_capture(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_BISHOP, FROM_SQ, TO_SQ, expected_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1734,19 +1734,19 @@ void test_position_hash_updated_black_move_quiet(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_quiet(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update_move(BLACK_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(BLACK_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1761,20 +1761,20 @@ void test_position_hash_updated_black_move_capture(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_capture(FROM_SQ, TO_SQ);
 
-    struct hashkey expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_ROOK, FROM_SQ, TO_SQ, expected_hash);
     expected_hash = hash_side_update(expected_hash);
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1786,12 +1786,12 @@ void test_position_hash_updated_white_king_castle(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_castle_kingside_white();
 
-    struct hashkey expected_hash = hash_piece_update_move(WHITE_ROOK, h1, f1, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(WHITE_ROOK, h1, f1, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_KING, e1, g1, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_WK, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_WQ, expected_hash);
@@ -1799,9 +1799,9 @@ void test_position_hash_updated_white_king_castle(void **state) {
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1813,12 +1813,12 @@ void test_position_hash_updated_white_queen_castle(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_castle_queenside_white();
 
-    struct hashkey expected_hash = hash_piece_update_move(WHITE_ROOK, a1, d1, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(WHITE_ROOK, a1, d1, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_KING, e1, c1, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_WK, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_WQ, expected_hash);
@@ -1826,9 +1826,9 @@ void test_position_hash_updated_white_queen_castle(void **state) {
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1840,12 +1840,12 @@ void test_position_hash_updated_black_king_castle(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_castle_kingside_black();
 
-    struct hashkey expected_hash = hash_piece_update_move(BLACK_ROOK, h8, f8, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(BLACK_ROOK, h8, f8, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_KING, e8, g8, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_BK, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_BQ, expected_hash);
@@ -1853,9 +1853,9 @@ void test_position_hash_updated_black_king_castle(void **state) {
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);
@@ -1867,12 +1867,12 @@ void test_position_hash_updated_black_queen_castle(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct hashkey orig_pos_hash = pos_get_hash(pos);
-    assert_true(orig_pos_hash.hash != 0);
+    const uint64_t orig_pos_hash = pos_get_hash(pos);
+    assert_true(orig_pos_hash != 0);
 
     const struct move mv = move_encode_castle_queenside_black();
 
-    struct hashkey expected_hash = hash_piece_update_move(BLACK_ROOK, a8, d8, orig_pos_hash);
+    uint64_t expected_hash = hash_piece_update_move(BLACK_ROOK, a8, d8, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_KING, e8, c8, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_BK, expected_hash);
     expected_hash = hash_castle_perm(CASTLE_PERM_BQ, expected_hash);
@@ -1880,9 +1880,9 @@ void test_position_hash_updated_black_queen_castle(void **state) {
 
     pos_make_move(pos, mv);
 
-    const struct hashkey after_move_pos_hash = pos_get_hash(pos);
-    assert_true(after_move_pos_hash.hash != 0);
-    assert_true(after_move_pos_hash.hash == expected_hash.hash);
+    const uint64_t after_move_pos_hash = pos_get_hash(pos);
+    assert_true(after_move_pos_hash != 0);
+    assert_true(after_move_pos_hash == expected_hash);
     assert_false(hash_compare(orig_pos_hash, after_move_pos_hash));
 
     pos_destroy(pos);

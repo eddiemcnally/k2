@@ -50,7 +50,7 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
 static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
 static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
-static bool is_king_attacking(const uint64_t king_bb, const enum square sq);
+static bool is_king_attacking(const enum square king_sq, const enum square sq);
 
 bool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const enum colour attacking_side) {
 
@@ -99,7 +99,8 @@ inline static bool is_white_attacking(const struct board *brd, const enum square
         }
     }
 
-    if (is_king_attacking(brd_get_piece_bb(brd, WHITE_KING), sq)) {
+    const enum square king_sq = brd_get_white_king_square(brd);
+    if (is_king_attacking(king_sq, sq)) {
         return true;
     }
     return false;
@@ -137,9 +138,11 @@ inline static bool is_black_attacking(const struct board *brd, const enum square
         }
     }
 
-    if (is_king_attacking(brd_get_piece_bb(brd, BLACK_KING), sq)) {
+    const enum square king_sq = brd_get_black_king_square(brd);
+    if (is_king_attacking(king_sq, sq)) {
         return true;
     }
+
     return false;
 }
 
@@ -167,14 +170,9 @@ static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) 
     return false;
 }
 
-static bool is_king_attacking(const uint64_t king_bb, const enum square sq) {
-    uint64_t bb = king_bb;
-    const enum square pce_sq = bb_pop_1st_bit(bb);
-    const uint64_t occ_mask = occ_mask_get_king(pce_sq);
-    if (bb_is_set(occ_mask, sq)) {
-        return true;
-    }
-    return false;
+static bool is_king_attacking(const enum square king_sq, const enum square sq) {
+    const uint64_t occ_mask = occ_mask_get_king(king_sq);
+    return bb_is_set(occ_mask, sq);
 }
 
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,

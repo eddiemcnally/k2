@@ -35,7 +35,7 @@
 
 void tt_create(uint64_t size_in_bytes);
 void tt_dispose(void);
-bool tt_add(const struct hashkey hash, const struct move mv, uint8_t depth);
-bool tt_probe_position(const struct hashkey position_hash, struct move *mv);
+bool tt_add(const uint64_t hash, const struct move mv, uint8_t depth);
+bool tt_probe_position(const uint64_t position_hash, struct move *mv);
 uint32_t tt_capacity(void);
 size_t tt_entry_size(void);

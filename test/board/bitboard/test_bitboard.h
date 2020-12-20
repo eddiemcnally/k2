@@ -34,6 +34,5 @@
 
 void test_bitboard_pop_first_bit_all_squares(void **state);
 void test_bitboard_pop_first_bit_random_squares(void **state);
-void test_bitboard_count_bits(void **state);
 void test_bitboard_set_test_clear_bit(void **state);
 void test_bitboard_reverse_bits(void **state);

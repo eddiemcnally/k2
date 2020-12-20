@@ -30,15 +30,11 @@
 #include "square.h"
 #include <stdint.h>
 
-struct hashkey {
-    uint64_t hash;
-};
-
-struct hashkey init_key_mgmt(void);
-bool hash_compare(const struct hashkey hashkey1, const struct hashkey hashkey2);
-struct hashkey hash_piece_update(const enum piece pce, const enum square sq, const struct hashkey key_to_modify);
-struct hashkey hash_piece_update_move(const enum piece pce, const enum square from_sq, const enum square to_sq,
-                                      const struct hashkey key_to_modify);
-struct hashkey hash_side_update(const struct hashkey key_to_modify);
-struct hashkey hash_castle_perm(const enum castle_permission cp, const struct hashkey key_to_modify);
-struct hashkey hash_en_passant(const enum square sq, const struct hashkey key_to_modify);
+uint64_t init_key_mgmt(void);
+bool hash_compare(const uint64_t hashkey1, const uint64_t hashkey2);
+uint64_t hash_piece_update(const enum piece pce, const enum square sq, const uint64_t key_to_modify);
+uint64_t hash_piece_update_move(const enum piece pce, const enum square from_sq, const enum square to_sq,
+                                const uint64_t key_to_modify);
+uint64_t hash_side_update(const uint64_t key_to_modify);
+uint64_t hash_castle_perm(const enum castle_permission cp, const uint64_t key_to_modify);
+uint64_t hash_en_passant(const enum square sq, const uint64_t key_to_modify);

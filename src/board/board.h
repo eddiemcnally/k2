@@ -48,6 +48,9 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
 uint64_t brd_get_board_bb(const struct board *brd);
 uint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce);
 
+enum square brd_get_white_king_square(const struct board *brd);
+enum square brd_get_black_king_square(const struct board *brd);
+
 uint64_t brd_get_white_rook_queen_bb(const struct board *brd);
 uint64_t brd_get_black_rook_queen_bb(const struct board *brd);
 uint64_t brd_get_white_bishop_queen_bb(const struct board *brd);

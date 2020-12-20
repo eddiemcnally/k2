@@ -51,8 +51,10 @@ static const uint16_t MOVE_LIST_INIT_KEY = 0xdead;
  * @return      An initialised move_list struct
  */
 struct move_list mvl_initialise(void) {
-    struct move_list mvl = {0};
+    struct move_list mvl;
+    // explicitly NOT init'ing the array contents to zero for performance reasons.
     mvl.struct_init_key = MOVE_LIST_INIT_KEY;
+    mvl.move_count = 0;
     return mvl;
 }
 

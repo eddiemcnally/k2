@@ -52,7 +52,7 @@ struct position {
     uint16_t struct_init_key;
 
     // position hash
-    struct hashkey hashkey;
+    uint64_t hashkey;
 
     // current board representation
     struct board *brd;
@@ -240,8 +240,8 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
 
     enum piece pce_to_move;
     bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
+    REQUIRE(found, "no piece found on square");
 
-    REQUIRE(found, "no piece found");
     assert(validate_piece(pce_to_move));
 
     const enum move_type mv_type = move_get_move_type(mv);
@@ -300,7 +300,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
         do_promotion_capture(pos, pce_to_move, from_sq, to_sq, pce_prom);
     } break;
     default:
-        REQUIRE(false, "Invalid move");
+        REQUIRE(false, "Invalid move type");
     }
 
     // some cleanup
@@ -406,7 +406,7 @@ bool pos_compare(const struct position *first, const struct position *second) {
     return true;
 }
 
-struct hashkey pos_get_hash(const struct position *pos) {
+uint64_t pos_get_hash(const struct position *pos) {
     return pos->hashkey;
 }
 

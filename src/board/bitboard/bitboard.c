@@ -36,7 +36,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define BIT_0 ((uint64_t)0x01)
 static const uint64_t EMPTY_BITBOARD = 0;
 
 /**
@@ -49,7 +48,7 @@ static const uint64_t EMPTY_BITBOARD = 0;
 inline uint64_t bb_set_square(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
-    return bb | (BIT_0 << sq);
+    return bb | ((uint64_t)0x01 << sq);
 }
 
 /**
@@ -62,7 +61,7 @@ inline uint64_t bb_set_square(const uint64_t bb, const enum square sq) {
 inline uint64_t bb_clear_square(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
-    return bb & (~(BIT_0 << sq));
+    return bb & (~((uint64_t)0x01 << sq));
 }
 
 /**
@@ -76,7 +75,7 @@ inline uint64_t bb_clear_square(const uint64_t bb, const enum square sq) {
 inline bool bb_is_set(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
-    return (bb & (BIT_0 << sq)) != 0;
+    return (bb & ((uint64_t)0x01 << sq)) != 0;
 }
 
 /**
@@ -91,16 +90,6 @@ inline bool bb_is_clear(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
     return (bb_is_set(bb, sq) == false);
-}
-
-/**
- * @brief       Counts the number of set bits in a bitboard. Uses a built-in GCC function
- *
- * @param bb    The bitboard
- * @return      The number of set bits
- */
-inline uint8_t bb_count_bits(const uint64_t bb) {
-    return (uint8_t)__builtin_popcountll(bb);
 }
 
 /**

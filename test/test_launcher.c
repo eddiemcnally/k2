@@ -168,7 +168,6 @@ int main(void) {
         // bitboard
         cmocka_unit_test(test_bitboard_pop_first_bit_random_squares),
         cmocka_unit_test(test_bitboard_pop_first_bit_all_squares),
-        cmocka_unit_test(test_bitboard_count_bits),
         cmocka_unit_test(test_bitboard_set_test_clear_bit),
         cmocka_unit_test(test_bitboard_reverse_bits),
 
