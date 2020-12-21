@@ -39,7 +39,7 @@
 #include "utils.h"
 #include <assert.h>
 
-static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES] = {0};
+static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES] = {{0}, {0}};
 static uint64_t side_key = 0;
 static uint64_t castle_keys[NUM_CASTLE_PERMS] = {0};
 static uint64_t en_passant_sq_keys[NUM_SQUARES] = {0};

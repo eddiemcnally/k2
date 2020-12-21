@@ -64,7 +64,7 @@ static void gen_queen_mask(void);
 //              - For these occupancy masks, element [0] is a1, and [63] is h8
 //              - The bit mask represents the set of possible target squares for a piece on a given square
 //
-static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES] = {0};
+static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES] = {{0}, {0}};
 static uint64_t knight_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t king_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t positive_diagonal_masks[NUM_SQUARES] = {0};
