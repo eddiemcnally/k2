@@ -39,29 +39,6 @@
 #include "utils.h"
 #include <assert.h>
 
-/**
- * @brief struct for containing the board
- * 
- */
-struct board {
-    // bitboard for each piece
-    uint64_t piece_bitboards[NUM_PIECES];
-
-    // a bitboard per colour, a set bit means that colour occupies that square
-    uint64_t bb_colour[NUM_COLOURS];
-
-    // total material value for each colour
-    uint32_t material[NUM_COLOURS];
-
-    // contains the piece on a given square
-    enum piece pce_square[NUM_SQUARES];
-};
-
-static_assert((int)(sizeof(struct board)) == BOARD_SIZE_BYTES,
-              "Board is copied, check for -fshort-enums compiler option is "
-              "enabled for efficiency.");
-static_assert(BOARD_SIZE_BYTES == 184, "Incorrect value for BOARD_SIZE_BYTES");
-
 static bool validate_square_empty(const struct board *brd, const enum square to_sq);
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq);
 static void init_struct(struct board *brd);
@@ -364,8 +341,6 @@ bool validate_board(const struct board *brd) {
         } else {
             assert(bb_is_clear(conflated_col_bb, sq));
             assert(brd->pce_square[sq] == NO_PIECE);
-            assert(bb_is_clear(white_bb, sq));
-            assert(bb_is_clear(black_bb, sq));
         }
     }
 

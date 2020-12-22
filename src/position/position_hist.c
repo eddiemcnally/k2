@@ -45,7 +45,7 @@ struct move_state {
     //position hash
     uint64_t hashkey;
     // storage for cloned board
-    uint8_t board[BOARD_SIZE_BYTES];
+    struct board cloned_board;
     // the move being made
     struct move mv;
     // en passant square
@@ -112,9 +112,9 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
     free_slot->en_passant_sq = en_passant_sq;
     free_slot->hashkey = hashkey;
     free_slot->castle_perm_container = castle_perm_cont;
-    brd_clone(brd, (struct board *)(&free_slot->board));
+    brd_clone(brd, &free_slot->cloned_board);
 
-    assert(validate_board((const struct board *)(&free_slot->board)));
+    assert(validate_board(&free_slot->cloned_board));
 
     pos_history->num_used_slots++;
     pos_history->free_slot++;
@@ -144,9 +144,9 @@ void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8
     *hashkey = free_slot->hashkey;
     *castle_perm_container = free_slot->castle_perm_container;
 
-    assert(validate_board((struct board *)(&pos_history->free_slot->board)));
+    assert(validate_board(&pos_history->free_slot->cloned_board));
 
-    brd_clone((const struct board *)(&free_slot->board), brd);
+    brd_clone(&free_slot->cloned_board, brd);
 }
 
 /**

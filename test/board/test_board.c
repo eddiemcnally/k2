@@ -684,7 +684,7 @@ void test_board_clone(void **state) {
     pos_initialise(FEN, pos1);
     struct board *brd = pos_get_board(pos1);
 
-    char dest[BOARD_SIZE_BYTES] = {0};
+    char dest[sizeof(struct board)] = {0};
 
     brd_clone(brd, (struct board *)dest);
 

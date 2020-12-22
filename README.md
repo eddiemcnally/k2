@@ -36,15 +36,22 @@ To build using Cmake:
 - cd _build
 - cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=<Debug | Release>
 
+["cmake .. -G "Unix Makefiles" will build a Debug version by default]
+
+
 You can now build and run unit tests: 
 - make && ctest -VV
 
 ## Build notes:
 - k2 is currently set up to use clang as the compiler.
-- However, the code uses various GCC built-in functions
-- The build process outputs 3 binaries: "k2", perft and "k2_test_runner". These can be found in the _build/bin directory.
+- Some Clang-specific built-in functions are also used (eg, __builtin_bitreverse64).
+    - see https://clang.llvm.org/docs/LanguageExtensions.html#builtin-functions
+- The build process outputs 3 binaries: "k2", "perft" and "k2_test_runner". These can be found in the _build/bin directory.
+    - "k2" is currently a place-holder
+    - "perft" will run the standard 6-deep perft tests (see https://www.chessprogramming.org/Perft)
+        - the perft file used is under <project>/resources/perftsuite.epd 
 - Requires CMake 3.9 or greater
-- Enables LTO by default; has a dependency on binutils-gold and llvm9-gold
+- Enables LTO by default; On openSUSE, has a dependency on binutils-gold and llvm9-gold
 
 
 # Engine Notes
