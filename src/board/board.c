@@ -43,6 +43,9 @@ static bool validate_square_empty(const struct board *brd, const enum square to_
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq);
 static void init_struct(struct board *brd);
 
+#define INIT_KEY ((uint32_t)0xDEADBEEF)
+
+
 // ==================================================================
 //
 // public functions
@@ -372,6 +375,8 @@ bool validate_board(const struct board *brd) {
 
     assert(total_bit_count == num_bits_on_board);
 
+    assert(brd->init_flag == INIT_KEY);
+
 #pragma GCC diagnostic pop
     return true;
 }
@@ -476,6 +481,8 @@ static void init_struct(struct board *brd) {
     for (enum square sq = a1; sq <= h8; sq++) {
         brd->pce_square[sq] = NO_PIECE;
     }
+
+    brd->init_flag = INIT_KEY;
 }
 
 #pragma GCC diagnostic push

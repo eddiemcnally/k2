@@ -52,7 +52,7 @@ void pos_destroy(struct position *pos);
 void pos_initialise(const char *fen, struct position *pos);
 
 struct board *pos_get_board(const struct position *pos);
-bool pos_try_get_en_pass_sq(const struct position *pos, enum square *en_pass_sq);
+enum square pos_get_en_pass_sq(const struct position *pos);
 enum colour pos_get_side_to_move(const struct position *pos);
 
 enum move_legality pos_make_move(struct position *pos, const struct move mv);

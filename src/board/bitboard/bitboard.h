@@ -33,6 +33,7 @@
 uint64_t bb_get_empty(void);
 uint64_t bb_get_sq_mask(const enum square sq);
 uint64_t bb_set_square(const uint64_t bb, const enum square sq);
+uint64_t bb_get_square_as_bb(const enum square sq);
 uint64_t bb_clear_square(const uint64_t bb, const enum square sq);
 bool bb_is_set(const uint64_t bb, const enum square sq);
 bool bb_is_clear(const uint64_t bb, const enum square sq);

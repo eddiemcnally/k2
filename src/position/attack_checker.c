@@ -148,12 +148,12 @@ inline static bool is_black_attacking(const struct board *brd, const enum square
 
 inline static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
     const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);
-    return (attacking_bb & pawn_bb) > 0;
+    return (attacking_bb & pawn_bb) != 0;
 }
 
 inline static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
     const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);
-    return (attacking_bb & pawn_bb) > 0;
+    return (attacking_bb & pawn_bb) != 0;
 }
 
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) {

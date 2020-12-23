@@ -105,15 +105,14 @@ void test_position_make_move_white_double_first_move(void **state) {
         struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
 
         // baseline, not set
-        enum square enp_sq;
-        bool found = pos_try_get_en_pass_sq(pos, &enp_sq);
-        assert_false(found);
+        enum square enp_sq = pos_get_en_pass_sq(pos);
+        assert_true(enp_sq == NO_SQUARE);
 
         // make move and check en passant square
         pos_make_move(pos, mv);
 
-        found = pos_try_get_en_pass_sq(pos, &enp_sq);
-        assert_true(found);
+        enp_sq =  pos_get_en_pass_sq(pos);
+        assert_true(enp_sq != NO_SQUARE);
 
         enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);
         assert_true(expected_enp_sq == enp_sq);
@@ -130,8 +129,8 @@ void test_position_make_move_white_double_first_move(void **state) {
 
         // make move quiet move and check en passent square is cleared
         pos_make_move(pos, quiet_move);
-        found = pos_try_get_en_pass_sq(pos, &enp_sq);
-        assert_false(found);
+        enp_sq = pos_get_en_pass_sq(pos);
+        assert_true(enp_sq == NO_SQUARE);
 
         pos_destroy(pos);
     }
@@ -157,14 +156,13 @@ void test_position_make_move_black_double_first_move(void **state) {
         struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
 
         // baseline, not set
-        enum square enp_sq;
-        bool found = pos_try_get_en_pass_sq(pos, &enp_sq);
-        assert_false(found);
+        enum square enp_sq = pos_get_en_pass_sq(pos);
+        assert_true(enp_sq = NO_SQUARE);
 
         // make move and check en passant square
         pos_make_move(pos, mv);
-        found = pos_try_get_en_pass_sq(pos, &enp_sq);
-        assert_true(found);
+        enp_sq = pos_get_en_pass_sq(pos);
+        assert_true(enp_sq != NO_SQUARE);
 
         const enum square expected_enp_sq = sq_get_square_minus_1_rank(from_sq);
         assert_true(expected_enp_sq == enp_sq);
@@ -181,8 +179,8 @@ void test_position_make_move_black_double_first_move(void **state) {
 
         // make a normal move, verify en passant square no longer active
         pos_make_move(pos, quiet_move);
-        found = pos_try_get_en_pass_sq(pos, &enp_sq);
-        assert_false(found);
+        enp_sq = pos_get_en_pass_sq(pos);
+        assert_true(enp_sq == NO_SQUARE);
 
         pos_destroy(pos);
     }
@@ -1067,9 +1065,7 @@ void test_position_make_move_black_en_passant(void **state) {
     bool old_white_pawn_found = brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
     assert_true(old_white_pawn_found);
     assert_true(validate_piece(old_white_pawn));
-    enum square enp_sq;
-    bool enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
-    assert_true(enp_found);
+    enum square enp_sq = pos_get_en_pass_sq(pos);
     assert_true(enp_sq == c3);
 
     // en passant move
@@ -1082,8 +1078,8 @@ void test_position_make_move_black_en_passant(void **state) {
     enum piece blk_pawn;
     bool blk_pawn_found = brd_try_get_piece_on_square(brd, c3, &blk_pawn);
     assert_true(blk_pawn_found);
-    enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
-    assert_false(enp_found);
+    enp_sq = pos_get_en_pass_sq(pos);
+    assert_true(enp_sq == NO_SQUARE);
 
     pos_destroy(pos);
 }
@@ -1104,9 +1100,7 @@ void test_position_make_move_white_en_passant(void **state) {
     bool old_black_pawn_found = brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
     assert_true(old_black_pawn_found);
     assert_true(validate_piece(old_black_pawn));
-    enum square enp_sq;
-    bool enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
-    assert_true(enp_found);
+    enum square enp_sq = pos_get_en_pass_sq(pos);
     assert_true(enp_sq == g6);
 
     // en passant move
@@ -1119,8 +1113,8 @@ void test_position_make_move_white_en_passant(void **state) {
     enum piece white_pawn;
     bool white_pawn_found = brd_try_get_piece_on_square(brd, g6, &white_pawn);
     assert_true(white_pawn_found);
-    enp_found = pos_try_get_en_pass_sq(pos, &enp_sq);
-    assert_false(enp_found);
+    enp_sq = pos_get_en_pass_sq(pos);
+    assert_true(enp_sq == NO_SQUARE);
 
     pos_destroy(pos);
 }

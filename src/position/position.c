@@ -193,12 +193,11 @@ struct cast_perm_container pos_get_cast_perm(const struct position *pos) {
  * @param en_pass_sq
  * @return              true if valid/active en passent square, false otherwise
  */
-bool pos_try_get_en_pass_sq(const struct position *pos, enum square *en_pass_sq) {
+enum square pos_get_en_pass_sq(const struct position *pos) {
     if (pos_is_en_passant_active(pos)) {
-        *en_pass_sq = pos->en_passant_sq;
-        return true;
+        return pos->en_passant_sq;        
     }
-    return false;
+    return NO_SQUARE;
 }
 
 /**

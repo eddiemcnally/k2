@@ -46,6 +46,7 @@ static void gen_king_mask(void);
 static void occ_mask_gen_diagonal_occupancy_masks(void);
 static void gen_bishop_mask(void);
 static void gen_queen_mask(void);
+static void gen_rook_mask(void);
 
 #define RANK_MASK ((uint64_t)0x00000000000000ff)
 #define FILE_MASK ((uint64_t)0x0101010101010101)
@@ -71,6 +72,7 @@ static uint64_t positive_diagonal_masks[NUM_SQUARES] = {0};
 static uint64_t negative_diagonal_masks[NUM_SQUARES] = {0};
 static uint64_t bishop_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t queen_occupancy_masks[NUM_SQUARES] = {0};
+static uint64_t rook_occupancy_masks[NUM_SQUARES] = {0};
 
 void occ_mask_init(void) {
     gen_in_between_sq_mask();
@@ -79,7 +81,7 @@ void occ_mask_init(void) {
     occ_mask_gen_diagonal_occupancy_masks();
     gen_bishop_mask();
 
-    // do this last...it uses bishop masks
+    gen_rook_mask();
     gen_queen_mask();
 }
 
@@ -120,7 +122,7 @@ inline uint64_t occ_mask_get_horizontal(const enum square sq) {
  * @return uint64_t A bitboard representing WHITE pawns that can attack the square
  */
 inline uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
-    const uint64_t bb = bb_set_square(0, sq);
+    const uint64_t bb = bb_get_square_as_bb(sq);
     return SOUTH_EAST(bb) | SOUTH_WEST(bb);
 }
 
@@ -131,7 +133,7 @@ inline uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
  * @return uint64_t A bitboard representing BLACK pawns that can attack the square
  */
 inline uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
-    const uint64_t bb = bb_set_square(0, sq);
+    const uint64_t bb = bb_get_square_as_bb(sq);
     return NORTH_EAST(bb) | NORTH_WEST(bb);
 }
 
@@ -144,7 +146,7 @@ inline uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
 inline uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
 
-    const uint64_t sq_bb = bb_set_square(0, sq);
+    const uint64_t sq_bb = bb_get_square_as_bb(sq);
     return NORTH_EAST(sq_bb) | NORTH_WEST(sq_bb);
 }
 
@@ -157,7 +159,7 @@ inline uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum
 inline uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
 
-    const uint64_t sq_bb = bb_set_square(0, sq);
+    const uint64_t sq_bb = bb_get_square_as_bb(sq);
     return SOUTH_EAST(sq_bb) | SOUTH_WEST(sq_bb);
 }
 
@@ -211,12 +213,9 @@ uint64_t occ_mask_get_queen(const enum square sq) {
  * @param sq    The square containing the Rook
  * @return A bitboard representing the occupancy mask
  */
-inline uint64_t occ_mask_get_rook(const enum square sq) {
+uint64_t occ_mask_get_rook(const enum square sq) {
     assert(validate_square(sq));
-
-    const uint64_t horiz_mask = occ_mask_get_horizontal(sq);
-    const uint64_t vert_mask = occ_mask_get_vertical(sq);
-    return (horiz_mask | vert_mask);
+    return rook_occupancy_masks[sq];
 }
 
 static void gen_in_between_sq_mask(void) {
@@ -248,7 +247,7 @@ static uint64_t in_between(const enum square sq1, const enum square sq2) {
     return line & btwn; /* return the bits on that line in-between */
 }
 
-static void gen_queen_mask() {
+static void gen_queen_mask(void) {
     for (enum square sq = a1; sq <= h8; sq++) {
         const uint64_t bishop_mask = bishop_occupancy_masks[sq];
         const uint64_t rook_mask = occ_mask_get_rook(sq);
@@ -257,6 +256,15 @@ static void gen_queen_mask() {
         // clear our square
         queen = bb_clear_square(queen, sq);
         queen_occupancy_masks[sq] = queen;
+    }
+}
+
+static void gen_rook_mask(void) {
+    for (enum square sq = a1; sq <= h8; sq++) {
+        const uint64_t horiz_mask = occ_mask_get_horizontal(sq);
+        const uint64_t vert_mask = occ_mask_get_vertical(sq);
+
+        rook_occupancy_masks[sq] = (horiz_mask | vert_mask);
     }
 }
 

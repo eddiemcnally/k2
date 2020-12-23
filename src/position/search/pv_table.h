@@ -24,47 +24,26 @@
  *  SOFTWARE.
  */
 
-/*! @addtogroup Search
- *
- * @ingroup Alpha-Beta
- * @{
- * @details Implements the Alpha-Beta search function
- *
- */
+#pragma once
 
-#include "alpha_beta.h"
-#include "move_gen.h"
-#include "move_list.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
-#define MAX_PV_MOVES    4098
+#include "move.h"
 
-// PV table
-struct pv_line {
-    uint16_t num_moves;                 // Number of moves in the line.
-    struct move moves[MAX_PV_MOVES];    // The line.
+#define PV_TABLE_SIZE_IN_ENTRIES    2000000
+
+
+struct pv_entry {
+	uint64_t position_hash;
+	struct move mv;
+};
+
+struct pv_table {
+	struct pv_entry entries[PV_TABLE_SIZE_IN_ENTRIES];	
 };
 
 
-int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct position *pos,
-                          struct search_data *search_info) {
-
-    if (depth == 0) {
-        // do quiesence search
-        return 0;
-    }
-
-    // todo:
-    // check repetition
-    // check 50 move rule
-    // check max depth
-    // check search_info->node count > MAX COUNT
-
-    struct move_list mv_list = mvl_initialise();
-
-    mv_gen_all_moves(pos, &mv_list);
 
 
-
-
-    
-}

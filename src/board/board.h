@@ -50,6 +50,8 @@ struct board {
 
     // contains the piece on a given square
     enum piece pce_square[NUM_SQUARES];
+
+    uint32_t init_flag;
 };
 
 struct board *brd_allocate(void);
