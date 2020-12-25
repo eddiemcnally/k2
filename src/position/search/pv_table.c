@@ -24,6 +24,25 @@
  *  SOFTWARE.
  */
 
+#include "pv_table.h"
+#include "move.h"
 
+#define PV_TABLE_SIZE_IN_ENTRIES 200000000
 
+static struct move pvtable[PV_TABLE_SIZE_IN_ENTRIES] = {0};
 
+void pv_table_init(void) {
+    for (int i = 0; i < PV_TABLE_SIZE_IN_ENTRIES; i++) {
+        pvtable[i] = move_get_no_move();
+    }
+}
+
+void pv_table_add(const uint64_t position_hash, const struct move mv) {
+    const uint32_t idx = position_hash % PV_TABLE_SIZE_IN_ENTRIES;
+    pvtable[idx] = mv;
+}
+
+bool pv_table_contains_position(const uint64_t position_hash) {
+    const uint32_t idx = (uint32_t)(position_hash % PV_TABLE_SIZE_IN_ENTRIES);
+    return !move_compare(pvtable[idx], move_get_no_move());
+}

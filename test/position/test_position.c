@@ -111,7 +111,7 @@ void test_position_make_move_white_double_first_move(void **state) {
         // make move and check en passant square
         pos_make_move(pos, mv);
 
-        enp_sq =  pos_get_en_pass_sq(pos);
+        enp_sq = pos_get_en_pass_sq(pos);
         assert_true(enp_sq != NO_SQUARE);
 
         enum square expected_enp_sq = sq_get_square_plus_1_rank(moves[i].from_sq);

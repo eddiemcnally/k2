@@ -195,7 +195,7 @@ struct cast_perm_container pos_get_cast_perm(const struct position *pos) {
  */
 enum square pos_get_en_pass_sq(const struct position *pos) {
     if (pos_is_en_passant_active(pos)) {
-        return pos->en_passant_sq;        
+        return pos->en_passant_sq;
     }
     return NO_SQUARE;
 }

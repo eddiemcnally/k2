@@ -116,6 +116,8 @@ static const struct move MV_KING_CASTLE_BLACK = {.val = ENCODE_KING_CASTLE_BLACK
 static const struct move MV_QUEEN_CASTLE_WHITE = {.val = ENCODE_QUEEN_CASTLE_WHITE};
 static const struct move MV_QUEEN_CASTLE_BLACK = {.val = ENCODE_QUEEN_CASTLE_BLACK};
 
+const struct move NO_MOVE = {.val = 0};
+
 // ==================================================================
 //
 // public functions
@@ -537,6 +539,10 @@ const char *move_details(const struct move mv) {
     default:
         return "No Details";
     }
+}
+
+struct move move_get_no_move(void) {
+    return NO_MOVE;
 }
 
 bool validate_move(const struct move mv) {

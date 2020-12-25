@@ -42,3 +42,6 @@ struct search_data {
 };
 
 #define MAX_SEARCH_DEPTH 64
+
+#define INFINITY INT_MAX
+#define NEG_INFINITY INT_MIN

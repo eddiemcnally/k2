@@ -39,9 +39,6 @@
 #include <limits.h>
 #include <stdio.h>
 
-#define INIT_ALPHA_VAL  (-30000)
-#define INIT_BETA_VAL  (30000)
-
 void search_position(struct position *pos, struct search_data *search_info) {
 
     uint8_t depth = 0;
@@ -49,15 +46,7 @@ void search_position(struct position *pos, struct search_data *search_info) {
     int32_t best_score = INT_MIN;
 
     for (depth = 1; depth <= search_info->search_depth; depth++) {
-    
-    best_score = alpha_beta_search(INIT_ALPHA_VAL, INIT_BETA_VAL, 
-                    depth, pos, search_info);
 
-    
-
-
-
-    
-    
+        best_score = alpha_beta_search(NEG_INFINITY, INFINITY, depth, pos, search_info);
     }
 }

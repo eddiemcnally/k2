@@ -45,7 +45,6 @@ static void init_struct(struct board *brd);
 
 #define INIT_KEY ((uint32_t)0xDEADBEEF)
 
-
 // ==================================================================
 //
 // public functions

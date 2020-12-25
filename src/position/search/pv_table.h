@@ -27,23 +27,10 @@
 #pragma once
 
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
 
 #include "move.h"
 
-#define PV_TABLE_SIZE_IN_ENTRIES    2000000
-
-
-struct pv_entry {
-	uint64_t position_hash;
-	struct move mv;
-};
-
-struct pv_table {
-	struct pv_entry entries[PV_TABLE_SIZE_IN_ENTRIES];	
-};
-
-
-
-
+void pv_table_init(void);
+void pv_table_add(const uint64_t position_hash, const struct move mv);
+bool pv_table_contains_position(const uint64_t position_hash);

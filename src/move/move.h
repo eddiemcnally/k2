@@ -94,6 +94,8 @@ struct move move_encode_castle_queenside_black(void);
 
 bool move_compare(const struct move mv1, const struct move mv2);
 
+struct move move_get_no_move(void);
+
 enum move_type move_get_move_type(const struct move mv);
 enum square move_decode_from_sq(const struct move mv);
 enum square move_decode_to_sq(const struct move mv);

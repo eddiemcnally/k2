@@ -151,7 +151,7 @@ static void mv_gen_moves(const struct position *pos, struct move_list *mvl, cons
     } break;
 
     default:
-    REQUIRE(false, "Invalid side");
+        REQUIRE(false, "Invalid side");
     }
 }
 
