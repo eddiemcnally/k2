@@ -35,6 +35,7 @@
 #include "alpha_beta.h"
 #include "move_gen.h"
 #include "move_list.h"
+#include "pv_table.h"
 #include "quiesence.h"
 #include "search.h"
 #include <limits.h>
@@ -98,7 +99,8 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
     }
 
     if (alpha != entry_alpha) {
-        // save PV move
+        pv_table_add(pos_get_hash(pos), best_move);
+        // TODO - incr search stats for PV table collision
     }
 
     return alpha;

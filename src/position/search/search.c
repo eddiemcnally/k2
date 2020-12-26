@@ -36,10 +36,16 @@
 #include "alpha_beta.h"
 #include "board.h"
 #include "position.h"
+#include "pv_table.h"
 #include <limits.h>
 #include <stdio.h>
 
+static bool move_exists(struct position *pos, const struct move mv);
+static uint16_t get_pv_line(uint8_t depth, struct position *pos);
+
 void search_position(struct position *pos, struct search_data *search_info) {
+
+    pv_table_init();
 
     uint8_t depth = 0;
 
@@ -48,5 +54,9 @@ void search_position(struct position *pos, struct search_data *search_info) {
     for (depth = 1; depth <= search_info->search_depth; depth++) {
 
         best_score = alpha_beta_search(NEG_INFINITY, INFINITY, depth, pos, search_info);
+
+        const struct pv_line line = pv_table_get_pv_line(depth, pos);
+
+        const struct move best_move = line.line[0];
     }
 }
