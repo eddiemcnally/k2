@@ -35,21 +35,16 @@
 #include "alpha_beta.h"
 #include "move_gen.h"
 #include "move_list.h"
-#include "pv_table.h"
 #include "quiesence.h"
 #include "search.h"
+#include "transposition_table.h"
+#include <assert.h>
 #include <limits.h>
-
-#define MAX_PV_MOVES 4098
-
-// PV table
-struct pv_line {
-    uint16_t num_moves;              // Number of moves in the line.
-    struct move moves[MAX_PV_MOVES]; // The line.
-};
 
 int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct position *pos,
                           struct search_data *search_info) {
+
+    assert(validate_position(pos));
 
     if (depth == 0) {
         return quiescence(pos, search_info, alpha, beta);
@@ -99,8 +94,7 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
     }
 
     if (alpha != entry_alpha) {
-        pv_table_add(pos_get_hash(pos), best_move);
-        // TODO - incr search stats for PV table collision
+        tt_add(pos_get_hash(pos), best_move, depth);
     }
 
     return alpha;

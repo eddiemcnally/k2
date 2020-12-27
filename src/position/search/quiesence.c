@@ -36,11 +36,16 @@
 #include "basic_evaluator.h"
 #include "move_gen.h"
 #include "move_list.h"
+#include "transposition_table.h"
+#include <assert.h>
 
 static struct move_list mvl;
 static bool is_mvl_init = false;
 
 int32_t quiescence(struct position *pos, struct search_data *search, int32_t alpha, int32_t beta) {
+
+    assert(validate_position(pos));
+
     if (is_mvl_init == false) {
         is_mvl_init = true;
         mvl = mvl_initialise();

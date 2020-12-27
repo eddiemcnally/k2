@@ -48,9 +48,11 @@ set (SOURCES
         ${UTILS_DIR}/rand.c
         ${PERFT_DIR}/perft_file_reader.c
         ${PERFT_DIR}/perft.c
+        ${SEARCH_DIR}/search.c
         ${SEARCH_DIR}/transposition_table.c
         ${SEARCH_DIR}/quiesence.c
-        ${SEARCH_DIR}/pv_table.c        
+        ${SEARCH_DIR}/quiesence.c 
+        ${SEARCH_DIR}/alpha_beta.c
         )
 
 message("Setting up K2 Engine include files...")

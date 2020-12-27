@@ -28,9 +28,10 @@
 
 #include "position.h"
 #include "search.h"
+#include "transposition_table.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct position *pos,
+int32_t alpha_beta_search(const int32_t alpha, int32_t beta, uint8_t depth, struct position *pos,
                           struct search_data *search_info);

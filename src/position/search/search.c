@@ -35,17 +35,29 @@
 #include "search.h"
 #include "alpha_beta.h"
 #include "board.h"
-#include "position.h"
-#include "pv_table.h"
+#include "move.h"
+#include "move_gen.h"
+#include "move_list.h"
+#include "transposition_table.h"
+#include <assert.h>
 #include <limits.h>
 #include <stdio.h>
 
+static struct pv_line get_pv_line(uint8_t depth, struct position *pos);
 static bool move_exists(struct position *pos, const struct move mv);
-static uint16_t get_pv_line(uint8_t depth, struct position *pos);
+
+#define TT_SIZE_IN_BYTES (200000000)
+
+struct pv_line {
+    uint16_t num_moves;
+    struct move line[MAX_SEARCH_DEPTH];
+};
 
 void search_position(struct position *pos, struct search_data *search_info) {
 
-    pv_table_init();
+    assert(validate_position(pos));
+
+    tt_create(TT_SIZE_IN_BYTES);
 
     uint8_t depth = 0;
 
@@ -55,8 +67,57 @@ void search_position(struct position *pos, struct search_data *search_info) {
 
         best_score = alpha_beta_search(NEG_INFINITY, INFINITY, depth, pos, search_info);
 
-        const struct pv_line line = pv_table_get_pv_line(depth, pos);
+        const struct pv_line line = get_pv_line(depth, pos);
 
         const struct move best_move = line.line[0];
+
+        printf("Bast move %s\n", move_print(best_move));
     }
+
+    tt_dispose();
+}
+
+static struct pv_line get_pv_line(uint8_t depth, struct position *pos) {
+
+    struct pv_line retval;
+
+    struct move mv;
+    bool found = tt_probe_position(pos_get_hash(pos), &mv);
+    uint8_t i = 0;
+
+    while (found && i < depth) {
+        if (move_exists(pos, mv)) {
+            pos_make_move(pos, mv);
+            retval.line[i] = mv;
+            i++;
+        } else {
+            break;
+        }
+        found = tt_probe_position(pos_get_hash(pos), &mv);
+    }
+
+    while (pos_get_ply(pos) > 0) {
+        pos_take_move(pos);
+    }
+
+    return retval;
+}
+
+static bool move_exists(struct position *pos, const struct move mv) {
+    struct move_list mvl = mvl_initialise();
+
+    mv_gen_all_moves(pos, &mvl);
+
+    for (int i = 0; i < mvl.move_count; i++) {
+        enum move_legality legal = pos_make_move(pos, mvl.move_list[i]);
+        if (legal != LEGAL_MOVE) {
+            continue;
+        }
+        pos_take_move(pos);
+
+        if (move_compare(mvl.move_list[i], mv)) {
+            return true;
+        }
+    }
+    return false;
 }

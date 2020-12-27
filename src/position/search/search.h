@@ -26,6 +26,8 @@
 
 #pragma once
 
+#include "position.h"
+#include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -45,3 +47,5 @@ struct search_data {
 
 #define INFINITY INT_MAX
 #define NEG_INFINITY INT_MIN
+
+void search_position(struct position *pos, struct search_data *search_info);
