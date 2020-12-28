@@ -230,6 +230,7 @@ bool validate_position(const struct position *pos) {
 
 enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
+    assert(validate_move(mv));
 
     position_hist_push(pos->position_history, mv, pos->fifty_move_counter, pos->en_passant_sq, pos->hashkey,
                        pos->castle_perm_container, pos->brd);

@@ -44,6 +44,8 @@ static bool is_mvl_init = false;
 
 int32_t quiescence(struct position *pos, struct search_data *search, int32_t alpha, int32_t beta) {
 
+    const int32_t orig_alpha = alpha;
+
     assert(validate_position(pos));
 
     if (is_mvl_init == false) {
@@ -73,28 +75,39 @@ int32_t quiescence(struct position *pos, struct search_data *search, int32_t alp
 
     mv_gen_only_capture_moves(pos, &mvl);
 
+    struct move best_move;
+
     uint16_t num_moves = mvl.move_count;
     for (uint16_t i = 0; i < num_moves; i++) {
         struct move mv = mvl.move_list[i];
         enum move_legality legality = pos_make_move(pos, mv);
-        if (legality == LEGAL_MOVE) {
-            // note: alpha/beta are swapped, and sign is reversed
-            int32_t score = -quiescence(pos, search, -beta, -alpha);
+        if (legality != LEGAL_MOVE) {
             pos_take_move(pos);
+            continue;
+        }
 
-            if (search->search_stopped == true) {
-                // timed out
-                return 0;
+        // note: alpha/beta are swapped, and sign is reversed
+        int32_t score = -quiescence(pos, search, -beta, -alpha);
+        pos_take_move(pos);
+
+        if (search->search_stopped == true) {
+            // timed out
+            return 0;
+        }
+
+        if (score > alpha) {
+            if (score >= beta) {
+                return beta;
             }
 
-            if (score > alpha) {
-                if (score >= beta) {
-                    return beta;
-                }
-
-                alpha = score;
-            }
+            alpha = score;
+            best_move = mv;
         }
     }
+
+    if (alpha != orig_alpha) {
+        tt_add(pos_get_hash(pos), best_move, search->search_depth);
+    }
+
     return alpha;
 }

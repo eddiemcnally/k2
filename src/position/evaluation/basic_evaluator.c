@@ -107,6 +107,8 @@ static const uint8_t MIRROR_VALUE[NUM_SQUARES] = {
  */
 int32_t evaluate_position_basic(const struct position *pos) {
 
+    printf("Evaluating position\n");
+
     const struct board *brd = pos_get_board(pos);
 
     const uint32_t white_material = brd_get_material(brd, WHITE);

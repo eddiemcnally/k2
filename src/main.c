@@ -31,6 +31,7 @@
 #include "perft.h"
 #include "piece.h"
 #include "position.h"
+#include "search.h"
 #include "square.h"
 #include "utils.h"
 #include <stdbool.h>
@@ -43,29 +44,16 @@
 
 int main(void) {
 
-    // const enum square from_sq = a7;
-    // const enum square to_sq = a8;
-    // struct move mv;
-    // enum piece pce;
-
-    // // mv = move_encode_promoted(from_sq, to_sq, KNIGHT, true);
-
-    // // const enum piece pce = move_decode_promotion_piece(mv, WHITE);
-
-    // // printf("pce = 0x%x\n", pce);
-
-    // // enum piece_role role = pce_get_piece_role(pce);
-    // // printf("role = 0x%x\n", role);
-
-    const char *RANDOM_FEN_1 = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq – 0 1\n";
+    // mate in 3
+    // soluiton : 1.Ra6 f6 2.Bxf6 Rg7 3.Rxa8#
+    // https://www.sparkchess.com/chess-puzzles/for-beginners-mate-in-three.html
+    const char *MATE_IN_THREE = "r5rk/5p1p/5R2/4B3/8/8/7P/7K w - - 0 1\n";
 
     struct position *pos = pos_create();
-    pos_initialise(RANDOM_FEN_1, pos);
+    pos_initialise(MATE_IN_THREE, pos);
 
-    const double start_time_in_secs = get_time_of_day_in_secs();
+    struct search_data info = {0};
+    info.search_depth = 5;
 
-    do_perft(3, pos);
-
-    const double elapsed_in_secs = get_elapsed_time_in_secs(start_time_in_secs);
-    printf("Elapsed time : %f\n", elapsed_in_secs);
+    search_position(pos, &info);
 }

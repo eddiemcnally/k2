@@ -59,11 +59,11 @@ void search_position(struct position *pos, struct search_data *search_info) {
 
     tt_create(TT_SIZE_IN_BYTES);
 
-    uint8_t depth = 0;
-
     int32_t best_score = INT_MIN;
 
-    for (depth = 1; depth <= search_info->search_depth; depth++) {
+    for (uint8_t depth = 1; depth <= search_info->search_depth; depth++) {
+
+        printf("Search depth=%d\n", depth);
 
         best_score = alpha_beta_search(NEG_INFINITY, INFINITY, depth, pos, search_info);
 
@@ -71,7 +71,8 @@ void search_position(struct position *pos, struct search_data *search_info) {
 
         const struct move best_move = line.line[0];
 
-        printf("Bast move %s\n", move_print(best_move));
+        printf("SEARCH : depth=%d, PV Line size=%d\n", depth, line.num_moves);
+        printf("SEARCH : Best move %s\n", move_print(best_move));
     }
 
     tt_dispose();

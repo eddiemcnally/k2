@@ -33,6 +33,7 @@
  */
 
 #include "alpha_beta.h"
+#include "basic_evaluator.h"
 #include "move_gen.h"
 #include "move_list.h"
 #include "quiesence.h"
@@ -46,8 +47,16 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
     assert(validate_position(pos));
 
+    printf("AlphaBeta depth=%d\n", depth);
+
     if (depth == 0) {
+        printf("AlphaBeta depth ZERO, calling quiesence\n");
+
         return quiescence(pos, search_info, alpha, beta);
+    }
+
+    if (pos_get_ply(pos) > MAX_SEARCH_DEPTH - 1) {
+        return evaluate_position_basic(pos);
     }
 
     int32_t score = NEG_INFINITY;
@@ -65,9 +74,15 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
     mv_gen_all_moves(pos, &mv_list);
 
+    printf("AlphaBeta depth=%d, num moves generated=%d\n", depth, mv_list.move_count);
+
     for (int i = 0; i < mv_list.move_count; i++) {
 
-        const struct move mv = mv_list.move_list[i];
+        struct move mv = mv_list.move_list[i];
+        best_move = mv;
+
+        printf("AlphaBeta depth=%d, processing move %s\n", depth, move_print(mv));
+
         enum move_legality legality = pos_make_move(pos, mv);
         if (legality != LEGAL_MOVE) {
             pos_take_move(pos);
@@ -76,16 +91,20 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
         legal_moves_available = true;
 
+        printf("AlphaBeta depth=%d, calling alphabeta\n", depth);
+
         // NOTE alpha/beta swapped
-        score = -alpha_beta_search(-beta, -alpha, depth - 1, pos, search_info);
+        score = -alpha_beta_search(-beta, -alpha, (depth - 1), pos, search_info);
         pos_take_move(pos);
 
         if (score > alpha) {
             if (score >= beta) {
+                printf("AlphaBeta depth=%d, score > beta\n", depth);
                 return beta;
             }
             alpha = score;
             best_move = mv;
+            printf("AlphaBeta depth=%d, setting BestMove = %s\n", depth, move_print(mv));
         }
     }
 
@@ -94,6 +113,8 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
     }
 
     if (alpha != entry_alpha) {
+        printf("AlphaBeta depth=%d, adding to TT, move=%s\n", depth, move_print(best_move));
+
         tt_add(pos_get_hash(pos), best_move, depth);
     }
 
