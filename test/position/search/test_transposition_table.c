@@ -63,17 +63,20 @@ void test_transposition_table_add_multiple_all_present(void **state) {
 
     // test a small number to avoid collisions
 
-#define TABLE_SIZE (10 * MILLION)
+#define TABLE_SIZE (100 * MILLION)
 #define NUM_TO_ADD 200000
 
     const struct move mv = move_encode_quiet(a1, b2);
+    const int32_t score = 1234;
+    const enum node_type nt = PV_NODE;
+    const uint8_t depth = 5;
 
     tt_create((TABLE_SIZE * tt_entry_size()));
 
     // populate tt with test entries
     for (uint64_t i = 0; i < NUM_TO_ADD; i++) {
-        uint64_t h = i;
-        const bool added = tt_add(h, mv, 5);
+        uint64_t hash = i;
+        const bool added = tt_add(hash, mv, depth, score, nt);
         assert_true(added);
     }
 

@@ -106,7 +106,8 @@ int32_t quiescence(struct position *pos, struct search_data *search, int32_t alp
     }
 
     if (alpha != orig_alpha) {
-        tt_add(pos_get_hash(pos), best_move, search->search_depth);
+        // TODO
+        // tt_add(pos_get_hash(pos), best_move, search->search_depth);
     }
 
     return alpha;

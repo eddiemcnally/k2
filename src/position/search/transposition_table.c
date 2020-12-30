@@ -35,17 +35,21 @@
 #include <assert.h>
 
 #include "hashkeys.h"
+#include "search.h"
 #include "transposition_table.h"
 #include "utils.h"
 
 static void set_tt_size(uint64_t size_in_bytes);
 static inline void init_table(void);
+static bool validate_node_type(const enum node_type nt);
 
 struct tt_entry {
     uint64_t position_hash;
     struct move mv;
+    int32_t score;
     uint8_t depth;
     bool slot_used;
+    enum node_type node_type;
 };
 
 // num entries in TT
@@ -53,6 +57,11 @@ static uint32_t num_tt_elems = 0;
 // ptr to transposition table
 static struct tt_entry *tt = NULL;
 
+/**
+ * @brief Create an initialise the Transposition Table
+ * 
+ * @param size_in_bytes The size in bytes of the Transposition Table
+ */
 void tt_create(uint64_t size_in_bytes) {
     if (tt != NULL) {
         tt_dispose();
@@ -63,6 +72,11 @@ void tt_create(uint64_t size_in_bytes) {
     init_table();
 }
 
+/**
+ * @brief Returns the number of TT elements in the table
+ * 
+ * @return uint32_t The number of elements
+ */
 uint32_t tt_capacity(void) {
     return num_tt_elems;
 }
@@ -71,6 +85,14 @@ size_t tt_entry_size(void) {
     return sizeof(struct tt_entry);
 }
 
+/**
+ * @brief Checks to see if a given Position hash is present in the TT, and returns the associated move is it is
+ * 
+ * @param position_hash The Position Hash
+ * @param mv The move, populated with the move if return value is true
+ * @return true if the hash is present
+ * @return false if the has is not present
+ */
 bool tt_probe_position(const uint64_t position_hash, struct move *mv) {
     const struct tt_entry *elem = &tt[position_hash & num_tt_elems];
 
@@ -81,10 +103,24 @@ bool tt_probe_position(const uint64_t position_hash, struct move *mv) {
     return false;
 }
 
-bool tt_add(const uint64_t position_hash, const struct move mv, uint8_t depth) {
+/**
+ * @brief Adds the given search info to the TT table
+ * 
+ * @param position_hash The position hash
+ * @param mv The move
+ * @param depth The search depth
+ * @param score The score associated with the position after the move
+ * @param node_type The node type
+ * @return true if position info was added to TT
+ * @return false if the position info was not added to the TT
+ */
+bool tt_add(const uint64_t position_hash, const struct move mv, const uint8_t depth, const int32_t score,
+            const enum node_type node_type) {
     assert(validate_move(mv));
+    assert(validate_node_type(node_type));
     assert(tt != NULL);
     assert(num_tt_elems > 0);
+    assert(depth <= MAX_SEARCH_DEPTH);
 
     struct tt_entry *entry = &tt[position_hash & num_tt_elems];
 
@@ -94,14 +130,20 @@ bool tt_add(const uint64_t position_hash, const struct move mv, uint8_t depth) {
             return false;
         }
     }
+
     entry->position_hash = position_hash;
     entry->mv = mv;
     entry->depth = depth;
     entry->slot_used = true;
-
+    entry->score = score;
+    entry->node_type = node_type;
     return true;
 }
 
+/**
+ * @brief Disposes of the TT
+ * 
+ */
 void tt_dispose(void) {
     if (tt != NULL) {
         free(tt);
@@ -128,3 +170,19 @@ static inline void init_table(void) {
         entry->slot_used = false;
     }
 }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+static bool validate_node_type(const enum node_type nt) {
+    switch (nt) {
+    case PV_NODE:
+        return true;
+    case ALL_NODE:
+        return true;
+    case CUT_NODE:
+        return true;
+    default:
+        return false;
+    }
+}
+#pragma GCC diagnostic pop

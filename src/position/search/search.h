@@ -43,7 +43,7 @@ struct search_data {
     bool search_stopped;
 };
 
-#define MAX_SEARCH_DEPTH 64
+#define MAX_SEARCH_DEPTH 12
 
 #define INFINITY INT_MAX
 #define NEG_INFINITY INT_MIN

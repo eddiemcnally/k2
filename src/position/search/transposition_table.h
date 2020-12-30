@@ -33,9 +33,12 @@
 #include "hashkeys.h"
 #include "move.h"
 
+enum node_type { PV_NODE, ALL_NODE, CUT_NODE };
+
 void tt_create(uint64_t size_in_bytes);
 void tt_dispose(void);
-bool tt_add(const uint64_t hash, const struct move mv, uint8_t depth);
+bool tt_add(const uint64_t position_hash, const struct move mv, const uint8_t depth, const int32_t score,
+            const enum node_type node_type);
 bool tt_probe_position(const uint64_t position_hash, struct move *mv);
 uint32_t tt_capacity(void);
 size_t tt_entry_size(void);

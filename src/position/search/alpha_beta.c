@@ -93,7 +93,7 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
         printf("AlphaBeta depth=%d, calling alphabeta\n", depth);
 
-        // NOTE alpha/beta swapped
+        // NOTE alpha/beta swapped, negate the result
         score = -alpha_beta_search(-beta, -alpha, (depth - 1), pos, search_info);
         pos_take_move(pos);
 
@@ -114,8 +114,8 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
     if (alpha != entry_alpha) {
         printf("AlphaBeta depth=%d, adding to TT, move=%s\n", depth, move_print(best_move));
-
-        tt_add(pos_get_hash(pos), best_move, depth);
+        // TODO
+        //tt_add(pos_get_hash(pos), best_move, depth);
     }
 
     return alpha;
