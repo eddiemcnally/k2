@@ -35,11 +35,10 @@
 
 #define MILLION 1000000
 #define MB 1000000
-#define KB 1000
 
 void test_transposition_table_create_different_sizes_as_expected(void **state) {
-#define NUM_TO_TEST_DIFF_SIZES 5
-    uint32_t sizes[NUM_TO_TEST_DIFF_SIZES] = {10 * MB, 10 * KB, 100 * KB, 400 * MB, 53 * MB};
+#define NUM_TO_TEST_DIFF_SIZES 3
+    uint32_t sizes[NUM_TO_TEST_DIFF_SIZES] = {100 * MB, 400 * MB, 53 * MB};
 
     for (int i = 0; i < NUM_TO_TEST_DIFF_SIZES; i++) {
         tt_create(sizes[i]);
@@ -50,25 +49,16 @@ void test_transposition_table_create_different_sizes_as_expected(void **state) {
     }
 }
 
-void test_transposition_table_create_too_small_num_elems_zero(void **state) {
-    const uint64_t size_in_bytes = 9;
-    tt_create(size_in_bytes);
-
-    assert_true(tt_capacity() == 0);
-
-    tt_dispose();
-}
-
 void test_transposition_table_add_multiple_all_present(void **state) {
 
     // test a small number to avoid collisions
 
 #define TABLE_SIZE (100 * MILLION)
-#define NUM_TO_ADD 200000
+#define NUM_TO_ADD 20000
 
     const struct move mv = move_encode_quiet(a1, b2);
     const int32_t score = 1234;
-    const enum node_type nt = PV_NODE;
+    const enum node_type nt = NODE_EXACT;
     const uint8_t depth = 5;
 
     tt_create((TABLE_SIZE * tt_entry_size()));

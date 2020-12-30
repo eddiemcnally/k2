@@ -33,7 +33,11 @@
 #include "hashkeys.h"
 #include "move.h"
 
-enum node_type { PV_NODE, ALL_NODE, CUT_NODE };
+enum node_type {
+    NODE_EXACT, // exact evaluation of node
+    NODE_ALPHA, // alpha cut-off
+    NODE_BETA   // beta cut-off
+};
 
 void tt_create(uint64_t size_in_bytes);
 void tt_dispose(void);

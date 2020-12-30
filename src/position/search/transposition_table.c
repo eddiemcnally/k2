@@ -39,8 +39,11 @@
 #include "transposition_table.h"
 #include "utils.h"
 
+#define MIN_NUM_TT_SLOTS 1000000
+
 static void set_tt_size(uint64_t size_in_bytes);
 static inline void init_table(void);
+static inline uint32_t get_index(const uint64_t hash);
 static bool validate_node_type(const enum node_type nt);
 
 struct tt_entry {
@@ -63,6 +66,8 @@ static struct tt_entry *tt = NULL;
  * @param size_in_bytes The size in bytes of the Transposition Table
  */
 void tt_create(uint64_t size_in_bytes) {
+    REQUIRE(size_in_bytes > sizeof(struct tt_entry), "Required TT size is too small");
+
     if (tt != NULL) {
         tt_dispose();
     }
@@ -94,7 +99,9 @@ size_t tt_entry_size(void) {
  * @return false if the has is not present
  */
 bool tt_probe_position(const uint64_t position_hash, struct move *mv) {
-    const struct tt_entry *elem = &tt[position_hash & num_tt_elems];
+    const uint32_t hash_idx = get_index(position_hash);
+
+    const struct tt_entry *elem = &tt[hash_idx];
 
     if (elem->position_hash == position_hash) {
         *mv = elem->mv;
@@ -122,7 +129,8 @@ bool tt_add(const uint64_t position_hash, const struct move mv, const uint8_t de
     assert(num_tt_elems > 0);
     assert(depth <= MAX_SEARCH_DEPTH);
 
-    struct tt_entry *entry = &tt[position_hash & num_tt_elems];
+    const uint32_t hash_idx = get_index(position_hash);
+    struct tt_entry *entry = &tt[hash_idx];
 
     if (entry->slot_used == true) {
         // slot is filled, only add if depth is greater
@@ -149,18 +157,14 @@ void tt_dispose(void) {
         free(tt);
 
         tt = NULL;
+        num_tt_elems = 0;
     }
 }
 
 static void set_tt_size(uint64_t size_in_bytes) {
-    uint64_t adj_size = round_down_to_nearest_power_2(size_in_bytes);
+    num_tt_elems = (uint32_t)(size_in_bytes / sizeof(struct tt_entry));
+    REQUIRE(num_tt_elems > MIN_NUM_TT_SLOTS, "Insufficient number of TT slots");
 
-    if (adj_size < sizeof(struct tt_entry)) {
-        num_tt_elems = 0;
-        return;
-    }
-
-    num_tt_elems = (uint32_t)((adj_size / sizeof(struct tt_entry)) - 1);
     tt = (struct tt_entry *)calloc(num_tt_elems, sizeof(struct tt_entry));
 }
 
@@ -171,15 +175,19 @@ static inline void init_table(void) {
     }
 }
 
+static inline uint32_t get_index(const uint64_t hash) {
+    return (uint32_t)(hash % num_tt_elems);
+}
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 static bool validate_node_type(const enum node_type nt) {
     switch (nt) {
-    case PV_NODE:
+    case NODE_EXACT:
         return true;
-    case ALL_NODE:
+    case NODE_ALPHA:
         return true;
-    case CUT_NODE:
+    case NODE_BETA:
         return true;
     default:
         return false;

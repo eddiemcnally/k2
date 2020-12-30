@@ -28,5 +28,4 @@
 #include <setjmp.h>
 
 void test_transposition_table_create_different_sizes_as_expected(void **state);
-void test_transposition_table_create_too_small_num_elems_zero(void **state);
 void test_transposition_table_add_multiple_all_present(void **state);

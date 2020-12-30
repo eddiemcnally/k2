@@ -155,7 +155,6 @@ int main(void) {
 
         // search
         cmocka_unit_test(test_transposition_table_create_different_sizes_as_expected),
-        cmocka_unit_test(test_transposition_table_create_too_small_num_elems_zero),
         cmocka_unit_test(test_transposition_table_add_multiple_all_present),
 
         // hashkey mgmt
