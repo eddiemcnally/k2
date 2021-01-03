@@ -49,3 +49,4 @@ void test_move_white_queen_castle_encode_decode(void **state);
 void test_move_black_king_castle_encode_decode(void **state);
 void test_move_black_queen_castle_encode_decode(void **state);
 void test_move_double_pawn_move_encode_decode(void **state);
+void test_move_set_get_score(void **state);

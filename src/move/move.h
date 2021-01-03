@@ -34,7 +34,7 @@
 
 // struct representing a single move
 struct move {
-    uint16_t val;
+    uint64_t val;
 };
 
 /**
@@ -108,5 +108,8 @@ bool move_is_double_pawn(const struct move mv);
 bool move_is_king_castle(const struct move mv);
 bool move_is_queen_castle(const struct move mv);
 char *move_print(struct move mv);
+
+void move_set_score(struct move *mv, const int32_t score);
+int32_t move_get_score(const struct move mv);
 
 bool validate_move(const struct move mv);

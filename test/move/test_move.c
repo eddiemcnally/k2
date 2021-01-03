@@ -266,3 +266,35 @@ void test_move_double_pawn_move_encode_decode(void **state) {
     assert_false(move_is_promotion(mv));
     assert_false(move_is_queen_castle(mv));
 }
+
+void test_move_set_get_score(void **state) {
+#define NUM_TO_TEST 7
+    const int32_t scores[NUM_TO_TEST] = {0, -20000000, -1, -30000, 1, 30000, 20000000};
+    const enum square FROM_SQ = a7;
+    const enum square TO_SQ = b8;
+
+    for (int i = 0; i < NUM_TO_TEST; i++) {
+        // move to test
+        struct move mv = move_encode_promote_bishop_with_capture(FROM_SQ, TO_SQ);
+        assert_true(move_get_score(mv) == 0);
+
+        const int32_t score = scores[i];
+
+        move_set_score(&mv, score);
+        const int32_t retr_score = move_get_score(mv);
+
+        assert_true(retr_score == score);
+
+        // verify move is still intact after setting the score
+        const enum square from_sq = move_decode_from_sq(mv);
+        assert_true(from_sq == FROM_SQ);
+        const enum square to_sq = move_decode_to_sq(mv);
+        assert_true(to_sq == TO_SQ);
+
+        assert_true(move_is_capture(mv));
+        assert_true(move_is_promotion(mv));
+
+        const enum move_type mv_type = move_get_move_type(mv);
+        assert_true(mv_type == MV_TYPE_PROMOTE_BISHOP_CAPTURE);
+    }
+}

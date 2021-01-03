@@ -41,6 +41,12 @@
  *
  */
 
+// 64 bit encoding is as follows:
+//      FF FF FF FF -- -- -- --         Move Score (int32)
+//      -- -- -- -- -- -- FF FF         Move encoding (see bitmap below)
+//
+//
+
 /**
  * bitmap for move
  * See https://www.chessprogramming.org/Encoding_Moves
@@ -63,18 +69,14 @@
  * 1111 ---- ---- ----      Promotion Queen Capture
  */
 
-enum move_bits_masks {
-    MV_MASK_TO_SQ = 0x003F,
-    MV_MASK_FROM_SQ = 0x0FC0,
-    MV_MASK_FLAGS = 0xF000,
-};
+// bit masks for move
+#define MV_MASK_TO_SQ ((uint64_t)(0x000000000000003F))
+#define MV_MASK_FROM_SQ ((uint64_t)(0x0000000000000FC0))
+#define MV_MASK_FLAGS ((uint64_t)(0x000000000000F000))
 
-enum move_bits_shifts {
-    MV_SHFT_TO_SQ = 0,
-    MV_SHFT_FROM_SQ = 6,
-};
+enum move_bits_shifts { MV_SHFT_TO_SQ = 0, MV_SHFT_FROM_SQ = 6, MV_SHFT_SCORE = 32 };
 
-#define TYPE_TO_FLAG(type) ((uint16_t)(type << 12))
+#define TYPE_TO_FLAG(type) ((uint64_t)(type << 12))
 #define FLAG_TO_TYPE(flag) ((enum move_type)(flag >> 12))
 
 enum move_flags {
@@ -95,16 +97,16 @@ enum move_flags {
 };
 
 enum move_flag_bits {
-    MV_FLG_BIT_PROMOTE = 0x8000,
-    MV_FLG_BIT_CAPTURE = 0x4000,
+    MV_FLG_BIT_PROMOTE = 0x0000000000008000,
+    MV_FLG_BIT_CAPTURE = 0x0000000000004000,
 };
 
 static struct move encode_from_to_with_flags(const enum square from_sq, const enum square to_sq,
-                                             const uint16_t extra_flags);
+                                             const uint64_t extra_flags);
 static const char *move_details(const struct move mv);
 
-#define ENCODE_TO_SQ(to_sq) ((uint16_t)((to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ))
-#define ENCODE_FROM_SQ(from_sq) ((uint16_t)((from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ))
+#define ENCODE_TO_SQ(to_sq) ((uint64_t)(((uint32_t)to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ))
+#define ENCODE_FROM_SQ(from_sq) ((uint64_t)(((uint32_t)from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ))
 
 #define ENCODE_KING_CASTLE_WHITE (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(g1) | MV_FLG_KING_CASTLE)
 #define ENCODE_KING_CASTLE_BLACK (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(g8) | MV_FLG_KING_CASTLE)
@@ -460,6 +462,27 @@ inline bool move_compare(const struct move mv1, const struct move mv2) {
 }
 
 /**
+ * @brief Sets the score on the given move
+ * 
+ * @param mv The move
+ * @param score The score value to set
+ */
+void move_set_score(struct move *mv, const int32_t score) {
+    const uint64_t tscore = (uint64_t)score;
+    mv->val = mv->val | (uint64_t)(tscore << MV_SHFT_SCORE);
+}
+
+/**
+ * @brief Returns the score associated with the given move
+ * 
+ * @param mv The move
+ * @return int32_t The score
+ */
+int32_t move_get_score(const struct move mv) {
+    return (int32_t)(mv.val >> MV_SHFT_SCORE);
+}
+
+/**
  * @brief       Prints a move
  *
  * @param mv The move print
@@ -554,7 +577,7 @@ bool validate_move(const struct move mv) {
 //
 // ==================================================================
 __attribute__((always_inline)) struct move encode_from_to_with_flags(const enum square from_sq, const enum square to_sq,
-                                                                     const uint16_t extra_flags) {
+                                                                     const uint64_t extra_flags) {
     struct move mov;
     mov.val = ENCODE_FROM_SQ(from_sq) | ENCODE_TO_SQ(to_sq) | extra_flags;
 
