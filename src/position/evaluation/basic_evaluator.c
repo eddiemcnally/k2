@@ -37,6 +37,7 @@
 #include "piece.h"
 #include "position.h"
 #include "square.h"
+#include "utils.h"
 
 #include <assert.h>
 #include <stdbool.h>
@@ -44,52 +45,64 @@
 #include <stdint.h>
 #include <string.h>
 
-static int32_t eval_white_pieces_on_square(const uint64_t bb, const int8_t pce_table[NUM_SQUARES]);
-static int32_t eval_black_pieces_on_square(const uint64_t bb, const int8_t pce_table[NUM_SQUARES]);
-
 // Values for piece square arrays are taken from
 // https://www.chessprogramming.org/Simplified_Evaluation_Function
 //
-static const int8_t PAWN_SQ_VALUE[NUM_SQUARES] = {0,  0,  0,  0,   0,   0,  0,  0,  50, 50, 50,  50, 50, 50,  50, 50,
-                                                  10, 10, 20, 30,  30,  20, 10, 10, 5,  5,  10,  25, 25, 10,  5,  5,
-                                                  0,  0,  0,  20,  20,  0,  0,  0,  5,  -5, -10, 0,  0,  -10, -5, 5,
-                                                  5,  10, 10, -20, -20, 10, 10, 5,  0,  0,  0,   0,  0,  0,   0,  0};
+// NOTES:
+//  -   The above site doesn't have the squares at the correct array offset, so these
+//      arrays have been re-sorted to fix that (ie, a1 is offset zero in the array, h8 is 63).
+//  -   The arrays below are in terms of WHITE.
+//  -   The MIRROR array swaps the arrays into BLACK
+//
+//
+
+static const int8_t PAWN_SQ_VALUE[NUM_SQUARES] = {
+    0,  0,  0,  0,  0,  0,  0,  0,  5,  10, 10, -20, -20, 10, 10, 5,  5, -5, -10, 0,  0,  -10,
+    -5, 5,  0,  0,  0,  20, 20, 0,  0,  0,  5,  5,   10,  25, 25, 10, 5, 5,  10,  10, 20, 30,
+    30, 20, 10, 10, 50, 50, 50, 50, 50, 50, 50, 50,  0,   0,  0,  0,  0, 0,  0,   0,
+};
 
 static const int8_t KNIGHT_SQ_VALUE[NUM_SQUARES] = {
-    -50, -40, -30, -30, -30, -30, -40, -50, -40, -20, 0,   0,   0,   0,   -20, -40, -30, 0,   10,  15, 15, 10,
-    0,   -30, -30, 5,   15,  20,  20,  15,  5,   -30, -30, 0,   15,  20,  20,  15,  0,   -30, -30, 5,  10, 15,
-    15,  10,  5,   -30, -40, -20, 0,   5,   5,   0,   -20, -40, -50, -40, -30, -30, -30, -30, -40, -50};
+    -50, -40, -30, -30, -30, -30, -40, -50 - 40, -20, 0,   5,   5,   0,   -20, -40, -30, 5,   10,  15,  15,  10,
+    5,   -30, -30, 0,   15,  20,  20,  15,       0,   -30, -30, 5,   15,  20,  20,  15,  5,   -30, -30, 0,   10,
+    15,  15,  10,  0,   -30, -40, -20, 0,        0,   0,   0,   -20, -40, -50, -40, -30, -30, -30, -30, -40, -50,
+};
 
 static const int8_t BISHOP_SQ_VALUE[NUM_SQUARES] = {
-    -20, -10, -10, -10, -10, -10, -10, -20, -10, 0,   0,   0,   0,   0,   0,   -10, -10, 0,   5,   10,  10, 5,
-    0,   -10, -10, 5,   5,   10,  10,  5,   5,   -10, -10, 0,   10,  10,  10,  10,  0,   -10, -10, 10,  10, 10,
-    10,  10,  10,  -10, -10, 5,   0,   0,   0,   0,   5,   -10, -20, -10, -10, -10, -10, -10, -10, -20,
+    -20, -10, -10, -10, -10, -10, -10, -20, -10, 5,   0,   0,   0,   0,   5,   -10, -10, 10,  10,  10,  10, 10,
+    10,  -10, -10, 0,   10,  10,  10,  10,  0,   -10, -10, 5,   5,   10,  10,  5,   5,   -10, -10, 0,   5,  10,
+    10,  5,   0,   -10, -10, 0,   0,   0,   0,   0,   0,   -10, -20, -10, -10, -10, -10, -10, -10, -20,
 };
 
 static const int8_t ROOK_SQ_VALUE[NUM_SQUARES] = {
-    0,  0, 0, 0, 0, 0, 0, 0,  5,  10, 10, 10, 10, 10, 10, 5,  -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0, 0, -5,
-    -5, 0, 0, 0, 0, 0, 0, -5, -5, 0,  0,  0,  0,  0,  0,  -5, -5, 0, 0, 0, 0, 0, 0, -5, 0,  0, 0, 5, 5, 0, 0, 0,
+    0,  0, 0, 5, 5, 0, 0, 0,  -5, 0, 0, 0, 0, 0, 0, -5, -5, 0,  0,  0,  0,  0,  0,  -5, -5, 0, 0, 0, 0, 0, 0, -5,
+    -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0, 0, -5, 5,  10, 10, 10, 10, 10, 10, 5,  0,  0, 0, 0, 0, 0, 0, 0,
 };
 
 static const int8_t QUEEN_SQ_VALUE[NUM_SQUARES] = {
-    -20, -10, -10, -5,  -5,  -10, -10, -20, -10, 0,  0, 0,   0,   0,   0,   -10, -10, 0,   5,   5,   5, 5,
-    0,   -10, -5,  0,   5,   5,   5,   5,   0,   -5, 0, 0,   5,   5,   5,   5,   0,   -5,  -10, 5,   5, 5,
-    5,   5,   0,   -10, -10, 0,   5,   0,   0,   0,  0, -10, -20, -10, -10, -5,  -5,  -10, -10, -20,
+    -20, -10, -10, -5,  -5,  -10, -10, -20, -10, 0,  5,  0,   0,   0,   0,   -10, -10, 5,   5,   5,   5, 5,
+    0,   -10, 0,   0,   5,   5,   5,   5,   0,   -5, -5, 0,   5,   5,   5,   5,   0,   -5,  -10, 0,   5, 5,
+    5,   5,   0,   -10, -10, 0,   0,   0,   0,   0,  0,  -10, -20, -10, -10, -5,  -5,  -10, -10, -20,
 };
 
 static const int8_t KING_SQ_VALUE[NUM_SQUARES] = {
-    -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40,
-    -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -20, -30, -30, -40, -40, -30, -30, -20, -10, -20, -20, -20,
-    -20, -20, -20, -10, 20,  20,  0,   0,   0,   0,   20,  20,  20,  30,  10,  0,   0,   10,  30,  20,
+    20,  30,  10,  0,   0,   10,  30,  20,  20,  20,  0,   0,   0,   0,   20,  20,  -10, -20, -20, -20, -20, -20,
+    -20, -10, -20, -30, -30, -40, -40, -30, -30, -20, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50,
+    -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30,
+
 };
 
 // ToDo - add game state and swap to this array
 //
 // static const int8_t KING_SQ_ENDGAME_VALUE [] = {
-//     -50, -40, -30, -20, -20, -30, -40, -50, -30, -20, -10, 0, 0, -10, -20, -30, -30, -10, 20, 30,
-//     30, 20, -10, -30, -30, -10, 30, 40, 40, 30, -10, -30, -30, -10, 30, 40, 40, 30, -10, -30, -30,
-//     -10, 20, 30, 30, 20, -10, -30, -30, -30, 0, 0, 0, 0, -30, -30, -50, -30, -30, -30, -30, -30,
-//     -30, -50,
+//      -50, -30, -30, -30, -30, -30, -30, -50,
+//      -30, -30,  0,   0,   0,   0,  -30, -30,
+//      -30, -10,  20,  30,  30,  20, -10, -30,
+//      -30, -10,  30,  40,  40,  30, -10, -30,
+//      -30, -10,  30,  40,  40,  30, -10, -30,
+//      -30, -10,  20,  30,  30,  20, -10, -30,
+//      -30, -20, -10,  0,   0,  -10, -20, -30,
+//      -50, -40, -30, -20, -20, -30, -40, -50,
 // };
 
 static const uint8_t MIRROR_VALUE[NUM_SQUARES] = {
@@ -107,67 +120,57 @@ static const uint8_t MIRROR_VALUE[NUM_SQUARES] = {
  */
 int32_t evaluate_position_basic(const struct position *pos) {
 
-    printf("Evaluating position\n");
-
     const struct board *brd = pos_get_board(pos);
 
     const uint32_t white_material = brd_get_material(brd, WHITE);
     const uint32_t black_material = brd_get_material(brd, BLACK);
-
     int32_t score = (int32_t)(white_material - black_material);
 
-    // evaluate piece position (white is +ve, black is -ve)
-    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_PAWN), PAWN_SQ_VALUE);
-    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_PAWN), PAWN_SQ_VALUE);
+    uint64_t pce_bb = brd_get_board_bb(brd);
+    while (pce_bb != 0) {
+        const enum square sq = bb_pop_1st_bit(pce_bb);
+        pce_bb = bb_clear_square(pce_bb, sq);
 
-    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_BISHOP), BISHOP_SQ_VALUE);
-    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_BISHOP), BISHOP_SQ_VALUE);
+        enum piece pce = brd_get_piece_on_square(brd, sq);
 
-    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_KNIGHT), KNIGHT_SQ_VALUE);
-    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_KNIGHT), KNIGHT_SQ_VALUE);
+        const enum colour pce_col = pce_get_colour(pce);
+        const enum piece_role role = pce_get_piece_role(pce);
+        const uint32_t idx = pce_col == WHITE ? MIRROR_VALUE[sq] : sq;
 
-    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_ROOK), ROOK_SQ_VALUE);
-    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_ROOK), ROOK_SQ_VALUE);
+        int8_t piece_score = 0;
+        switch (role) {
+        case PAWN:
+            piece_score = PAWN_SQ_VALUE[idx];
+            break;
+        case BISHOP:
+            piece_score = BISHOP_SQ_VALUE[idx];
+            break;
+        case KNIGHT:
+            piece_score = KNIGHT_SQ_VALUE[idx];
+            break;
+        case ROOK:
+            piece_score = ROOK_SQ_VALUE[idx];
+            break;
+        case QUEEN:
+            piece_score = QUEEN_SQ_VALUE[idx];
+            break;
+        case KING:
+            piece_score = KING_SQ_VALUE[idx];
+            break;
+        default:
+            REQUIRE(false, "Invalid piece switch value");
+        }
 
-    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_QUEEN), QUEEN_SQ_VALUE);
-    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_QUEEN), QUEEN_SQ_VALUE);
-
-    score += eval_white_pieces_on_square(brd_get_piece_bb(brd, WHITE_KING), KING_SQ_VALUE);
-    score -= eval_black_pieces_on_square(brd_get_piece_bb(brd, BLACK_KING), KING_SQ_VALUE);
+        if (pce_col == WHITE) {
+            score += (int32_t)piece_score;
+        } else {
+            score -= (int32_t)piece_score;
+        }
+    }
 
     if (pos_get_side_to_move(pos) == WHITE) {
         return score;
     } else {
         return -score;
     }
-}
-
-inline static int32_t eval_white_pieces_on_square(const uint64_t bitboard, const int8_t pce_table[NUM_SQUARES]) {
-    uint64_t bb = bitboard;
-    int32_t score = 0;
-
-    while (bb != 0) {
-        const enum square sq = bb_pop_1st_bit(bb);
-        bb = bb_clear_square(bb, sq);
-
-        const uint8_t offset = MIRROR_VALUE[sq];
-        const int8_t bonus = pce_table[offset];
-        score += bonus;
-    }
-    return score;
-}
-
-inline static int32_t eval_black_pieces_on_square(const uint64_t bitboard, const int8_t pce_table[NUM_SQUARES]) {
-
-    int32_t score = 0;
-    uint64_t bb = bitboard;
-
-    while (bb != 0) {
-        const enum square sq = bb_pop_1st_bit(bb);
-        bb = bb_clear_square(bb, sq);
-
-        const int8_t bonus = pce_table[sq];
-        score += bonus;
-    }
-    return score;
 }

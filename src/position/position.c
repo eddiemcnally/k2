@@ -83,8 +83,7 @@ static void do_capture_move(struct position *pos, const enum square from_sq, con
                             const enum piece pce_to_move);
 static void make_king_side_castle_move(struct position *pos);
 static void make_queen_side_castle_move(struct position *pos);
-static void make_en_passant_move(struct position *pos, const struct move en_pass_mv, const enum square from_sq,
-                                 const enum square to_sq);
+static void make_en_passant_move(struct position *pos, const enum square from_sq, const enum square to_sq);
 static enum move_legality get_move_legal_status(const struct position *pos, const struct move mov);
 static bool is_castle_move_legal(const struct position *pos, const struct move mov, const enum colour side_to_move,
                                  const enum colour attacking_side);
@@ -238,9 +237,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
 
-    enum piece pce_to_move;
-    bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
-    REQUIRE(found, "no piece found on square");
+    enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
 
     assert(validate_piece(pce_to_move));
 
@@ -259,7 +256,7 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
         break;
     case MV_TYPE_EN_PASS:
         pos->en_passant_sq = NO_SQUARE;
-        make_en_passant_move(pos, mv, from_sq, to_sq);
+        make_en_passant_move(pos, from_sq, to_sq);
         break;
     case MV_TYPE_QUEEN_CASTLE:
         make_queen_side_castle_move(pos);
@@ -339,9 +336,7 @@ static void do_promotion_quiet(struct position *pos, const enum piece pce_to_mov
 static void do_promotion_capture(struct position *pos, const enum piece pce_to_move, const enum square from_sq,
                                  const enum square to_sq, const enum piece target_promotion_pce) {
 
-    enum piece pce_being_captured;
-    bool piece_found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_being_captured);
-    REQUIRE(piece_found, "no piece found for promotion");
+    enum piece pce_being_captured = brd_get_piece_on_square(pos->brd, to_sq);
     pos_remove_piece(pos, pce_being_captured, to_sq);
 
     pos_remove_piece(pos, pce_to_move, from_sq);
@@ -431,9 +426,7 @@ static void init_pos_struct(struct position *pos) {
 
 static void do_capture_move(struct position *pos, const enum square from_sq, const enum square to_sq,
                             const enum piece pce_to_move) {
-    enum piece pce_capt;
-    bool found = brd_try_get_piece_on_square(pos->brd, to_sq, &pce_capt);
-    REQUIRE(found, "Piece not found");
+    enum piece pce_capt = brd_get_piece_on_square(pos->brd, to_sq);
 
     pos_remove_piece(pos, pce_capt, to_sq);
     pos_move_piece(pos, pce_to_move, from_sq, to_sq);
@@ -563,24 +556,17 @@ static bool is_castle_move_legal(const struct position *pos, const struct move m
 }
 
 static void make_king_side_castle_move(struct position *pos) {
-    const enum colour side = pos->side_to_move;
-
-    const enum piece pce_wk = WHITE_KING;
-    const enum piece pce_wr = WHITE_ROOK;
-    const enum piece pce_bk = BLACK_KING;
-    const enum piece pce_br = BLACK_ROOK;
-
-    switch (side) {
+    switch (pos->side_to_move) {
     case WHITE:
-        pos_move_piece(pos, pce_wk, e1, g1);
-        pos_move_piece(pos, pce_wr, h1, f1);
+        pos_move_piece(pos, WHITE_KING, e1, g1);
+        pos_move_piece(pos, WHITE_ROOK, h1, f1);
 
         pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
         break;
     case BLACK:
-        pos_move_piece(pos, pce_bk, e8, g8);
-        pos_move_piece(pos, pce_br, h8, f8);
+        pos_move_piece(pos, BLACK_KING, e8, g8);
+        pos_move_piece(pos, BLACK_ROOK, h8, f8);
 
         pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
@@ -591,23 +577,16 @@ static void make_king_side_castle_move(struct position *pos) {
 }
 
 static void make_queen_side_castle_move(struct position *pos) {
-    const enum colour side = pos->side_to_move;
-
-    const enum piece pce_wk = WHITE_KING;
-    const enum piece pce_wr = WHITE_ROOK;
-    const enum piece pce_bk = BLACK_KING;
-    const enum piece pce_br = BLACK_ROOK;
-
-    switch (side) {
+    switch (pos->side_to_move) {
     case WHITE:
-        pos_move_piece(pos, pce_wk, e1, c1);
-        pos_move_piece(pos, pce_wr, a1, d1);
+        pos_move_piece(pos, WHITE_KING, e1, c1);
+        pos_move_piece(pos, WHITE_ROOK, a1, d1);
         pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
         break;
     case BLACK:
-        pos_move_piece(pos, pce_bk, e8, c8);
-        pos_move_piece(pos, pce_br, a8, d8);
+        pos_move_piece(pos, BLACK_KING, e8, c8);
+        pos_move_piece(pos, BLACK_ROOK, a8, d8);
         pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
         break;
@@ -616,29 +595,12 @@ static void make_queen_side_castle_move(struct position *pos) {
     }
 }
 
-static void make_en_passant_move(struct position *pos, const struct move en_pass_mv, const enum square from_sq,
-                                 const enum square to_sq) {
+static void make_en_passant_move(struct position *pos, const enum square from_sq, const enum square to_sq) {
 
-    REQUIRE(move_is_en_passant(en_pass_mv), "Move isn't en passant");
-
-    enum piece pce_to_move;
-    bool found = brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
-    REQUIRE(found, "No piece found");
-
-    enum square sq_with_piece;
-    if (pos->side_to_move == WHITE) {
-        sq_with_piece = sq_get_square_minus_1_rank(to_sq);
-    } else if (pos->side_to_move == BLACK) {
-        sq_with_piece = sq_get_square_plus_1_rank(to_sq);
-    } else {
-        REQUIRE(false, "invalid side to move\n");
-    }
-
-    REQUIRE(brd_is_sq_occupied(pos->brd, sq_with_piece), "square isn't occupied");
-
-    enum piece pce_to_remove;
-    found = brd_try_get_piece_on_square(pos->brd, sq_with_piece, &pce_to_remove);
-    REQUIRE(found, "piece not found on square \n");
+    const enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
+    const enum square sq_with_piece =
+        pos->side_to_move == WHITE ? sq_get_square_minus_1_rank(to_sq) : sq_get_square_plus_1_rank(to_sq);
+    const enum piece pce_to_remove = brd_get_piece_on_square(pos->brd, sq_with_piece);
 
     pos_remove_piece(pos, pce_to_remove, sq_with_piece);
     pos_move_piece(pos, pce_to_move, from_sq, to_sq);
@@ -695,12 +657,7 @@ static void pos_update_castle_perm(struct position *pos, const enum castle_permi
 
 static enum square get_en_pass_sq(const enum colour side, const enum square from_sq) {
 
-    enum square retval;
-    if (side == WHITE) {
-        retval = sq_get_square_plus_1_rank(from_sq);
-    } else {
-        retval = sq_get_square_minus_1_rank(from_sq);
-    }
+    const enum square retval = side == WHITE ? sq_get_square_plus_1_rank(from_sq) : sq_get_square_minus_1_rank(from_sq);
     assert(validate_en_pass_sq(retval));
 
     return retval;

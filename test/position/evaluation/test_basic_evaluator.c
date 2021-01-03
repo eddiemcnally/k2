@@ -38,32 +38,7 @@ void test_basic_evaluator_sample_white_position(void **state) {
 
     int32_t score = evaluate_position_basic(pos);
 
-    assert_true(score == 2365);
-
-    // white material = 22350
-    //  - 3x pawns      = 300
-    //  - 1x knight     = 320
-    //  - 1x rook       = 500
-    //  - 1x bishop     = 330
-    //  - 1x queen      = 900
-    //  - 1x king       = 20000
-    //
-    // black material = 20000
-    //  - 1x king       = 20000
-
-    //
-    // white piece positions = 35
-    //  - Pawns: 5 + 10 + 5 = 20
-    //  - Knight: 5         = 5
-    //  - Queen: 5          = 5
-    //  - King: 0           = 0
-    //  - Bishop: 5         = 5
-    //  - Rook: 0           = 0
-    //
-    // Black position pieces = 20
-    //
-    // expected score   = (22350 - 20000) + (35 - 20)
-    //                  = 2365
+    assert_true(score == 2350);
 }
 
 void test_basic_evaluator_sample_black_position(void **state) {
@@ -74,28 +49,5 @@ void test_basic_evaluator_sample_black_position(void **state) {
 
     int32_t score = evaluate_position_basic(pos);
 
-    assert_true(score == 1915);
-
-    // white material = 20000
-    //  - 1x king       = 20000
-    //
-    // black material = 21850
-    //  - 3x pawns      = 300
-    //  - 1x knight     = 320
-    //  - 1x bishop     = 330
-    //  - 1x queen      = 900
-    //  - 1x king       = 20000
-    //
-    // Black piece positions    = 65
-    //  - Pawns: 10 + 10 + 5 = 25
-    //  - Knight: 5          = 5
-    //  - Queen: 0           = 0
-    //  - King: 30           = 30
-    //  - Bishop: 5          = 5
-    //
-    // White position pieces = 0
-    //
-    // expected score   = (20000 - 21850) + (0 - 60)
-    //                  = -1915
-    // inverted for black -> 1915
+    assert_true(score == 1980);
 }

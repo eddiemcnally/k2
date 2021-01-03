@@ -130,8 +130,6 @@ int main(void) {
         cmocka_unit_test(test_position_make_move_black_promotion_capture),
         cmocka_unit_test(test_position_make_move_then_take_move_positions_restored_as_expected),
         cmocka_unit_test(test_position_make_move_sparse_board_black_to_move),
-        cmocka_unit_test(test_basic_evaluator_sample_white_position),
-        cmocka_unit_test(test_basic_evaluator_sample_black_position),
         cmocka_unit_test(test_position_hash_updated_white_pawn_quiet_move),
         cmocka_unit_test(test_position_hash_updated_black_pawn_quiet_move),
         cmocka_unit_test(test_position_hash_updated_white_pawn_capture_move),
@@ -152,6 +150,10 @@ int main(void) {
         cmocka_unit_test(test_position_hash_updated_white_queen_castle),
         cmocka_unit_test(test_position_hash_updated_black_king_castle),
         cmocka_unit_test(test_position_hash_updated_black_queen_castle),
+
+        // position evaluation
+        cmocka_unit_test(test_basic_evaluator_sample_white_position),
+        cmocka_unit_test(test_basic_evaluator_sample_black_position),
 
         // search
         cmocka_unit_test(test_transposition_table_create_different_sizes_as_expected),
@@ -178,8 +180,8 @@ int main(void) {
         cmocka_unit_test(test_board_brd_get_colour_bb_black),
         cmocka_unit_test(test_board_brd_get_colour_bb_white),
         cmocka_unit_test(test_board_brd_is_sq_occupied),
-        cmocka_unit_test(test_board_brd_try_get_piece_on_square),
-        cmocka_unit_test(test_board_brd_try_get_piece_on_square_1),
+        cmocka_unit_test(test_board_brd_get_piece_on_square),
+        cmocka_unit_test(test_board_brd_get_piece_on_square_1),
         cmocka_unit_test(test_board_brd_get_board_bb),
         cmocka_unit_test(test_board_compare),
         cmocka_unit_test(test_board_clone),

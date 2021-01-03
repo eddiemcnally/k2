@@ -99,18 +99,17 @@ bool brd_is_sq_occupied(const struct board *brd, const enum square sq) {
 }
 
 /**
- * @brief       Tries to return the piece on the given square
- * @param brd   the board
- * @param sq    the square
- * @param pce   the returned piece (if true)
- * @return true is piece found, false otherwise
+ * @brief Returns the piece on the given square.
+ * 
+ * @param brd The board
+ * @param sq The square
+ * @return enum piece The piece on the given square
  */
-bool brd_try_get_piece_on_square(const struct board *brd, const enum square sq, enum piece *pce) {
+enum piece brd_get_piece_on_square(const struct board *brd, const enum square sq) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
-    *pce = brd->pce_square[sq];
-    return *pce != NO_PIECE;
+    return brd->pce_square[sq];
 }
 
 /**
@@ -446,9 +445,9 @@ void brd_print(const struct board *brd) {
         printf("%d  ", r + 1);
         for (int f = FILE_A; f <= FILE_H; f++) {
             const enum square sq = sq_gen_from_rank_file((enum rank)r, (enum file)f);
-            enum piece pce;
-            const bool found = brd_try_get_piece_on_square(brd, sq, &pce);
-            if (found) {
+
+            if (brd_is_sq_occupied(brd, sq)) {
+                enum piece pce = brd_get_piece_on_square(brd, sq);
                 printf("%3c", pce_get_label(pce));
             } else {
                 printf("  .");
@@ -494,12 +493,12 @@ static bool validate_square_empty(const struct board *brd, const enum square sq)
 }
 
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq) {
-    enum piece pce_on_brd;
-    bool found = brd_try_get_piece_on_square(brd, sq, &pce_on_brd);
-    if (found == false) {
+
+    if (brd_is_sq_occupied(brd, sq) == false) {
         return false;
     }
 
+    enum piece pce_on_brd = brd_get_piece_on_square(brd, sq);
     return pce_on_brd == pce;
 }
 #pragma GCC diagnostic pop

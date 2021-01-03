@@ -55,7 +55,7 @@ enum piece_values {
 #define COLOUR_SHIFT (7)
 
 #define EXTRACT_COLOUR(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))
-#define EXTRACT_PIECE_ROLE(pce) ((enum piece_role)(pce & ROLE_MASK))
+#define EXTRACT_PIECE_ROLE(pce) ((enum piece_role)((pce & ROLE_MASK) >> ROLE_SHIFT))
 
 // ==================================================================
 //
@@ -150,6 +150,7 @@ inline uint32_t pce_get_value(const enum piece_role pt) {
         return PCE_VAL_KING;
     default:
         REQUIRE(false, "Invalid Piece Role");
+        return 0;
     }
 
     REQUIRE(false, "Invalid Piece Role");

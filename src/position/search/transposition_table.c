@@ -91,26 +91,6 @@ size_t tt_entry_size(void) {
 }
 
 /**
- * @brief Checks to see if a given Position hash is present in the TT, and returns the associated move is it is
- * 
- * @param position_hash The Position Hash
- * @param mv The move, populated with the move if return value is true
- * @return true if the hash is present
- * @return false if the has is not present
- */
-bool tt_probe_position(const uint64_t position_hash, struct move *mv) {
-    const uint32_t hash_idx = get_index(position_hash);
-
-    const struct tt_entry *elem = &tt[hash_idx];
-
-    if (elem->position_hash == position_hash) {
-        *mv = elem->mv;
-        return true;
-    }
-    return false;
-}
-
-/**
  * @brief Adds the given search info to the TT table
  * 
  * @param position_hash The position hash
@@ -146,6 +126,26 @@ bool tt_add(const uint64_t position_hash, const struct move mv, const uint8_t de
     entry->score = score;
     entry->node_type = node_type;
     return true;
+}
+
+/**
+ * @brief Checks to see if a given Position hash is present in the TT, and returns the associated move is it is
+ * 
+ * @param position_hash The Position Hash
+ * @param mv The move, populated with the move if return value is true
+ * @return true if the hash is present
+ * @return false if the has is not present
+ */
+bool tt_probe_position(const uint64_t position_hash, struct move *mv) {
+    const uint32_t hash_idx = get_index(position_hash);
+
+    const struct tt_entry *elem = &tt[hash_idx];
+
+    if (elem->position_hash == position_hash) {
+        *mv = elem->mv;
+        return true;
+    }
+    return false;
 }
 
 /**

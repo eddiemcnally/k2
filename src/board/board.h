@@ -59,7 +59,7 @@ void brd_deallocate(struct board *brd);
 bool validate_board(const struct board *brd);
 
 bool brd_is_sq_occupied(const struct board *brd, const enum square sq);
-bool brd_try_get_piece_on_square(const struct board *brd, const enum square sq, enum piece *pce);
+enum piece brd_get_piece_on_square(const struct board *brd, const enum square sq);
 void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq);
 uint64_t brd_get_board_bb(const struct board *brd);
 uint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce);

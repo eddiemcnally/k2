@@ -24,6 +24,7 @@ set(MOVE_DIR            ${K2_PROJECT_SOURCE_DIR}/move)
 set(UTILS_DIR           ${K2_PROJECT_SOURCE_DIR}/utils)
 set(PERFT_DIR           ${K2_PROJECT_SOURCE_DIR}/perft)
 set(SEARCH_DIR          ${K2_PROJECT_SOURCE_DIR}/position/search)
+set(ROOT_DIR            ${K2_PROJECT_SOURCE_DIR})
 
 
 message("Setting up K2 Engine source files...")
@@ -67,6 +68,7 @@ set(INCLUDES
         ${UTILS_DIR}
         ${PERFT_DIR}
         ${SEARCH_DIR}
+        ${ROOT_DIR}
         )
 
 # Global variables to allow the test binary to access the main source files 

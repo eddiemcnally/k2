@@ -38,8 +38,8 @@ enum colour {
 
 // -XXX ----   ROLE
 // X--- ----   Colour 0-> White, 1 -> Black
-// ---- XXXX   Offset when used in an array
-//===========================================
+// ---- XXXX   Offset when used as an array lookup
+//================================================
 // -000 ----   Pawn
 // -001 ----   Bishop
 // -010 ----   Knight
@@ -60,9 +60,10 @@ enum colour {
 // ---- 1010           Queen Offset
 // ---- 1011           King Offset
 
-enum piece_role { PAWN = 0x00, BISHOP = 0x10, KNIGHT = 0x20, ROOK = 0x30, QUEEN = 0x40, KING = 0x50 };
+enum piece_role { PAWN = 0x00, BISHOP = 0x01, KNIGHT = 0x02, ROOK = 0x03, QUEEN = 0x04, KING = 0x05 };
 
-#define ROLE_AS_INDEX(r) ((uint8_t)(r >> 4))
+#define ROLE_AS_INDEX(r) ((uint8_t)(r))
+#define ROLE_SHIFT (4)
 
 enum {
     WP_OFF = 0x00,
@@ -83,19 +84,19 @@ enum {
 #define OFFSET_MASK ((uint8_t)0x0F)
 
 enum piece {
-    WHITE_PAWN = (uint8_t)(PAWN | (uint8_t)(WP_OFF)),
-    WHITE_BISHOP = (uint8_t)(BISHOP | (uint8_t)(WB_OFF)),
-    WHITE_KNIGHT = (uint8_t)(KNIGHT | (uint8_t)(WN_OFF)),
-    WHITE_ROOK = (uint8_t)(ROOK | (uint8_t)(WR_OFF)),
-    WHITE_QUEEN = (uint8_t)(QUEEN | (uint8_t)(WQ_OFF)),
-    WHITE_KING = (uint8_t)(KING | (uint8_t)(WK_OFF)),
+    WHITE_PAWN = (uint8_t)((PAWN << ROLE_SHIFT) | (uint8_t)(WP_OFF)),
+    WHITE_BISHOP = (uint8_t)((BISHOP << ROLE_SHIFT) | (uint8_t)(WB_OFF)),
+    WHITE_KNIGHT = (uint8_t)((KNIGHT << ROLE_SHIFT) | (uint8_t)(WN_OFF)),
+    WHITE_ROOK = (uint8_t)((ROOK << ROLE_SHIFT) | (uint8_t)(WR_OFF)),
+    WHITE_QUEEN = (uint8_t)((QUEEN << ROLE_SHIFT) | (uint8_t)(WQ_OFF)),
+    WHITE_KING = (uint8_t)((KING << ROLE_SHIFT) | (uint8_t)(WK_OFF)),
 
-    BLACK_PAWN = (uint8_t)(PAWN | COLOUR_MASK | (uint8_t)(BP_OFF)),
-    BLACK_BISHOP = (uint8_t)(BISHOP | COLOUR_MASK | (uint8_t)(BB_OFF)),
-    BLACK_KNIGHT = (uint8_t)(KNIGHT | COLOUR_MASK | (uint8_t)(BN_OFF)),
-    BLACK_ROOK = (uint8_t)(ROOK | COLOUR_MASK | (uint8_t)(BR_OFF)),
-    BLACK_QUEEN = (uint8_t)(QUEEN | COLOUR_MASK | (uint8_t)(BQ_OFF)),
-    BLACK_KING = (uint8_t)(KING | COLOUR_MASK | (uint8_t)(BK_OFF)),
+    BLACK_PAWN = (uint8_t)((PAWN << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BP_OFF)),
+    BLACK_BISHOP = (uint8_t)((BISHOP << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BB_OFF)),
+    BLACK_KNIGHT = (uint8_t)((KNIGHT << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BN_OFF)),
+    BLACK_ROOK = (uint8_t)((ROOK << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BR_OFF)),
+    BLACK_QUEEN = (uint8_t)((QUEEN << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BQ_OFF)),
+    BLACK_KING = (uint8_t)((KING << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BK_OFF)),
 
     NO_PIECE = (uint8_t)0xFF
 };
