@@ -59,9 +59,9 @@ enum move_gen_type {
     CAPTURE_ONLY = 1,
 };
 
-static void mv_gen_white_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
+static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list *mvl,
                                     const enum move_gen_type gen_type);
-static void mv_gen_black_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
+static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list *mvl,
                                     const enum move_gen_type gen_type);
 static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, const uint64_t queen_bishop_bb,
                                                     const enum colour side_to_move, struct move_list *mvl,
@@ -130,7 +130,7 @@ static void mv_gen_moves(const struct position *pos, struct move_list *mvl, cons
         if (gen_type == ALL_MOVES) {
             mv_gen_white_castle_moves(pos, mvl);
         }
-        mv_gen_white_pawn_moves(pos, brd, mvl, gen_type);
+        mv_gen_white_pawn_moves(pos, mvl, gen_type);
     } break;
 
     case BLACK: {
@@ -147,7 +147,7 @@ static void mv_gen_moves(const struct position *pos, struct move_list *mvl, cons
         if (gen_type == ALL_MOVES) {
             mv_gen_black_castle_moves(pos, mvl);
         }
-        mv_gen_black_pawn_moves(pos, brd, mvl, gen_type);
+        mv_gen_black_pawn_moves(pos, mvl, gen_type);
     } break;
 
     default:
@@ -156,17 +156,18 @@ static void mv_gen_moves(const struct position *pos, struct move_list *mvl, cons
 }
 
 /**
- * @brief       Generates White Pawn moves
- * @param brd   The board
- * @param mvl   the move list to append new moves to
- * @param gen_type  The move types to generate
+ * @brief Generates white pawn moves
  * 
+ * @param pos The position
+ * @param mvl The Move List
+ * @param gen_type The type of moves to generate
  */
-static void mv_gen_white_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
+static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list *mvl,
                                     const enum move_gen_type gen_type) {
     assert(validate_position(pos));
-    assert(validate_board(brd));
     assert(validate_move_list(mvl));
+
+    const struct board *brd = pos_get_board(pos);
 
     const uint64_t all_pawns_bb = brd_get_piece_bb(brd, WHITE_PAWN);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
@@ -259,17 +260,18 @@ static void mv_gen_white_pawn_moves(const struct position *pos, const struct boa
 }
 
 /**
- * @brief       Generates Black Pawn moves
- * @param brd   The board
- * @param mvl   the move list to append new moves to
- * @param gen_type  The move types to generate
+ * @brief Generate Black Pawn moves
  * 
+ * @param pos The position
+ * @param mvl The move list
+ * @param gen_type The type of moves to generate
  */
-static void mv_gen_black_pawn_moves(const struct position *pos, const struct board *brd, struct move_list *mvl,
+static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list *mvl,
                                     const enum move_gen_type gen_type) {
     assert(validate_position(pos));
-    assert(validate_board(brd));
     assert(validate_move_list(mvl));
+
+    const struct board *brd = pos_get_board(pos);
 
     const uint64_t all_pawns_bb = brd_get_piece_bb(brd, BLACK_PAWN);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
@@ -452,11 +454,11 @@ static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t 
         const uint64_t bb_slider = bb_get_square_as_bb(from_sq);
 
         const uint64_t horiz1 = all_pce_bb - (2 * bb_slider);
-        const uint64_t horiz2 = bb_reverse(bb_reverse(all_pce_bb) - 2 * bb_reverse(bb_slider));
+        const uint64_t horiz2 = bb_reverse(bb_reverse(all_pce_bb) - (2 * bb_reverse(bb_slider)));
         const uint64_t horizontal = horiz1 ^ horiz2;
 
         const uint64_t vert1 = (all_pce_bb & vmask) - (2 * bb_slider);
-        const uint64_t vert2 = bb_reverse(bb_reverse(all_pce_bb & vmask) - 2 * bb_reverse(bb_slider));
+        const uint64_t vert2 = bb_reverse(bb_reverse(all_pce_bb & vmask) - (2 * bb_reverse(bb_slider)));
         const uint64_t vertical = vert1 ^ vert2;
 
         const uint64_t all_moves = (horizontal & hmask) | (vertical & vmask);

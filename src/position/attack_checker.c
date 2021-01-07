@@ -159,15 +159,15 @@ inline static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum sq
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) {
     uint64_t bb = knight_bb;
 
+    // conflate all knight attack squares for all knights
+    uint64_t knight_attack_sq = 0;
     while (bb != 0) {
         const enum square pce_sq = bb_pop_1st_bit(bb);
         bb = bb_clear_square(bb, pce_sq);
-        const uint64_t occ_mask = occ_mask_get_knight(pce_sq);
-        if (bb_is_set(occ_mask, sq)) {
-            return true;
-        }
+        knight_attack_sq |= occ_mask_get_knight(pce_sq);
     }
-    return false;
+
+    return bb_is_set(knight_attack_sq, sq);
 }
 
 static bool is_king_attacking(const enum square king_sq, const enum square sq) {
@@ -181,6 +181,7 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
     const enum file sq_file = sq_get_file(sq);
 
     uint64_t bb = attacking_pce_bb;
+
     while (bb != 0) {
         const enum square pce_sq = bb_pop_1st_bit(bb);
         bb = bb_clear_square(bb, pce_sq);
