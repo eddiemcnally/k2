@@ -1,0 +1,261 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"brd_get",
+				"brd_get_piece_bb\tuint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce)"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "k2.sublime-project",
+			"settings":
+			{
+				"buffer_size": 45,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "/*  MIT License\n *\n *  Copyright (c) 2020 Eddie McNally\n *\n *  Permission is hereby granted, free of charge, to any person \n *  obtaining a copy of this software and associated documentation \n *  files (the \"Software\"), to deal in the Software without \n *  restriction, including without limitation the rights to use, \n *  copy, modify, merge, publish, distribute, sublicense, and/or sell\n *  copies of the Software, and to permit persons to whom the \n *  Software is furnished to do so, subject to the following \n *  conditions:\n *\n *  The above copyright notice and this permission notice shall be \n *  included in all copies or substantial portions of the Software.\n *\n *  THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, \n *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES \n *  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND \n *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS \n *  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN \n *  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN \n *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n *  SOFTWARE.\n */\n\n/*! @addtogroup Position\n *\n * @ingroup Attack_Checker\n * @{\n * @details Code to test the legality of a move\n *\n */\n\n#include \"attack_checker.h\"\n#include \"bitboard.h\"\n#include \"board.h\"\n#include \"occupancy_mask.h\"\n#include \"square.h\"\n#include <assert.h>\n#include <stdbool.h>\n#include <stdint.h>\n\nstatic bool is_white_attacking(const struct board *brd, const enum square sq);\nstatic bool is_black_attacking(const struct board *brd, const enum square sq);\nstatic bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,\n                                                const enum square sq);\n//static uint64_t in_between(const enum square sq1, const enum square sq2);\nstatic bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);\nstatic bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq);\nstatic bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq);\nstatic bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);\nstatic bool is_king_attacking(const enum square king_sq, const enum square sq);\n\nbool att_chk_is_sq_attacked(const struct board *brd, const enum square sq, const enum colour attacking_side) {\n\n    assert(validate_board(brd));\n    assert(validate_square(sq));\n    assert(validate_colour(attacking_side));\n\n    switch (attacking_side) {\n    case WHITE:\n        return is_white_attacking(brd, sq);\n    case BLACK:\n        return is_black_attacking(brd, sq);\n    }\n}\n\ninline static bool is_white_attacking(const struct board *brd, const enum square sq) {\n    const uint64_t all_pce_bb = brd_get_board_bb(brd);\n\n    const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);\n    if (wp_bb != 0) {\n        if (is_white_pawn_attacking(wp_bb, sq)) {\n            return true;\n        }\n    }\n\n    // conflate rook and queen\n    const uint64_t rook_queen_bb = brd_get_white_rook_queen_bb(brd);\n    if (rook_queen_bb != 0) {\n        if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {\n            return true;\n        }\n    }\n\n    // conflate bishop and queen\n    const uint64_t bishop_queen_bb = brd_get_white_bishop_queen_bb(brd);\n    if (bishop_queen_bb) {\n        if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {\n            return true;\n        }\n    }\n\n    const uint64_t knight_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);\n    if (knight_bb != 0) {\n        if (is_knight_attacking(knight_bb, sq)) {\n            return true;\n        }\n    }\n\n    const enum square king_sq = brd_get_white_king_square(brd);\n    if (is_king_attacking(king_sq, sq)) {\n        return true;\n    }\n    return false;\n}\n\ninline static bool is_black_attacking(const struct board *brd, const enum square sq) {\n    const uint64_t all_pce_bb = brd_get_board_bb(brd);\n    const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);\n    if (bp_bb != 0) {\n        if (is_black_pawn_attacking(bp_bb, sq)) {\n            return true;\n        }\n    }\n\n    // conflate rook and queen\n    const uint64_t rook_queen_bb = brd_get_black_rook_queen_bb(brd);\n    if (rook_queen_bb != 0) {\n        if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {\n            return true;\n        }\n    }\n\n    // conflate bishop and queen\n    const uint64_t bishop_queen_bb = brd_get_black_bishop_queen_bb(brd);\n    if (bishop_queen_bb != 0) {\n        if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {\n            return true;\n        }\n    }\n\n    const uint64_t knight_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);\n    if (knight_bb != 0) {\n        if (is_knight_attacking(knight_bb, sq)) {\n            return true;\n        }\n    }\n\n    const enum square king_sq = brd_get_black_king_square(brd);\n    if (is_king_attacking(king_sq, sq)) {\n        return true;\n    }\n\n    return false;\n}\n\ninline static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {\n    const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);\n    return (attacking_bb & pawn_bb) != 0;\n}\n\ninline static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {\n    const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);\n    return (attacking_bb & pawn_bb) != 0;\n}\n\nstatic bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) {\n    uint64_t bb = knight_bb;\n\n    // conflate all knight attack squares for all knights\n    uint64_t knight_attack_sq = 0;\n    while (bb != 0) {\n        const enum square pce_sq = bb_pop_1st_bit(bb);\n        bb = bb_clear_square(bb, pce_sq);\n        knight_attack_sq |= occ_mask_get_knight(pce_sq);\n    }\n\n    return bb_is_set(knight_attack_sq, sq);\n}\n\nstatic bool is_king_attacking(const enum square king_sq, const enum square sq) {\n    const uint64_t occ_mask = occ_mask_get_king(king_sq);\n    return bb_is_set(occ_mask, sq);\n}\n\nstatic bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,\n                                                const enum square sq) {\n    const enum rank sq_rank = sq_get_rank(sq);\n    const enum file sq_file = sq_get_file(sq);\n\n    uint64_t bb = attacking_pce_bb;\n\n    while (bb != 0) {\n        const enum square pce_sq = bb_pop_1st_bit(bb);\n        bb = bb_clear_square(bb, pce_sq);\n\n        if ((sq_get_rank(pce_sq) == sq_rank) || (sq_get_file(pce_sq) == sq_file)) {\n            // possible attack, shared rank and/or file\n            const uint64_t inter_sq = occ_mask_get_inbetween(pce_sq, sq);\n            if ((inter_sq & all_pce_bb) == 0) {\n                // no blocking pieces, is attacked\n                return true;\n            }\n        }\n    }\n    return false;\n}\n\nstatic bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq) {\n    uint64_t bb = attacking_pce_bb;\n\n    while (bb != 0) {\n        const enum square pce_sq = bb_pop_1st_bit(bb);\n        bb = bb_clear_square(bb, pce_sq);\n        const uint64_t occ_mask_bishop = occ_mask_get_bishop(pce_sq);\n\n        if (bb_is_set(occ_mask_bishop, sq)) {\n            // the square is potentially attacked (on same diagonal/anti-diagonal)\n            const uint64_t intervening_sq_bb = occ_mask_get_inbetween(pce_sq, sq);\n            if ((intervening_sq_bb & all_pce_bb) == 0) {\n                // no blocking pieces, so square is attacked\n                return true;\n            }\n        }\n    }\n    return false;\n}\n",
+			"file": "src/position/attack_checker.c",
+			"file_size": 7662,
+			"file_write_time": 132569153502332923,
+			"settings":
+			{
+				"buffer_size": 7662,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/eddie/dev/c/k2",
+		"/home/eddie/dev/c/k2/docs",
+		"/home/eddie/dev/c/k2/resources",
+		"/home/eddie/dev/c/k2/src",
+		"/home/eddie/dev/c/k2/src/position"
+	],
+	"file_history":
+	[
+		"/home/eddie/dev/c/k2/src/move/move.c",
+		"/home/eddie/dev/c/k2/src/position/position_hist.c"
+	],
+	"find":
+	{
+		"height": 0.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "k2.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 45,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/position/attack_checker.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7662,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3873,
+								3873
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1468.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "k2.sublime-project",
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 296.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
