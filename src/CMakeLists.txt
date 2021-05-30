@@ -130,7 +130,6 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS}  \
 -fno-common \
 -fshort-enums \
 -Winline \
--march=native \
 -mtune=native")
 
 # ---- Profiling ----

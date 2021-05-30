@@ -33,15 +33,15 @@
  */
 
 #include "alpha_beta.h"
+#include "attack_checker.h"
 #include "basic_evaluator.h"
+#include "board.h"
 #include "move_gen.h"
 #include "move_list.h"
 #include "quiesence.h"
 #include "search.h"
-#include "board.h"
-#include "utils.h"
-#include "attack_checker.h"
 #include "transposition_table.h"
+#include "utils.h"
 #include <assert.h>
 #include <limits.h>
 
@@ -72,18 +72,15 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
     const enum square king_sq = side_to_move == WHITE ? brd_get_white_king_square(brd) : brd_get_black_king_square(brd);
 
     const bool is_in_check = att_chk_is_sq_attacked(brd, king_sq, side_to_move);
-    if (is_in_check){
+    if (is_in_check) {
         depth++;
     }
-
-
 
     int32_t score = NEG_INFINITY;
     struct move best_move;
     bool legal_moves_available = false;
     const int32_t entry_alpha = alpha;
     const uint64_t pos_hash = pos_get_hash(pos);
-    
 
     // Generate all moves
     struct move_list mv_list = mvl_initialise();
@@ -92,11 +89,11 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
     // check if position already exists
     struct move tt_move = {0};
     const bool found_in_tt = tt_probe_position(pos_hash, &tt_move);
-    if (found_in_tt){
+    if (found_in_tt) {
         bool mv_found = false;
-        for (int i = 0; i < mv_list.move_count; i++){
-            struct move new_mv = mv_list.move_list[i]; 
-            if (move_compare(tt_move, new_mv)){
+        for (int i = 0; i < mv_list.move_count; i++) {
+            struct move new_mv = mv_list.move_list[i];
+            if (move_compare(tt_move, new_mv)) {
                 move_set_score(&new_mv, 2000000);
                 mv_found = true;
                 break;
@@ -104,8 +101,6 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
         }
         REQUIRE(mv_found, "Found position, but can't find move");
     }
-
-
 
     printf("AlphaBeta depth=%d, num moves generated=%d\n", depth, mv_list.move_count);
 
@@ -115,7 +110,6 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
         best_move = mv;
 
         // TODO - sort moves by score
-
 
         printf("AlphaBeta depth=%d, processing move %s\n", depth, move_print(mv));
 
@@ -150,10 +144,9 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
     if (alpha != entry_alpha) {
         printf("AlphaBeta depth=%d, adding to TT, move=%s\n", depth, move_print(best_move));
-        
+
         tt_add(pos_hash, best_move, depth, alpha, NODE_ALPHA);
     }
 
     return alpha;
 }
-

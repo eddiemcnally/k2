@@ -617,9 +617,8 @@ void test_board_clone(void **state) {
     pos_initialise(FEN, pos1);
     struct board *brd = pos_get_board(pos1);
 
-    char dest[sizeof(struct board)] = {0};
+    struct board dest = {0};
+    brd_clone(brd, &dest);
 
-    brd_clone(brd, (struct board *)dest);
-
-    assert_true(brd_compare(brd, (struct board *)dest));
+    assert_true(brd_compare(brd, &dest));
 }

@@ -135,3 +135,4 @@ bool validate_piece_role(const enum piece_role pt);
 bool validate_colour(const enum colour col);
 bool validate_label(const char c);
 void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]);
+bool pce_is_king(const enum piece pce);

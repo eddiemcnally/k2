@@ -115,7 +115,7 @@ uint64_t parse_depth_details(char *str) {
     uint64_t depth;
     char desc[10];
 
-    sscanf(str, "%s %lu", desc, &depth);
+    sscanf(str, "%s %llu", desc, &depth);
 
     return (uint64_t)depth;
 }

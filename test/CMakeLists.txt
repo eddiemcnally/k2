@@ -82,6 +82,10 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${TEST_RUNNER_COMPILER_WARNS}")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${TEST_RUNNER_COMPILER_WARNS}") 
 
 
+# CMocka on MacOs (homebrew)
+set(CMOCKA_INCL /opt/homebrew/Cellar/cmocka/1.1.5/include)
+set(CMOCKA_LIB /opt/homebrew/Cellar/cmocka/1.1.5/lib/libcmocka-static.a)
+
 # Define the include directories.
 # Variable is shared with the test launcher
 set(TEST_INCLUDES 
@@ -94,12 +98,15 @@ set(TEST_INCLUDES
         ${TEST_MOVE_DIR}
         ${TEST_UTILS_DIR}
         ${TEST_SEARCH_DIR}       
+        ${CMOCKA_INCL}
         )
+
 
 
 # Reference the main Engine source files
 message("Setting up to reference K2 Engine include files...")
 include_directories(${ENGINE_INCL} ${TEST_INCLUDES} ./)
+
 
 message("Setting up to Test Runner source files...")
 # setup the test runner source files
@@ -125,7 +132,7 @@ set(TEST_SRCS
 add_executable(${TEST_BINARY_NAME} ${TEST_SRCS} ${ENGINE_SRCS})
 
 message("Setting up lib reference for cmocka...")
-target_link_libraries(${TEST_BINARY_NAME} cmocka)
+target_link_libraries(${TEST_BINARY_NAME} ${CMOCKA_LIB})
 
 # CMOCKA defaults output to STDERR, so redirect for convenience
 # message("Redirecting cmocka output to STDOUT...")

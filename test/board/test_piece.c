@@ -217,6 +217,12 @@ void test_piece_is_black(void **state) {
     assert_true(pce_is_black(pce));
 }
 
+void test_piece_is_king(void **state){
+    assert_true(pce_is_king(WHITE_KING));
+    assert_true(pce_is_king(BLACK_KING));
+}
+
+
 static void label_piece_colour_validate(const char label, const enum piece_role pt, const enum colour col) {
     enum piece pce = pce_get_from_label(label);
     assert_true(pce_get_piece_role(pce) == pt);

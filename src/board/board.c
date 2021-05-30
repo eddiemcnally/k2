@@ -190,6 +190,22 @@ void brd_remove_piece(struct board *brd, const enum piece pce, const enum square
 }
 
 /**
+ * @brief       Removes a piece from the specified square
+ *
+ * @param brd   The board
+ * @param sq    The square
+ */
+void brd_remove_from_square(struct board *brd, const enum square sq) {
+
+    assert(brd_is_sq_occupied(brd, sq) == true);
+    assert(validate_board(brd));
+    assert(validate_square(sq));
+
+    const enum piece pce = brd_get_piece_on_square(brd, sq);
+    brd_remove_piece(brd, pce, sq);
+}
+
+/**
  * @brief       Move a piece from the "From" square to the "To" square
  *
  * @param brd   The board

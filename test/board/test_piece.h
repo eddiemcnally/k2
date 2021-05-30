@@ -43,3 +43,4 @@ void test_piece_get_array_idx(void **state);
 void test_pce_get_piece(void **state);
 void test_piece_get_piece_label(void **state);
 void test_piece_role(void **state);
+void test_piece_is_king(void **state);

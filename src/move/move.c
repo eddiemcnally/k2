@@ -491,7 +491,7 @@ int32_t move_get_score(const struct move mv) {
 char *move_print(const struct move mv) {
     assert(validate_move(mv));
 
-    static char move_string[10];
+    static char move_string[50];
 
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);

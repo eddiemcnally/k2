@@ -32,7 +32,6 @@
  *
  */
 
-#define _GNU_SOURCE
 #include "utils.h"
 #include <ctype.h>
 #include <execinfo.h>
@@ -44,22 +43,22 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
-/**
- * @brief       Sets CPU affinity to CPU 1, and sets pririty to max
- */
-void set_priority_and_affinity(void) {
-    // set up CPU affinity
-    cpu_set_t my_set;
-    CPU_ZERO(&my_set);
-    CPU_SET(1, &my_set);
-    if (sched_setaffinity(0, sizeof(cpu_set_t), &my_set) > 0) {
-        fprintf(stderr, "%s", "affinity error");
-    }
-    // set process priority to max
-    if (setpriority(PRIO_PROCESS, 0, PRIO_MAX) != 0) {
-        fprintf(stderr, "%s", "process priority error");
-    }
-}
+// /**
+//  * @brief       Sets CPU affinity to CPU 1, and sets pririty to max
+//  */
+// void set_priority_and_affinity(void) {
+//     // set up CPU affinity
+//     cpu_set_t my_set;
+//     CPU_ZERO(&my_set);
+//     CPU_SET(1, &my_set);
+//     if (sched_setaffinity(0, sizeof(cpu_set_t), &my_set) > 0) {
+//         fprintf(stderr, "%s", "affinity error");
+//     }
+//     // set process priority to max
+//     if (setpriority(PRIO_PROCESS, 0, PRIO_MAX) != 0) {
+//         fprintf(stderr, "%s", "process priority error");
+//     }
+// }
 
 /**
  * @brief       Prints the current stack to STD_OUT

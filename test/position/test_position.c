@@ -1259,6 +1259,358 @@ void test_position_make_move_sparse_board_black_to_move(void **state) {
     pos_destroy(pos);
 }
 
+void test_position_make_take_double_pawn_move_white(void **state) {
+    const char *fen = "4k3/8/8/8/1p6/8/2P5/4K3 w - c3 0 1\n";
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    const struct move mv = move_encode_pawn_double_first(c2, c4);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_quiet_move_white(void **state) {
+    const char *fen = "4k3/8/2n5/8/1p6/5N2/2P5/4K3 w - c3 0 1\n";
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    const struct move mv = move_encode_quiet(f3, g5);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_double_pawn_move_black(void **state) {
+    const char *fen = "4k3/1p6/2n5/8/8/5N2/2P5/4K3 b - c3 0 1\n";
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    const struct move mv = move_encode_pawn_double_first(b7, b5);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_quiet_move_black(void **state) {
+    const char *fen = "4k3/1p6/5n2/8/8/5N2/2P5/4K3 b - c3 0 1\n";
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    const struct move mv = move_encode_quiet(f6, e4);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_capture_move_white(void **state) {
+    const char *fen = "4k3/1p6/5n2/2N5/8/8/2P5/4K3 w - c3 0 1\n";
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    const struct move mv = move_encode_capture(c5, b7);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_capture_move_black(void **state) {
+    const char *fen = "4k3/1p6/8/2N5/8/4n3/2P5/4K3 b - c3 0 1\n";
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    const struct move mv = move_encode_capture(e3, c2);
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_en_passant_white_capture(void **state) {
+    const char *fen = "4k3/8/8/5Pp1/8/8/8/4K3 w - g6 0 1\n";
+    const struct move mv = move_encode_enpassant(f5, g6);
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_en_passant_black_capture(void **state) {
+    const char *fen = "4k3/8/8/8/5Pp1/8/8/4K3 b - f3 0 1\n";
+    const struct move mv = move_encode_enpassant(g4, f3);
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_queen_castle_white(void **state) {
+    const char *fen = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R w KQkq - 0 1\n";
+    const struct move mv = move_encode_castle_queenside_white();
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_king_castle_white(void **state) {
+    const char *fen = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R w KQkq - 0 1\n";
+    const struct move mv = move_encode_castle_kingside_white();
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_queen_castle_black(void **state) {
+    const char *fen = "r3k2r/p1pp1p1p/bpn1qnp1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
+    const struct move mv = move_encode_castle_queenside_black();
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_king_castle_black(void **state) {
+    const char *fen = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
+    const struct move mv = move_encode_castle_kingside_black();
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_quiet_promotion_white(void **state) {
+    const char *fen = "8/2P5/8/7k/1p6/8/8/4K3 w - - 0 1\n";
+    const struct move mv = move_encode_promote_bishop(c7, c8);
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_quiet_promotion_black(void **state) {
+    const char *fen = "8/8/8/7k/2P5/8/1p6/4K3 b - - 0 1\n";
+    const struct move mv = move_encode_promote_bishop(b2, b1);
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_capture_promotion_white(void **state) {
+    const char *fen = "3n4/2P5/8/7k/8/8/1p6/4K3 w - - 0 1\n";
+    const struct move mv = move_encode_promote_bishop_with_capture(c7, d8);
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
+void test_position_make_take_capture_promotion_black(void **state) {
+    const char *fen = "8/2P5/8/7k/8/8/1p6/2N1K3 b - - 0 1\n";
+    const struct move mv = move_encode_promote_bishop_with_capture(b2, c1);
+
+    // initial position for comparison
+    struct position *init_pos = pos_create();
+    pos_initialise(fen, init_pos);
+
+    struct position *pos = pos_create();
+    pos_initialise(fen, pos);
+
+    enum move_legality legality = pos_make_move(pos, mv);
+    assert_true(legality == LEGAL_MOVE);
+
+    pos_take_move(pos);
+
+    assert_true(pos_compare(init_pos, pos));
+
+    pos_destroy(init_pos);
+    pos_destroy(pos);
+}
+
 void test_position_hash_updated_white_pawn_quiet_move(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 w - - 0 1\n";

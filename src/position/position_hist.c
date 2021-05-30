@@ -44,8 +44,6 @@
 struct move_state {
     //position hash
     uint64_t hashkey;
-    // storage for cloned board
-    struct board cloned_board;
     // the move being made
     struct move mv;
     // en passant square
@@ -56,6 +54,10 @@ struct move_state {
     struct cast_perm_container castle_perm_container;
     // current 50-rule counter
     uint8_t fifty_move_counter;
+    // piece being moved
+    enum piece pce_moved;
+    // captured piece
+    enum piece captured_piece;
 };
 
 static uint64_t INIT_TOKEN = 0xdeadbeefc0c0face;
@@ -100,10 +102,10 @@ void position_hist_release_memory(struct position_hist *mh) {
 
 void position_hist_push(struct position_hist *pos_history, const struct move mv, const uint8_t fifty_move_counter,
                         const enum square en_passant_sq, const uint64_t hashkey,
-                        const struct cast_perm_container castle_perm_cont, const struct board *brd) {
+                        const struct cast_perm_container castle_perm_cont, const enum piece pce_moved,
+                        const enum piece captured_piece) {
 
     assert(validate_move_history(pos_history));
-    assert(validate_board(brd));
 
     struct move_state *free_slot = pos_history->free_slot;
 
@@ -112,9 +114,8 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
     free_slot->en_passant_sq = en_passant_sq;
     free_slot->hashkey = hashkey;
     free_slot->castle_perm_container = castle_perm_cont;
-    brd_clone(brd, &free_slot->cloned_board);
-
-    assert(validate_board(&free_slot->cloned_board));
+    free_slot->pce_moved = pce_moved;
+    free_slot->captured_piece = captured_piece;
 
     pos_history->num_used_slots++;
     pos_history->free_slot++;
@@ -122,14 +123,15 @@ void position_hist_push(struct position_hist *pos_history, const struct move mv,
 
 void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8_t *fifty_move_counter,
                        enum square *en_passant_sq, uint64_t *hashkey, struct cast_perm_container *castle_perm_container,
-                       struct board *brd) {
+                       enum piece *pce_moved, enum piece *captured_piece) {
 
     assert(pos_history != NULL);
     assert(mv != NULL);
     assert(fifty_move_counter != NULL);
     assert(hashkey != NULL);
     assert(castle_perm_container != NULL);
-    assert(brd != NULL);
+    assert(pce_moved != NULL);
+    assert(captured_piece != NULL);
 
     pos_history->num_used_slots--;
     pos_history->free_slot--;
@@ -143,10 +145,8 @@ void position_hist_pop(struct position_hist *pos_history, struct move *mv, uint8
     *en_passant_sq = free_slot->en_passant_sq;
     *hashkey = free_slot->hashkey;
     *castle_perm_container = free_slot->castle_perm_container;
-
-    assert(validate_board(&pos_history->free_slot->cloned_board));
-
-    brd_clone(&free_slot->cloned_board, brd);
+    *pce_moved = free_slot->pce_moved;
+    *captured_piece = free_slot->captured_piece;
 }
 
 /**

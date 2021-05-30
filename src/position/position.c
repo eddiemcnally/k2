@@ -99,6 +99,14 @@ static void do_promotion_quiet(struct position *pos, const enum piece pce_to_mov
                                const enum square to_sq, const enum piece target_promotion_pce);
 static void do_promotion_capture(struct position *pos, const enum piece pce_to_move, const enum square from_sq,
                                  const enum square to_sq, const enum piece target_promotion_pce);
+static void reverse_quiet_move(struct position *pos, const struct move mv, const enum piece pce_moved);
+static void reverse_capture_move(struct position *pos, const struct move mv, const enum piece pce_moved,
+                                 const enum piece captured_piece);
+static void reverse_quiet_promotion_move(struct position *pos, const struct move mv, const enum piece pce_moved);
+static void reverse_capture_promotion_move(struct position *pos, const struct move mv, const enum piece pce_moved,
+                                           const enum piece captured_piece);
+static void reverse_en_passant_move(struct position *pos, const struct move mv, const enum colour side);
+static void reverse_castle_move(struct position *pos, const struct move mv, const enum colour side);
 
 // set up bitboards for all squares that need to be checked when
 // testing castle move validity
@@ -231,18 +239,20 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
     assert(validate_move(mv));
 
-    position_hist_push(pos->position_history, mv, pos->fifty_move_counter, pos->en_passant_sq, pos->hashkey,
-                       pos->castle_perm_container, pos->brd);
+    pos->ply++;
+    pos->history_ply++;
 
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
+    const enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
+    const enum piece pce_capt = brd_get_piece_on_square(pos->brd, to_sq);
 
-    enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
+    position_hist_push(pos->position_history, mv, pos->fifty_move_counter, pos->en_passant_sq, pos->hashkey,
+                       pos->castle_perm_container, pce_to_move, pce_capt);
 
     assert(validate_piece(pce_to_move));
 
     const enum move_type mv_type = move_get_move_type(mv);
-
     switch (mv_type) {
     case MV_TYPE_QUIET:
         pos_move_piece(pos, pce_to_move, from_sq, to_sq);
@@ -316,15 +326,142 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
 struct move pos_take_move(struct position *pos) {
     assert(validate_position(pos));
 
-    //printf("*** TAKE MOVE \n");
-
-    struct move mv;
-    position_hist_pop(pos->position_history, &mv, &pos->fifty_move_counter, &pos->en_passant_sq, &pos->hashkey,
-                      &pos->castle_perm_container, pos->brd);
-
     swap_side(pos);
 
+    pos->ply--;
+    pos->history_ply--;
+
+    struct move mv = {0};
+    enum piece pce_moved;
+    enum piece captured_piece;
+
+    position_hist_pop(pos->position_history, &mv, &pos->fifty_move_counter, &pos->en_passant_sq, &pos->hashkey,
+                      &pos->castle_perm_container, &pce_moved, &captured_piece);
+
+    const enum move_type mv_type = move_get_move_type(mv);
+
+    switch (mv_type) {
+    case MV_TYPE_QUIET:
+        reverse_quiet_move(pos, mv, pce_moved);
+        break;
+    case MV_TYPE_CAPTURE:
+        reverse_capture_move(pos, mv, pce_moved, captured_piece);
+        break;
+    case MV_TYPE_DOUBLE_PAWN:
+        reverse_quiet_move(pos, mv, pce_moved);
+        break;
+    case MV_TYPE_EN_PASS:
+        reverse_en_passant_move(pos, mv, pos->side_to_move);
+        break;
+    case MV_TYPE_QUEEN_CASTLE:
+        reverse_castle_move(pos, mv, pos->side_to_move);
+        break;
+    case MV_TYPE_KING_CASTLE:
+        reverse_castle_move(pos, mv, pos->side_to_move);
+        break;
+    case MV_TYPE_PROMOTE_BISHOP:
+    case MV_TYPE_PROMOTE_KNIGHT:
+    case MV_TYPE_PROMOTE_QUEEN:
+    case MV_TYPE_PROMOTE_ROOK:
+        reverse_quiet_promotion_move(pos, mv, pce_moved);
+        break;
+    case MV_TYPE_PROMOTE_BISHOP_CAPTURE:
+    case MV_TYPE_PROMOTE_KNIGHT_CAPTURE:
+    case MV_TYPE_PROMOTE_QUEEN_CAPTURE:
+    case MV_TYPE_PROMOTE_ROOK_CAPTURE:
+        reverse_capture_promotion_move(pos, mv, pce_moved, captured_piece);
+        break;
+    default:
+        REQUIRE(false, "Invalid move type");
+    }
+
     return mv;
+}
+
+static void reverse_quiet_move(struct position *pos, const struct move mv, const enum piece pce_moved) {
+    const enum square from_sq = move_decode_from_sq(mv);
+    const enum square to_sq = move_decode_to_sq(mv);
+    brd_move_piece(pos->brd, pce_moved, to_sq, from_sq);
+}
+
+static void reverse_capture_move(struct position *pos, const struct move mv, const enum piece pce_moved,
+                                 const enum piece captured_piece) {
+
+    const enum square from_sq = move_decode_from_sq(mv);
+    const enum square to_sq = move_decode_to_sq(mv);
+    brd_move_piece(pos->brd, pce_moved, to_sq, from_sq);
+    brd_add_piece(pos->brd, captured_piece, to_sq);
+}
+
+static void reverse_quiet_promotion_move(struct position *pos, const struct move mv, const enum piece pce_moved) {
+
+    const enum square from_sq = move_decode_from_sq(mv);
+    const enum square to_sq = move_decode_to_sq(mv);
+
+    // remove promoted piece
+    brd_remove_from_square(pos->brd, to_sq);
+    // put piece back to its original square
+    brd_add_piece(pos->brd, pce_moved, from_sq);
+}
+
+static void reverse_capture_promotion_move(struct position *pos, const struct move mv, const enum piece pce_moved,
+                                           const enum piece captured_piece) {
+    assert(captured_piece != NO_PIECE);
+
+    const enum square from_sq = move_decode_from_sq(mv);
+    const enum square to_sq = move_decode_to_sq(mv);
+
+    // remove promoted piece and add the captured piece
+    brd_remove_from_square(pos->brd, to_sq);
+    brd_add_piece(pos->brd, captured_piece, to_sq);
+
+    // put piece back to its original square
+    brd_add_piece(pos->brd, pce_moved, from_sq);
+}
+
+static void reverse_en_passant_move(struct position *pos, const struct move mv, const enum colour side) {
+    const enum square from_sq = move_decode_from_sq(mv);
+    const enum square to_sq = move_decode_to_sq(mv);
+
+    switch (side) {
+    case WHITE:
+        // note: to/from swapped
+        brd_move_piece(pos->brd, WHITE_PAWN, to_sq, from_sq);
+        const enum square wcapture_sq = sq_get_square_minus_1_rank(to_sq);
+        brd_add_piece(pos->brd, BLACK_PAWN, wcapture_sq);
+        break;
+    case BLACK:
+        // note: to/from swapped
+        brd_move_piece(pos->brd, BLACK_PAWN, to_sq, from_sq);
+        const enum square bcapture_sq = sq_get_square_plus_1_rank(to_sq);
+        brd_add_piece(pos->brd, WHITE_PAWN, bcapture_sq);
+        break;
+    default:
+        REQUIRE(false, "Invalid side : reverse en passant")
+    }
+}
+
+static void reverse_castle_move(struct position *pos, const struct move mv, const enum colour side) {
+    switch (side) {
+    case WHITE:
+        if (move_is_king_castle(mv)) {
+            brd_move_piece(pos->brd, WHITE_KING, g1, e1);
+            brd_move_piece(pos->brd, WHITE_ROOK, f1, h1);
+        } else {
+            brd_move_piece(pos->brd, WHITE_KING, c1, e1);
+            brd_move_piece(pos->brd, WHITE_ROOK, d1, a1);
+        }
+        break;
+    case BLACK:
+        if (move_is_king_castle(mv)) {
+            brd_move_piece(pos->brd, BLACK_KING, g8, e8);
+            brd_move_piece(pos->brd, BLACK_ROOK, f8, h8);
+        } else {
+            brd_move_piece(pos->brd, BLACK_KING, c8, e8);
+            brd_move_piece(pos->brd, BLACK_ROOK, d8, a8);
+        }
+        break;
+    }
 }
 
 static void do_promotion_quiet(struct position *pos, const enum piece pce_to_move, const enum square from_sq,

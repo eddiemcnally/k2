@@ -45,7 +45,7 @@
         exit(EXIT_FAILURE);                                                                                            \
     }
 
-void set_priority_and_affinity(void);
+//void set_priority_and_affinity(void);
 void print_stacktrace(void);
 double get_time_of_day_in_secs(void);
 double get_elapsed_time_in_secs(double start_time);

@@ -63,7 +63,7 @@ void test_move_history_push_multiple_moves_used_slots_as_expected(void **state) 
         cast_perm_set_permission(CASTLE_PERM_WK, &cp, true);
 
         uint64_t hashkey = (uint64_t)(i * i);
-        position_hist_push(mh, mv, (uint8_t)i, en_passant_sq, hashkey, cp, pos_get_board(pos));
+        position_hist_push(mh, mv, (uint8_t)i, en_passant_sq, hashkey, cp, WHITE_PAWN, NO_PIECE);
 
         assert_true(position_hist_get_num(mh) == i + 1);
     }
