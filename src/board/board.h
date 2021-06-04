@@ -34,25 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/**
- * @brief struct for containing the board
- * 
- */
-struct board {
-    // bitboard for each piece
-    uint64_t piece_bitboards[NUM_PIECES];
-
-    // a bitboard per colour, a set bit means that colour occupies that square
-    uint64_t bb_colour[NUM_COLOURS];
-
-    // total material value for each colour
-    uint32_t material[NUM_COLOURS];
-
-    // contains the piece on a given square
-    enum piece pce_square[NUM_SQUARES];
-
-    uint32_t init_flag;
-};
+struct board;
 
 struct board *brd_allocate(void);
 void brd_deallocate(struct board *brd);

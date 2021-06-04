@@ -610,15 +610,3 @@ void test_board_compare(void **state) {
     assert_true(brd_compare(brd1, brd2));
 }
 
-void test_board_clone(void **state) {
-    const char *FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
-
-    struct position *pos1 = pos_create();
-    pos_initialise(FEN, pos1);
-    struct board *brd = pos_get_board(pos1);
-
-    struct board dest = {0};
-    brd_clone(brd, &dest);
-
-    assert_true(brd_compare(brd, &dest));
-}

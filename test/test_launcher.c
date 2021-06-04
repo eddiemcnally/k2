@@ -204,7 +204,6 @@ int main(void) {
         TEST(test_board_brd_get_piece_on_square_1),
         TEST(test_board_brd_get_board_bb),
         TEST(test_board_compare),
-        TEST(test_board_clone),
 
         // square
         TEST(test_square_sq_get_rank),

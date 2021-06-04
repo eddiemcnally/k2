@@ -39,6 +39,30 @@
 #include "utils.h"
 #include <assert.h>
 
+
+
+/**
+ * @brief struct for containing the board
+ * 
+ */
+struct board {
+    // bitboard for each piece
+    uint64_t piece_bitboards[NUM_PIECES];
+
+    // a bitboard per colour, a set bit means that colour occupies that square
+    uint64_t bb_colour[NUM_COLOURS];
+
+    // total material value for each colour
+    uint32_t material[NUM_COLOURS];
+
+    // contains the piece on a given square
+    enum piece pce_square[NUM_SQUARES];
+
+    uint32_t init_flag;
+};
+
+
+
 static bool validate_square_empty(const struct board *brd, const enum square to_sq);
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq);
 static void init_struct(struct board *brd);
