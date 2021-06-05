@@ -28,6 +28,16 @@
 #include "square.h"
 #include <stdint.h>
 
+struct diagonals {
+    uint64_t positive;
+    uint64_t negative;
+};
+
+struct horiz_vert {
+    uint64_t horizontal;
+    uint64_t vertical;
+};
+
 void occ_mask_init(void);
 uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2);
 uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq);
@@ -37,8 +47,7 @@ uint64_t occ_mask_get_bishop(const enum square sq);
 uint64_t occ_mask_get_king(const enum square sq);
 uint64_t occ_mask_get_queen(const enum square sq);
 uint64_t occ_mask_get_rook(const enum square sq);
-uint64_t occ_mask_get_positive_diagonal(const enum square sq);
-uint64_t occ_mask_get_negative_diagonal(const enum square sq);
+struct diagonals occ_mask_get_diagonals(const enum square sq);
 uint64_t occ_mask_get_vertical(const enum square sq);
 uint64_t occ_mask_get_horizontal(const enum square sq);
 uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq);

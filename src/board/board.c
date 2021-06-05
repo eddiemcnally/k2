@@ -248,7 +248,7 @@ void brd_move_piece(struct board *brd, const enum piece pce, const enum square f
     bb_clear_square(&brd->bb_board, from_sq);
 
     // set to_sq bits
-    bb_set_square(&brd->piece_bitboards[pce_off], to_sq);    
+    bb_set_square(&brd->piece_bitboards[pce_off], to_sq);
     bb_set_square(&brd->bb_colour[col_off], to_sq);
     bb_set_square(&brd->bb_board, to_sq);
 

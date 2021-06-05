@@ -68,8 +68,7 @@ static void gen_rook_mask(void);
 static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES] = {{0}, {0}};
 static uint64_t knight_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t king_occupancy_masks[NUM_SQUARES] = {0};
-static uint64_t positive_diagonal_masks[NUM_SQUARES] = {0};
-static uint64_t negative_diagonal_masks[NUM_SQUARES] = {0};
+static struct diagonals diagonal_masks[NUM_SQUARES] = {0};
 static uint64_t bishop_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t queen_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t rook_occupancy_masks[NUM_SQUARES] = {0};
@@ -91,14 +90,9 @@ uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2) {
     return in_between_sq[sq1][sq2];
 }
 
-uint64_t occ_mask_get_positive_diagonal(const enum square sq) {
+struct diagonals occ_mask_get_diagonals(const enum square sq) {
     assert(validate_square(sq));
-    return positive_diagonal_masks[sq];
-}
-
-uint64_t occ_mask_get_negative_diagonal(const enum square sq) {
-    assert(validate_square(sq));
-    return negative_diagonal_masks[sq];
+    return diagonal_masks[sq];
 }
 
 inline uint64_t occ_mask_get_vertical(const enum square sq) {
@@ -410,7 +404,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
         }
         // clear our square
         bb_clear_square(&b, sq);
-        positive_diagonal_masks[sq] |= b;
+        diagonal_masks[sq].positive |= b;
 
         // move NW
         b = 0;
@@ -423,7 +417,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
         }
         // clear our square
         bb_clear_square(&b, sq);
-        negative_diagonal_masks[sq] |= b;
+        diagonal_masks[sq].negative |= b;
 
         // move SE
         b = 0;
@@ -436,7 +430,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
         }
         // clear our square
         bb_clear_square(&b, sq);
-        negative_diagonal_masks[sq] |= b;
+        diagonal_masks[sq].negative |= b;
 
         // move NE
         b = 0;
@@ -449,7 +443,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
         }
         // clear our square
         bb_clear_square(&b, sq);
-        positive_diagonal_masks[sq] |= b;
+        diagonal_masks[sq].positive |= b;
     }
 }
 

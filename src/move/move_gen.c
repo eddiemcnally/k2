@@ -391,23 +391,22 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, con
         const enum square from_sq = bb_pop_1st_bit(pce_to_move_bb);
         bb_clear_square(&pce_to_move_bb, from_sq);
 
-        const uint64_t pos_diag_occ_mask = occ_mask_get_positive_diagonal(from_sq);
-        const uint64_t neg_diag_occ_mask = occ_mask_get_negative_diagonal(from_sq);
+        const struct diagonals diag_masks = occ_mask_get_diagonals(from_sq);
 
         // create slider bb for this square
         const uint64_t bb_slider = bb_get_square_as_bb(from_sq);
 
         // diagonal move
-        uint64_t diag1 = (all_pce_bb & pos_diag_occ_mask) - (2 * bb_slider);
-        uint64_t diag2 = bb_reverse(bb_reverse(all_pce_bb & pos_diag_occ_mask) - (2 * bb_reverse(bb_slider)));
+        uint64_t diag1 = (all_pce_bb & diag_masks.positive) - (2 * bb_slider);
+        uint64_t diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.positive) - (2 * bb_reverse(bb_slider)));
         const uint64_t diagpos = diag1 ^ diag2;
 
         // anti-diagonal moves
-        diag1 = (all_pce_bb & neg_diag_occ_mask) - (2 * bb_slider);
-        diag2 = bb_reverse(bb_reverse(all_pce_bb & neg_diag_occ_mask) - (2 * bb_reverse(bb_slider)));
+        diag1 = (all_pce_bb & diag_masks.negative) - (2 * bb_slider);
+        diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.negative) - (2 * bb_reverse(bb_slider)));
         const uint64_t diagneg = diag1 ^ diag2;
 
-        const uint64_t all_moves = (diagpos & pos_diag_occ_mask) | (diagneg & neg_diag_occ_mask);
+        const uint64_t all_moves = (diagpos & diag_masks.positive) | (diagneg & diag_masks.negative);
 
         // get all same colour as piece being considered
         uint64_t excl_same_col = all_moves & ~side_to_move_pce_bb;
