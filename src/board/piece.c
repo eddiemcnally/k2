@@ -156,10 +156,9 @@ inline uint32_t pce_get_value(const enum piece_role pt) {
     REQUIRE(false, "Invalid Piece Role");
 }
 
-bool pce_is_king(const enum piece pce){
+bool pce_is_king(const enum piece pce) {
     return ((pce >> ROLE_SHIFT) & KING);
 }
-
 
 /**
 * @brief        Populates an array of all pieces.

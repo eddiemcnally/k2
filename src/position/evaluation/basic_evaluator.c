@@ -129,7 +129,7 @@ int32_t evaluate_position_basic(const struct position *pos) {
     uint64_t pce_bb = brd_get_board_bb(brd);
     while (pce_bb != 0) {
         const enum square sq = bb_pop_1st_bit(pce_bb);
-        pce_bb = bb_clear_square(pce_bb, sq);
+        bb_clear_square(&pce_bb, sq);
 
         enum piece pce = brd_get_piece_on_square(brd, sq);
 

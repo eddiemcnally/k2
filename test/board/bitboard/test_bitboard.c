@@ -34,13 +34,13 @@
 void test_bitboard_pop_first_bit_all_squares(void **state) {
     uint64_t val = 0;
     for (enum square sq = a1; sq <= h8; sq++) {
-        val = bb_set_square(val, sq);
+        bb_set_square(&val, sq);
     }
 
     assert_true(val == 0xffffffffffffffff);
     for (enum square sq = a1; sq <= h8; sq++) {
         enum square popped = bb_pop_1st_bit(val);
-        val = bb_clear_square(val, popped);
+        bb_clear_square(&val, popped);
         assert_true(popped == sq);
     }
     assert_true(val == 0);
@@ -50,45 +50,45 @@ void test_bitboard_pop_first_bit_random_squares(void **state) {
 
     uint64_t val = 0;
 
-    val = bb_set_square(val, a1);
-    val = bb_set_square(val, b5);
-    val = bb_set_square(val, c7);
-    val = bb_set_square(val, d3);
-    val = bb_set_square(val, e5);
-    val = bb_set_square(val, f8);
-    val = bb_set_square(val, g1);
-    val = bb_set_square(val, h8);
+    bb_set_square(&val, a1);
+    bb_set_square(&val, b5);
+    bb_set_square(&val, c7);
+    bb_set_square(&val, d3);
+    bb_set_square(&val, e5);
+    bb_set_square(&val, f8);
+    bb_set_square(&val, g1);
+    bb_set_square(&val, h8);
 
     enum square popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == a1);
 
     popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == g1);
 
     popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == d3);
 
     popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == b5);
 
     popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == e5);
 
     popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == c7);
 
     popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == f8);
 
     popped = bb_pop_1st_bit(val);
-    val = bb_clear_square(val, popped);
+    bb_clear_square(&val, popped);
     assert_true(popped == h8);
 
     assert_true(val == 0);
@@ -125,11 +125,11 @@ void test_bitboard_set_test_clear_bit(void **state) {
         is_set = bb_is_set(bb, sq);
         assert_false(is_set);
 
-        bb = bb_set_square(bb, sq);
+        bb_set_square(&bb, sq);
         is_set = bb_is_set(bb, sq);
         assert_true(is_set);
 
-        bb = bb_clear_square(bb, sq);
+        bb_clear_square(&bb, sq);
         is_set = bb_is_set(bb, sq);
         assert_false(is_set);
     }

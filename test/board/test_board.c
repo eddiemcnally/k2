@@ -609,4 +609,3 @@ void test_board_compare(void **state) {
     brd_move_piece(brd1, WHITE_PAWN, a6, a5);
     assert_true(brd_compare(brd1, brd2));
 }
-

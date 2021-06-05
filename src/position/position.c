@@ -684,7 +684,7 @@ static bool is_castle_move_legal(const struct position *pos, const struct move m
 
     while (cast_bb != 0) {
         const enum square sq = bb_pop_1st_bit(cast_bb);
-        cast_bb = bb_clear_square(cast_bb, sq);
+        bb_clear_square(&cast_bb, sq);
         if (att_chk_is_sq_attacked(pos->brd, sq, attacking_side)) {
             return false;
         }

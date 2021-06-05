@@ -183,7 +183,7 @@ static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list
         uint64_t white_quiet_dest_bb = plus_one_rank & ~all_pce_bb;
         while (white_quiet_dest_bb != 0) {
             const enum square dest_sq = bb_pop_1st_bit(white_quiet_dest_bb);
-            white_quiet_dest_bb = bb_clear_square(white_quiet_dest_bb, dest_sq);
+            bb_clear_square(&white_quiet_dest_bb, dest_sq);
 
             const enum square pwn_quiet_from_sq = sq_get_square_minus_1_rank(dest_sq);
 
@@ -196,7 +196,7 @@ static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list
 
         while (pawns_on_rank_2 != 0) {
             const enum square from_sq = bb_pop_1st_bit(pawns_on_rank_2);
-            pawns_on_rank_2 = bb_clear_square(pawns_on_rank_2, from_sq);
+            bb_clear_square(&pawns_on_rank_2, from_sq);
             const enum square from_plus_1 = sq_get_square_plus_1_rank(from_sq);
             const enum square from_plus_2 = sq_get_square_plus_1_rank(from_plus_1);
 
@@ -212,7 +212,7 @@ static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list
         uint64_t attacking_wp_bb = blk_attack_mask & all_pawns_bb;
         while (attacking_wp_bb != 0) {
             const enum square wp_from_sq = bb_pop_1st_bit(attacking_wp_bb);
-            attacking_wp_bb = bb_clear_square(attacking_wp_bb, wp_from_sq);
+            bb_clear_square(&attacking_wp_bb, wp_from_sq);
 
             const struct move en_pass_move = move_encode_enpassant(wp_from_sq, en_pass_sq);
             mvl_add(mvl, en_pass_move);
@@ -221,14 +221,14 @@ static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list
 
     while (pawns_excl_rank7_bb != 0) {
         const enum square from_sq = bb_pop_1st_bit(pawns_excl_rank7_bb);
-        pawns_excl_rank7_bb = bb_clear_square(pawns_excl_rank7_bb, from_sq);
+        bb_clear_square(&pawns_excl_rank7_bb, from_sq);
 
         // capture moves
         const uint64_t occ_mask = occ_mask_get_white_pawn_capture_non_first_double_move(from_sq);
         uint64_t capt_bb = black_pce_bb & occ_mask;
         while (capt_bb != 0) {
             const enum square capt_to_sq = bb_pop_1st_bit(capt_bb);
-            capt_bb = bb_clear_square(capt_bb, capt_to_sq);
+            bb_clear_square(&capt_bb, capt_to_sq);
             struct move capt_move = move_encode_capture(from_sq, capt_to_sq);
             mvl_add(mvl, capt_move);
         }
@@ -239,7 +239,7 @@ static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list
     while (pawns_on_rank7_bb != 0) {
         // quiet promotion
         const enum square prom_from_sq = bb_pop_1st_bit(pawns_on_rank7_bb);
-        pawns_on_rank7_bb = bb_clear_square(pawns_on_rank7_bb, prom_from_sq);
+        bb_clear_square(&pawns_on_rank7_bb, prom_from_sq);
 
         if (gen_type == ALL_MOVES) {
             const enum square quiet_to_sq = sq_get_square_plus_1_rank(prom_from_sq);
@@ -253,7 +253,7 @@ static void mv_gen_white_pawn_moves(const struct position *pos, struct move_list
         uint64_t capt_bb = black_pce_bb & occ_mask;
         while (capt_bb != 0) {
             const enum square prom_capt_to_sq = bb_pop_1st_bit(capt_bb);
-            capt_bb = bb_clear_square(capt_bb, prom_capt_to_sq);
+            bb_clear_square(&capt_bb, prom_capt_to_sq);
             gen_promotions_with_capture(prom_from_sq, prom_capt_to_sq, mvl);
         }
     }
@@ -287,7 +287,7 @@ static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list
         uint64_t black_quiet_dest_bb = minus_one_rank & ~all_pce_bb;
         while (black_quiet_dest_bb != 0) {
             const enum square dest_sq = bb_pop_1st_bit(black_quiet_dest_bb);
-            black_quiet_dest_bb = bb_clear_square(black_quiet_dest_bb, dest_sq);
+            bb_clear_square(&black_quiet_dest_bb, dest_sq);
 
             const enum square pwn_quiet_from_sq = sq_get_square_plus_1_rank(dest_sq);
 
@@ -299,7 +299,7 @@ static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list
 
         while (pawns_on_rank_7 != 0) {
             const enum square from_sq = bb_pop_1st_bit(pawns_on_rank_7);
-            pawns_on_rank_7 = bb_clear_square(pawns_on_rank_7, from_sq);
+            bb_clear_square(&pawns_on_rank_7, from_sq);
             const enum square from_minus_1 = sq_get_square_minus_1_rank(from_sq);
             const enum square from_minus_2 = sq_get_square_minus_1_rank(from_minus_1);
 
@@ -315,7 +315,7 @@ static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list
         uint64_t attacking_bp_bb = white_attack_mask & all_pawns_bb;
         while (attacking_bp_bb != 0) {
             const enum square bp_from_sq = bb_pop_1st_bit(attacking_bp_bb);
-            attacking_bp_bb = bb_clear_square(attacking_bp_bb, bp_from_sq);
+            bb_clear_square(&attacking_bp_bb, bp_from_sq);
 
             const struct move en_pass_move = move_encode_enpassant(bp_from_sq, en_pass_sq);
             mvl_add(mvl, en_pass_move);
@@ -324,14 +324,14 @@ static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list
 
     while (pawns_excl_rank2_bb != 0) {
         const enum square from_sq = bb_pop_1st_bit(pawns_excl_rank2_bb);
-        pawns_excl_rank2_bb = bb_clear_square(pawns_excl_rank2_bb, from_sq);
+        bb_clear_square(&pawns_excl_rank2_bb, from_sq);
 
         // capture moves
         const uint64_t occ_mask = occ_mask_get_black_pawn_capture_non_first_double_move(from_sq);
         uint64_t capt_bb = white_pce_bb & occ_mask;
         while (capt_bb != 0) {
             const enum square capt_to_sq = bb_pop_1st_bit(capt_bb);
-            capt_bb = bb_clear_square(capt_bb, capt_to_sq);
+            bb_clear_square(&capt_bb, capt_to_sq);
 
             struct move capt_move = move_encode_capture(from_sq, capt_to_sq);
             mvl_add(mvl, capt_move);
@@ -343,7 +343,7 @@ static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list
     while (pawns_on_rank2_bb != 0) {
         // quiet promotion
         const enum square prom_from_sq = bb_pop_1st_bit(pawns_on_rank2_bb);
-        pawns_on_rank2_bb = bb_clear_square(pawns_on_rank2_bb, prom_from_sq);
+        bb_clear_square(&pawns_on_rank2_bb, prom_from_sq);
 
         if (gen_type == ALL_MOVES) {
             const enum square prom_to_sq = sq_get_square_minus_1_rank(prom_from_sq);
@@ -357,7 +357,7 @@ static void mv_gen_black_pawn_moves(const struct position *pos, struct move_list
         uint64_t capt_bb = white_pce_bb & occ_mask;
         while (capt_bb != 0) {
             const enum square prom_capt_to_sq = bb_pop_1st_bit(capt_bb);
-            capt_bb = bb_clear_square(capt_bb, prom_capt_to_sq);
+            bb_clear_square(&capt_bb, prom_capt_to_sq);
 
             gen_promotions_with_capture(prom_from_sq, prom_capt_to_sq, mvl);
         }
@@ -389,7 +389,7 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, con
     while (pce_to_move_bb != 0) {
 
         const enum square from_sq = bb_pop_1st_bit(pce_to_move_bb);
-        pce_to_move_bb = bb_clear_square(pce_to_move_bb, from_sq);
+        bb_clear_square(&pce_to_move_bb, from_sq);
 
         const uint64_t pos_diag_occ_mask = occ_mask_get_positive_diagonal(from_sq);
         const uint64_t neg_diag_occ_mask = occ_mask_get_negative_diagonal(from_sq);
@@ -414,7 +414,7 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct board *brd, con
 
         while (excl_same_col != 0) {
             enum square to_sq = bb_pop_1st_bit(excl_same_col);
-            excl_same_col = bb_clear_square(excl_same_col, to_sq);
+            bb_clear_square(&excl_same_col, to_sq);
 
             encode_quiet_or_capt_move(brd, from_sq, to_sq, mvl, gen_type);
         }
@@ -445,7 +445,7 @@ static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t 
     while (pce_to_move_bb != 0) {
 
         const enum square from_sq = bb_pop_1st_bit(pce_to_move_bb);
-        pce_to_move_bb = bb_clear_square(pce_to_move_bb, from_sq);
+        bb_clear_square(&pce_to_move_bb, from_sq);
 
         const uint64_t hmask = occ_mask_get_horizontal(from_sq);
         const uint64_t vmask = occ_mask_get_vertical(from_sq);
@@ -466,7 +466,7 @@ static void get_sliding_rank_file_moves(const struct board *brd, const uint64_t 
         uint64_t excl_same_col = all_moves & ~side_to_move_pce_bb;
         while (excl_same_col != 0) {
             enum square to_sq = bb_pop_1st_bit(excl_same_col);
-            excl_same_col = bb_clear_square(excl_same_col, to_sq);
+            bb_clear_square(&excl_same_col, to_sq);
             encode_quiet_or_capt_move(brd, from_sq, to_sq, mvl, gen_type);
         }
     }
@@ -557,7 +557,7 @@ static void mv_gen_king_knight_moves(const struct board *brd, const enum piece k
     uint64_t knight_bb = brd_get_piece_bb(brd, knight);
     while (knight_bb != 0) {
         const enum square from_sq = bb_pop_1st_bit(knight_bb);
-        knight_bb = bb_clear_square(knight_bb, from_sq);
+        bb_clear_square(&knight_bb, from_sq);
 
         const uint64_t occ_mask = occ_mask_get_knight(from_sq);
 
@@ -601,7 +601,7 @@ static void mv_gen_king_knight_moves(const struct board *brd, const enum piece k
 static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq, struct move_list *mvl) {
     while (bb != 0) {
         const enum square empty_sq = bb_pop_1st_bit(bb);
-        bb = bb_clear_square(bb, empty_sq);
+        bb_clear_square(&bb, empty_sq);
 
         const struct move quiet_move = move_encode_quiet(from_sq, empty_sq);
         mvl_add(mvl, quiet_move);
@@ -618,7 +618,7 @@ static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq,
 static void mv_gen_encode_multiple_capture(uint64_t bb, const enum square from_sq, struct move_list *mvl) {
     while (bb != 0) {
         const enum square cap_sq = bb_pop_1st_bit(bb);
-        bb = bb_clear_square(bb, cap_sq);
+        bb_clear_square(&bb, cap_sq);
         const struct move cap_move = move_encode_capture(from_sq, cap_sq);
         mvl_add(mvl, cap_move);
     }

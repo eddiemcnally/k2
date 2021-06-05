@@ -163,7 +163,7 @@ static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) 
     uint64_t knight_attack_sq = 0;
     while (bb != 0) {
         const enum square pce_sq = bb_pop_1st_bit(bb);
-        bb = bb_clear_square(bb, pce_sq);
+        bb_clear_square(&bb, pce_sq);
         knight_attack_sq |= occ_mask_get_knight(pce_sq);
     }
 
@@ -184,7 +184,7 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
 
     while (bb != 0) {
         const enum square pce_sq = bb_pop_1st_bit(bb);
-        bb = bb_clear_square(bb, pce_sq);
+        bb_clear_square(&bb, pce_sq);
 
         if ((sq_get_rank(pce_sq) == sq_rank) || (sq_get_file(pce_sq) == sq_file)) {
             // possible attack, shared rank and/or file
@@ -203,7 +203,7 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
 
     while (bb != 0) {
         const enum square pce_sq = bb_pop_1st_bit(bb);
-        bb = bb_clear_square(bb, pce_sq);
+        bb_clear_square(&bb, pce_sq);
         const uint64_t occ_mask_bishop = occ_mask_get_bishop(pce_sq);
 
         if (bb_is_set(occ_mask_bishop, sq)) {

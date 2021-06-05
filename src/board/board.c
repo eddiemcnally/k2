@@ -39,8 +39,6 @@
 #include "utils.h"
 #include <assert.h>
 
-
-
 /**
  * @brief struct for containing the board
  * 
@@ -52,6 +50,9 @@ struct board {
     // a bitboard per colour, a set bit means that colour occupies that square
     uint64_t bb_colour[NUM_COLOURS];
 
+    // a bit set for every occupied square
+    uint64_t bb_board;
+
     // total material value for each colour
     uint32_t material[NUM_COLOURS];
 
@@ -60,8 +61,6 @@ struct board {
 
     uint32_t init_flag;
 };
-
-
 
 static bool validate_square_empty(const struct board *brd, const enum square to_sq);
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq);
@@ -104,8 +103,7 @@ void brd_deallocate(struct board *brd) {
  */
 inline uint64_t brd_get_board_bb(const struct board *brd) {
     assert(validate_board(brd));
-
-    return brd->bb_colour[PCE_COL_ARRAY_OFFSET_WHITE] | brd->bb_colour[PCE_COL_ARRAY_OFFSET_BLACK];
+    return brd->bb_board;
 }
 
 /**
@@ -154,11 +152,9 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
     const enum colour col = pce_get_colour(pce);
     const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
-    uint64_t *pce_bb = &brd->piece_bitboards[pce_off];
-    uint64_t *col_bb = &brd->bb_colour[col_off];
-
-    *pce_bb = bb_set_square(*pce_bb, sq);
-    *col_bb = bb_set_square(*col_bb, sq);
+    bb_set_square(&brd->piece_bitboards[pce_off], sq);
+    bb_set_square(&brd->bb_colour[col_off], sq);
+    bb_set_square(&brd->bb_board, sq);
     brd->pce_square[sq] = pce;
 
     // add material
@@ -201,11 +197,9 @@ void brd_remove_piece(struct board *brd, const enum piece pce, const enum square
     const enum colour col = pce_get_colour(pce);
     const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
-    uint64_t *pce_bb = &brd->piece_bitboards[pce_off];
-    uint64_t *col_bb = &brd->bb_colour[col_off];
-
-    *pce_bb = bb_clear_square(*pce_bb, sq);
-    *col_bb = bb_clear_square(*col_bb, sq);
+    bb_clear_square(&brd->piece_bitboards[pce_off], sq);
+    bb_clear_square(&brd->bb_colour[col_off], sq);
+    bb_clear_square(&brd->bb_board, sq);
     brd->pce_square[sq] = NO_PIECE;
 
     const enum piece_role pt = pce_get_piece_role(pce);
@@ -248,16 +242,15 @@ void brd_move_piece(struct board *brd, const enum piece pce, const enum square f
     const enum colour col = pce_get_colour(pce);
     const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
-    uint64_t pce_bb = brd->piece_bitboards[pce_off];
-    uint64_t col_bb = brd->bb_colour[col_off];
+    // clear from_sq bits
+    bb_clear_square(&brd->piece_bitboards[pce_off], from_sq);
+    bb_clear_square(&brd->bb_colour[col_off], from_sq);
+    bb_clear_square(&brd->bb_board, from_sq);
 
-    pce_bb = bb_clear_square(pce_bb, from_sq);
-    col_bb = bb_clear_square(col_bb, from_sq);
-    pce_bb = bb_set_square(pce_bb, to_sq);
-    col_bb = bb_set_square(col_bb, to_sq);
-
-    brd->piece_bitboards[pce_off] = pce_bb;
-    col_bb = brd->bb_colour[col_off] = col_bb;
+    // set to_sq bits
+    bb_set_square(&brd->piece_bitboards[pce_off], to_sq);    
+    bb_set_square(&brd->bb_colour[col_off], to_sq);
+    bb_set_square(&brd->bb_board, to_sq);
 
     brd->pce_square[from_sq] = NO_PIECE;
     brd->pce_square[to_sq] = pce;

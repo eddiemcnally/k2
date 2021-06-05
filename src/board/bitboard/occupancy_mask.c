@@ -254,7 +254,7 @@ static void gen_queen_mask(void) {
 
         uint64_t queen = bishop_mask | rook_mask;
         // clear our square
-        queen = bb_clear_square(queen, sq);
+        bb_clear_square(&queen, sq);
         queen_occupancy_masks[sq] = queen;
     }
 }
@@ -409,7 +409,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
             dest_file--;
         }
         // clear our square
-        b = bb_clear_square(b, sq);
+        bb_clear_square(&b, sq);
         positive_diagonal_masks[sq] |= b;
 
         // move NW
@@ -422,7 +422,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
             dest_file--;
         }
         // clear our square
-        b = bb_clear_square(b, sq);
+        bb_clear_square(&b, sq);
         negative_diagonal_masks[sq] |= b;
 
         // move SE
@@ -435,7 +435,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
             dest_file++;
         }
         // clear our square
-        b = bb_clear_square(b, sq);
+        bb_clear_square(&b, sq);
         negative_diagonal_masks[sq] |= b;
 
         // move NE
@@ -448,7 +448,7 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
             dest_file++;
         }
         // clear our square
-        b = bb_clear_square(b, sq);
+        bb_clear_square(&b, sq);
         positive_diagonal_masks[sq] |= b;
     }
 }
@@ -503,7 +503,7 @@ static void gen_bishop_mask(void) {
         }
 
         // clear our square
-        b = bb_clear_square(b, sq);
+        bb_clear_square(&b, sq);
 
         bishop_occupancy_masks[sq] = b;
     }
@@ -512,7 +512,7 @@ static void gen_bishop_mask(void) {
 static void set_dest_sq_if_valid(enum rank rank, enum file file, uint64_t *bb) {
     if (sq_is_valid_file(file) && sq_is_valid_rank(rank)) {
         enum square dest_sq = sq_gen_from_rank_file(rank, file);
-        *bb = bb_set_square(*bb, (enum square)dest_sq);
+        bb_set_square(bb, (enum square)dest_sq);
         //printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
     } else {
         //printf("XXXX bad rank/file: %d/%d\n", rank, file);
