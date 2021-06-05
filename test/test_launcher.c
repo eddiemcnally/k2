@@ -38,7 +38,6 @@
 #include "test_move_list.h"
 #include "test_piece.h"
 #include "test_position.h"
-#include "test_position_hist.h"
 #include "test_square.h"
 #include "test_transposition_table.h"
 #include <setjmp.h>
@@ -108,7 +107,6 @@ int main(void) {
         TEST(test_position_make_move_castle_white_queenside_move_valid_position_updated),
         TEST(test_position_make_move_castle_black_kingside_move_valid_position_updated),
         TEST(test_position_make_move_castle_black_queenside_move_valid_position_updated),
-        TEST(test_move_history_push_multiple_moves_used_slots_as_expected),
         TEST(test_position_make_move_castle_white_kingside_move_invalid),
         TEST(test_position_make_move_castle_black_kingside_move_invalid),
         TEST(test_position_make_move_castle_white_queenside_move_invalid),

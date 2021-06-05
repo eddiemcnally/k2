@@ -192,7 +192,7 @@ uint64_t occ_mask_get_king(const enum square sq) {
  * @brief               Get Queen occupancy mask for the given square
  *
  * @param sq    The square containing the Queen
- * @return A bitboard representing the occupancy mask
+ * @return A bitboard representing the occupancy mask§
  */
 uint64_t occ_mask_get_queen(const enum square sq) {
     assert(validate_square(sq));

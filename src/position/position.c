@@ -40,15 +40,13 @@
 #include "hashkeys.h"
 #include "move.h"
 #include "occupancy_mask.h"
-#include "position_hist.h"
 #include "utils.h"
 #include <assert.h>
 
 // key used to verify struct has been initialised
 const static uint16_t STRUCT_INIT_KEY = 0xdead;
 
-
-struct game_state{
+struct game_state {
     // position hash
     uint64_t hashkey;
 
@@ -67,19 +65,31 @@ struct game_state{
     struct cast_perm_container castle_perm_container;
 };
 
+struct history_item {
+    struct game_state state;
+    struct move mv;
+    enum piece pce_moved;
+    enum piece captured_piece;
+};
 
+struct position_history {
+    // move history
+    struct history_item items[MAX_GAME_MOVES];
+    struct history_item *free_slot;
+    uint16_t num_used_slots;
+};
 
 // represents the current game position
 struct position {
-    uint16_t struct_init_key;
-
     struct game_state state;
 
     // current board representation
     struct board *brd;
-  
+
     // position history
-    struct position_hist *position_history;
+    struct position_history history;
+
+    uint16_t struct_init_key;
 };
 
 static void init_pos_struct(struct position *pos);
@@ -114,6 +124,13 @@ static void reverse_capture_promotion_move(struct position *pos, const struct mo
                                            const enum piece captured_piece);
 static void reverse_en_passant_move(struct position *pos, const struct move mv, const enum colour side);
 static void reverse_castle_move(struct position *pos, const struct move mv, const enum colour side);
+
+static void position_hist_push(struct position *pos, const struct move mv, const enum piece pce_moved,
+                               const enum piece captured_piece);
+static void position_hist_pop(struct position *pos, struct move *mv, enum piece *pce_moved, enum piece *captured_piece);
+static bool validate_move_history(const struct position *pos);
+static bool position_hist_compare(const struct position *pos1, const struct position *pos2);
+static bool compare_game_states(const struct game_state *gs1, const struct game_state *gs2);
 
 // set up bitboards for all squares that need to be checked when
 // testing castle move validity
@@ -246,16 +263,15 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
     assert(validate_position(pos));
     assert(validate_move(mv));
 
-    pos->state.ply++;
-    pos->state.history_ply++;
-
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
     const enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
     const enum piece pce_capt = brd_get_piece_on_square(pos->brd, to_sq);
 
-    position_hist_push(pos->position_history, mv, pos->state.fifty_move_counter, pos->state.en_passant_sq, pos->state.hashkey,
-                       pos->state.castle_perm_container, pce_to_move, pce_capt);
+    position_hist_push(pos, mv, pce_to_move, pce_capt);
+
+    pos->state.ply++;
+    pos->state.history_ply++;
 
     assert(validate_piece(pce_to_move));
 
@@ -333,17 +349,11 @@ enum move_legality pos_make_move(struct position *pos, const struct move mv) {
 struct move pos_take_move(struct position *pos) {
     assert(validate_position(pos));
 
-    swap_side(pos);
-
-    pos->state.ply--;
-    pos->state.history_ply--;
-
     struct move mv = {0};
     enum piece pce_moved;
     enum piece captured_piece;
 
-    position_hist_pop(pos->position_history, &mv, &pos->state.fifty_move_counter, &pos->state.en_passant_sq, &pos->state.hashkey,
-                      &pos->state.castle_perm_container, &pce_moved, &captured_piece);
+    position_hist_pop(pos, &mv, &pce_moved, &captured_piece);
 
     const enum move_type mv_type = move_get_move_type(mv);
 
@@ -536,7 +546,7 @@ bool pos_compare(const struct position *first, const struct position *second) {
         return false;
     }
 
-    bool same_hist = position_hist_compare(first->position_history, second->position_history);
+    bool same_hist = position_hist_compare(first, second);
     if (same_hist == false) {
         printf("pos_compare: position history is different\n");
         return false;
@@ -565,7 +575,8 @@ static void init_pos_struct(struct position *pos) {
 
     pos->state.castle_perm_container = cast_perm_init();
 
-    pos->position_history = position_hist_init();
+    pos->history.num_used_slots = 0;
+    pos->history.free_slot = &pos->history.items[0];
 }
 
 static void do_capture_move(struct position *pos, const enum square from_sq, const enum square to_sq,
@@ -805,6 +816,119 @@ static enum square get_en_pass_sq(const enum colour side, const enum square from
     assert(validate_en_pass_sq(retval));
 
     return retval;
+}
+
+static void position_hist_push(struct position *pos, const struct move mv, const enum piece pce_moved,
+                               const enum piece captured_piece) {
+
+    REQUIRE(pos->history.num_used_slots < MAX_GAME_MOVES, "Attempt to overflow position history");
+    assert(validate_move_history(pos));
+    assert(validate_move(mv));
+    assert(validate_piece(pce_moved));
+    assert(validate_piece(captured_piece));
+
+    memcpy(&pos->history.free_slot->state, &pos->state, sizeof(struct game_state));
+    pos->history.free_slot->mv = mv;
+    pos->history.free_slot->pce_moved = pce_moved;
+    pos->history.free_slot->captured_piece = captured_piece;
+
+    pos->history.num_used_slots++;
+    pos->history.free_slot++;
+}
+
+static void position_hist_pop(struct position *pos, struct move *mv, enum piece *pce_moved,
+                              enum piece *captured_piece) {
+    assert(validate_move_history(pos));
+
+    assert(mv != NULL);
+    assert(pce_moved != NULL);
+    assert(captured_piece != NULL);
+
+    pos->history.num_used_slots--;
+    pos->history.free_slot--;
+
+    memcpy(&pos->state, &pos->history.free_slot->state, sizeof(struct game_state));
+    *mv = pos->history.free_slot->mv;
+    *pce_moved = pos->history.free_slot->pce_moved;
+    *captured_piece = pos->history.free_slot->captured_piece;
+}
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-function"
+
+static bool validate_move_history(const struct position *pos) {
+    if (pos->history.num_used_slots >= MAX_GAME_MOVES) {
+        return false;
+    }
+
+    if (pos->history.free_slot < &pos->history.items[0]) {
+        return false;
+    }
+
+    return true;
+}
+#pragma GCC diagnostic pop
+
+static bool position_hist_compare(const struct position *pos1, const struct position *pos2) {
+
+    if (pos1->history.num_used_slots != pos2->history.num_used_slots) {
+        return false;
+    }
+
+    uint16_t num_slots = pos1->history.num_used_slots;
+
+    for (int i = 0; i < num_slots; i++) {
+
+        const struct history_item *hi1 = &pos1->history.items[i];
+        const struct history_item *hi2 = &pos2->history.items[i];
+
+        bool same_game_state = compare_game_states(&hi1->state, &hi2->state);
+        if (same_game_state == false) {
+            return false;
+        }
+
+        if (hi1->pce_moved != hi2->pce_moved) {
+            return false;
+        }
+
+        if (hi1->captured_piece != hi2->captured_piece) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static bool compare_game_states(const struct game_state *gs1, const struct game_state *gs2) {
+    if (gs1->hashkey != gs2->hashkey) {
+        return false;
+    }
+
+    if (gs1->side_to_move != gs2->side_to_move) {
+        return false;
+    }
+
+    if (gs1->ply != gs2->ply) {
+        return false;
+    }
+    if (gs1->history_ply != gs2->history_ply) {
+        return false;
+    }
+
+    if (gs1->fifty_move_counter != gs2->fifty_move_counter) {
+        return false;
+    }
+
+    if (gs1->en_passant_sq != gs2->en_passant_sq) {
+        return false;
+    }
+
+    bool same_cast_perms = cast_compare_perms(gs1->castle_perm_container, gs2->castle_perm_container);
+    if (same_cast_perms == false) {
+        return false;
+    }
+
+    return true;
 }
 
 //

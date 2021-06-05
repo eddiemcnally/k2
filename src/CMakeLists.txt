@@ -38,7 +38,6 @@ set (SOURCES
         ${FEN_DIR}/fen.c
         ${POSN_DIR}/position.c
         ${POSN_DIR}/hashkeys.c
-        ${POSN_DIR}/position_hist.c
         ${POSN_DIR}/castle_perms.c
         ${POSN_DIR}/attack_checker.c
         ${EVAL_DIR}/basic_evaluator.c
