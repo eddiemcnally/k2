@@ -44,7 +44,6 @@ static void gen_knight_mask(void);
 static void set_dest_sq_if_valid(enum rank rank, enum file file, uint64_t *bb);
 static void gen_king_mask(void);
 static void occ_mask_gen_diagonal_occupancy_masks(void);
-static void gen_bishop_mask(void);
 static void gen_queen_mask(void);
 static void gen_rook_mask(void);
 
@@ -69,7 +68,6 @@ static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES] = {{0}, {0}};
 static uint64_t knight_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t king_occupancy_masks[NUM_SQUARES] = {0};
 static struct diagonals diagonal_masks[NUM_SQUARES] = {0};
-static uint64_t bishop_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t queen_occupancy_masks[NUM_SQUARES] = {0};
 static uint64_t rook_occupancy_masks[NUM_SQUARES] = {0};
 
@@ -78,7 +76,6 @@ void occ_mask_init(void) {
     gen_knight_mask();
     gen_king_mask();
     occ_mask_gen_diagonal_occupancy_masks();
-    gen_bishop_mask();
 
     gen_rook_mask();
     gen_queen_mask();
@@ -176,7 +173,8 @@ uint64_t occ_mask_get_knight(const enum square sq) {
  */
 uint64_t occ_mask_get_bishop(const enum square sq) {
     assert(validate_square(sq));
-    return bishop_occupancy_masks[sq];
+    struct diagonals diag_masks = occ_mask_get_diagonals(sq);
+    return diag_masks.positive | diag_masks.negative;
 }
 
 /**
@@ -243,7 +241,8 @@ static uint64_t in_between(const enum square sq1, const enum square sq2) {
 
 static void gen_queen_mask(void) {
     for (enum square sq = a1; sq <= h8; sq++) {
-        const uint64_t bishop_mask = bishop_occupancy_masks[sq];
+        struct diagonals diag_masks = occ_mask_get_diagonals(sq);
+        const uint64_t bishop_mask = diag_masks.positive | diag_masks.negative;
         const uint64_t rook_mask = occ_mask_get_rook(sq);
 
         uint64_t queen = bishop_mask | rook_mask;
@@ -444,62 +443,6 @@ static void occ_mask_gen_diagonal_occupancy_masks(void) {
         // clear our square
         bb_clear_square(&b, sq);
         diagonal_masks[sq].positive |= b;
-    }
-}
-
-static void gen_bishop_mask(void) {
-
-    for (enum square sq = a1; sq <= h8; sq++) {
-
-        enum rank rank = sq_get_rank(sq);
-        enum file file = sq_get_file(sq);
-
-        //printf("rank/file : %d/%d\n", rank, file);
-
-        enum rank dest_rank = 0;
-        enum file dest_file = 0;
-        uint64_t b = 0;
-
-        // move left and down
-        dest_rank = rank;
-        dest_file = file;
-        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
-            set_dest_sq_if_valid(dest_rank, dest_file, &b);
-            dest_rank--;
-            dest_file--;
-        }
-
-        // move left and up
-        dest_rank = rank;
-        dest_file = file;
-        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
-            set_dest_sq_if_valid(dest_rank, dest_file, &b);
-            dest_rank++;
-            dest_file--;
-        }
-
-        // move right and down
-        dest_rank = rank;
-        dest_file = file;
-        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
-            set_dest_sq_if_valid(dest_rank, dest_file, &b);
-            dest_rank--;
-            dest_file++;
-        }
-
-        // move right and up
-        dest_rank = rank;
-        dest_file = file;
-        while (sq_is_valid_file(dest_file) && sq_is_valid_rank(dest_rank)) {
-            set_dest_sq_if_valid(dest_rank, dest_file, &b);
-            dest_rank++;
-            dest_file++;
-        }
-
-        // clear our square
-        bb_clear_square(&b, sq);
-
-        bishop_occupancy_masks[sq] = b;
     }
 }
 
