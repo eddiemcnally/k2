@@ -33,11 +33,6 @@ struct diagonals {
     uint64_t negative;
 };
 
-struct horiz_vert {
-    uint64_t horizontal;
-    uint64_t vertical;
-};
-
 void occ_mask_init(void);
 uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2);
 uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq);

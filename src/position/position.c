@@ -73,9 +73,7 @@ struct history_item {
 };
 
 struct position_history {
-    // move history
     struct history_item items[MAX_GAME_MOVES];
-    struct history_item *free_slot;
     uint16_t num_used_slots;
 };
 
@@ -128,16 +126,16 @@ static void reverse_castle_move(struct position *pos, const struct move mv, cons
 static void position_hist_push(struct position *pos, const struct move mv, const enum piece pce_moved,
                                const enum piece captured_piece);
 static void position_hist_pop(struct position *pos, struct move *mv, enum piece *pce_moved, enum piece *captured_piece);
-static bool validate_move_history(const struct position *pos);
+static bool validate_position_history(const struct position *pos);
 static bool position_hist_compare(const struct position *pos1, const struct position *pos2);
 static bool compare_game_states(const struct game_state *gs1, const struct game_state *gs2);
 
 // set up bitboards for all squares that need to be checked when
 // testing castle move validity
-const uint64_t WK_CAST_BB = (uint64_t)((0x01L << e1) | (0x01L << f1) | (0x01L << g1));
-const uint64_t BK_CAST_BB = (uint64_t)((0x01L << e8) | (0x01L << f8) | (0x01L << g8));
-const uint64_t WQ_CAST_BB = (uint64_t)((0x01L << c1) | (0x01L << d1) | (0x01L << e1));
-const uint64_t BQ_CAST_BB = (uint64_t)((0x01L << c8) | (0x01L << d8) | (0x01L << e8));
+static const uint64_t WK_CAST_BB = (uint64_t)((0x01L << e1) | (0x01L << f1) | (0x01L << g1));
+static const uint64_t BK_CAST_BB = (uint64_t)((0x01L << e8) | (0x01L << f8) | (0x01L << g8));
+static const uint64_t WQ_CAST_BB = (uint64_t)((0x01L << c1) | (0x01L << d1) | (0x01L << e1));
+static const uint64_t BQ_CAST_BB = (uint64_t)((0x01L << c8) | (0x01L << d8) | (0x01L << e8));
 
 /**
  * @brief       Create and initialise an empty instance of the Position struct
@@ -576,7 +574,6 @@ static void init_pos_struct(struct position *pos) {
     pos->state.castle_perm_container = cast_perm_init();
 
     pos->history.num_used_slots = 0;
-    pos->history.free_slot = &pos->history.items[0];
 }
 
 static void do_capture_move(struct position *pos, const enum square from_sq, const enum square to_sq,
@@ -821,48 +818,51 @@ static enum square get_en_pass_sq(const enum colour side, const enum square from
 static void position_hist_push(struct position *pos, const struct move mv, const enum piece pce_moved,
                                const enum piece captured_piece) {
 
-    REQUIRE(pos->history.num_used_slots < MAX_GAME_MOVES, "Attempt to overflow position history");
-    assert(validate_move_history(pos));
+    assert(validate_position_history(pos));
     assert(validate_move(mv));
     assert(validate_piece(pce_moved));
     assert(validate_piece(captured_piece));
 
-    memcpy(&pos->history.free_slot->state, &pos->state, sizeof(struct game_state));
-    pos->history.free_slot->mv = mv;
-    pos->history.free_slot->pce_moved = pce_moved;
-    pos->history.free_slot->captured_piece = captured_piece;
+    struct history_item *free_slot = &pos->history.items[pos->history.num_used_slots];
+
+    __builtin_memcpy_inline(&free_slot->state, &pos->state, sizeof(struct game_state));
+
+    free_slot->mv = mv;
+    free_slot->pce_moved = pce_moved;
+    free_slot->captured_piece = captured_piece;
 
     pos->history.num_used_slots++;
-    pos->history.free_slot++;
 }
 
 static void position_hist_pop(struct position *pos, struct move *mv, enum piece *pce_moved,
                               enum piece *captured_piece) {
-    assert(validate_move_history(pos));
-
+    assert(validate_position_history(pos));
     assert(mv != NULL);
     assert(pce_moved != NULL);
     assert(captured_piece != NULL);
 
     pos->history.num_used_slots--;
-    pos->history.free_slot--;
+    struct history_item *free_slot = &pos->history.items[pos->history.num_used_slots];
 
-    memcpy(&pos->state, &pos->history.free_slot->state, sizeof(struct game_state));
-    *mv = pos->history.free_slot->mv;
-    *pce_moved = pos->history.free_slot->pce_moved;
-    *captured_piece = pos->history.free_slot->captured_piece;
+    __builtin_memcpy_inline(&pos->state, &free_slot->state, sizeof(struct game_state));
+
+    *mv = free_slot->mv;
+    *pce_moved = free_slot->pce_moved;
+    *captured_piece = free_slot->captured_piece;
 }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-static bool validate_move_history(const struct position *pos) {
-    if (pos->history.num_used_slots >= MAX_GAME_MOVES) {
+static bool validate_position_history(const struct position *pos) {
+    const struct history_item *free_slot = &pos->history.items[pos->history.num_used_slots];
+
+    if (free_slot < &pos->history.items[0]) {
         return false;
     }
 
-    if (pos->history.free_slot < &pos->history.items[0]) {
+    if (free_slot < &pos->history.items[MAX_GAME_MOVES - 1]) {
         return false;
     }
 

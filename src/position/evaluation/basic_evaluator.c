@@ -63,9 +63,9 @@ static const int8_t PAWN_SQ_VALUE[NUM_SQUARES] = {
 };
 
 static const int8_t KNIGHT_SQ_VALUE[NUM_SQUARES] = {
-    -50, -40, -30, -30, -30, -30, -40, -50 - 40, -20, 0,   5,   5,   0,   -20, -40, -30, 5,   10,  15,  15,  10,
-    5,   -30, -30, 0,   15,  20,  20,  15,       0,   -30, -30, 5,   15,  20,  20,  15,  5,   -30, -30, 0,   10,
-    15,  15,  10,  0,   -30, -40, -20, 0,        0,   0,   0,   -20, -40, -50, -40, -30, -30, -30, -30, -40, -50,
+    -50, -40, -30, -30, -30, -30, -40, -50, -40, -20, 0,   5,   5,   0,   -20, -40, -30, 5,   10,  15,  15, 10,
+    5,   -30, -30, 0,   15,  20,  20,  15,  0,   -30, -30, 5,   15,  20,  20,  15,  5,   -30, -30, 0,   10, 15,
+    15,  10,  0,   -30, -40, -20, 0,   0,   0,   0,   -20, -40, -50, -40, -30, -30, -30, -30, -40, -50,
 };
 
 static const int8_t BISHOP_SQ_VALUE[NUM_SQUARES] = {
@@ -105,70 +105,107 @@ static const int8_t KING_SQ_VALUE[NUM_SQUARES] = {
 //      -50, -40, -30, -20, -20, -30, -40, -50,
 // };
 
-static const uint8_t MIRROR_VALUE[NUM_SQUARES] = {
-    56, 57, 58, 59, 60, 61, 62, 63, 48, 49, 50, 51, 52, 53, 54, 55, 40, 41, 42, 43, 44, 45,
-    46, 47, 32, 33, 34, 35, 36, 37, 38, 39, 24, 25, 26, 27, 28, 29, 30, 31, 16, 17, 18, 19,
-    20, 21, 22, 23, 8,  9,  10, 11, 12, 13, 14, 15, 0,  1,  2,  3,  4,  5,  6,  7,
-};
-
 /**
- * @brief Performs basic evaluation of the position. Limits evaluation 
+ * @brief Performs basic evaluation of the board. Limits evaluation 
  * to material and a look-up piece table for piece positions on board.
  * 
- * @param pos       the position
- * @return int32_t  the score
+ * @param brd               the board
+ * @param side_to_move      the side to move
+ * @return int32_t          the score
  */
-int32_t evaluate_position_basic(const struct position *pos) {
+int32_t evaluate_position_basic(const struct board *brd, const enum colour side_to_move) {
 
-    const struct board *brd = pos_get_board(pos);
+    // // material
+    // let mut score = (material.0.wrapping_sub(material.1)) as i32;
 
-    const uint32_t white_material = brd_get_material(brd, WHITE);
-    const uint32_t black_material = brd_get_material(brd, BLACK);
-    int32_t score = (int32_t)(white_material - black_material);
+    // // piece positions
+    // let mut board_bb = board.get_bitboard();
+    // while board_bb != 0 {
+    //     let sq = bitboard::pop_1st_bit(&mut board_bb);
+    //     let pce = board.get_piece_on_square(sq);
+
+    //     let sq_offset = sq.to_offset();
+
+    //     score += match pce.unwrap() {
+    //         Piece::WhitePawn => PAWN_SQ_VALUE[sq_offset] as i32,
+    //         Piece::WhiteBishop => BISHOP_SQ_VALUE[sq_offset] as i32,
+    //         Piece::WhiteKnight => KNIGHT_SQ_VALUE[sq_offset] as i32,
+    //         Piece::WhiteRook => ROOK_SQ_VALUE[sq_offset] as i32,
+    //         Piece::WhiteQueen => QUEEN_SQ_VALUE[sq_offset] as i32,
+    //         Piece::WhiteKing => KING_SQ_VALUE[sq_offset] as i32,
+
+    //         // black scores are negative, offsets are reversed/mirrored
+    //         Piece::BlackPawn => -PAWN_SQ_VALUE[63 - sq_offset] as i32,
+    //         Piece::BlackBishop => -BISHOP_SQ_VALUE[63 - sq_offset] as i32,
+    //         Piece::BlackKnight => -KNIGHT_SQ_VALUE[63 - sq_offset] as i32,
+    //         Piece::BlackRook => -ROOK_SQ_VALUE[63 - sq_offset] as i32,
+    //         Piece::BlackQueen => -QUEEN_SQ_VALUE[63 - sq_offset] as i32,
+    //         Piece::BlackKing => -KING_SQ_VALUE[63 - sq_offset] as i32,
+    //     }
+    // }
+
+    // if side_to_move == Colour::White {
+    //     score
+    // } else {
+    //     -score
+    // }
+
+    const int32_t white_material = brd_get_material(brd, WHITE);
+    const int32_t black_material = brd_get_material(brd, BLACK);
+
+    int32_t score = white_material - black_material;
 
     uint64_t pce_bb = brd_get_board_bb(brd);
     while (pce_bb != 0) {
         const enum square sq = bb_pop_1st_bit(pce_bb);
         bb_clear_square(&pce_bb, sq);
 
-        enum piece pce = brd_get_piece_on_square(brd, sq);
+        const enum piece pce = brd_get_piece_on_square(brd, sq);
 
-        const enum colour pce_col = pce_get_colour(pce);
-        const enum piece_role role = pce_get_piece_role(pce);
-        const uint32_t idx = pce_col == WHITE ? MIRROR_VALUE[sq] : sq;
-
-        int8_t piece_score = 0;
-        switch (role) {
-        case PAWN:
-            piece_score = PAWN_SQ_VALUE[idx];
+        switch (pce) {
+        case WHITE_PAWN:
+            score += PAWN_SQ_VALUE[sq];
             break;
-        case BISHOP:
-            piece_score = BISHOP_SQ_VALUE[idx];
+        case WHITE_BISHOP:
+            score += BISHOP_SQ_VALUE[sq];
             break;
-        case KNIGHT:
-            piece_score = KNIGHT_SQ_VALUE[idx];
+        case WHITE_KNIGHT:
+            score += KNIGHT_SQ_VALUE[sq];
             break;
-        case ROOK:
-            piece_score = ROOK_SQ_VALUE[idx];
+        case WHITE_ROOK:
+            score += ROOK_SQ_VALUE[sq];
             break;
-        case QUEEN:
-            piece_score = QUEEN_SQ_VALUE[idx];
+        case WHITE_QUEEN:
+            score += QUEEN_SQ_VALUE[sq];
             break;
-        case KING:
-            piece_score = KING_SQ_VALUE[idx];
+        case WHITE_KING:
+            score += KING_SQ_VALUE[sq];
+            break;
+        // note: black numbers are negated
+        case BLACK_PAWN:
+            score -= PAWN_SQ_VALUE[63 - sq];
+            break;
+        case BLACK_BISHOP:
+            score -= BISHOP_SQ_VALUE[63 - sq];
+            break;
+        case BLACK_KNIGHT:
+            score -= KNIGHT_SQ_VALUE[63 - sq];
+            break;
+        case BLACK_ROOK:
+            score -= ROOK_SQ_VALUE[63 - sq];
+            break;
+        case BLACK_QUEEN:
+            score -= QUEEN_SQ_VALUE[63 - sq];
+            break;
+        case BLACK_KING:
+            score -= KING_SQ_VALUE[63 - sq];
             break;
         default:
             REQUIRE(false, "Invalid piece switch value");
         }
-
-        if (pce_col == WHITE) {
-            score += (int32_t)piece_score;
-        } else {
-            score -= (int32_t)piece_score;
-        }
     }
 
-    if (pos_get_side_to_move(pos) == WHITE) {
+    if (side_to_move == WHITE) {
         return score;
     } else {
         return -score;

@@ -108,15 +108,10 @@ static const char *move_details(const struct move mv);
 #define ENCODE_TO_SQ(to_sq) ((uint64_t)(((uint32_t)to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ))
 #define ENCODE_FROM_SQ(from_sq) ((uint64_t)(((uint32_t)from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ))
 
-#define ENCODE_KING_CASTLE_WHITE (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(g1) | MV_FLG_KING_CASTLE)
-#define ENCODE_KING_CASTLE_BLACK (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(g8) | MV_FLG_KING_CASTLE)
-#define ENCODE_QUEEN_CASTLE_WHITE (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(c1) | MV_FLG_QUEEN_CASTLE)
-#define ENCODE_QUEEN_CASTLE_BLACK (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(c8) | MV_FLG_QUEEN_CASTLE)
-
-static const struct move MV_KING_CASTLE_WHITE = {.val = ENCODE_KING_CASTLE_WHITE};
-static const struct move MV_KING_CASTLE_BLACK = {.val = ENCODE_KING_CASTLE_BLACK};
-static const struct move MV_QUEEN_CASTLE_WHITE = {.val = ENCODE_QUEEN_CASTLE_WHITE};
-static const struct move MV_QUEEN_CASTLE_BLACK = {.val = ENCODE_QUEEN_CASTLE_BLACK};
+static const uint64_t ENCODE_KING_CASTLE_WHITE = (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(g1) | MV_FLG_KING_CASTLE);
+static const uint64_t ENCODE_KING_CASTLE_BLACK = (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(g8) | MV_FLG_KING_CASTLE);
+static const uint64_t ENCODE_QUEEN_CASTLE_WHITE = (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(c1) | MV_FLG_QUEEN_CASTLE);
+static const uint64_t ENCODE_QUEEN_CASTLE_BLACK = (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(c8) | MV_FLG_QUEEN_CASTLE);
 
 // ==================================================================
 //
@@ -130,7 +125,7 @@ static const struct move MV_QUEEN_CASTLE_BLACK = {.val = ENCODE_QUEEN_CASTLE_BLA
  * @param mv The move
  * @return enum move_type The move type 
  */
-enum move_type move_get_move_type(const struct move mv) {
+__attribute__((always_inline)) enum move_type move_get_move_type(const struct move mv) {
     const uint16_t flag = ((uint16_t)mv.val) & MV_MASK_FLAGS;
     return FLAG_TO_TYPE(flag);
 }
@@ -142,7 +137,7 @@ enum move_type move_get_move_type(const struct move mv) {
  * @param to_sq     The to square
  * @return The encoded move
  */
-struct move move_encode_quiet(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_quiet(const enum square from_sq, const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -156,7 +151,8 @@ struct move move_encode_quiet(const enum square from_sq, const enum square to_sq
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_knight(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_knight(const enum square from_sq,
+                                                                      const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -170,7 +166,8 @@ struct move move_encode_promote_knight(const enum square from_sq, const enum squ
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_knight_with_capture(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_knight_with_capture(const enum square from_sq,
+                                                                                   const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -184,7 +181,8 @@ struct move move_encode_promote_knight_with_capture(const enum square from_sq, c
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_bishop(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_bishop(const enum square from_sq,
+                                                                      const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -198,7 +196,8 @@ struct move move_encode_promote_bishop(const enum square from_sq, const enum squ
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_bishop_with_capture(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_bishop_with_capture(const enum square from_sq,
+                                                                                   const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -212,7 +211,8 @@ struct move move_encode_promote_bishop_with_capture(const enum square from_sq, c
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_rook(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_rook(const enum square from_sq,
+                                                                    const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -226,7 +226,8 @@ struct move move_encode_promote_rook(const enum square from_sq, const enum squar
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_rook_with_capture(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_rook_with_capture(const enum square from_sq,
+                                                                                 const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -240,7 +241,8 @@ struct move move_encode_promote_rook_with_capture(const enum square from_sq, con
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_queen(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_queen(const enum square from_sq,
+                                                                     const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -254,7 +256,8 @@ struct move move_encode_promote_queen(const enum square from_sq, const enum squa
  * @param to_sq     To square
  * @return struct move Encoded move
  */
-struct move move_encode_promote_queen_with_capture(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_promote_queen_with_capture(const enum square from_sq,
+                                                                                  const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -268,7 +271,7 @@ struct move move_encode_promote_queen_with_capture(const enum square from_sq, co
  * @param to_sq The to square
  * @return The encoded move
  */
-struct move move_encode_capture(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_capture(const enum square from_sq, const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -280,8 +283,9 @@ struct move move_encode_capture(const enum square from_sq, const enum square to_
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_kingside_white(void) {
-    return MV_KING_CASTLE_WHITE;
+__attribute__((always_inline)) struct move move_encode_castle_kingside_white(void) {
+    struct move retval = {.val = ENCODE_KING_CASTLE_WHITE};
+    return retval;
 }
 
 /**
@@ -289,8 +293,9 @@ struct move move_encode_castle_kingside_white(void) {
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_kingside_black(void) {
-    return MV_KING_CASTLE_BLACK;
+__attribute__((always_inline)) struct move move_encode_castle_kingside_black(void) {
+    struct move retval = {.val = ENCODE_KING_CASTLE_BLACK};
+    return retval;
 }
 
 /**
@@ -298,8 +303,9 @@ struct move move_encode_castle_kingside_black(void) {
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_queenside_white(void) {
-    return MV_QUEEN_CASTLE_WHITE;
+__attribute__((always_inline)) struct move move_encode_castle_queenside_white(void) {
+    struct move retval = {.val = ENCODE_QUEEN_CASTLE_WHITE};
+    return retval;
 }
 
 /**
@@ -307,8 +313,9 @@ struct move move_encode_castle_queenside_white(void) {
  *
  * @return      The encoded move
  */
-struct move move_encode_castle_queenside_black(void) {
-    return MV_QUEEN_CASTLE_BLACK;
+__attribute__((always_inline)) struct move move_encode_castle_queenside_black(void) {
+    struct move retval = {.val = ENCODE_QUEEN_CASTLE_BLACK};
+    return retval;
 }
 
 /**
@@ -317,7 +324,8 @@ struct move move_encode_castle_queenside_black(void) {
  * @param       to_sq the to square
  * @return      The encoded move
  */
-struct move move_encode_pawn_double_first(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_pawn_double_first(const enum square from_sq,
+                                                                         const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -331,7 +339,7 @@ struct move move_encode_pawn_double_first(const enum square from_sq, const enum 
  * @param to_sq The to square
  * @return The encoded move
  */
-struct move move_encode_enpassant(const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) struct move move_encode_enpassant(const enum square from_sq, const enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
@@ -344,7 +352,7 @@ struct move move_encode_enpassant(const enum square from_sq, const enum square t
  * @param mv The move
  * @return The from square
  */
-inline enum square move_decode_from_sq(const struct move mv) {
+__attribute__((always_inline)) enum square move_decode_from_sq(const struct move mv) {
     return (enum square)((mv.val & MV_MASK_FROM_SQ) >> MV_SHFT_FROM_SQ);
 }
 
@@ -354,7 +362,7 @@ inline enum square move_decode_from_sq(const struct move mv) {
  * @param mv The move
  * @return The to square
  */
-inline enum square move_decode_to_sq(const struct move mv) {
+__attribute__((always_inline)) enum square move_decode_to_sq(const struct move mv) {
     return (enum square)((mv.val & MV_MASK_TO_SQ) >> MV_SHFT_TO_SQ);
 }
 
@@ -364,7 +372,7 @@ inline enum square move_decode_to_sq(const struct move mv) {
  * @param mv    The move to test
  * @return      true if quiet, false otherwise
  */
-inline bool move_is_quiet(const struct move mv) {
+__attribute__((always_inline)) bool move_is_quiet(const struct move mv) {
     return (mv.val & MV_MASK_FLAGS) == MV_FLG_QUIET;
 }
 
@@ -374,7 +382,7 @@ inline bool move_is_quiet(const struct move mv) {
  * @param mv    The move to test
  * @return      true if double pawn move, false otherwise
  */
-inline bool move_is_double_pawn(const struct move mv) {
+__attribute__((always_inline)) bool move_is_double_pawn(const struct move mv) {
     return (mv.val & MV_MASK_FLAGS) == MV_FLG_DOUBLE_PAWN;
 }
 
@@ -384,7 +392,7 @@ inline bool move_is_double_pawn(const struct move mv) {
  * @param mv    The move to test
  * @return      true if king-side castle move, false otherwise
  */
-inline bool move_is_king_castle(const struct move mv) {
+__attribute__((always_inline)) bool move_is_king_castle(const struct move mv) {
     return (mv.val & MV_MASK_FLAGS) == MV_FLG_KING_CASTLE;
 }
 
@@ -394,7 +402,7 @@ inline bool move_is_king_castle(const struct move mv) {
  * @param mv    The move to test
  * @return      true if queen-side castle move, false otherwise
  */
-inline bool move_is_queen_castle(const struct move mv) {
+__attribute__((always_inline)) bool move_is_queen_castle(const struct move mv) {
     return (mv.val & MV_MASK_FLAGS) == MV_FLG_QUEEN_CASTLE;
 }
 
@@ -405,7 +413,7 @@ inline bool move_is_queen_castle(const struct move mv) {
  * @param mv The move to test
  * @return true if Capture, false otherwise
  */
-inline bool move_is_capture(const struct move mv) {
+__attribute__((always_inline)) bool move_is_capture(const struct move mv) {
     assert(validate_move(mv));
 
     return (mv.val & MV_FLG_BIT_CAPTURE) != 0;
@@ -418,7 +426,7 @@ inline bool move_is_capture(const struct move mv) {
  * @param mv The move to test
  * @return true if a promotion, false otherwise
  */
-inline bool move_is_promotion(const struct move mv) {
+__attribute__((always_inline)) bool move_is_promotion(const struct move mv) {
     assert(validate_move(mv));
 
     return (mv.val & MV_FLG_BIT_PROMOTE) != 0;
@@ -431,7 +439,7 @@ inline bool move_is_promotion(const struct move mv) {
  * @param mv The move to test
  * @return true if an En Passant move, false otherwise
  */
-inline bool move_is_en_passant(const struct move mv) {
+__attribute__((always_inline)) bool move_is_en_passant(const struct move mv) {
     assert(validate_move(mv));
 
     return (mv.val & MV_MASK_FLAGS) == MV_FLG_EN_PASS;
@@ -444,7 +452,7 @@ inline bool move_is_en_passant(const struct move mv) {
  * @param mv The move to test
  * @return true if a Castle move, false otherwise
  */
-inline bool move_is_castle(const struct move mv) {
+__attribute__((always_inline)) bool move_is_castle(const struct move mv) {
     assert(validate_move(mv));
 
     return move_is_king_castle(mv) || move_is_queen_castle(mv);
@@ -457,7 +465,7 @@ inline bool move_is_castle(const struct move mv) {
  * @param mv2 The 2nd move
  * @return true if moves are the same, false otherwise
  */
-inline bool move_compare(const struct move mv1, const struct move mv2) {
+__attribute__((always_inline)) bool move_compare(const struct move mv1, const struct move mv2) {
     return mv1.val == mv2.val;
 }
 

@@ -57,13 +57,14 @@ int32_t quiescence(struct position *pos, struct search_data *search, int32_t alp
     // todo
     // - check for time limit every 'n' moves
     // - check on move repetiton and 50-move counter
-
+    const struct board *brd = pos_get_board(pos);
+    const enum colour colour = pos_get_side_to_move(pos);
     if (pos_get_ply(pos) > MAX_SEARCH_DEPTH - 1) {
-        return evaluate_position_basic(pos);
+        return evaluate_position_basic(brd, colour);
     }
 
     // stand pat
-    int32_t stand_pat_score = evaluate_position_basic(pos);
+    int32_t stand_pat_score = evaluate_position_basic(brd, colour);
     if (stand_pat_score >= beta) {
         search->stand_pat_cutoff++;
         return beta;

@@ -45,17 +45,29 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
     enum piece all_pieces[NUM_PIECES];
     pce_get_all_pieces(all_pieces);
 
+    // to avoid asserts in the code, put a piece of each colour on the board and ignore those
+    // squares
+    const enum square IGNORE_1 = a1;
+    const enum square IGNORE_2 = b1;
+    brd_add_piece(brd, WHITE_PAWN, IGNORE_1);
+    brd_add_piece(brd, BLACK_PAWN, IGNORE_2);
+
     for (int i = 0; i < NUM_PIECES; i++) {
 
         enum piece pce = all_pieces[i];
         for (enum square sq = a1; sq <= h8; sq++) {
 
+            // test squares to ensure material always >= 0
+            if ((sq == IGNORE_1) || (sq == IGNORE_2)) {
+                continue;
+            }
+
             const enum colour side = pce_get_colour(pce);
-            uint32_t material_before_add = brd_get_material(brd, side);
+            int32_t material_before_add = brd_get_material(brd, side);
 
             // add piece
             brd_add_piece(brd, pce, sq);
-            uint32_t material_after_add = brd_get_material(brd, side);
+            int32_t material_after_add = brd_get_material(brd, side);
 
             // verify it's there
             enum piece found_pce = brd_get_piece_on_square(brd, sq);
@@ -67,7 +79,7 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
 
             // remove piece
             brd_remove_piece(brd, pce, sq);
-            uint32_t material_after_remove = brd_get_material(brd, side);
+            int32_t material_after_remove = brd_get_material(brd, side);
 
             // verify it's gone
             bool occupied = brd_is_sq_occupied(brd, sq);
@@ -83,6 +95,13 @@ void test_board_brd_move_piece(void **state) {
     enum piece all_pieces[NUM_PIECES];
     pce_get_all_pieces(all_pieces);
 
+    // to avoid asserts in the code, put a piece of each colour on the board and ignore those
+    // squares
+    const enum square IGNORE_1 = a1;
+    const enum square IGNORE_2 = b1;
+    brd_add_piece(brd, WHITE_PAWN, IGNORE_1);
+    brd_add_piece(brd, BLACK_PAWN, IGNORE_2);
+
     for (int i = 0; i < NUM_PIECES; i++) {
 
         enum piece pce = all_pieces[i];
@@ -91,6 +110,17 @@ void test_board_brd_move_piece(void **state) {
                 if (from_sq == to_sq) {
                     continue;
                 }
+
+                // test squares to ensure material always >= 0
+                if ((from_sq == IGNORE_1) || (from_sq == IGNORE_2)) {
+                    continue;
+                }
+
+                // test squares to ensure material always >= 0
+                if ((to_sq == IGNORE_1) || (to_sq == IGNORE_2)) {
+                    continue;
+                }
+
                 enum colour side = pce_get_colour(pce);
 
                 // add piece
@@ -102,12 +132,12 @@ void test_board_brd_move_piece(void **state) {
                 bool is_occupied = brd_is_sq_occupied(brd, from_sq);
                 assert_true(is_occupied);
 
-                uint32_t material_before_move = brd_get_material(brd, side);
+                int32_t material_before_move = brd_get_material(brd, side);
 
                 // move it
                 brd_move_piece(brd, pce, from_sq, to_sq);
 
-                uint32_t material_after_move = brd_get_material(brd, side);
+                int32_t material_after_move = brd_get_material(brd, side);
 
                 // verify it's not on the from_sq
                 is_occupied = brd_is_sq_occupied(brd, from_sq);
@@ -608,4 +638,44 @@ void test_board_compare(void **state) {
     assert_false(brd_compare(brd1, brd2));
     brd_move_piece(brd1, WHITE_PAWN, a6, a5);
     assert_true(brd_compare(brd1, brd2));
+}
+
+void test_board_material_white(void **state) {
+    const char *FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 w - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    struct board *brd = pos_get_board(pos);
+    int32_t base_white_material = brd_get_material(brd, WHITE);
+
+    brd_add_piece(brd, WHITE_PAWN, h1);
+    int32_t white_material = brd_get_material(brd, WHITE);
+    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(PAWN)));
+    brd_remove_piece(brd, WHITE_PAWN, h1);
+
+    brd_add_piece(brd, WHITE_QUEEN, h1);
+    white_material = brd_get_material(brd, WHITE);
+    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(QUEEN)));
+    brd_remove_piece(brd, WHITE_QUEEN, h1);
+}
+
+void test_board_material_black(void **state) {
+    const char *FEN = "6Br/R3B3/5NPn/PNpn1k1r/3P4/q2pQ3/bR6/4bK2 b - - 0 1\n";
+
+    struct position *pos = pos_create();
+    pos_initialise(FEN, pos);
+
+    struct board *brd = pos_get_board(pos);
+    const int32_t base_black_material = brd_get_material(brd, BLACK);
+
+    brd_add_piece(brd, BLACK_PAWN, h1);
+    int32_t black_material = brd_get_material(brd, BLACK);
+    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(PAWN)));
+    brd_remove_piece(brd, BLACK_PAWN, h1);
+
+    brd_add_piece(brd, BLACK_QUEEN, h1);
+    black_material = brd_get_material(brd, BLACK);
+    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(QUEEN)));
+    brd_remove_piece(brd, BLACK_QUEEN, h1);
 }

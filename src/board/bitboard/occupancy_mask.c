@@ -92,14 +92,14 @@ struct diagonals occ_mask_get_diagonals(const enum square sq) {
     return diagonal_masks[sq];
 }
 
-inline uint64_t occ_mask_get_vertical(const enum square sq) {
+__attribute__((always_inline)) uint64_t occ_mask_get_vertical(const enum square sq) {
     assert(validate_square(sq));
 
     const enum file f = sq_get_file(sq);
     return FILE_MASK << f;
 }
 
-inline uint64_t occ_mask_get_horizontal(const enum square sq) {
+__attribute__((always_inline)) uint64_t occ_mask_get_horizontal(const enum square sq) {
     assert(validate_square(sq));
 
     const enum rank r = sq_get_rank(sq);
@@ -112,7 +112,7 @@ inline uint64_t occ_mask_get_horizontal(const enum square sq) {
  * @param sq The square being attacked
  * @return uint64_t A bitboard representing WHITE pawns that can attack the square
  */
-inline uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
+__attribute__((always_inline)) uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
     const uint64_t bb = bb_get_square_as_bb(sq);
     return SOUTH_EAST(bb) | SOUTH_WEST(bb);
 }
@@ -123,7 +123,7 @@ inline uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
  * @param sq The square being attacked
  * @return uint64_t A bitboard representing BLACK pawns that can attack the square
  */
-inline uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
+__attribute__((always_inline)) uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
     const uint64_t bb = bb_get_square_as_bb(sq);
     return NORTH_EAST(bb) | NORTH_WEST(bb);
 }
@@ -134,7 +134,7 @@ inline uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-inline uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq) {
+__attribute__((always_inline)) uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
 
     const uint64_t sq_bb = bb_get_square_as_bb(sq);
@@ -147,7 +147,7 @@ inline uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-inline uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq) {
+__attribute__((always_inline)) uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
 
     const uint64_t sq_bb = bb_get_square_as_bb(sq);

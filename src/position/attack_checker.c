@@ -45,7 +45,6 @@ static bool is_white_attacking(const struct board *brd, const enum square sq);
 static bool is_black_attacking(const struct board *brd, const enum square sq);
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
                                                 const enum square sq);
-//static uint64_t in_between(const enum square sq1, const enum square sq2);
 static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
 static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
 static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq);

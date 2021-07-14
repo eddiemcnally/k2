@@ -54,7 +54,7 @@ struct board {
     uint64_t bb_board;
 
     // total material value for each colour
-    uint32_t material[NUM_COLOURS];
+    int32_t material[NUM_COLOURS];
 
     // contains the piece on a given square
     enum piece pce_square[NUM_SQUARES];
@@ -66,7 +66,7 @@ static bool validate_square_empty(const struct board *brd, const enum square to_
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq);
 static void init_struct(struct board *brd);
 
-#define INIT_KEY ((uint32_t)0xDEADBEEF)
+static const uint32_t INIT_KEY = 0xDEADBEEF;
 
 // ==================================================================
 //
@@ -116,8 +116,7 @@ bool brd_is_sq_occupied(const struct board *brd, const enum square sq) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
-    const uint64_t bb_brd = brd_get_board_bb(brd);
-    return bb_is_set(bb_brd, sq);
+    return brd->pce_square[sq] != NO_PIECE;
 }
 
 /**
@@ -160,6 +159,7 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
     // add material
     const enum piece_role pt = pce_get_piece_role(pce);
     const uint32_t material = pce_get_value(pt);
+
     brd->material[col_off] += material;
 }
 
@@ -168,9 +168,9 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
  * 
  * @param brd           The board
  * @param side          The side 
- * @return uint32_t     The current material value
+ * @return int32_t      The current material value
  */
-uint32_t brd_get_material(const struct board *brd, const enum colour side) {
+int32_t brd_get_material(const struct board *brd, const enum colour side) {
     assert(validate_board(brd));
     assert(validate_colour(side));
 
@@ -204,7 +204,9 @@ void brd_remove_piece(struct board *brd, const enum piece pce, const enum square
 
     const enum piece_role pt = pce_get_piece_role(pce);
     const uint32_t material = pce_get_value(pt);
+
     brd->material[col_off] -= material;
+    REQUIRE(brd->material[col_off] > 0, "Material can't be <= zero");
 }
 
 /**
@@ -451,18 +453,6 @@ bool brd_compare(const struct board *first, const struct board *second) {
     }
 
     return true;
-}
-
-/**
- * @brief Clones the current board
- * 
- * @param source    The source board to clone
- * @param dest      The target for the clone
- */
-__attribute__((always_inline)) void brd_clone(const struct board *source, struct board *dest) {
-    assert(validate_board(source));
-
-    __builtin_memcpy(dest, source, sizeof(struct board));
 }
 
 /**

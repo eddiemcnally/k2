@@ -92,6 +92,7 @@ set(CC_WARNINGS "-Wall \
 -Winline \
 -Winvalid-pch \
 -Wmissing-declarations \
+-Wmissing-variable-declarations \
 -Wmissing-format-attribute \
 -Wmissing-include-dirs \
 -Wmissing-prototypes \
