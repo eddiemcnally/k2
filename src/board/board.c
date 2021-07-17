@@ -157,8 +157,7 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
     brd->pce_square[sq] = pce;
 
     // add material
-    const enum piece_role pt = pce_get_piece_role(pce);
-    const uint32_t material = pce_get_value(pt);
+    const uint32_t material = pce_get_value(pce);
 
     brd->material[col_off] += material;
 }
@@ -202,8 +201,7 @@ void brd_remove_piece(struct board *brd, const enum piece pce, const enum square
     bb_clear_square(&brd->bb_board, sq);
     brd->pce_square[sq] = NO_PIECE;
 
-    const enum piece_role pt = pce_get_piece_role(pce);
-    const uint32_t material = pce_get_value(pt);
+    const uint32_t material = pce_get_value(pce);
 
     brd->material[col_off] -= material;
     REQUIRE(brd->material[col_off] > 0, "Material can't be <= zero");

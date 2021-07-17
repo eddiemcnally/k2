@@ -651,12 +651,12 @@ void test_board_material_white(void **state) {
 
     brd_add_piece(brd, WHITE_PAWN, h1);
     int32_t white_material = brd_get_material(brd, WHITE);
-    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(PAWN)));
+    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(WHITE_PAWN)));
     brd_remove_piece(brd, WHITE_PAWN, h1);
 
     brd_add_piece(brd, WHITE_QUEEN, h1);
     white_material = brd_get_material(brd, WHITE);
-    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(QUEEN)));
+    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(WHITE_QUEEN)));
     brd_remove_piece(brd, WHITE_QUEEN, h1);
 }
 
@@ -671,11 +671,11 @@ void test_board_material_black(void **state) {
 
     brd_add_piece(brd, BLACK_PAWN, h1);
     int32_t black_material = brd_get_material(brd, BLACK);
-    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(PAWN)));
+    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(BLACK_PAWN)));
     brd_remove_piece(brd, BLACK_PAWN, h1);
 
     brd_add_piece(brd, BLACK_QUEEN, h1);
     black_material = brd_get_material(brd, BLACK);
-    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(QUEEN)));
+    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(BLACK_QUEEN)));
     brd_remove_piece(brd, BLACK_QUEEN, h1);
 }

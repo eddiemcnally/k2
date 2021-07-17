@@ -36,36 +36,42 @@ enum colour {
     BLACK = 1,
 };
 
-// -XXX ----   ROLE
-// X--- ----   Colour 0-> White, 1 -> Black
-// ---- XXXX   Offset when used as an array lookup
-//================================================
-// -000 ----   Pawn
-// -001 ----   Bishop
-// -010 ----   Knight
-// -011 ----   Rook
-// -100 ----   Queen
-// -101 ----   King
-// 1--- ----   BLACK = 1, WHITE = 0
-// ---- 0000   White   Pawn Offset
-// ---- 0001           Bishop Offset
-// ---- 0010           Knight Offset
-// ---- 0011           Rook Offset
-// ---- 0100           Queen Offset
-// ---- 0101           King Offset
-// ---- 0110   Black   Pawn offset
-// ---- 0111           Bishop Offset
-// ---- 1000           Knight Offset
-// ---- 1001           Rook offset
-// ---- 1010           Queen Offset
-// ---- 1011           King Offset
+// piece bitmap
+//
+// XXXX XXXX XXXX XXXX ---- ----   Piece Value
+// ---- ---- ---- ---- -XXX ----   Piece Role
+// ---- ---- ---- ---- X--- ----   Colour 0-> White, 1 -> Black
+// ---- ---- ---- ---- ---- XXXX   Offset when used as an array lookup
+//====================================================================
+// ---- ---- ---- ---- -000 ----   Pawn
+// ---- ---- ---- ---- -001 ----   Bishop
+// ---- ---- ---- ---- -010 ----   Knight
+// ---- ---- ---- ---- -011 ----   Rook
+// ---- ---- ---- ---- -100 ----   Queen
+// ---- ---- ---- ---- -101 ----   King
+// ---- ---- ---- ---- 1--- ----   BLACK = 1, WHITE = 0
+//                                 Array offsets
+// ---- ---- ---- ---- ---- 0000   White   Pawn Offset
+// ---- ---- ---- ---- ---- 0001           Bishop Offset
+// ---- ---- ---- ---- ---- 0010           Knight Offset
+// ---- ---- ---- ---- ---- 0011           Rook Offset
+// ---- ---- ---- ---- ---- 0100           Queen Offset
+// ---- ---- ---- ---- ---- 0101           King Offset
+// ---- ---- ---- ---- ---- 0110   Black   Pawn offset
+// ---- ---- ---- ---- ---- 0111           Bishop Offset
+// ---- ---- ---- ---- ---- 1000           Knight Offset
+// ---- ---- ---- ---- ---- 1001           Rook offset
+// ---- ---- ---- ---- ---- 1010           Queen Offset
+// ---- ---- ---- ---- ---- 1011           King Offset
 
 enum piece_role { PAWN = 0x00, BISHOP = 0x01, KNIGHT = 0x02, ROOK = 0x03, QUEEN = 0x04, KING = 0x05 };
 
 #define ROLE_AS_INDEX(r) ((uint8_t)(r))
 #define ROLE_SHIFT (4)
 
-enum {
+#define VALUE_SHIFT (8)
+
+enum piece_array_offsets {
     WP_OFF = 0x00,
     WB_OFF = 0x01,
     WN_OFF = 0x02,
@@ -82,23 +88,41 @@ enum {
 
 #define COLOUR_MASK ((uint8_t)0x80)
 #define OFFSET_MASK ((uint8_t)0x0F)
+/**
+ * Piece values
+ * values taken from here: 
+ * https://www.chessprogramming.org/Simplified_Evaluation_Function 
+ */
+enum piece_values {
+    PCE_VAL_PAWN = 100,
+    PCE_VAL_BISHOP = 330,
+    PCE_VAL_KNIGHT = 320,
+    PCE_VAL_ROOK = 500,
+    PCE_VAL_QUEEN = 900,
+    PCE_VAL_KING = 20000
+};
+
+// constructs the bitmapped piece
+#define PCE_CTOR_WHITE(role, offset, val) ((uint32_t)((role << ROLE_SHIFT) | (uint8_t)(offset) | (val << VALUE_SHIFT)))
+#define PCE_CTOR_BLACK(role, offset, val)                                                                              \
+    ((uint32_t)((role << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(offset) | (val << VALUE_SHIFT)))
 
 enum piece {
-    WHITE_PAWN = (uint8_t)((PAWN << ROLE_SHIFT) | (uint8_t)(WP_OFF)),
-    WHITE_BISHOP = (uint8_t)((BISHOP << ROLE_SHIFT) | (uint8_t)(WB_OFF)),
-    WHITE_KNIGHT = (uint8_t)((KNIGHT << ROLE_SHIFT) | (uint8_t)(WN_OFF)),
-    WHITE_ROOK = (uint8_t)((ROOK << ROLE_SHIFT) | (uint8_t)(WR_OFF)),
-    WHITE_QUEEN = (uint8_t)((QUEEN << ROLE_SHIFT) | (uint8_t)(WQ_OFF)),
-    WHITE_KING = (uint8_t)((KING << ROLE_SHIFT) | (uint8_t)(WK_OFF)),
+    WHITE_PAWN = PCE_CTOR_WHITE(PAWN, WP_OFF, PCE_VAL_PAWN),
+    WHITE_BISHOP = PCE_CTOR_WHITE(BISHOP, WB_OFF, PCE_VAL_BISHOP),
+    WHITE_KNIGHT = PCE_CTOR_WHITE(KNIGHT, WN_OFF, PCE_VAL_KNIGHT),
+    WHITE_ROOK = PCE_CTOR_WHITE(ROOK, WR_OFF, PCE_VAL_ROOK),
+    WHITE_QUEEN = PCE_CTOR_WHITE(QUEEN, WQ_OFF, PCE_VAL_QUEEN),
+    WHITE_KING = PCE_CTOR_WHITE(KING, WK_OFF, PCE_VAL_KING),
 
-    BLACK_PAWN = (uint8_t)((PAWN << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BP_OFF)),
-    BLACK_BISHOP = (uint8_t)((BISHOP << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BB_OFF)),
-    BLACK_KNIGHT = (uint8_t)((KNIGHT << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BN_OFF)),
-    BLACK_ROOK = (uint8_t)((ROOK << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BR_OFF)),
-    BLACK_QUEEN = (uint8_t)((QUEEN << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BQ_OFF)),
-    BLACK_KING = (uint8_t)((KING << ROLE_SHIFT) | COLOUR_MASK | (uint8_t)(BK_OFF)),
+    BLACK_PAWN = PCE_CTOR_BLACK(PAWN, BP_OFF, PCE_VAL_PAWN),
+    BLACK_BISHOP = PCE_CTOR_BLACK(BISHOP, BB_OFF, PCE_VAL_BISHOP),
+    BLACK_KNIGHT = PCE_CTOR_BLACK(KNIGHT, BN_OFF, PCE_VAL_KNIGHT),
+    BLACK_ROOK = PCE_CTOR_BLACK(ROOK, BR_OFF, PCE_VAL_ROOK),
+    BLACK_QUEEN = PCE_CTOR_BLACK(QUEEN, BQ_OFF, PCE_VAL_QUEEN),
+    BLACK_KING = PCE_CTOR_BLACK(KING, BK_OFF, PCE_VAL_KING),
 
-    NO_PIECE = (uint8_t)0xFF
+    NO_PIECE = (uint32_t)0xFFFF
 };
 
 #define NUM_COLOURS (2)
@@ -127,7 +151,7 @@ bool pce_is_white(const enum piece pce);
 bool pce_is_black(const enum piece pce);
 enum colour pce_swap_side(const enum colour side);
 enum colour pce_get_colour(const enum piece pce);
-uint32_t pce_get_value(const enum piece_role pt);
+uint32_t pce_get_value(const enum piece pce);
 char pce_get_label(const enum piece pce);
 enum piece pce_get_from_label(const char c);
 bool validate_piece(const enum piece pce);

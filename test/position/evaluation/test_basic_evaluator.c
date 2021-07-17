@@ -93,7 +93,6 @@ void test_basic_evaluator_sample_black_position(void **state) {
     const struct board *brd = pos_get_board(pos);
     int32_t score = evaluate_position_basic(brd, BLACK);
 
-    printf("****score %d\n", score);
     assert_int_equal(score, 1915);
 
     // let fen = "1k6/1pp3q1/5b2/1n6/7p/8/3K4/8 b - - 0 1";

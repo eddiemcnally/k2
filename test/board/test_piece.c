@@ -89,12 +89,19 @@ void test_piece_get_piece_label(void **state) {
 }
 
 void test_piece_values(void **state) {
-    assert_true(pce_get_value(PAWN) == 100);
-    assert_true(pce_get_value(BISHOP) == 330);
-    assert_true(pce_get_value(KNIGHT) == 320);
-    assert_true(pce_get_value(ROOK) == 500);
-    assert_true(pce_get_value(QUEEN) == 900);
-    assert_true(pce_get_value(KING) == 20000);
+    assert_true(pce_get_value(WHITE_PAWN) == 100);
+    assert_true(pce_get_value(WHITE_BISHOP) == 330);
+    assert_true(pce_get_value(WHITE_KNIGHT) == 320);
+    assert_true(pce_get_value(WHITE_ROOK) == 500);
+    assert_true(pce_get_value(WHITE_QUEEN) == 900);
+    assert_true(pce_get_value(WHITE_KING) == 20000);
+
+    assert_true(pce_get_value(BLACK_PAWN) == 100);
+    assert_true(pce_get_value(BLACK_BISHOP) == 330);
+    assert_true(pce_get_value(BLACK_KNIGHT) == 320);
+    assert_true(pce_get_value(BLACK_ROOK) == 500);
+    assert_true(pce_get_value(BLACK_QUEEN) == 900);
+    assert_true(pce_get_value(BLACK_KING) == 20000);
 }
 
 void test_piece_get_colour_white_pieces(void **state) {

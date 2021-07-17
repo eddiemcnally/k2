@@ -38,19 +38,6 @@
 #include <ctype.h>
 #include <stdio.h>
 
-/**
- * Piece values
- * values taken from here: 
- * https://www.chessprogramming.org/Simplified_Evaluation_Function 
- */
-enum piece_values {
-    PCE_VAL_PAWN = 100,
-    PCE_VAL_BISHOP = 330,
-    PCE_VAL_KNIGHT = 320,
-    PCE_VAL_ROOK = 500,
-    PCE_VAL_QUEEN = 900,
-    PCE_VAL_KING = 20000
-};
 #define ROLE_MASK ((uint8_t)0x70)
 #define COLOUR_SHIFT (7)
 
@@ -125,35 +112,15 @@ inline enum colour pce_get_colour(const enum piece pce) {
 }
 
 /**
- * @brief       Gets the piece value of the given piece_type
+ * @brief       Gets the piece value of the given piece
  *
- * @param pt    The piece_type
+ * @param pce   The piece
  * @return      The piece value
  */
-inline uint32_t pce_get_value(const enum piece_role pt) {
-    assert(validate_piece_role(pt));
+inline uint32_t pce_get_value(const enum piece pce) {
+    assert(validate_piece(pce));
 
-    const uint8_t offset = ROLE_AS_INDEX(pt);
-
-    switch (offset) {
-    case ROLE_AS_INDEX(PAWN):
-        return PCE_VAL_PAWN;
-    case ROLE_AS_INDEX(BISHOP):
-        return PCE_VAL_BISHOP;
-    case ROLE_AS_INDEX(KNIGHT):
-        return PCE_VAL_KNIGHT;
-    case ROLE_AS_INDEX(ROOK):
-        return PCE_VAL_ROOK;
-    case ROLE_AS_INDEX(QUEEN):
-        return PCE_VAL_QUEEN;
-    case ROLE_AS_INDEX(KING):
-        return PCE_VAL_KING;
-    default:
-        REQUIRE(false, "Invalid Piece Role");
-        return 0;
-    }
-
-    REQUIRE(false, "Invalid Piece Role");
+    return (uint32_t)(pce >> VALUE_SHIFT);
 }
 
 bool pce_is_king(const enum piece pce) {
