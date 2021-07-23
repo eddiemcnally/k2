@@ -36,40 +36,40 @@ enum colour {
     BLACK = 1,
 };
 
-// piece bitmap
+// piece bitmap (uint32_t)
 //
-// XXXX XXXX XXXX XXXX ---- ----   Piece Value
-// ---- ---- ---- ---- -XXX ----   Piece Role
-// ---- ---- ---- ---- X--- ----   Colour 0-> White, 1 -> Black
-// ---- ---- ---- ---- ---- XXXX   Offset when used as an array lookup
+// XXXX XXXX XXXX XXXX ---- ---- ---- ----   Piece Value
+// ---- ---- ---- ---- ---- ---- -XXX ----   Piece Role
+// ---- ---- ---- ---- ---- ---- X--- ----   Colour 0-> White, 1 -> Black
+// ---- ---- ---- ---- ---- ---- ---- XXXX   Offset when used as an array lookup
 //====================================================================
-// ---- ---- ---- ---- -000 ----   Pawn
-// ---- ---- ---- ---- -001 ----   Bishop
-// ---- ---- ---- ---- -010 ----   Knight
-// ---- ---- ---- ---- -011 ----   Rook
-// ---- ---- ---- ---- -100 ----   Queen
-// ---- ---- ---- ---- -101 ----   King
-// ---- ---- ---- ---- 1--- ----   BLACK = 1, WHITE = 0
-//                                 Array offsets
-// ---- ---- ---- ---- ---- 0000   White   Pawn Offset
-// ---- ---- ---- ---- ---- 0001           Bishop Offset
-// ---- ---- ---- ---- ---- 0010           Knight Offset
-// ---- ---- ---- ---- ---- 0011           Rook Offset
-// ---- ---- ---- ---- ---- 0100           Queen Offset
-// ---- ---- ---- ---- ---- 0101           King Offset
-// ---- ---- ---- ---- ---- 0110   Black   Pawn offset
-// ---- ---- ---- ---- ---- 0111           Bishop Offset
-// ---- ---- ---- ---- ---- 1000           Knight Offset
-// ---- ---- ---- ---- ---- 1001           Rook offset
-// ---- ---- ---- ---- ---- 1010           Queen Offset
-// ---- ---- ---- ---- ---- 1011           King Offset
+// ---- ---- ---- ---- ---- ---- -000 ----   Pawn
+// ---- ---- ---- ---- ---- ---- -001 ----   Bishop
+// ---- ---- ---- ---- ---- ---- -010 ----   Knight
+// ---- ---- ---- ---- ---- ---- -011 ----   Rook
+// ---- ---- ---- ---- ---- ---- -100 ----   Queen
+// ---- ---- ---- ---- ---- ---- -101 ----   King
+// ---- ---- ---- ---- ---- ---- 1--- ----   BLACK = 1, WHITE = 0
+//                                           Array offsets
+// ---- ---- ---- ---- ---- ---- ---- 0000   White   Pawn Offset
+// ---- ---- ---- ---- ---- ---- ---- 0001           Bishop Offset
+// ---- ---- ---- ---- ---- ---- ---- 0010           Knight Offset
+// ---- ---- ---- ---- ---- ---- ---- 0011           Rook Offset
+// ---- ---- ---- ---- ---- ---- ---- 0100           Queen Offset
+// ---- ---- ---- ---- ---- ---- ---- 0101           King Offset
+// ---- ---- ---- ---- ---- ---- ---- 0110   Black   Pawn offset
+// ---- ---- ---- ---- ---- ---- ---- 0111           Bishop Offset
+// ---- ---- ---- ---- ---- ---- ---- 1000           Knight Offset
+// ---- ---- ---- ---- ---- ---- ---- 1001           Rook offset
+// ---- ---- ---- ---- ---- ---- ---- 1010           Queen Offset
+// ---- ---- ---- ---- ---- ---- ---- 1011           King Offset
 
 enum piece_role { PAWN = 0x00, BISHOP = 0x01, KNIGHT = 0x02, ROOK = 0x03, QUEEN = 0x04, KING = 0x05 };
 
 #define ROLE_AS_INDEX(r) ((uint8_t)(r))
 #define ROLE_SHIFT (4)
 
-#define VALUE_SHIFT (8)
+#define VALUE_SHIFT (16)
 
 enum piece_array_offsets {
     WP_OFF = 0x00,
@@ -122,7 +122,7 @@ enum piece {
     BLACK_QUEEN = PCE_CTOR_BLACK(QUEEN, BQ_OFF, PCE_VAL_QUEEN),
     BLACK_KING = PCE_CTOR_BLACK(KING, BK_OFF, PCE_VAL_KING),
 
-    NO_PIECE = (uint32_t)0xFFFF
+    NO_PIECE = (uint32_t)0xFFFFFFFF
 };
 
 #define NUM_COLOURS (2)

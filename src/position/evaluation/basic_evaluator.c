@@ -45,6 +45,9 @@
 #include <stdint.h>
 #include <string.h>
 
+static int32_t eval_white(const enum piece_role role, const enum square sq);
+static int32_t eval_black(const enum piece_role role, const enum square sq);
+
 // Values for piece square arrays are taken from
 // https://www.chessprogramming.org/Simplified_Evaluation_Function
 //
@@ -56,41 +59,76 @@
 //
 //
 
+// clang-format off
+// elem[0] is a1, elem[1] is b1, etc
 static const int8_t PAWN_SQ_VALUE[NUM_SQUARES] = {
-    0,  0,  0,  0,  0,  0,  0,  0,  5,  10, 10, -20, -20, 10, 10, 5,  5, -5, -10, 0,  0,  -10,
-    -5, 5,  0,  0,  0,  20, 20, 0,  0,  0,  5,  5,   10,  25, 25, 10, 5, 5,  10,  10, 20, 30,
-    30, 20, 10, 10, 50, 50, 50, 50, 50, 50, 50, 50,  0,   0,  0,  0,  0, 0,  0,   0,
+    0,      0,      0,      0,      0,      0,      0,      0,  
+    5,      10,     10,     -20,    -20,    10,     10,     5,  
+    5,      -5,     -10,    0,      0,      -10,    -5,     5,  
+    0,      0,      0,      20,     20,     0,      0,      0,  
+    5,      5,      10,     25,     25,     10,     5,      5,  
+    10,     10,     20,     30,     30,     20,     10,     10, 
+    50,     50,     50,     50,     50,     50,     50,     50,  
+    0,      0,      0,      0,      0,      0,      0,      0,
 };
 
 static const int8_t KNIGHT_SQ_VALUE[NUM_SQUARES] = {
-    -50, -40, -30, -30, -30, -30, -40, -50, -40, -20, 0,   5,   5,   0,   -20, -40, -30, 5,   10,  15,  15, 10,
-    5,   -30, -30, 0,   15,  20,  20,  15,  0,   -30, -30, 5,   15,  20,  20,  15,  5,   -30, -30, 0,   10, 15,
-    15,  10,  0,   -30, -40, -20, 0,   0,   0,   0,   -20, -40, -50, -40, -30, -30, -30, -30, -40, -50,
+    -50,    -40,    -30,    -30,    -30,    -30,    -40,    -50, 
+    -40,    -20,    0,      5,      5,      0,      -20,    -40, 
+    -30,    5,      10,     15,     15,     10,     5,      -30, 
+    -30,    0,      15,     20,     20,     15,     0,      -30, 
+    -30,    5,      15,     20,     20,     15,     5,      -30, 
+    -30,    0,      10,     15,     15,     10,     0,      -30, 
+    -40,    -20,    0,      0,      0,      0,      -20,    -40, 
+    -50,    -40,    -30,    -30,    -30,    -30,    -40,    -50,
 };
 
 static const int8_t BISHOP_SQ_VALUE[NUM_SQUARES] = {
-    -20, -10, -10, -10, -10, -10, -10, -20, -10, 5,   0,   0,   0,   0,   5,   -10, -10, 10,  10,  10,  10, 10,
-    10,  -10, -10, 0,   10,  10,  10,  10,  0,   -10, -10, 5,   5,   10,  10,  5,   5,   -10, -10, 0,   5,  10,
-    10,  5,   0,   -10, -10, 0,   0,   0,   0,   0,   0,   -10, -20, -10, -10, -10, -10, -10, -10, -20,
+    -20,    -10,    -10,    -10,    -10,    -10,    -10,    -20, 
+    -10,    5,      0,      0,      0,      0,      5,      -10, 
+    -10,    10,     10,     10,     10,     10,     10,     -10, 
+    -10,    0,      10,     10,     10,     10,     0,      -10, 
+    -10,    5,      5,      10,     10,     5,      5,      -10, 
+    -10,    0,      5,      10,     10,     5,      0,      -10, 
+    -10,    0,      0,      0,      0,      0,      0,      -10, 
+    -20,    -10,    -10,    -10,    -10,    -10,    -10,    -20,
 };
 
-static const int8_t ROOK_SQ_VALUE[NUM_SQUARES] = {
-    0,  0, 0, 5, 5, 0, 0, 0,  -5, 0, 0, 0, 0, 0, 0, -5, -5, 0,  0,  0,  0,  0,  0,  -5, -5, 0, 0, 0, 0, 0, 0, -5,
-    -5, 0, 0, 0, 0, 0, 0, -5, -5, 0, 0, 0, 0, 0, 0, -5, 5,  10, 10, 10, 10, 10, 10, 5,  0,  0, 0, 0, 0, 0, 0, 0,
+static const int8_t ROOK_SQ_VALUE[NUM_SQUARES] = {  
+    0,      0,      0,      5,      5,      0,      0,      0,  
+    -5,     0,      0,      0,      0,      0,      0,      -5, 
+    -5,     0,      0,      0,      0,      0,      0,      -5, 
+    -5,     0,      0,      0,      0,      0,      0,      -5,
+    -5,     0,      0,      0,      0,      0,      0,      -5, 
+    -5,     0,      0,      0,      0,      0,      0,      -5, 
+    5,      10,     10,     10,     10,     10,     10,     5,  
+    0,      0,      0,      0,      0,      0,      0,      0,
 };
 
 static const int8_t QUEEN_SQ_VALUE[NUM_SQUARES] = {
-    -20, -10, -10, -5,  -5,  -10, -10, -20, -10, 0,  5,  0,   0,   0,   0,   -10, -10, 5,   5,   5,   5, 5,
-    0,   -10, 0,   0,   5,   5,   5,   5,   0,   -5, -5, 0,   5,   5,   5,   5,   0,   -5,  -10, 0,   5, 5,
-    5,   5,   0,   -10, -10, 0,   0,   0,   0,   0,  0,  -10, -20, -10, -10, -5,  -5,  -10, -10, -20,
+    -20,    -10,    -10,    -5,     -5,     -10,    -10,    -20, 
+    -10,    0,      5,      0,      0,      0,      0,      -10, 
+    -10,    5,      5,      5,      5,      5,      0,      -10, 
+    0,      0,      5,      5,      5,      5,      0,      -5, 
+    -5,     0,      5,      5,      5,      5,      0,      -5,  
+    -10,    0,      5,      5,      5,      5,      0,      -10, 
+    -10,    0,      0,      0,      0,      0,      0,      -10, 
+    -20,    -10,    -10,    -5,     -5,     -10,    -10,    -20,
 };
 
 static const int8_t KING_SQ_VALUE[NUM_SQUARES] = {
-    20,  30,  10,  0,   0,   10,  30,  20,  20,  20,  0,   0,   0,   0,   20,  20,  -10, -20, -20, -20, -20, -20,
-    -20, -10, -20, -30, -30, -40, -40, -30, -30, -20, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50,
-    -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30, -30, -40, -40, -50, -50, -40, -40, -30,
-
+    20,     30,     10,     0,      0,      10,     30,     20,  
+    20,     20,     0,      0,      0,      0,      20,     20,  
+    -10,    -20,    -20,    -20,    -20,    -20,    -20,    -10, 
+    -20,    -30,    -30,    -40,    -40,    -30,    -30,    -20, 
+    -30,    -40,    -40,    -50,    -50,    -40,    -40,    -30,
+    -30,    -40,    -40,    -50,    -50,    -40,    -40,    -30, 
+    -30,    -40,    -40,    -50,    -50,    -40,    -40,    -30,
+    -30,    -40,    -40,    -50,    -50,    -40,    -40,    -30,
 };
+
+// clang-format off
+
 
 // ToDo - add game state and swap to this array
 //
@@ -115,45 +153,9 @@ static const int8_t KING_SQ_VALUE[NUM_SQUARES] = {
  */
 int32_t evaluate_position_basic(const struct board *brd, const enum colour side_to_move) {
 
-    // // material
-    // let mut score = (material.0.wrapping_sub(material.1)) as i32;
+    const struct material m = brd_get_material(brd);
 
-    // // piece positions
-    // let mut board_bb = board.get_bitboard();
-    // while board_bb != 0 {
-    //     let sq = bitboard::pop_1st_bit(&mut board_bb);
-    //     let pce = board.get_piece_on_square(sq);
-
-    //     let sq_offset = sq.to_offset();
-
-    //     score += match pce.unwrap() {
-    //         Piece::WhitePawn => PAWN_SQ_VALUE[sq_offset] as i32,
-    //         Piece::WhiteBishop => BISHOP_SQ_VALUE[sq_offset] as i32,
-    //         Piece::WhiteKnight => KNIGHT_SQ_VALUE[sq_offset] as i32,
-    //         Piece::WhiteRook => ROOK_SQ_VALUE[sq_offset] as i32,
-    //         Piece::WhiteQueen => QUEEN_SQ_VALUE[sq_offset] as i32,
-    //         Piece::WhiteKing => KING_SQ_VALUE[sq_offset] as i32,
-
-    //         // black scores are negative, offsets are reversed/mirrored
-    //         Piece::BlackPawn => -PAWN_SQ_VALUE[63 - sq_offset] as i32,
-    //         Piece::BlackBishop => -BISHOP_SQ_VALUE[63 - sq_offset] as i32,
-    //         Piece::BlackKnight => -KNIGHT_SQ_VALUE[63 - sq_offset] as i32,
-    //         Piece::BlackRook => -ROOK_SQ_VALUE[63 - sq_offset] as i32,
-    //         Piece::BlackQueen => -QUEEN_SQ_VALUE[63 - sq_offset] as i32,
-    //         Piece::BlackKing => -KING_SQ_VALUE[63 - sq_offset] as i32,
-    //     }
-    // }
-
-    // if side_to_move == Colour::White {
-    //     score
-    // } else {
-    //     -score
-    // }
-
-    const int32_t white_material = brd_get_material(brd, WHITE);
-    const int32_t black_material = brd_get_material(brd, BLACK);
-
-    int32_t score = white_material - black_material;
+    int32_t score = m.white - m.black;
 
     uint64_t pce_bb = brd_get_board_bb(brd);
     while (pce_bb != 0) {
@@ -161,48 +163,20 @@ int32_t evaluate_position_basic(const struct board *brd, const enum colour side_
         bb_clear_square(&pce_bb, sq);
 
         const enum piece pce = brd_get_piece_on_square(brd, sq);
+        const enum piece_role role = pce_get_piece_role(pce);
+        const enum colour colour = pce_get_colour(pce);
 
-        switch (pce) {
-        case WHITE_PAWN:
-            score += PAWN_SQ_VALUE[sq];
+        switch(colour){
+        case WHITE:
+            score += eval_white(role, sq);
             break;
-        case WHITE_BISHOP:
-            score += BISHOP_SQ_VALUE[sq];
-            break;
-        case WHITE_KNIGHT:
-            score += KNIGHT_SQ_VALUE[sq];
-            break;
-        case WHITE_ROOK:
-            score += ROOK_SQ_VALUE[sq];
-            break;
-        case WHITE_QUEEN:
-            score += QUEEN_SQ_VALUE[sq];
-            break;
-        case WHITE_KING:
-            score += KING_SQ_VALUE[sq];
-            break;
-        // note: black numbers are negated
-        case BLACK_PAWN:
-            score -= PAWN_SQ_VALUE[63 - sq];
-            break;
-        case BLACK_BISHOP:
-            score -= BISHOP_SQ_VALUE[63 - sq];
-            break;
-        case BLACK_KNIGHT:
-            score -= KNIGHT_SQ_VALUE[63 - sq];
-            break;
-        case BLACK_ROOK:
-            score -= ROOK_SQ_VALUE[63 - sq];
-            break;
-        case BLACK_QUEEN:
-            score -= QUEEN_SQ_VALUE[63 - sq];
-            break;
-        case BLACK_KING:
-            score -= KING_SQ_VALUE[63 - sq];
+        case BLACK:
+            score -= eval_black(role, sq);
             break;
         default:
-            REQUIRE(false, "Invalid piece switch value");
-        }
+            REQUIRE(false, "Invalid colour");
+            break;
+        }        
     }
 
     if (side_to_move == WHITE) {
@@ -211,3 +185,48 @@ int32_t evaluate_position_basic(const struct board *brd, const enum colour side_
         return -score;
     }
 }
+
+
+__attribute__((always_inline)) static int32_t eval_white(const enum piece_role role, const enum square sq){
+    switch(role){
+    case PAWN:
+        return PAWN_SQ_VALUE[sq];
+    case BISHOP:
+        return  BISHOP_SQ_VALUE[sq];
+    case KNIGHT:
+        return  KNIGHT_SQ_VALUE[sq];
+    case ROOK:
+        return  ROOK_SQ_VALUE[sq];
+    case QUEEN:
+        return QUEEN_SQ_VALUE[sq];
+    case KING:
+        return KING_SQ_VALUE[sq];
+    default:
+        REQUIRE(false, "Invalid role for White switch");
+    }
+}
+
+
+__attribute__((always_inline)) static int32_t eval_black(const enum piece_role role, const enum square sq){
+    // lookup tables are white-oriented....invert for black
+    const uint32_t offset = 63 - sq;
+
+    switch(role){
+    case PAWN:
+        return PAWN_SQ_VALUE[offset];
+    case BISHOP:
+        return  BISHOP_SQ_VALUE[offset];
+    case KNIGHT:
+        return  KNIGHT_SQ_VALUE[offset];
+    case ROOK:
+        return  ROOK_SQ_VALUE[offset];
+    case QUEEN:
+        return QUEEN_SQ_VALUE[offset];
+    case KING:
+        return KING_SQ_VALUE[offset];
+    default:
+        REQUIRE(false, "Invalid role for Black switch");
+    }
+}
+
+

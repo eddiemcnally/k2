@@ -63,11 +63,11 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
             }
 
             const enum colour side = pce_get_colour(pce);
-            int32_t material_before_add = brd_get_material(brd, side);
+            struct material material_before_add = brd_get_material(brd);
 
             // add piece
             brd_add_piece(brd, pce, sq);
-            int32_t material_after_add = brd_get_material(brd, side);
+            struct material material_after_add = brd_get_material(brd);
 
             // verify it's there
             enum piece found_pce = brd_get_piece_on_square(brd, sq);
@@ -75,16 +75,24 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
             assert_true(found_pce == pce);
             bool is_occupied = brd_is_sq_occupied(brd, sq);
             assert_true(is_occupied);
-            assert_int_not_equal(material_before_add, material_after_add);
+            if (side == WHITE) {
+                assert_int_not_equal(material_before_add.white, material_after_add.white);
+            } else {
+                assert_int_not_equal(material_before_add.black, material_after_add.black);
+            }
 
             // remove piece
             brd_remove_piece(brd, pce, sq);
-            int32_t material_after_remove = brd_get_material(brd, side);
+            struct material material_after_remove = brd_get_material(brd);
 
             // verify it's gone
             bool occupied = brd_is_sq_occupied(brd, sq);
             assert_false(occupied);
-            assert_int_equal(material_before_add, material_after_remove);
+            if (side == WHITE) {
+                assert_int_equal(material_before_add.white, material_after_remove.white);
+            } else {
+                assert_int_equal(material_before_add.black, material_after_remove.black);
+            }
         }
     }
     brd_deallocate(brd);
@@ -132,12 +140,12 @@ void test_board_brd_move_piece(void **state) {
                 bool is_occupied = brd_is_sq_occupied(brd, from_sq);
                 assert_true(is_occupied);
 
-                int32_t material_before_move = brd_get_material(brd, side);
+                struct material material_before_move = brd_get_material(brd);
 
                 // move it
                 brd_move_piece(brd, pce, from_sq, to_sq);
 
-                int32_t material_after_move = brd_get_material(brd, side);
+                struct material material_after_move = brd_get_material(brd);
 
                 // verify it's not on the from_sq
                 is_occupied = brd_is_sq_occupied(brd, from_sq);
@@ -148,7 +156,11 @@ void test_board_brd_move_piece(void **state) {
                 is_occupied = brd_is_sq_occupied(brd, to_sq);
                 assert_true(is_occupied);
 
-                assert_int_equal(material_before_move, material_after_move);
+                if (side == WHITE) {
+                    assert_int_equal(material_before_move.white, material_after_move.white);
+                } else {
+                    assert_int_equal(material_before_move.black, material_after_move.black);
+                }
                 // remove piece
                 brd_remove_piece(brd, pce, to_sq);
             }
@@ -647,16 +659,16 @@ void test_board_material_white(void **state) {
     pos_initialise(FEN, pos);
 
     struct board *brd = pos_get_board(pos);
-    int32_t base_white_material = brd_get_material(brd, WHITE);
+    struct material base_white_material = brd_get_material(brd);
 
     brd_add_piece(brd, WHITE_PAWN, h1);
-    int32_t white_material = brd_get_material(brd, WHITE);
-    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(WHITE_PAWN)));
+    struct material white_material = brd_get_material(brd);
+    assert_int_equal(white_material.white, (base_white_material.white + (int32_t)pce_get_value(WHITE_PAWN)));
     brd_remove_piece(brd, WHITE_PAWN, h1);
 
     brd_add_piece(brd, WHITE_QUEEN, h1);
-    white_material = brd_get_material(brd, WHITE);
-    assert_int_equal(white_material, (base_white_material + (int32_t)pce_get_value(WHITE_QUEEN)));
+    white_material = brd_get_material(brd);
+    assert_int_equal(white_material.white, (base_white_material.white + (int32_t)pce_get_value(WHITE_QUEEN)));
     brd_remove_piece(brd, WHITE_QUEEN, h1);
 }
 
@@ -667,15 +679,15 @@ void test_board_material_black(void **state) {
     pos_initialise(FEN, pos);
 
     struct board *brd = pos_get_board(pos);
-    const int32_t base_black_material = brd_get_material(brd, BLACK);
+    const struct material base_black_material = brd_get_material(brd);
 
     brd_add_piece(brd, BLACK_PAWN, h1);
-    int32_t black_material = brd_get_material(brd, BLACK);
-    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(BLACK_PAWN)));
+    struct material black_material = brd_get_material(brd);
+    assert_int_equal(black_material.black, (base_black_material.black + (int32_t)pce_get_value(BLACK_PAWN)));
     brd_remove_piece(brd, BLACK_PAWN, h1);
 
     brd_add_piece(brd, BLACK_QUEEN, h1);
-    black_material = brd_get_material(brd, BLACK);
-    assert_int_equal(black_material, (base_black_material + (int32_t)pce_get_value(BLACK_QUEEN)));
+    black_material = brd_get_material(brd);
+    assert_int_equal(black_material.black, (base_black_material.black + (int32_t)pce_get_value(BLACK_QUEEN)));
     brd_remove_piece(brd, BLACK_QUEEN, h1);
 }

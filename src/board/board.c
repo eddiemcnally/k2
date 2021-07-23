@@ -169,12 +169,13 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
  * @param side          The side 
  * @return int32_t      The current material value
  */
-int32_t brd_get_material(const struct board *brd, const enum colour side) {
+struct material brd_get_material(const struct board *brd) {
     assert(validate_board(brd));
-    assert(validate_colour(side));
 
-    const uint8_t idx = PCE_COL_GET_ARRAY_INDEX(side);
-    return brd->material[idx];
+    struct material m = {.white = brd->material[PCE_COL_ARRAY_OFFSET_WHITE],
+                         .black = brd->material[PCE_COL_ARRAY_OFFSET_BLACK]};
+
+    return m;
 }
 
 /**

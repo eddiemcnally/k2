@@ -413,16 +413,14 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
 
         struct board *brd = pos_get_board(pos);
 
-        int32_t w_material_before = brd_get_material(brd, WHITE);
-        int32_t b_material_before = brd_get_material(brd, BLACK);
+        struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, wk_castle);
 
-        int32_t w_material_after = brd_get_material(brd, WHITE);
-        int32_t b_material_after = brd_get_material(brd, BLACK);
+        struct material material_after = brd_get_material(brd);
 
-        assert_int_equal(w_material_before, w_material_after);
-        assert_int_equal(b_material_before, b_material_after);
+        assert_int_equal(material_before.white, material_after.white);
+        assert_int_equal(material_before.black, material_after.black);
 
         assert_true(legality == ILLEGAL_MOVE);
 
@@ -446,16 +444,14 @@ void test_position_make_move_castle_black_kingside_move_invalid(void **state) {
         pos_initialise(fen_list[i], pos);
         const struct board *brd = pos_get_board(pos);
 
-        int32_t w_material_before = brd_get_material(brd, WHITE);
-        int32_t b_material_before = brd_get_material(brd, BLACK);
+        struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, bk_castle);
 
-        int32_t w_material_after = brd_get_material(brd, WHITE);
-        int32_t b_material_after = brd_get_material(brd, BLACK);
+        struct material material_after = brd_get_material(brd);
 
-        assert_int_equal(w_material_before, w_material_after);
-        assert_int_equal(b_material_before, b_material_after);
+        assert_int_equal(material_before.white, material_after.white);
+        assert_int_equal(material_before.black, material_after.black);
 
         assert_true(legality == ILLEGAL_MOVE);
 
@@ -479,17 +475,15 @@ void test_position_make_move_castle_white_queenside_move_invalid(void **state) {
         pos_initialise(fen_list[i], pos);
         const struct board *brd = pos_get_board(pos);
 
-        int32_t w_material_before = brd_get_material(brd, WHITE);
-        int32_t b_material_before = brd_get_material(brd, BLACK);
+        struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, wq_castle);
 
         assert_true(legality == ILLEGAL_MOVE);
-        int32_t w_material_after = brd_get_material(brd, WHITE);
-        int32_t b_material_after = brd_get_material(brd, BLACK);
+        struct material material_after = brd_get_material(brd);
 
-        assert_int_equal(w_material_before, w_material_after);
-        assert_int_equal(b_material_before, b_material_after);
+        assert_int_equal(material_before.white, material_after.white);
+        assert_int_equal(material_before.black, material_after.black);
 
         pos_destroy(pos);
     }
@@ -511,17 +505,15 @@ void test_position_make_move_castle_black_queenside_move_invalid(void **state) {
         pos_initialise(fen_list[i], pos);
         const struct board *brd = pos_get_board(pos);
 
-        int32_t w_material_before = brd_get_material(brd, WHITE);
-        int32_t b_material_before = brd_get_material(brd, BLACK);
+        struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, bq_castle);
 
         assert_true(legality == ILLEGAL_MOVE);
-        int32_t w_material_after = brd_get_material(brd, WHITE);
-        int32_t b_material_after = brd_get_material(brd, BLACK);
+        struct material material_after = brd_get_material(brd);
 
-        assert_int_equal(w_material_before, w_material_after);
-        assert_int_equal(b_material_before, b_material_after);
+        assert_int_equal(material_before.white, material_after.white);
+        assert_int_equal(material_before.black, material_after.black);
 
         pos_destroy(pos);
     }
@@ -632,21 +624,19 @@ void test_position_make_move_black_knight(void **state) {
         pos_initialise(test_fen, pos);
         const struct board *brd = pos_get_board(pos);
 
-        const int32_t white_material_before = brd_get_material(brd, WHITE);
-        const int32_t black_material_before = brd_get_material(brd, BLACK);
+        const struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, mv);
 
-        const int32_t white_material_after = brd_get_material(brd, WHITE);
-        const int32_t black_material_after = brd_get_material(brd, BLACK);
+        const struct material material_after = brd_get_material(brd);
 
         assert_true(legality == LEGAL_MOVE);
         if (move_is_quiet(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_int_equal(black_material_before, black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_int_equal(material_before.black, material_after.black);
         } else if (move_is_capture(mv)) {
-            assert_int_equal(black_material_before, black_material_after);
-            assert_true(white_material_before > white_material_after);
+            assert_int_equal(material_before.black, material_after.black);
+            assert_true(material_before.white > material_after.white);
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
@@ -675,21 +665,19 @@ void test_position_make_move_white_knight(void **state) {
         pos_initialise(test_fen, pos);
         const struct board *brd = pos_get_board(pos);
 
-        const int32_t white_material_before = brd_get_material(brd, WHITE);
-        const int32_t black_material_before = brd_get_material(brd, BLACK);
+        const struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, mv);
 
-        const int32_t white_material_after = brd_get_material(brd, WHITE);
-        const int32_t black_material_after = brd_get_material(brd, BLACK);
+        const struct material material_after = brd_get_material(brd);
 
         assert_true(legality == LEGAL_MOVE);
         if (move_is_quiet(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_int_equal(black_material_before, black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_int_equal(material_before.black, material_after.black);
         } else if (move_is_capture(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_true(black_material_before > black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_true(material_before.black > material_after.black);
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
@@ -720,21 +708,19 @@ void test_position_make_move_black_bishop(void **state) {
         pos_initialise(test_fen, pos);
         const struct board *brd = pos_get_board(pos);
 
-        const int32_t white_material_before = brd_get_material(brd, WHITE);
-        const int32_t black_material_before = brd_get_material(brd, BLACK);
+        const struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, mv);
 
-        const int32_t white_material_after = brd_get_material(brd, WHITE);
-        const int32_t black_material_after = brd_get_material(brd, BLACK);
+        const struct material material_after = brd_get_material(brd);
 
         assert_true(legality == LEGAL_MOVE);
         if (move_is_quiet(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_int_equal(black_material_before, black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_int_equal(material_before.black, material_after.black);
         } else if (move_is_capture(mv)) {
-            assert_int_equal(black_material_before, black_material_after);
-            assert_true(white_material_before > white_material_after);
+            assert_int_equal(material_before.black, material_after.black);
+            assert_true(material_before.white > material_after.white);
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
@@ -767,21 +753,19 @@ void test_position_make_move_white_bishop(void **state) {
         pos_initialise(test_fen, pos);
         const struct board *brd = pos_get_board(pos);
 
-        const int32_t white_material_before = brd_get_material(brd, WHITE);
-        const int32_t black_material_before = brd_get_material(brd, BLACK);
+        const struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, mv);
 
-        const int32_t white_material_after = brd_get_material(brd, WHITE);
-        const int32_t black_material_after = brd_get_material(brd, BLACK);
+        const struct material material_after = brd_get_material(brd);
 
         assert_true(legality == LEGAL_MOVE);
         if (move_is_quiet(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_int_equal(black_material_before, black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_int_equal(material_before.black, material_after.black);
         } else if (move_is_capture(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_true(black_material_before > black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_true(material_before.black > material_after.black);
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
@@ -819,21 +803,19 @@ void test_position_make_move_black_queen(void **state) {
         pos_initialise(test_fen, pos);
         const struct board *brd = pos_get_board(pos);
 
-        const int32_t white_material_before = brd_get_material(brd, WHITE);
-        const int32_t black_material_before = brd_get_material(brd, BLACK);
+        const struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, mv);
 
-        const int32_t white_material_after = brd_get_material(brd, WHITE);
-        const int32_t black_material_after = brd_get_material(brd, BLACK);
+        const struct material material_after = brd_get_material(brd);
 
         assert_true(legality == LEGAL_MOVE);
         if (move_is_quiet(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_int_equal(black_material_before, black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_int_equal(material_before.black, material_after.black);
         } else if (move_is_capture(mv)) {
-            assert_int_equal(black_material_before, black_material_after);
-            assert_true(white_material_before > white_material_after);
+            assert_int_equal(material_before.black, material_after.black);
+            assert_true(material_before.white > material_after.white);
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
@@ -868,21 +850,19 @@ void test_position_make_move_white_queen(void **state) {
         pos_initialise(test_fen, pos);
         const struct board *brd = pos_get_board(pos);
 
-        const int32_t white_material_before = brd_get_material(brd, WHITE);
-        const int32_t black_material_before = brd_get_material(brd, BLACK);
+        const struct material material_before = brd_get_material(brd);
 
         enum move_legality legality = pos_make_move(pos, mv);
 
-        const int32_t white_material_after = brd_get_material(brd, WHITE);
-        const int32_t black_material_after = brd_get_material(brd, BLACK);
+        const struct material material_after = brd_get_material(brd);
 
         assert_true(legality == LEGAL_MOVE);
         if (move_is_quiet(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_int_equal(black_material_before, black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_int_equal(material_before.black, material_after.black);
         } else if (move_is_capture(mv)) {
-            assert_int_equal(white_material_before, white_material_after);
-            assert_true(black_material_before > black_material_after);
+            assert_int_equal(material_before.white, material_after.white);
+            assert_true(material_before.black > material_after.black);
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
