@@ -41,6 +41,10 @@ enum cast_perm_bitmap {
     CAST_PERM_WQ = 0x01 << 1,
     CAST_PERM_BK = 0x01 << 2,
     CAST_PERM_BQ = 0x01 << 3,
+
+    CAST_PERM_WHITE_MASK = CAST_PERM_WK | CAST_PERM_WQ,
+    CAST_PERM_BLACK_MASK = CAST_PERM_BK | CAST_PERM_BQ,
+
 };
 
 static void set_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
@@ -87,6 +91,17 @@ bool cast_perm_has_white_queenside_permissions(const struct cast_perm_container 
 }
 
 /**
+ * @brief      Returns true if there are WHITE castle permissions available
+ *
+ * @param[in]  cp_cont  The cp container
+ *
+ * @return     true when white has castle permissions
+ */
+bool cast_perm_has_white_permissions(const struct cast_perm_container cp_cont) {
+    return (cp_cont.val & CAST_PERM_WHITE_MASK) != 0;
+}
+
+/**
  * @brief Tests if there is Black King-side permissions active
  * 
  * @param cp_cont The castle permission struct
@@ -108,6 +123,16 @@ bool cast_perm_has_black_queenside_permissions(const struct cast_perm_container 
     return (cp_cont.val & CAST_PERM_BQ) != 0;
 }
 
+/**
+ * @brief      Returns true if there are BLACK castle permissions available
+ *
+ * @param[in]  cp_cont  The cp container
+ *
+ * @return     true when black has castle permissions
+ */
+bool cast_perm_has_black_permissions(const struct cast_perm_container cp_cont) {
+    return (cp_cont.val & CAST_PERM_BLACK_MASK) != 0;
+}
 /**
  * @brief Clears White castle permissions
  * 

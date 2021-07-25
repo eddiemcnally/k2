@@ -41,13 +41,32 @@ enum square {
     a6, b6, c6, d6, e6, f6, g6, h6,
     a7, b7, c7, d7, e7, f7, g7, h7,
     a8, b8, c8, d8, e8, f8, g8, h8,
-    NO_SQUARE
+
+    NO_SQUARE = (NUM_SQUARES + 1)
+};
+
+enum rank { 
+    RANK_1 = 0, 
+    RANK_2, 
+    RANK_3, 
+    RANK_4, 
+    RANK_5, 
+    RANK_6, 
+    RANK_7, 
+    RANK_8
+};
+
+enum file { 
+    FILE_A = 0, 
+    FILE_B, 
+    FILE_C, 
+    FILE_D, 
+    FILE_E, 
+    FILE_F, 
+    FILE_G, 
+    FILE_H 
 };
 // clang-format on
-
-enum rank { RANK_1 = 0, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
-
-enum file { FILE_A = 0, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H };
 
 enum rank sq_get_rank(const enum square sq);
 enum file sq_get_file(const enum square sq);

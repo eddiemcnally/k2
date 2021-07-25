@@ -208,6 +208,7 @@ __attribute__((always_inline)) static int32_t eval_white(const enum piece_role r
 
 
 __attribute__((always_inline)) static int32_t eval_black(const enum piece_role role, const enum square sq){
+    
     // lookup tables are white-oriented....invert for black
     const uint32_t offset = 63 - sq;
 

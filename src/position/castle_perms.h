@@ -50,10 +50,14 @@ enum castle_permission {
 struct cast_perm_container cast_perm_init(void);
 
 bool cast_perm_has_no_permissions(const struct cast_perm_container cp_cont);
+
 bool cast_perm_has_white_kingside_permissions(const struct cast_perm_container cp_cont);
 bool cast_perm_has_white_queenside_permissions(const struct cast_perm_container cp_cont);
+bool cast_perm_has_white_permissions(const struct cast_perm_container cp_cont);
+
 bool cast_perm_has_black_kingside_permissions(const struct cast_perm_container cp_cont);
 bool cast_perm_has_black_queenside_permissions(const struct cast_perm_container cp_cont);
+bool cast_perm_has_black_permissions(const struct cast_perm_container cp_cont);
 
 void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *cp_cont, const bool state);
 bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2);

@@ -40,9 +40,16 @@ struct position;
 
 #define MAX_GAME_MOVES (1024)
 
-enum move_legality { LEGAL_MOVE = 0, ILLEGAL_MOVE = 1 };
+// clang-format off
+
+enum move_legality { 
+    LEGAL_MOVE = 0, 
+    ILLEGAL_MOVE = 1 
+};
 
 #define INITIAL_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
+
+// clang-format on
 
 struct cast_perm_container pos_get_cast_perm(const struct position *pos);
 void pos_set_cast_perm(struct position *pos, const struct cast_perm_container perms);
