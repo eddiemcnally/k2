@@ -113,6 +113,11 @@ static const uint64_t ENCODE_KING_CASTLE_BLACK = (ENCODE_FROM_SQ(e8) | ENCODE_TO
 static const uint64_t ENCODE_QUEEN_CASTLE_WHITE = (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(c1) | MV_FLG_QUEEN_CASTLE);
 static const uint64_t ENCODE_QUEEN_CASTLE_BLACK = (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(c8) | MV_FLG_QUEEN_CASTLE);
 
+static const struct move MV_QUEEN_CASTLE_BLACK = {.val = ENCODE_QUEEN_CASTLE_BLACK};
+static const struct move MV_QUEEN_CASTLE_WHITE = {.val = ENCODE_QUEEN_CASTLE_WHITE};
+static const struct move MV_KING_CASTLE_BLACK = {.val = ENCODE_KING_CASTLE_BLACK};
+static const struct move MV_KING_CASTLE_WHITE = {.val = ENCODE_KING_CASTLE_WHITE};
+
 // ==================================================================
 //
 // public functions
@@ -284,8 +289,7 @@ __attribute__((always_inline)) struct move move_encode_capture(const enum square
  * @return      The encoded move
  */
 __attribute__((always_inline)) struct move move_encode_castle_kingside_white(void) {
-    struct move retval = {.val = ENCODE_KING_CASTLE_WHITE};
-    return retval;
+    return MV_KING_CASTLE_WHITE;
 }
 
 /**
@@ -294,8 +298,7 @@ __attribute__((always_inline)) struct move move_encode_castle_kingside_white(voi
  * @return      The encoded move
  */
 __attribute__((always_inline)) struct move move_encode_castle_kingside_black(void) {
-    struct move retval = {.val = ENCODE_KING_CASTLE_BLACK};
-    return retval;
+    return MV_KING_CASTLE_BLACK;
 }
 
 /**
@@ -304,8 +307,7 @@ __attribute__((always_inline)) struct move move_encode_castle_kingside_black(voi
  * @return      The encoded move
  */
 __attribute__((always_inline)) struct move move_encode_castle_queenside_white(void) {
-    struct move retval = {.val = ENCODE_QUEEN_CASTLE_WHITE};
-    return retval;
+    return MV_QUEEN_CASTLE_WHITE;
 }
 
 /**
@@ -314,8 +316,7 @@ __attribute__((always_inline)) struct move move_encode_castle_queenside_white(vo
  * @return      The encoded move
  */
 __attribute__((always_inline)) struct move move_encode_castle_queenside_black(void) {
-    struct move retval = {.val = ENCODE_QUEEN_CASTLE_BLACK};
-    return retval;
+    return MV_QUEEN_CASTLE_BLACK;
 }
 
 /**

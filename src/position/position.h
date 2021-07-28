@@ -51,23 +51,23 @@ enum move_legality {
 
 // clang-format on
 
-struct cast_perm_container pos_get_cast_perm(const struct position *pos);
-void pos_set_cast_perm(struct position *pos, const struct cast_perm_container perms);
+struct cast_perm_container pos_get_cast_perm(const struct position *const pos);
+void pos_set_cast_perm(struct position *const pos, const struct cast_perm_container perms);
 
 struct position *pos_create(void);
 void pos_destroy(struct position *pos);
-void pos_initialise(const char *fen, struct position *pos);
+void pos_initialise(const char *const fen, struct position *const pos);
 
-struct board *pos_get_board(const struct position *pos);
-enum square pos_get_en_pass_sq(const struct position *pos);
-enum colour pos_get_side_to_move(const struct position *pos);
+struct board *pos_get_board(const struct position *const pos);
+enum square pos_get_en_pass_sq(const struct position *const pos);
+enum colour pos_get_side_to_move(const struct position *const pos);
 
-enum move_legality pos_make_move(struct position *pos, const struct move mv);
-struct move pos_take_move(struct position *pos);
+enum move_legality pos_make_move(struct position *const pos, const struct move mv);
+struct move pos_take_move(struct position *const pos);
 
-bool validate_position(const struct position *pos);
-bool pos_compare(const struct position *first, const struct position *second);
+bool validate_position(const struct position *const pos);
+bool pos_compare(const struct position *const first, const struct position *const second);
 
-uint16_t pos_get_ply(const struct position *pos);
+uint16_t pos_get_ply(const struct position *const pos);
 
-uint64_t pos_get_hash(const struct position *pos);
+uint64_t pos_get_hash(const struct position *const pos);

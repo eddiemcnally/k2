@@ -29,5 +29,5 @@
 #include "move_list.h"
 #include "position.h"
 
-void mv_gen_all_moves(const struct position *pos, struct move_list *mvl);
-void mv_gen_only_capture_moves(const struct position *pos, struct move_list *mvl);
+void mv_gen_all_moves(const struct position *const pos, struct move_list *const mvl);
+void mv_gen_only_capture_moves(const struct position *const pos, struct move_list *const mvl);

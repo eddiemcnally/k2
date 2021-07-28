@@ -44,7 +44,7 @@ static const uint64_t EMPTY_BITBOARD = 0;
  * @param bb    Pointer to bitboard
  * @param sq    The square
  */
-__attribute__((always_inline)) void bb_set_square(uint64_t *bb, const enum square sq) {
+__attribute__((always_inline)) void bb_set_square(uint64_t *const bb, const enum square sq) {
     assert(validate_square(sq));
 
     *bb = *bb | ((uint64_t)0x01 << sq);
@@ -68,7 +68,7 @@ __attribute__((always_inline)) uint64_t bb_get_square_as_bb(const enum square sq
  * @param bb    Pointer to bitboard
  * @param sq    The square
  */
-__attribute__((always_inline)) void bb_clear_square(uint64_t *bb, const enum square sq) {
+__attribute__((always_inline)) void bb_clear_square(uint64_t *const bb, const enum square sq) {
     assert(validate_square(sq));
 
     *bb = *bb & (~((uint64_t)0x01 << sq));

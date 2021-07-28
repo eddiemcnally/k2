@@ -29,4 +29,4 @@
 
 #include <stdint.h>
 
-int32_t evaluate_position_basic(const struct board *brd, const enum colour side_to_move);
+int32_t evaluate_position_basic(const struct board *const brd, const enum colour side_to_move);

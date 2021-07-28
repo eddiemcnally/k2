@@ -151,7 +151,7 @@ static const int8_t KING_SQ_VALUE[NUM_SQUARES] = {
  * @param side_to_move      the side to move
  * @return int32_t          the score
  */
-int32_t evaluate_position_basic(const struct board *brd, const enum colour side_to_move) {
+int32_t evaluate_position_basic(const struct board * const brd, const enum colour side_to_move) {
 
     const struct material m = brd_get_material(brd);
 

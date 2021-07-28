@@ -59,12 +59,13 @@ bool cast_perm_has_black_kingside_permissions(const struct cast_perm_container c
 bool cast_perm_has_black_queenside_permissions(const struct cast_perm_container cp_cont);
 bool cast_perm_has_black_permissions(const struct cast_perm_container cp_cont);
 
-void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *cp_cont, const bool state);
+void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *const cp_cont,
+                              const bool state);
 bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2);
 uint8_t cast_perm_get_offset(const enum castle_permission cp);
 
-void cast_perm_clear_white_permissions(struct cast_perm_container *cp_cont);
-void cast_perm_clear_black_permissions(struct cast_perm_container *cp_cont);
+void cast_perm_clear_white_permissions(struct cast_perm_container *const cp_cont);
+void cast_perm_clear_black_permissions(struct cast_perm_container *const cp_cont);
 
 bool validate_castle_permissions(const struct cast_perm_container cp);
 bool validate_castle_permission(const enum castle_permission cp);

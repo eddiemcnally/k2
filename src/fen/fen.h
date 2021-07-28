@@ -40,12 +40,12 @@ struct parsed_fen;
 
 struct parsed_fen *fen_parse(const char *fen);
 
-bool fen_try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq, enum piece *pce);
-bool fen_has_wk_castle_perms(const struct parsed_fen *pf);
-bool fen_has_wq_castle_perms(const struct parsed_fen *pf);
-bool fen_has_bk_castle_perms(const struct parsed_fen *pf);
-bool fen_has_bq_castle_perms(const struct parsed_fen *pf);
-bool fen_try_get_en_pass_sq(const struct parsed_fen *pf, enum square *sq);
-enum colour fen_get_side_to_move(const struct parsed_fen *pf);
-uint16_t fen_get_half_move_cnt(const struct parsed_fen *pf);
-uint16_t fen_get_full_move_cnt(const struct parsed_fen *pf);
+bool fen_try_get_piece_on_sq(const struct parsed_fen *const pf, const enum square sq, enum piece *pce);
+bool fen_has_wk_castle_perms(const struct parsed_fen *const pf);
+bool fen_has_wq_castle_perms(const struct parsed_fen *const pf);
+bool fen_has_bk_castle_perms(const struct parsed_fen *const pf);
+bool fen_has_bq_castle_perms(const struct parsed_fen *const pf);
+bool fen_try_get_en_pass_sq(const struct parsed_fen *const pf, enum square *sq);
+enum colour fen_get_side_to_move(const struct parsed_fen *const pf);
+uint16_t fen_get_half_move_cnt(const struct parsed_fen *const pf);
+uint16_t fen_get_full_move_cnt(const struct parsed_fen *const pf);

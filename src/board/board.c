@@ -101,7 +101,7 @@ void brd_deallocate(struct board *brd) {
  * @param brd The board
  * @return A bitboard with a bit set for each occupier square
  */
-inline uint64_t brd_get_board_bb(const struct board *brd) {
+inline uint64_t brd_get_board_bb(const struct board *const brd) {
     assert(validate_board(brd));
     return brd->bb_board;
 }
@@ -112,7 +112,7 @@ inline uint64_t brd_get_board_bb(const struct board *brd) {
  * @param   sq   the square to test
  * @return  true if square occupied, false otherwise
  */
-bool brd_is_sq_occupied(const struct board *brd, const enum square sq) {
+bool brd_is_sq_occupied(const struct board *const brd, const enum square sq) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
@@ -126,7 +126,7 @@ bool brd_is_sq_occupied(const struct board *brd, const enum square sq) {
  * @param sq The square
  * @return enum piece The piece on the given square
  */
-enum piece brd_get_piece_on_square(const struct board *brd, const enum square sq) {
+enum piece brd_get_piece_on_square(const struct board *const brd, const enum square sq) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
@@ -140,7 +140,7 @@ enum piece brd_get_piece_on_square(const struct board *brd, const enum square sq
  * @param pce   The piece to add
  * @param sq    The square
  */
-void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq) {
+void brd_add_piece(struct board *const brd, const enum piece pce, const enum square sq) {
     assert(validate_board(brd));
     assert(validate_square(sq));
     assert(validate_piece(pce));
@@ -169,7 +169,7 @@ void brd_add_piece(struct board *brd, const enum piece pce, const enum square sq
  * @param side          The side 
  * @return int32_t      The current material value
  */
-struct material brd_get_material(const struct board *brd) {
+struct material brd_get_material(const struct board *const brd) {
     assert(validate_board(brd));
 
     struct material m = {.white = brd->material[PCE_COL_ARRAY_OFFSET_WHITE],
@@ -185,7 +185,7 @@ struct material brd_get_material(const struct board *brd) {
  * @param pce   The piece
  * @param sq    The square
  */
-void brd_remove_piece(struct board *brd, const enum piece pce, const enum square sq) {
+void brd_remove_piece(struct board *const brd, const enum piece pce, const enum square sq) {
 
     assert(brd_is_sq_occupied(brd, sq) == true);
     assert(validate_board(brd));
@@ -214,7 +214,7 @@ void brd_remove_piece(struct board *brd, const enum piece pce, const enum square
  * @param brd   The board
  * @param sq    The square
  */
-void brd_remove_from_square(struct board *brd, const enum square sq) {
+void brd_remove_from_square(struct board *const brd, const enum square sq) {
 
     assert(brd_is_sq_occupied(brd, sq) == true);
     assert(validate_board(brd));
@@ -231,7 +231,7 @@ void brd_remove_from_square(struct board *brd, const enum square sq) {
  * @param pce   The piece to move
  * @param mv    The move
  */
-void brd_move_piece(struct board *brd, const enum piece pce, const enum square from_sq, const enum square to_sq) {
+void brd_move_piece(struct board *const brd, const enum piece pce, const enum square from_sq, const enum square to_sq) {
 
     assert(validate_board(brd));
     assert(validate_piece(pce));
@@ -243,15 +243,18 @@ void brd_move_piece(struct board *brd, const enum piece pce, const enum square f
     const enum colour col = pce_get_colour(pce);
     const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
-    // clear from_sq bits
-    bb_clear_square(&brd->piece_bitboards[pce_off], from_sq);
-    bb_clear_square(&brd->bb_colour[col_off], from_sq);
-    bb_clear_square(&brd->bb_board, from_sq);
+    // set/clear to/from squares in various bitboards
+    uint64_t *const p_pce_bb = &brd->piece_bitboards[pce_off];
+    bb_clear_square(p_pce_bb, from_sq);
+    bb_set_square(p_pce_bb, to_sq);
 
-    // set to_sq bits
-    bb_set_square(&brd->piece_bitboards[pce_off], to_sq);
-    bb_set_square(&brd->bb_colour[col_off], to_sq);
-    bb_set_square(&brd->bb_board, to_sq);
+    uint64_t *const p_col_bb = &brd->bb_colour[col_off];
+    bb_clear_square(p_col_bb, from_sq);
+    bb_set_square(p_col_bb, to_sq);
+
+    uint64_t *const p_brd_bb = &brd->bb_board;
+    bb_clear_square(p_brd_bb, from_sq);
+    bb_set_square(p_brd_bb, to_sq);
 
     brd->pce_square[from_sq] = NO_PIECE;
     brd->pce_square[to_sq] = pce;
@@ -265,7 +268,7 @@ void brd_move_piece(struct board *brd, const enum piece pce, const enum square f
  *
  * @return A bitboard with a bit set for each piece of the given colour
  */
-uint64_t brd_get_colour_bb(const struct board *brd, const enum colour colour) {
+uint64_t brd_get_colour_bb(const struct board *const brd, const enum colour colour) {
     assert(validate_colour(colour));
     assert(validate_board(brd));
 
@@ -281,7 +284,7 @@ uint64_t brd_get_colour_bb(const struct board *brd, const enum colour colour) {
  *
  * @return A bitboard for that piece
  */
-uint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce) {
+uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {
     assert(validate_board(brd));
     assert(validate_piece(pce));
 
@@ -295,7 +298,7 @@ uint64_t brd_get_piece_bb(const struct board *brd, const enum piece pce) {
  * @param brd The board 
  * @return enum square The white king square
  */
-enum square brd_get_white_king_square(const struct board *brd) {
+enum square brd_get_white_king_square(const struct board *const brd) {
     const uint64_t king_bb = brd->piece_bitboards[PCE_ARRAY_OFFSET_WHITE_KING];
     return bb_pop_1st_bit(king_bb);
 }
@@ -306,7 +309,7 @@ enum square brd_get_white_king_square(const struct board *brd) {
  * @param brd The board 
  * @return enum square The black king square
  */
-enum square brd_get_black_king_square(const struct board *brd) {
+enum square brd_get_black_king_square(const struct board *const brd) {
     const uint64_t king_bb = brd->piece_bitboards[PCE_ARRAY_OFFSET_BLACK_KING];
     return bb_pop_1st_bit(king_bb);
 }
@@ -317,7 +320,7 @@ enum square brd_get_black_king_square(const struct board *brd) {
  * @param brd 
  * @return uint64_t The rook and queen bitboard
  */
-uint64_t brd_get_white_rook_queen_bb(const struct board *brd) {
+uint64_t brd_get_white_rook_queen_bb(const struct board *const brd) {
     return brd->piece_bitboards[PCE_ARRAY_OFFSET_WHITE_ROOK] | brd->piece_bitboards[PCE_ARRAY_OFFSET_WHITE_QUEEN];
 }
 
@@ -327,7 +330,7 @@ uint64_t brd_get_white_rook_queen_bb(const struct board *brd) {
  * @param brd 
  * @return uint64_t The rook and queen bitboard
  */
-uint64_t brd_get_black_rook_queen_bb(const struct board *brd) {
+uint64_t brd_get_black_rook_queen_bb(const struct board *const brd) {
     return brd->piece_bitboards[PCE_ARRAY_OFFSET_BLACK_ROOK] | brd->piece_bitboards[PCE_ARRAY_OFFSET_BLACK_QUEEN];
 }
 
@@ -337,7 +340,7 @@ uint64_t brd_get_black_rook_queen_bb(const struct board *brd) {
  * @param brd 
  * @return uint64_t The bishop and queen bitboard
  */
-uint64_t brd_get_white_bishop_queen_bb(const struct board *brd) {
+uint64_t brd_get_white_bishop_queen_bb(const struct board *const brd) {
     return brd->piece_bitboards[PCE_ARRAY_OFFSET_WHITE_BISHOP] | brd->piece_bitboards[PCE_ARRAY_OFFSET_WHITE_QUEEN];
 }
 
@@ -347,7 +350,7 @@ uint64_t brd_get_white_bishop_queen_bb(const struct board *brd) {
  * @param brd 
  * @return uint64_t The bishop and queen bitboard
  */
-uint64_t brd_get_black_bishop_queen_bb(const struct board *brd) {
+uint64_t brd_get_black_bishop_queen_bb(const struct board *const brd) {
     return brd->piece_bitboards[PCE_ARRAY_OFFSET_BLACK_BISHOP] | brd->piece_bitboards[PCE_ARRAY_OFFSET_BLACK_QUEEN];
 }
 
@@ -356,7 +359,7 @@ uint64_t brd_get_black_bishop_queen_bb(const struct board *brd) {
  *
  * @param brd The board to validate
  */
-bool validate_board(const struct board *brd) {
+bool validate_board(const struct board *const brd) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
     enum square sq;
@@ -421,7 +424,7 @@ bool validate_board(const struct board *brd) {
  * @return              True if the boards are the same, false otherwise
  */
 
-bool brd_compare(const struct board *first, const struct board *second) {
+bool brd_compare(const struct board *const first, const struct board *const second) {
     assert(validate_board(first));
     assert(validate_board(second));
 
@@ -459,7 +462,7 @@ bool brd_compare(const struct board *first, const struct board *second) {
  * 
  * @param brd 
  */
-void brd_print(const struct board *brd) {
+void brd_print(const struct board *const brd) {
 
     printf("\nGame Board:\n\n");
 
@@ -490,7 +493,7 @@ void brd_print(const struct board *brd) {
 //
 // ==================================================================
 
-static void init_struct(struct board *brd) {
+static void init_struct(struct board *const brd) {
     memset(brd, 0, sizeof(struct board));
 
     for (int i = 0; i < NUM_COLOURS; i++) {
@@ -514,7 +517,7 @@ static bool validate_square_empty(const struct board *brd, const enum square sq)
     return is_set == false;
 }
 
-static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq) {
+static bool validate_pce_on_sq(const struct board *const brd, const enum piece pce, enum square sq) {
 
     if (brd_is_sq_occupied(brd, sq) == false) {
         return false;

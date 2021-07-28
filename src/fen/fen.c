@@ -41,16 +41,16 @@
 
 #define MAX_FEN 255
 
-static void init_parsed_fen(struct parsed_fen *pf);
-static void setup_piece_positions(struct parsed_fen *pf, const char *pieces);
-static void setup_side_to_move(struct parsed_fen *pf, const char *side);
-static void setup_castle_permissions(struct parsed_fen *pf, const char *perms);
-static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass);
-static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_cnt);
-static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt);
+static void init_parsed_fen(struct parsed_fen *const pf);
+static void setup_piece_positions(struct parsed_fen *const pf, const char *pieces);
+static void setup_side_to_move(struct parsed_fen *const pf, const char *side);
+static void setup_castle_permissions(struct parsed_fen *const pf, const char *perms);
+static void setup_en_passant_sq(struct parsed_fen *const pf, const char *en_pass);
+static void setup_half_move_count(struct parsed_fen *const pf, const char *half_move_cnt);
+static void setup_full_move_count(struct parsed_fen *const pf, const char *full_move_cnt);
 static uint16_t convert_move_count(const char *str);
-static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces);
-static bool validate_struct_init(const struct parsed_fen *pf);
+static void handle_rank(struct parsed_fen *const pf, const enum rank rank, const char *pieces);
+static bool validate_struct_init(const struct parsed_fen *const pf);
 
 // ==================================================================
 //
@@ -139,7 +139,7 @@ struct parsed_fen *fen_parse(const char *fen_string) {
  * @param       pce     Pointer where returned piece will be saved
  * @return      true if piece found, false otherwise
  */
-bool fen_try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq, enum piece *pce) {
+bool fen_try_get_piece_on_sq(const struct parsed_fen *const pf, const enum square sq, enum piece *pce) {
     if (pf->pieces[sq].is_occupied == true) {
         *pce = pf->pieces[sq].piece;
         //printf("returning piece %c\n", get_label(*pce));
@@ -148,16 +148,16 @@ bool fen_try_get_piece_on_sq(const struct parsed_fen *pf, const enum square sq, 
     return false;
 }
 
-bool fen_has_wk_castle_perms(const struct parsed_fen *pf) {
+bool fen_has_wk_castle_perms(const struct parsed_fen *const pf) {
     return pf->castle_permissions.has_wk_cast_perm;
 }
-bool fen_has_wq_castle_perms(const struct parsed_fen *pf) {
+bool fen_has_wq_castle_perms(const struct parsed_fen *const pf) {
     return pf->castle_permissions.has_wq_cast_perm;
 }
-bool fen_has_bk_castle_perms(const struct parsed_fen *pf) {
+bool fen_has_bk_castle_perms(const struct parsed_fen *const pf) {
     return pf->castle_permissions.has_bk_cast_perm;
 }
-bool fen_has_bq_castle_perms(const struct parsed_fen *pf) {
+bool fen_has_bq_castle_perms(const struct parsed_fen *const pf) {
     return pf->castle_permissions.has_bq_cast_perm;
 }
 
@@ -168,7 +168,7 @@ bool fen_has_bq_castle_perms(const struct parsed_fen *pf) {
  * @param       sq              The square being tested
  * @return      true if a piece was found, false otherwise
  */
-bool fen_try_get_en_pass_sq(const struct parsed_fen *pf, enum square *sq) {
+bool fen_try_get_en_pass_sq(const struct parsed_fen *const pf, enum square *sq) {
     assert(validate_struct_init(pf));
 
     if (pf->is_en_pass_set == true) {
@@ -184,7 +184,7 @@ bool fen_try_get_en_pass_sq(const struct parsed_fen *pf, enum square *sq) {
  * @param       pf  The struct to examine
  * @return      The side to move
  */
-enum colour fen_get_side_to_move(const struct parsed_fen *pf) {
+enum colour fen_get_side_to_move(const struct parsed_fen *const pf) {
     assert(validate_struct_init(pf));
 
     return pf->side_to_move;
@@ -196,7 +196,7 @@ enum colour fen_get_side_to_move(const struct parsed_fen *pf) {
  * @param       pf   The struct to examine
  * @return      The half move count
  */
-uint16_t fen_get_half_move_cnt(const struct parsed_fen *pf) {
+uint16_t fen_get_half_move_cnt(const struct parsed_fen *const pf) {
     assert(validate_struct_init(pf));
 
     return pf->half_move_cnt;
@@ -208,7 +208,7 @@ uint16_t fen_get_half_move_cnt(const struct parsed_fen *pf) {
  * @param       pf  The struct to examine
  * @return      The full move count
  */
-uint16_t fen_get_full_move_cnt(const struct parsed_fen *pf) {
+uint16_t fen_get_full_move_cnt(const struct parsed_fen *const pf) {
     assert(validate_struct_init(pf));
 
     return pf->full_move_cnt;
@@ -220,7 +220,7 @@ uint16_t fen_get_full_move_cnt(const struct parsed_fen *pf) {
 //
 // ==================================================================
 
-static void init_parsed_fen(struct parsed_fen *pf) {
+static void init_parsed_fen(struct parsed_fen *const pf) {
     memset(pf, 0, sizeof(struct parsed_fen));
 
     pf->struct_init_key = STRUCT_INIT_KEY;
@@ -234,7 +234,7 @@ static void init_parsed_fen(struct parsed_fen *pf) {
     pf->is_en_pass_set = false;
 }
 
-static void setup_piece_positions(struct parsed_fen *pf, const char *pieces) {
+static void setup_piece_positions(struct parsed_fen *const pf, const char *pieces) {
     char rank_delim[] = "/";
 
     // copy for tokenising
@@ -253,7 +253,7 @@ static void setup_piece_positions(struct parsed_fen *pf, const char *pieces) {
     }
 }
 
-static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char *pieces) {
+static void handle_rank(struct parsed_fen *const pf, const enum rank rank, const char *pieces) {
     enum file file = FILE_A;
 
     while (*pieces) {
@@ -285,7 +285,7 @@ static void handle_rank(struct parsed_fen *pf, const enum rank rank, const char 
     }
 }
 
-static void setup_side_to_move(struct parsed_fen *pf, const char *side) {
+static void setup_side_to_move(struct parsed_fen *const pf, const char *side) {
     if (*side == 'w') {
         pf->side_to_move = WHITE;
     } else {
@@ -293,7 +293,7 @@ static void setup_side_to_move(struct parsed_fen *pf, const char *side) {
     }
 }
 
-static void setup_castle_permissions(struct parsed_fen *pf, const char *perms) {
+static void setup_castle_permissions(struct parsed_fen *const pf, const char *perms) {
     // default to none
     pf->castle_permissions.has_wk_cast_perm = false;
     pf->castle_permissions.has_wq_cast_perm = false;
@@ -327,7 +327,7 @@ static void setup_castle_permissions(struct parsed_fen *pf, const char *perms) {
     }
 }
 
-static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass) {
+static void setup_en_passant_sq(struct parsed_fen *const pf, const char *en_pass) {
     if (*en_pass != '-') {
         // en passant square present
         int file = en_pass[0] - 'a';
@@ -340,12 +340,12 @@ static void setup_en_passant_sq(struct parsed_fen *pf, const char *en_pass) {
     }
 }
 
-static void setup_half_move_count(struct parsed_fen *pf, const char *half_move_cnt) {
+static void setup_half_move_count(struct parsed_fen *const pf, const char *half_move_cnt) {
     uint16_t half_move = convert_move_count(half_move_cnt);
     pf->half_move_cnt = half_move;
 }
 
-static void setup_full_move_count(struct parsed_fen *pf, const char *full_move_cnt) {
+static void setup_full_move_count(struct parsed_fen *const pf, const char *full_move_cnt) {
     uint16_t full_move = convert_move_count(full_move_cnt);
     pf->full_move_cnt = full_move;
 }
@@ -357,7 +357,7 @@ static uint16_t convert_move_count(const char *str) {
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
-static bool validate_struct_init(const struct parsed_fen *pf) {
+static bool validate_struct_init(const struct parsed_fen *const pf) {
     if (pf->struct_init_key != STRUCT_INIT_KEY) {
         return false;
     }

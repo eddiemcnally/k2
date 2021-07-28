@@ -64,7 +64,12 @@ inline enum rank sq_get_rank(const enum square sq) {
 inline enum file sq_get_file(const enum square sq) {
     assert(validate_square(sq));
 
-    return (enum file)(sq % 8);
+    // efficient mod operation....
+    //      x mod y == x & y-1
+    // works when y is a power of 2
+    //
+    // and file is (sq % 8)
+    return (enum file)(sq & 7);
 }
 
 /**

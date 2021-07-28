@@ -31,4 +31,4 @@
 #include <stddef.h>
 #include <stdint.h>
 
-int32_t quiescence(struct position *pos, struct search_data *search, int32_t alpha, int32_t beta);
+int32_t quiescence(struct position *const pos, struct search_data *const search, int32_t alpha, int32_t beta);
