@@ -94,8 +94,7 @@ double get_time_of_day_in_secs(void) {
         double time_in_secs = (double)tp.tv_sec + (double)tp.tv_usec / 1000000;
         return time_in_secs;
     }
-
-    return 0;
+    return -1;
 }
 
 /**

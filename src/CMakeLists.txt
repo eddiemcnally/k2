@@ -171,10 +171,16 @@ endif (DOXYGEN_FOUND)
 
 include_directories(${INCLUDES})
 
-# *** Main ****
+# *** Main Engine ****
 # note: include main.c here
 message("*** Setting up main binary....")
 add_executable(k2 main.c ${SOURCES})
+
+# *** Lab Benchmark runner ****
+# note: include main.c here
+message("*** Setting up benchmark runner....")
+add_executable(benchmark_runner lab/bench_runner.c ${SOURCES})
+
 
 # *** Perft ***
 message("*** Setting up perft binary....")
@@ -185,6 +191,10 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy 
                 ${CMAKE_SOURCE_DIR}/resources/perftsuite.epd
                 ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/perftsuite.epd)
+
+
+
+
 
 message("*** K2 Chess Engine Binary build environment - DONE ***")
 
