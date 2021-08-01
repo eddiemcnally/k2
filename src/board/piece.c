@@ -247,6 +247,10 @@ enum piece pce_get_from_label(const char c) {
  * @param pce The piece
  */
 bool validate_piece(const enum piece pce) {
+    if (pce == NO_PIECE) {
+        return true;
+    }
+
     const enum piece_role pt = EXTRACT_PIECE_ROLE(pce);
     assert(validate_piece_role(pt));
     const enum colour col = EXTRACT_COLOUR(pce);
@@ -285,6 +289,7 @@ bool validate_piece_role(const enum piece_role pt) {
     case KING:
         break;
     default:
+        print_stacktrace();
         assert(false);
         break;
     }

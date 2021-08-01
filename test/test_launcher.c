@@ -36,6 +36,7 @@
 #include "test_move.h"
 #include "test_move_gen.h"
 #include "test_move_list.h"
+#include "test_perft.h"
 #include "test_piece.h"
 #include "test_position.h"
 #include "test_square.h"
@@ -76,6 +77,9 @@ int main(void) {
         TEST(test_move_black_king_castle_encode_decode),
 
         TEST(test_move_double_pawn_move_encode_decode),
+
+        TEST(test_perft_1),
+        TEST(test_perft_2),
 
         // move list
         TEST(test_move_list_init),

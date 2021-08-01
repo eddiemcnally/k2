@@ -24,6 +24,7 @@ set(TEST_BRD_DIR        ${TEST_PROJECT_SOURCE_DIR}/board)
 set(TEST_BB_DIR         ${TEST_PROJECT_SOURCE_DIR}/board/bitboard)
 set(TEST_OCC_GEN_DIR    ${TEST_PROJECT_SOURCE_DIR}/board/bitboard/occ_mask_gen)
 set(TEST_FEN_DIR        ${TEST_PROJECT_SOURCE_DIR}/fen)
+set(TEST_PERFT_DIR      ${TEST_PROJECT_SOURCE_DIR}/perft)
 set(TEST_POSN_DIR       ${TEST_PROJECT_SOURCE_DIR}/position)
 set(TEST_EVAL_DIR       ${TEST_PROJECT_SOURCE_DIR}/position/evaluation)
 set(TEST_SEARCH_DIR     ${TEST_PROJECT_SOURCE_DIR}/position/search)
@@ -94,6 +95,7 @@ set(TEST_INCLUDES
         ${TEST_OCC_GEN_DIR}
         ${TEST_FEN_DIR}
         ${TEST_POSN_DIR}
+        ${TEST_PERFT_DIR}
         ${TEST_EVAL_DIR}
         ${TEST_MOVE_DIR}
         ${TEST_UTILS_DIR}
@@ -121,6 +123,7 @@ set(TEST_SRCS
         ${TEST_POSN_DIR}/test_hashkeys.c
         ${TEST_POSN_DIR}/test_castle_permissions.c
         ${TEST_POSN_DIR}/test_attack_checker.c
+        ${TEST_PERFT_DIR}/test_perft.c
         ${TEST_EVAL_DIR}/test_basic_evaluator.c
         ${TEST_SEARCH_DIR}/test_transposition_table.c
         ${TEST_MOVE_DIR}/test_move.c

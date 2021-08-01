@@ -253,7 +253,7 @@ bool validate_position(const struct position *const pos) {
     assert(pos->struct_init_key == STRUCT_INIT_KEY);
 
     assert(validate_board(pos->brd));
-    assert(validate_colour(pos->side_to_move));
+    assert(validate_colour(pos->state.side_to_move));
 
     return true;
 }
@@ -862,10 +862,14 @@ static bool validate_position_history(const struct position *const pos) {
     const struct history_item *free_slot = &pos->history.items[pos->history.num_used_slots];
 
     if (free_slot < &pos->history.items[0]) {
+        printf("Pos Hist free slot ptr is less than item[0], pos->history.num_used_slots=%d\n",
+               pos->history.num_used_slots);
         return false;
     }
 
-    if (free_slot < &pos->history.items[MAX_GAME_MOVES - 1]) {
+    if (free_slot > &pos->history.items[MAX_GAME_MOVES - 1]) {
+        printf("Pos Hist free slot ptr is > item[MAX_GAME_MOVES - 1], pos->history.num_used_slots=%d\n",
+               pos->history.num_used_slots);
         return false;
     }
 

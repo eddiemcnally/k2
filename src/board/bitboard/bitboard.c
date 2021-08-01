@@ -75,6 +75,28 @@ __attribute__((always_inline)) void bb_clear_square(uint64_t *const bb, const en
 }
 
 /**
+ * @brief      Clears the bit representing the from_sq and sets the bit representing the to_sq
+ *
+ * @param      bb       Pointer to the bitboard
+ * @param[in]  from_sq  The from sq
+ * @param[in]  to_sq    To sq
+ */
+__attribute__((always_inline)) void bb_move_bit(uint64_t *const bb, const enum square from_sq,
+                                                const enum square to_sq) {
+
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
+    assert(bb_is_set(*bb, from_sq));
+    assert(!bb_is_set(*bb, to_sq));
+
+    uint64_t b = *bb;
+    // assume bits are as expected, so xor them
+    b ^= ((uint64_t)0x01 << from_sq);
+    b ^= ((uint64_t)0x01 << to_sq);
+    *bb = b;
+}
+
+/**
  * @brief       Test if a square in the given bitboard is set
  *
  * @param bb    The bitboard
@@ -95,11 +117,10 @@ __attribute__((always_inline)) bool bb_is_set(const uint64_t bb, const enum squa
  * @param bb    The bitboard
  * @param sq    The square
  *
- * @return true if bit is set, false otherwise.
+ * @return true if bit is clear, false otherwise.
  */
 __attribute__((always_inline)) bool bb_is_clear(const uint64_t bb, const enum square sq) {
-    assert(validate_square(sq));
-    return bb_is_set(bb, sq) == false;
+    return !bb_is_set(bb, sq);
 }
 
 /**

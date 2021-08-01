@@ -50,9 +50,6 @@ struct board {
     // a bitboard per colour, a set bit means that colour occupies that square
     uint64_t bb_colour[NUM_COLOURS];
 
-    // a bit set for every occupied square
-    uint64_t bb_board;
-
     // total material value for each colour
     int32_t material[NUM_COLOURS];
 
@@ -103,7 +100,7 @@ void brd_deallocate(struct board *brd) {
  */
 inline uint64_t brd_get_board_bb(const struct board *const brd) {
     assert(validate_board(brd));
-    return brd->bb_board;
+    return brd->bb_colour[PCE_COL_ARRAY_OFFSET_WHITE] | brd->bb_colour[PCE_COL_ARRAY_OFFSET_BLACK];
 }
 
 /**
@@ -153,7 +150,6 @@ void brd_add_piece(struct board *const brd, const enum piece pce, const enum squ
 
     bb_set_square(&brd->piece_bitboards[pce_off], sq);
     bb_set_square(&brd->bb_colour[col_off], sq);
-    bb_set_square(&brd->bb_board, sq);
     brd->pce_square[sq] = pce;
 
     // add material
@@ -199,7 +195,6 @@ void brd_remove_piece(struct board *const brd, const enum piece pce, const enum 
 
     bb_clear_square(&brd->piece_bitboards[pce_off], sq);
     bb_clear_square(&brd->bb_colour[col_off], sq);
-    bb_clear_square(&brd->bb_board, sq);
     brd->pce_square[sq] = NO_PIECE;
 
     const uint32_t material = pce_get_value(pce);
@@ -244,17 +239,8 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
     // set/clear to/from squares in various bitboards
-    uint64_t *const p_pce_bb = &brd->piece_bitboards[pce_off];
-    bb_clear_square(p_pce_bb, from_sq);
-    bb_set_square(p_pce_bb, to_sq);
-
-    uint64_t *const p_col_bb = &brd->bb_colour[col_off];
-    bb_clear_square(p_col_bb, from_sq);
-    bb_set_square(p_col_bb, to_sq);
-
-    uint64_t *const p_brd_bb = &brd->bb_board;
-    bb_clear_square(p_brd_bb, from_sq);
-    bb_set_square(p_brd_bb, to_sq);
+    bb_move_bit(&brd->piece_bitboards[pce_off], from_sq, to_sq);
+    bb_move_bit(&brd->bb_colour[col_off], from_sq, to_sq);
 
     brd->pce_square[from_sq] = NO_PIECE;
     brd->pce_square[to_sq] = pce;

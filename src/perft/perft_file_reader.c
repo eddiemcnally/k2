@@ -33,17 +33,17 @@
  */
 
 #include "perft_file_reader.h"
-
+#include "utils.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static struct epd_row parse_row(char *row);
 static uint64_t parse_depth_details(char *s);
 
 static const char FIELD_DELIM[2] = ";";
 #define MAX_DEPTH 6
+#define MAX_LINE_LENGTH 200
 
 /**
  * @brief Reads a perft epd file and returns a struct with the parsed data
@@ -51,7 +51,7 @@ static const char FIELD_DELIM[2] = ";";
  * @param file                  the perft epd file
  * @return struct perft_epd     the parsed contents
  */
-struct perft_epd perft_load_file(const char *file) {
+struct perft_epd perft_load_file(const char *const file) {
 
     struct perft_epd retval;
 
@@ -64,7 +64,7 @@ struct perft_epd perft_load_file(const char *file) {
     uint16_t line_cnt = 0;
     while (fgets(line, LINE_SIZE, fp) != NULL) {
 
-        struct epd_row row = parse_row(line);
+        struct epd_row row = perft_parse_row(line);
         retval.rows[line_cnt] = row;
         line_cnt++;
 
@@ -80,17 +80,16 @@ struct perft_epd perft_load_file(const char *file) {
     return retval;
 }
 
-//////////////////////////////////////////
-//
-// Private functions
-//
-//////////////////////////////////////////
-struct epd_row parse_row(char *row) {
+struct epd_row perft_parse_row(char *row) {
+
+    // local copyt for tokenising
+    char local_row[MAX_LINE_LENGTH] = {0};
+    REQUIRE(strlen(row) < MAX_LINE_LENGTH, "Perft - line too long");
+    memcpy(local_row, row, strlen(row));
+
     struct epd_row retval;
 
-    char *token;
-
-    token = strtok(row, FIELD_DELIM);
+    char *token = strtok(local_row, FIELD_DELIM);
     strcpy((char *)(&retval.fen), token);
 
     uint8_t i = 0;
@@ -100,7 +99,6 @@ struct epd_row parse_row(char *row) {
         // this is of the form "D3 139 "
         // extract the "139"
         uint64_t depth_count = parse_depth_details(token);
-
         retval.move_cnt[i] = depth_count;
 
         i++;
@@ -109,9 +107,15 @@ struct epd_row parse_row(char *row) {
     return retval;
 }
 
+//////////////////////////////////////////
+//
+// Private functions
+//
+//////////////////////////////////////////
+//
 // extracts the "139" from the following sample string
 //     "D3 139 "
-uint64_t parse_depth_details(char *str) {
+static uint64_t parse_depth_details(char *str) {
     uint64_t depth;
     char desc[10];
 

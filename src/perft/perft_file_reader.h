@@ -44,4 +44,5 @@ struct perft_epd {
     uint16_t row_count;
 };
 
-struct perft_epd perft_load_file(const char *file);
+struct perft_epd perft_load_file(const char *const file);
+struct epd_row perft_parse_row(char *row);
