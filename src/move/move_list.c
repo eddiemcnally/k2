@@ -34,6 +34,7 @@
 
 #include "move_list.h"
 #include "move.h"
+#include "utils.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -93,6 +94,7 @@ void mvl_add(struct move_list *const mvl, const struct move mv) {
     assert(validate_move_list(mvl));
     assert(validate_move(mv));
 
+    REQUIRE(mvl->move_count < MOVE_LIST_MAX_LEN, "Move list : attemot to add past end of array");
     mvl->move_list[mvl->move_count] = mv;
     mvl->move_count++;
 }

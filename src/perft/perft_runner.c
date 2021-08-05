@@ -49,6 +49,8 @@ int main(void) {
     struct perft_epd parsed = perft_load_file("perftsuite.epd");
     uint64_t total_nodes = 0;
 
+    const double total_start_in_millis = get_time_of_day_in_secs();
+
     for (int r = 0; r < parsed.row_count; r++) {
         struct position *pos = pos_create();
         pos_initialise(parsed.rows[r].fen, pos);
@@ -76,7 +78,11 @@ int main(void) {
                 printf("fen=%s, depth=%d, #nodes=%llu, #nodes/sec=0\n", parsed.rows[r].fen, (d + 1), actual_nodes);
             }
         }
+
+        pos_destroy(pos);
     }
 
-    printf("Total node count: %llu\n", total_nodes);
+    const double total_elapsed_in_secs = get_elapsed_time_in_secs(total_start_in_millis);
+    const double total_nodes_per_sec = (double)total_nodes / total_elapsed_in_secs;
+    printf("Total node count: %llu, #nodes/sec=%f\n", total_nodes, total_nodes_per_sec);
 }

@@ -76,7 +76,7 @@ static const uint32_t INIT_KEY = 0xDEADBEEF;
  * @return      ptr to struct board
  */
 struct board *brd_allocate(void) {
-    struct board *retval = (struct board *)malloc(sizeof(struct board));
+    struct board *retval = (struct board *)calloc(1, sizeof(struct board));
     init_struct(retval);
 
     return retval;
@@ -88,6 +88,7 @@ struct board *brd_allocate(void) {
  * @param brd 
  */
 void brd_deallocate(struct board *brd) {
+    REQUIRE(brd->init_flag == INIT_KEY, "Board struct isn't initialised");
     memset(brd, 0, sizeof(struct board));
     free(brd);
 }

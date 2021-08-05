@@ -72,7 +72,7 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
     const enum square king_sq = side_to_move == WHITE ? brd_get_white_king_square(brd) : brd_get_black_king_square(brd);
 
-    const bool is_in_check = att_chk_is_sq_attacked(brd, king_sq, side_to_move);
+    const bool is_in_check = att_chk_is_sq_attacked(pos, king_sq, side_to_move);
     if (is_in_check) {
         depth++;
     }

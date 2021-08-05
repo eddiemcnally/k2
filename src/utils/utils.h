@@ -42,6 +42,7 @@
         fprintf(stderr, "\tFile :     %s\n", __FILE__);                                                                \
         fprintf(stderr, "\tLine :     %d\n", __LINE__);                                                                \
         fprintf(stderr, "\tText :     %s\n", text);                                                                    \
+        print_stacktrace();                                                                                            \
         exit(EXIT_FAILURE);                                                                                            \
     }
 

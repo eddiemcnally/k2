@@ -40,6 +40,7 @@
 #include "hashkeys.h"
 #include "move.h"
 #include "occupancy_mask.h"
+#include "stats.h"
 #include "utils.h"
 #include <assert.h>
 
@@ -86,6 +87,10 @@ struct position {
 
     // position history
     struct position_history history;
+
+#ifdef ENABLE_STATS
+    struct engine_stats *stats;
+#endif
 
     uint16_t struct_init_key;
 };
@@ -151,6 +156,11 @@ struct position *pos_create() {
     struct board *brd = brd_allocate();
     retval->brd = brd;
 
+#ifdef ENABLE_STATS
+    struct engine_stats *stats = stats_create();
+    retval->stats = stats;
+#endif
+
     init_key_mgmt();
     occ_mask_init();
 
@@ -177,6 +187,11 @@ void pos_destroy(struct position *const pos) {
     assert(validate_position(pos));
     brd_deallocate(pos->brd);
 
+#ifdef ENABLE_STATS
+    stats_display(pos->stats);
+    stats_destroy(pos->stats);
+#endif
+
     memset(pos, 0, sizeof(struct position));
     free(pos);
 }
@@ -195,6 +210,12 @@ struct board *pos_get_board(const struct position *const pos) {
 uint16_t pos_get_ply(const struct position *const pos) {
     return pos->state.ply;
 }
+
+#ifdef ENABLE_STATS
+struct engine_stats *pos_get_stats(const struct position *const pos) {
+    return pos->stats;
+}
+#endif
 
 /**
  * @brief       Gets the side to move from the position struct
@@ -478,6 +499,9 @@ static void reverse_castle_move(struct position *const pos, const struct move mv
             brd_move_piece(pos->brd, BLACK_ROOK, d8, a8);
         }
         break;
+    default:
+        REQUIRE(false, "Invalid colour");
+        break;
     }
 }
 
@@ -592,6 +616,10 @@ static void update_castle_perms(struct position *const pos, const struct move mv
         return;
     }
 
+    if (cast_perm_has_no_permissions(pos_get_cast_perm(pos))) {
+        return;
+    }
+
     const enum piece_role pce_role = pce_get_piece_role(pce_being_moved);
     const enum square to_sq = move_decode_to_sq(mv);
     const enum square from_sq = move_decode_from_sq(mv);
@@ -663,7 +691,7 @@ static enum move_legality get_move_legal_status(const struct position *const pos
     uint64_t king_bb = brd_get_piece_bb(pos->brd, king);
     const enum square king_sq = bb_pop_1st_bit(king_bb);
 
-    if (att_chk_is_sq_attacked(pos->brd, king_sq, attacking_side)) {
+    if (att_chk_is_sq_attacked(pos, king_sq, attacking_side)) {
         // square attacked, move not legal
         return ILLEGAL_MOVE;
     }
@@ -702,7 +730,7 @@ static bool is_castle_move_legal(const struct position *const pos, const struct 
     while (cast_bb != 0) {
         const enum square sq = bb_pop_1st_bit(cast_bb);
         bb_clear_square(&cast_bb, sq);
-        if (att_chk_is_sq_attacked(pos->brd, sq, attacking_side)) {
+        if (att_chk_is_sq_attacked(pos, sq, attacking_side)) {
             return false;
         }
     }
