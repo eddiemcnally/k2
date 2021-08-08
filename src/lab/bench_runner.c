@@ -48,13 +48,13 @@
 static uint64_t first(void);
 static uint64_t second(void);
 
-static void set_square_1(uint64_t *const bb, const enum square sq);
-static uint64_t set_square_2(uint64_t const bb, const enum square sq);
-
 int main(void) {
 
     uint64_t accum_1 = 0;
     uint64_t accum_2 = 0;
+
+    double test_1_time = 0;
+    double test_2_time = 0;
 
     for (int i = 0; i < NUM_TESTS; i++) {
 
@@ -69,6 +69,7 @@ int main(void) {
         clock_gettime(CLOCK_MONOTONIC, &end_1);
         elapsed_sec_1 = (end_1.tv_sec + end_1.tv_nsec - start_1.tv_sec + start_1.tv_nsec) / 1000000000.0;
         printf("Test 1 : %lf\n", elapsed_sec_1);
+        test_1_time += elapsed_sec_1;
 
         clock_gettime(CLOCK_MONOTONIC, &start_2);
         for (int j = 0; j < NUM_LOOPS; j++) {
@@ -77,33 +78,29 @@ int main(void) {
         clock_gettime(CLOCK_MONOTONIC, &end_2);
         elapsed_sec_2 = (end_2.tv_sec + end_2.tv_nsec - start_2.tv_sec + start_2.tv_nsec) / 1000000000.0;
         printf("Test 2 : %lf\n", elapsed_sec_2);
+        test_2_time += elapsed_sec_2;
     }
     REQUIRE(accum_2 == accum_1, "should be the same");
+
+    printf("Test 1 total: %lf\n", test_1_time);
+    printf("Test 2 total: %lf\n", test_2_time);
 }
 
 static uint64_t first(void) {
-
-    uint64_t bb = 0;
-    for (enum square sq = a1; sq <= h8; sq++) {
-        set_square_1(&bb, sq);
-    }
-    REQUIRE(bb == 0xFFFFFFFFFFFFFFFF, "problem 1");
+    uint64_t bb = 0xFFFFFFFFFFFFFFFF;
+    // for (enum square sq = a1; sq <= h8; sq++) {
+    //     bb_pop_1st_bit_and_clear(&bb);
+    // }
+    // REQUIRE(bb == 0, "should be zero)");
     return bb;
 }
 
 static uint64_t second(void) {
-    uint64_t bb = 0;
-    for (enum square sq = a1; sq <= h8; sq++) {
-        bb = set_square_2(bb, sq);
-    }
-    REQUIRE(bb == 0xFFFFFFFFFFFFFFFF, "problem 1");
+    uint64_t bb = 0xFFFFFFFFFFFFFFFF;
+    // for (enum square sq = a1; sq <= h8; sq++) {
+    //     const enum square sq1 = bb_pop_1st_bit_and_clear(bb);
+    //     bb_clear_square(&bb, sq1);
+    // }
+    // REQUIRE(bb == 0, "should be zero)");
     return bb;
-}
-
-__attribute__((always_inline)) static void set_square_1(uint64_t *const bb, const enum square sq) {
-    *bb = *bb | ((uint64_t)0x01 << sq);
-}
-
-__attribute__((always_inline)) static uint64_t set_square_2(uint64_t const bb, const enum square sq) {
-    return bb | ((uint64_t)0x01 << sq);
 }

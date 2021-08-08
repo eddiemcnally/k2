@@ -52,7 +52,11 @@ static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
 static bool is_king_attacking(const enum square king_sq, const enum square sq);
 
-static void register_attack_type(const struct position *const pos, const enum attacking_type att);
+#ifdef ENABLE_STATS
+#define REG_ATTACK_TYPE(pos, att_type) stats_reg_illegal_move_attacking_pce(pos_get_stats(pos), att_type);
+#else
+#define REG_ATTACK_TYPE(pos, att_type)
+#endif
 
 bool att_chk_is_sq_attacked(const struct position *const pos, const enum square sq, const enum colour attacking_side) {
 
@@ -76,7 +80,7 @@ inline static bool is_white_attacking(const struct position *const pos, const en
     const uint64_t rook_queen_bb = brd_get_white_rook_queen_bb(brd);
     if (rook_queen_bb != 0) {
         if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
-            register_attack_type(pos, ATT_VERT_HORIZ);
+            REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
             return true;
         }
     }
@@ -85,7 +89,7 @@ inline static bool is_white_attacking(const struct position *const pos, const en
     const uint64_t bishop_queen_bb = brd_get_white_bishop_queen_bb(brd);
     if (bishop_queen_bb) {
         if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
-            register_attack_type(pos, ATT_DIAGONAL);
+            REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
             return true;
         }
     }
@@ -93,7 +97,7 @@ inline static bool is_white_attacking(const struct position *const pos, const en
     const uint64_t knight_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
     if (knight_bb != 0) {
         if (is_knight_attacking(knight_bb, sq)) {
-            register_attack_type(pos, ATT_KNIGHT);
+            REG_ATTACK_TYPE(pos, ATT_KNIGHT);
             return true;
         }
     }
@@ -101,14 +105,14 @@ inline static bool is_white_attacking(const struct position *const pos, const en
     const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
     if (wp_bb != 0) {
         if (is_white_pawn_attacking(wp_bb, sq)) {
-            register_attack_type(pos, ATT_PAWN);
+            REG_ATTACK_TYPE(pos, ATT_PAWN);
             return true;
         }
     }
 
     const enum square king_sq = brd_get_white_king_square(brd);
     if (is_king_attacking(king_sq, sq)) {
-        register_attack_type(pos, ATT_KING);
+        REG_ATTACK_TYPE(pos, ATT_KING);
         return true;
     }
     return false;
@@ -122,7 +126,7 @@ inline static bool is_black_attacking(const struct position *const pos, const en
     const uint64_t rook_queen_bb = brd_get_black_rook_queen_bb(brd);
     if (rook_queen_bb != 0) {
         if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
-            register_attack_type(pos, ATT_VERT_HORIZ);
+            REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
             return true;
         }
     }
@@ -131,7 +135,7 @@ inline static bool is_black_attacking(const struct position *const pos, const en
     const uint64_t bishop_queen_bb = brd_get_black_bishop_queen_bb(brd);
     if (bishop_queen_bb != 0) {
         if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
-            register_attack_type(pos, ATT_DIAGONAL);
+            REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
             return true;
         }
     }
@@ -139,7 +143,7 @@ inline static bool is_black_attacking(const struct position *const pos, const en
     const uint64_t knight_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
     if (knight_bb != 0) {
         if (is_knight_attacking(knight_bb, sq)) {
-            register_attack_type(pos, ATT_KNIGHT);
+            REG_ATTACK_TYPE(pos, ATT_KNIGHT);
             return true;
         }
     }
@@ -147,14 +151,14 @@ inline static bool is_black_attacking(const struct position *const pos, const en
     const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
     if (bp_bb != 0) {
         if (is_black_pawn_attacking(bp_bb, sq)) {
-            register_attack_type(pos, ATT_PAWN);
+            REG_ATTACK_TYPE(pos, ATT_PAWN);
             return true;
         }
     }
 
     const enum square king_sq = brd_get_black_king_square(brd);
     if (is_king_attacking(king_sq, sq)) {
-        register_attack_type(pos, ATT_KING);
+        REG_ATTACK_TYPE(pos, ATT_KING);
         return true;
     }
 
@@ -177,8 +181,7 @@ static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) 
     // conflate all knight attack squares for all knights
     uint64_t knight_attack_sq = 0;
     while (bb != 0) {
-        const enum square pce_sq = bb_pop_1st_bit(bb);
-        bb_clear_square(&bb, pce_sq);
+        const enum square pce_sq = bb_pop_1st_bit_and_clear(&bb);
         knight_attack_sq |= occ_mask_get_knight(pce_sq);
     }
 
@@ -198,8 +201,7 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
     uint64_t bb = attacking_pce_bb;
 
     while (bb != 0) {
-        const enum square pce_sq = bb_pop_1st_bit(bb);
-        bb_clear_square(&bb, pce_sq);
+        const enum square pce_sq = bb_pop_1st_bit_and_clear(&bb);
 
         if ((sq_get_rank(pce_sq) == sq_rank) || (sq_get_file(pce_sq) == sq_file)) {
             // possible attack, shared rank and/or file
@@ -217,8 +219,7 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
     uint64_t bb = attacking_pce_bb;
 
     while (bb != 0) {
-        const enum square pce_sq = bb_pop_1st_bit(bb);
-        bb_clear_square(&bb, pce_sq);
+        const enum square pce_sq = bb_pop_1st_bit_and_clear(&bb);
         const uint64_t occ_mask_bishop = occ_mask_get_bishop(pce_sq);
 
         if (bb_is_set(occ_mask_bishop, sq)) {
@@ -232,14 +233,3 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
     }
     return false;
 }
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-__attribute__((always_inline)) static void register_attack_type(const struct position *const pos,
-                                                                const enum attacking_type att) {
-
-#ifdef ENABLE_STATS
-    stats_reg_illegal_move_attacking_pce(pos_get_stats(pos), att);
-#endif
-}
-#pragma GCC diagnostic pop

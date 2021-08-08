@@ -47,17 +47,6 @@ static void occ_mask_gen_diagonal_occupancy_masks(void);
 static void gen_queen_mask(void);
 static void gen_rook_mask(void);
 
-#define RANK_MASK ((uint64_t)0x00000000000000ff)
-#define FILE_MASK ((uint64_t)0x0101010101010101)
-
-#define FILE_A_BB FILE_MASK
-#define FILE_H_BB (FILE_A_BB << 7)
-
-#define NORTH_EAST(bb) ((bb & ~FILE_H_BB) << 9)
-#define SOUTH_EAST(bb) ((bb & ~FILE_H_BB) >> 7)
-#define NORTH_WEST(bb) ((bb & ~FILE_A_BB) << 7)
-#define SOUTH_WEST(bb) ((bb & ~FILE_A_BB) >> 9)
-
 //
 //
 // NOTES :

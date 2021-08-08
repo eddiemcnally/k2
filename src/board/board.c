@@ -286,8 +286,8 @@ uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {
  * @return enum square The white king square
  */
 enum square brd_get_white_king_square(const struct board *const brd) {
-    const uint64_t king_bb = brd->piece_bitboards[PCE_ARRAY_OFFSET_WHITE_KING];
-    return bb_pop_1st_bit(king_bb);
+    uint64_t king_bb = brd->piece_bitboards[PCE_ARRAY_OFFSET_WHITE_KING];
+    return bb_pop_1st_bit_and_clear(&king_bb);
 }
 
 /**
@@ -297,8 +297,8 @@ enum square brd_get_white_king_square(const struct board *const brd) {
  * @return enum square The black king square
  */
 enum square brd_get_black_king_square(const struct board *const brd) {
-    const uint64_t king_bb = brd->piece_bitboards[PCE_ARRAY_OFFSET_BLACK_KING];
-    return bb_pop_1st_bit(king_bb);
+    uint64_t king_bb = brd->piece_bitboards[PCE_ARRAY_OFFSET_BLACK_KING];
+    return bb_pop_1st_bit_and_clear(&king_bb);
 }
 
 /**
@@ -507,6 +507,7 @@ static bool validate_square_empty(const struct board *brd, const enum square sq)
 static bool validate_pce_on_sq(const struct board *const brd, const enum piece pce, enum square sq) {
 
     if (brd_is_sq_occupied(brd, sq) == false) {
+        print_stacktrace();
         return false;
     }
 

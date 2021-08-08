@@ -159,8 +159,7 @@ int32_t evaluate_position_basic(const struct board * const brd, const enum colou
 
     uint64_t pce_bb = brd_get_board_bb(brd);
     while (pce_bb != 0) {
-        const enum square sq = bb_pop_1st_bit(pce_bb);
-        bb_clear_square(&pce_bb, sq);
+        const enum square sq = bb_pop_1st_bit_and_clear(&pce_bb);
 
         const enum piece pce = brd_get_piece_on_square(brd, sq);
         const enum piece_role role = pce_get_piece_role(pce);

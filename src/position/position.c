@@ -689,7 +689,7 @@ static enum move_legality get_move_legal_status(const struct position *const pos
     const enum piece king = side_to_move == WHITE ? WHITE_KING : BLACK_KING;
 
     uint64_t king_bb = brd_get_piece_bb(pos->brd, king);
-    const enum square king_sq = bb_pop_1st_bit(king_bb);
+    const enum square king_sq = bb_pop_1st_bit_and_clear(&king_bb);
 
     if (att_chk_is_sq_attacked(pos, king_sq, attacking_side)) {
         // square attacked, move not legal
@@ -728,8 +728,7 @@ static bool is_castle_move_legal(const struct position *const pos, const struct 
     }
 
     while (cast_bb != 0) {
-        const enum square sq = bb_pop_1st_bit(cast_bb);
-        bb_clear_square(&cast_bb, sq);
+        const enum square sq = bb_pop_1st_bit_and_clear(&cast_bb);
         if (att_chk_is_sq_attacked(pos, sq, attacking_side)) {
             return false;
         }
@@ -853,6 +852,7 @@ static void position_hist_push(struct position *const pos, const struct move mv,
     assert(validate_move(mv));
     assert(validate_piece(pce_moved));
     assert(validate_piece(captured_piece));
+    REQUIRE(pos->history.num_used_slots < MAX_GAME_MOVES, "Position history limit reached");
 
     struct history_item *free_slot = &pos->history.items[pos->history.num_used_slots];
 

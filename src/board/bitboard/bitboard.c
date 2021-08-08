@@ -124,15 +124,17 @@ __attribute__((always_inline)) bool bb_is_clear(const uint64_t bb, const enum sq
 }
 
 /**
- * @brief       Pops the lowest set bit.  Uses gcc built-in function
- * (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+ * @brief      Pops the LSB from the given u64, and clears it
  *
- * @param bb    The bitboard
- * @return      The zero-based bit that was set
+ * @param      bb    { parameter_description }
+ *
+ * @return     Square representing the bib popped, and the passed in value has the corresponding bit cleared.
  */
-__attribute__((always_inline)) enum square bb_pop_1st_bit(const uint64_t bb) {
-    int bit_num = __builtin_ctzll(bb);
-    return (enum square)bit_num;
+__attribute__((always_inline)) enum square bb_pop_1st_bit_and_clear(uint64_t *const bb) {
+    const int bit_num = __builtin_ctzll(*bb);
+    const enum square sq = (enum square)bit_num;
+    bb_clear_square(bb, sq);
+    return sq;
 }
 
 /**

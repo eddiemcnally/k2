@@ -39,8 +39,7 @@ void test_bitboard_pop_first_bit_all_squares(void **state) {
 
     assert_true(val == 0xffffffffffffffff);
     for (enum square sq = a1; sq <= h8; sq++) {
-        enum square popped = bb_pop_1st_bit(val);
-        bb_clear_square(&val, popped);
+        enum square popped = bb_pop_1st_bit_and_clear(&val);
         assert_true(popped == sq);
     }
     assert_true(val == 0);
@@ -59,36 +58,28 @@ void test_bitboard_pop_first_bit_random_squares(void **state) {
     bb_set_square(&val, g1);
     bb_set_square(&val, h8);
 
-    enum square popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    enum square popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == a1);
 
-    popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == g1);
 
-    popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == d3);
 
-    popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == b5);
 
-    popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == e5);
 
-    popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == c7);
 
-    popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == f8);
 
-    popped = bb_pop_1st_bit(val);
-    bb_clear_square(&val, popped);
+    popped = bb_pop_1st_bit_and_clear(&val);
     assert_true(popped == h8);
 
     assert_true(val == 0);

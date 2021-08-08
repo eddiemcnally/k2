@@ -78,9 +78,6 @@ int main(void) {
 
         TEST(test_move_double_pawn_move_encode_decode),
 
-        TEST(test_perft_1),
-        TEST(test_perft_2),
-
         // move list
         TEST(test_move_list_init),
         TEST(test_move_list_bulk_add_moves),
@@ -294,6 +291,10 @@ int main(void) {
         // castle permissions
         TEST(test_castle_permissions_get_set),
         TEST(test_castle_permissions_no_perms_get_set),
+
+        // perft
+        TEST(test_perft_1),
+        TEST(test_perft_2),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
