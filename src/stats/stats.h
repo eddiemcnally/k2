@@ -45,5 +45,7 @@ void stats_destroy(struct engine_stats *stats);
 
 void stats_reg_illegal_move_attacking_pce(struct engine_stats *const stats, const enum attacking_type att_type);
 void stats_reg_move(struct engine_stats *const stats, const struct move mv);
+void stats_reg_board_add_piece(struct engine_stats *const stats);
+void stats_reg_board_remove_piece(struct engine_stats *const stats);
 
 void stats_display(struct engine_stats *const stats);

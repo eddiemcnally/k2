@@ -140,8 +140,7 @@ uint64_t hash_en_passant(const enum square sq, const uint64_t key_to_modify) {
 
 /**
  * @brief               Flips the hash based on the castle permissions
- * @param pce           The piece 
- * @param sq            The square
+ * @param cp            The permissions 
  * @param key_to_modify The hashkey to modify
  * @return              The updated hash key
  */

@@ -88,6 +88,7 @@ set(CC_WARNINGS "-Wall \
 -Wcast-qual \
 -Wconversion \
 -Wdouble-promotion \
+-Wdocumentation \
 -Werror \
 -Wextra \
 -Wfloat-equal \
@@ -103,7 +104,6 @@ set(CC_WARNINGS "-Wall \
 -Wnested-externs \
 -Wnull-dereference \
 -Wpedantic \
--Wpointer-arith \
 -Wredundant-decls \
 -Wshadow \
 -Wsign-conversion \
@@ -112,6 +112,7 @@ set(CC_WARNINGS "-Wall \
 -Wstrict-prototypes \
 -Wswitch-default \
 -Wundef \
+-Wunused-parameter \
 -Wunreachable-code \
 -Wunused-macros \
 -Wwrite-strings"
@@ -122,11 +123,22 @@ set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
 
 
 
-
+#########################################
+#
+# Compiler flags to enable misc features
+#
+#
 # uncomment these to enable Engine stats
-#set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  -D ENABLE_STATS ")
-#set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  -D ENABLE_STATS ")
-
+# set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  -D ENABLE_STATS ")
+# set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  -D ENABLE_STATS ")
+#
+#
+# uncomment to enable runtime release-mode asserts
+# set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  -D ENABLE_REQUIRE ")
+#
+#
+#
+#########################################
 
 
 
@@ -139,14 +151,12 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS}  ${E
 -O3 \
 -m64 \
 -fno-common \
--fshort-enums \
--Winline \
 -mtune=native")
 
 # ---- Profiling ----
 # Replace the above 'release' command with the following for Profiling
 #
-#set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fshort-enums -fno-common \
+#set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} -fno-common \
 #-DNDEBUG \
 #-pg \
 #-mtune=native")
@@ -181,6 +191,14 @@ endif (DOXYGEN_FOUND)
   
 
 include_directories(${INCLUDES})
+
+
+#################################
+#
+# Create Binaries
+#
+#################################
+message("*** Setting up binaries...")
 
 # *** Main Engine ****
 # note: include main.c here

@@ -40,6 +40,8 @@ struct stats_movegen {
     uint64_t num_attacking_pce_knight;
     uint64_t num_attacking_pce_pawn;
     uint64_t num_attacking_pce_king;
+    uint64_t num_board_add_piece;
+    uint64_t num_board_remove_piece;
 };
 
 struct engine_stats {
@@ -76,7 +78,7 @@ void stats_destroy(struct engine_stats *stats) {
  * @brief      Registers an illegal move with stats
  *
  * @param      stats  The statistics struct
- * @param[in]  pce    The attacking piece
+ * @param[in]  att_type    The attacking type
  */
 void stats_reg_illegal_move_attacking_pce(struct engine_stats *const stats, const enum attacking_type att_type) {
     REQUIRE(stats->init_flag == INIT_KEY, "Stats struct isn't initialised");
@@ -105,6 +107,13 @@ void stats_reg_illegal_move_attacking_pce(struct engine_stats *const stats, cons
     }
 }
 
+void stats_reg_board_add_piece(struct engine_stats *const stats) {
+    stats->move_gen.num_board_add_piece++;
+}
+void stats_reg_board_remove_piece(struct engine_stats *const stats) {
+    stats->move_gen.num_board_remove_piece++;
+}
+
 /**
  * @brief      Registers a move with the stats 
  * 
@@ -130,7 +139,7 @@ void stats_reg_move(struct engine_stats *const stats, const struct move mv) {
  */
 void stats_display(struct engine_stats *const stats) {
 
-    printf("***Stats ***\n");
+    printf("\n***Stats ***\n");
     printf("   #moves.............................................: %llu\n", stats->move_gen.num_moves);
     printf("        #illegal......................................: %llu\n", stats->move_gen.num_illegal_moves);
     printf("        #quiet........................................: %llu\n", stats->move_gen.num_quiet_moves);
@@ -141,4 +150,8 @@ void stats_display(struct engine_stats *const stats) {
     printf("        #attacking knight.............................: %llu\n", stats->move_gen.num_attacking_pce_knight);
     printf("        #attacking pawn...............................: %llu\n", stats->move_gen.num_attacking_pce_pawn);
     printf("        #attacking king...............................: %llu\n", stats->move_gen.num_attacking_pce_king);
+    printf("\n");
+    printf("        #board add piece..............................: %llu\n", stats->move_gen.num_board_add_piece);
+    printf("        #board remove piece...........................: %llu\n", stats->move_gen.num_board_remove_piece);
+    printf("\n");
 }

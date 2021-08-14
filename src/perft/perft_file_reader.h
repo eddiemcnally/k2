@@ -35,8 +35,8 @@
 // struct to hold details of a perft row
 // 4k2r/6K1/8/8/8/8/8/8 w k - 0 1 ;D1 3 ;D2 32 ;D3 134 ;D4 2073 ;D5 10485 ;D6 179869
 struct epd_row {
-    char fen[MAX_FEN_LEN];
     uint64_t move_cnt[PERFT_EPD_MAX_DEPTH];
+    char fen[MAX_FEN_LEN];
 };
 
 struct perft_epd {

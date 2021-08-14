@@ -519,7 +519,7 @@ void test_move_white_pawns_promotion_2(void **state) {
 }
 
 void test_move_white_pawns_1(void **state) {
-    const char *RANDOM_FEN_1 = "1qN5/pR1B4/2Pp1Pbb/Bp1Pr1pP/k1P3pp/NrP1P1nP/K1p2n1p/2R4Q w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "1qN3r1/pR1B4/2PpPPb1/Bp1Pr1p1/kN1n2p1/2P1PP1P/PPp2nPp/K1R4Q w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);
@@ -527,13 +527,19 @@ void test_move_white_pawns_1(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
+    CONTAINS_QUIET(mvl, a2, a3);
+    CONTAINS_QUIET(mvl, b2, b3);
+    CONTAINS_QUIET(mvl, c3, c4);
     CONTAINS_QUIET(mvl, c6, c7);
-    CONTAINS_QUIET(mvl, c4, c5);
     CONTAINS_QUIET(mvl, e3, e4);
+    CONTAINS_QUIET(mvl, e6, e7);
     CONTAINS_QUIET(mvl, f6, f7);
+    CONTAINS_QUIET(mvl, g2, g3);
+    CONTAINS_QUIET(mvl, h3, h4);
 
-    CONTAINS_CAPTURE(mvl, c4, b5);
-    CONTAINS_CAPTURE(mvl, h5, g6);
+    CONTAINS_CAPTURE(mvl, c3, d4);
+    CONTAINS_CAPTURE(mvl, e3, d4);
+    CONTAINS_CAPTURE(mvl, f3, g4);
     CONTAINS_CAPTURE(mvl, h3, g4);
 }
 

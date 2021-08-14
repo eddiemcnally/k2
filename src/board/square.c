@@ -50,7 +50,7 @@ static char square_text[MAX_SQUARE_TEXT];
  * @param sq    The square
  * @return      The rank for the given square
  */
-inline enum rank sq_get_rank(const enum square sq) {
+enum rank sq_get_rank(const enum square sq) {
     assert(validate_square(sq));
 
     return (enum rank)(sq >> 3);
@@ -61,7 +61,7 @@ inline enum rank sq_get_rank(const enum square sq) {
  * @param sq    The square
  * @return      The file for the given square
  */
-inline enum file sq_get_file(const enum square sq) {
+enum file sq_get_file(const enum square sq) {
     assert(validate_square(sq));
 
     // efficient mod operation....
@@ -77,7 +77,7 @@ inline enum file sq_get_file(const enum square sq) {
  * @param sq    The square
  * @return      The square that is 1 rank up
  */
-inline enum square sq_get_square_plus_1_rank(const enum square sq) {
+enum square sq_get_square_plus_1_rank(const enum square sq) {
     assert(validate_square(sq));
     assert(sq < a8);
     return (enum square)(sq + 8);
@@ -88,18 +88,18 @@ inline enum square sq_get_square_plus_1_rank(const enum square sq) {
  * @param sq    The square
  * @return      The square that is 1 rank down
  */
-inline enum square sq_get_square_minus_1_rank(const enum square sq) {
+enum square sq_get_square_minus_1_rank(const enum square sq) {
     assert(validate_square(sq));
     assert(sq > a1);
 
     return (enum square)(sq - 8);
 }
 
-inline bool sq_is_valid_rank(const enum rank r) {
+bool sq_is_valid_rank(const enum rank r) {
     return r >= RANK_1 && r <= RANK_8;
 }
 
-inline bool sq_is_valid_file(const enum file f) {
+bool sq_is_valid_file(const enum file f) {
     return f >= FILE_A && f <= FILE_H;
 }
 
@@ -109,7 +109,7 @@ inline bool sq_is_valid_file(const enum file f) {
  * @param file  The file
  * @return      The square that is the given rank and file
  */
-inline enum square sq_gen_from_rank_file(const enum rank rank, const enum file file) {
+enum square sq_gen_from_rank_file(const enum rank rank, const enum file file) {
     assert(validate_rank(rank));
     assert(validate_file(file));
 
@@ -193,7 +193,7 @@ bool validate_en_pass_sq(const enum square sq_to_check) {
  * @param f     file
  * @return      valid square or NO_SQUARE
  */
-inline enum square sq_try_get_sq(const enum rank r, const enum file f) {
+enum square sq_try_get_sq(const enum rank r, const enum file f) {
     if (sq_is_valid_rank(r) && sq_is_valid_file(f)) {
         return sq_gen_from_rank_file(r, f);
     }

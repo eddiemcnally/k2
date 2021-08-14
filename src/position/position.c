@@ -242,7 +242,6 @@ struct cast_perm_container pos_get_cast_perm(const struct position *const pos) {
  * @brief               Tries to return the en passant square
  *
  * @param pos           The position
- * @param en_pass_sq
  * @return              true if valid/active en passent square, false otherwise
  */
 enum square pos_get_en_pass_sq(const struct position *const pos) {
@@ -352,6 +351,7 @@ enum move_legality pos_make_move(struct position *const pos, const struct move m
     } break;
     default:
         REQUIRE(false, "Invalid move type");
+        break;
     }
 
     // some cleanup
@@ -411,6 +411,7 @@ struct move pos_take_move(struct position *const pos) {
         break;
     default:
         REQUIRE(false, "Invalid move type");
+        break;
     }
 
     return mv;
@@ -475,7 +476,8 @@ static void reverse_en_passant_move(struct position *const pos, const struct mov
         brd_add_piece(pos->brd, WHITE_PAWN, bcapture_sq);
         break;
     default:
-        REQUIRE(false, "Invalid side : reverse en passant")
+        REQUIRE(false, "Invalid side : reverse en passant");
+        break;
     }
 }
 
@@ -589,7 +591,7 @@ uint64_t pos_get_hash(const struct position *const pos) {
 //
 // ==================================================================
 
-static inline bool pos_is_en_passant_active(const struct position *const pos) {
+static bool pos_is_en_passant_active(const struct position *const pos) {
     return pos->state.en_passant_sq != NO_SQUARE;
 }
 
@@ -754,6 +756,7 @@ static void make_king_side_castle_move(struct position *const pos) {
         break;
     default:
         REQUIRE(false, "Unexpected condition");
+        break;
     }
 }
 
@@ -773,6 +776,7 @@ static void make_queen_side_castle_move(struct position *const pos) {
         break;
     default:
         REQUIRE(false, "Unexpected condition");
+        break;
     }
 }
 
@@ -969,18 +973,28 @@ static bool compare_game_states(const struct game_state *gs1, const struct game_
 //
 // functions to manipulate pieces and update hashes
 //
-static inline void pos_move_piece(struct position *const pos, const enum piece pce, const enum square from_sq,
-                                  const enum square to_sq) {
+static void pos_move_piece(struct position *const pos, const enum piece pce, const enum square from_sq,
+                           const enum square to_sq) {
     brd_move_piece(pos->brd, pce, from_sq, to_sq);
     pos->state.hashkey = hash_piece_update_move(pce, from_sq, to_sq, pos->state.hashkey);
 }
 
-static inline void pos_remove_piece(struct position *const pos, const enum piece pce, const enum square sq) {
+static void pos_remove_piece(struct position *const pos, const enum piece pce, const enum square sq) {
     brd_remove_piece(pos->brd, pce, sq);
+
+#ifdef ENABLE_STATS
+    stats_reg_board_remove_piece(pos->stats);
+#endif
+
     pos->state.hashkey = hash_piece_update(pce, sq, pos->state.hashkey);
 }
 
-static inline void pos_add_piece(struct position *const pos, const enum piece pce, const enum square sq) {
+static void pos_add_piece(struct position *const pos, const enum piece pce, const enum square sq) {
     brd_add_piece(pos->brd, pce, sq);
+
+#ifdef ENABLE_STATS
+    stats_reg_board_add_piece(pos->stats);
+#endif
+
     pos->state.hashkey = hash_piece_update(pce, sq, pos->state.hashkey);
 }

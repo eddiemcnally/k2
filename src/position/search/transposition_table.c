@@ -42,8 +42,8 @@
 #define MIN_NUM_TT_SLOTS 1000000
 
 static void set_tt_size(uint64_t size_in_bytes);
-static inline void init_table(void);
-static inline uint32_t get_index(const uint64_t hash);
+static void init_table(void);
+static uint32_t get_index(const uint64_t hash);
 static bool validate_node_type(const enum node_type nt);
 
 struct tt_entry {
@@ -66,7 +66,9 @@ static struct tt_entry *tt = NULL;
  * @param size_in_bytes The size in bytes of the Transposition Table
  */
 void tt_create(uint64_t size_in_bytes) {
-    REQUIRE(size_in_bytes > sizeof(struct tt_entry), "Required TT size is too small");
+    if (size_in_bytes < sizeof(struct tt_entry)) {
+        printf("Required TT size is too small...setting to %d\n", MIN_NUM_TT_SLOTS);
+    }
 
     if (tt != NULL) {
         tt_dispose();
@@ -168,14 +170,14 @@ static void set_tt_size(uint64_t size_in_bytes) {
     tt = (struct tt_entry *)calloc(num_tt_elems, sizeof(struct tt_entry));
 }
 
-static inline void init_table(void) {
+static void init_table(void) {
     for (uint64_t i = 0; i < num_tt_elems; i++) {
         struct tt_entry *entry = &tt[i];
         entry->slot_used = false;
     }
 }
 
-static inline uint32_t get_index(const uint64_t hash) {
+static uint32_t get_index(const uint64_t hash) {
     return (uint32_t)(hash % num_tt_elems);
 }
 

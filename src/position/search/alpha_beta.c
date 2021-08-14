@@ -112,7 +112,7 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
         // TODO - sort moves by score
 
-        printf("AlphaBeta depth=%d, processing move %s\n", depth, move_print(mv));
+        //printf("AlphaBeta depth=%d, processing move %s\n", depth, move_print(mv));
 
         enum move_legality legality = pos_make_move(pos, mv);
         if (legality != LEGAL_MOVE) {
@@ -122,7 +122,7 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
         legal_moves_available = true;
 
-        printf("AlphaBeta depth=%d, calling alphabeta\n", depth);
+        //printf("AlphaBeta depth=%d, calling alphabeta\n", depth);
 
         // NOTE alpha/beta swapped, negate the result
         score = -alpha_beta_search(-beta, -alpha, (depth - 1), pos, search_info);
@@ -130,7 +130,7 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
 
         if (score > alpha) {
             if (score >= beta) {
-                printf("AlphaBeta depth=%d, score > beta\n", depth);
+                //printf("AlphaBeta depth=%d, score > beta\n", depth);
                 return beta;
             }
             alpha = score;
@@ -144,7 +144,7 @@ int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, struct pos
     }
 
     if (alpha != entry_alpha) {
-        printf("AlphaBeta depth=%d, adding to TT, move=%s\n", depth, move_print(best_move));
+        //printf("AlphaBeta depth=%d, adding to TT, move=%s\n", depth, move_print(best_move));
 
         tt_add(pos_hash, best_move, depth, alpha, NODE_ALPHA);
     }

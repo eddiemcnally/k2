@@ -186,7 +186,7 @@ int32_t evaluate_position_basic(const struct board * const brd, const enum colou
 }
 
 
-__attribute__((always_inline)) static int32_t eval_white(const enum piece_role role, const enum square sq){
+ static int32_t eval_white(const enum piece_role role, const enum square sq){
     switch(role){
     case PAWN:
         return PAWN_SQ_VALUE[sq];
@@ -206,7 +206,7 @@ __attribute__((always_inline)) static int32_t eval_white(const enum piece_role r
 }
 
 
-__attribute__((always_inline)) static int32_t eval_black(const enum piece_role role, const enum square sq){
+ static int32_t eval_black(const enum piece_role role, const enum square sq){
     
     // lookup tables are white-oriented....invert for black
     const uint32_t offset = 63 - sq;

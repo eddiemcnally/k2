@@ -44,7 +44,7 @@ static const uint64_t EMPTY_BITBOARD = 0;
  * @param bb    Pointer to bitboard
  * @param sq    The square
  */
-__attribute__((always_inline)) void bb_set_square(uint64_t *const bb, const enum square sq) {
+void bb_set_square(uint64_t *const bb, const enum square sq) {
     assert(validate_square(sq));
 
     *bb = *bb | ((uint64_t)0x01 << sq);
@@ -56,7 +56,7 @@ __attribute__((always_inline)) void bb_set_square(uint64_t *const bb, const enum
  * @param sq    The square
  * @return      The bitboard with the square set
  */
-__attribute__((always_inline)) uint64_t bb_get_square_as_bb(const enum square sq) {
+uint64_t bb_get_square_as_bb(const enum square sq) {
     assert(validate_square(sq));
 
     return ((uint64_t)0x01 << sq);
@@ -68,7 +68,7 @@ __attribute__((always_inline)) uint64_t bb_get_square_as_bb(const enum square sq
  * @param bb    Pointer to bitboard
  * @param sq    The square
  */
-__attribute__((always_inline)) void bb_clear_square(uint64_t *const bb, const enum square sq) {
+void bb_clear_square(uint64_t *const bb, const enum square sq) {
     assert(validate_square(sq));
 
     *bb = *bb & (~((uint64_t)0x01 << sq));
@@ -81,8 +81,7 @@ __attribute__((always_inline)) void bb_clear_square(uint64_t *const bb, const en
  * @param[in]  from_sq  The from sq
  * @param[in]  to_sq    To sq
  */
-__attribute__((always_inline)) void bb_move_bit(uint64_t *const bb, const enum square from_sq,
-                                                const enum square to_sq) {
+void bb_move_bit(uint64_t *const bb, const enum square from_sq, const enum square to_sq) {
 
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
@@ -104,7 +103,7 @@ __attribute__((always_inline)) void bb_move_bit(uint64_t *const bb, const enum s
  *
  * @return true if bit is set, false otherwise.
  */
-__attribute__((always_inline)) bool bb_is_set(const uint64_t bb, const enum square sq) {
+bool bb_is_set(const uint64_t bb, const enum square sq) {
     assert(validate_square(sq));
 
     uint64_t b = bb >> sq;
@@ -119,7 +118,7 @@ __attribute__((always_inline)) bool bb_is_set(const uint64_t bb, const enum squa
  *
  * @return true if bit is clear, false otherwise.
  */
-__attribute__((always_inline)) bool bb_is_clear(const uint64_t bb, const enum square sq) {
+bool bb_is_clear(const uint64_t bb, const enum square sq) {
     return !bb_is_set(bb, sq);
 }
 
@@ -130,7 +129,7 @@ __attribute__((always_inline)) bool bb_is_clear(const uint64_t bb, const enum sq
  *
  * @return     Square representing the bib popped, and the passed in value has the corresponding bit cleared.
  */
-__attribute__((always_inline)) enum square bb_pop_1st_bit_and_clear(uint64_t *const bb) {
+enum square bb_pop_1st_bit_and_clear(uint64_t *const bb) {
     const int bit_num = __builtin_ctzll(*bb);
     const enum square sq = (enum square)bit_num;
     bb_clear_square(bb, sq);
@@ -178,7 +177,7 @@ void bb_print_as_board(const uint64_t bb) {
  * @param bb    The bitboard
  * @return      The reversed bitboard
  */
-__attribute__((always_inline)) uint64_t bb_reverse(uint64_t bb) {
+uint64_t bb_reverse(uint64_t bb) {
     // see https://clang.llvm.org/docs/LanguageExtensions.html#builtin-functions
     return __builtin_bitreverse64(bb);
 }

@@ -36,6 +36,7 @@
  * @brief A non-debug mode runtime assert.
  * 
  */
+#ifdef ENABLE_REQUIRE
 #define REQUIRE(cond, text)                                                                                            \
     if (!(cond)) {                                                                                                     \
         fprintf(stderr, "FATAL: Error condition\n");                                                                   \
@@ -45,6 +46,9 @@
         print_stacktrace();                                                                                            \
         exit(EXIT_FAILURE);                                                                                            \
     }
+#else
+#define REQUIRE(cond, text)
+#endif
 
 //void set_priority_and_affinity(void);
 void print_stacktrace(void);

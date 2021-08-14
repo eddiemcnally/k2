@@ -57,7 +57,7 @@
  * 
  * @return          the piece_type
  */
-inline enum piece_role pce_get_piece_role(const enum piece pce) {
+enum piece_role pce_get_piece_role(const enum piece pce) {
     assert(validate_piece(pce));
 
     return EXTRACT_PIECE_ROLE(pce);
@@ -69,7 +69,7 @@ inline enum piece_role pce_get_piece_role(const enum piece pce) {
  * @param pce   The piece
  * @return true if WHITE, false otherwise
  */
-inline bool pce_is_white(const enum piece pce) {
+bool pce_is_white(const enum piece pce) {
     assert(validate_piece(pce));
 
     return (EXTRACT_COLOUR(pce) == WHITE);
@@ -81,7 +81,7 @@ inline bool pce_is_white(const enum piece pce) {
  * @param pce   The piece
  * @return true if BLACK, false otherwise
  */
-inline bool pce_is_black(const enum piece pce) {
+bool pce_is_black(const enum piece pce) {
     assert(validate_piece(pce));
 
     return (EXTRACT_COLOUR(pce) == BLACK);
@@ -93,7 +93,7 @@ inline bool pce_is_black(const enum piece pce) {
  * @param col   The given colour
  * @return      The opposite colour
  */
-inline enum colour pce_swap_side(const enum colour col) {
+enum colour pce_swap_side(const enum colour col) {
     assert(validate_colour(col));
 
     return (enum colour)(~col & 0x01);
@@ -105,7 +105,7 @@ inline enum colour pce_swap_side(const enum colour col) {
  * @param pce The piece
  * @return The colour of the given piece
  */
-inline enum colour pce_get_colour(const enum piece pce) {
+enum colour pce_get_colour(const enum piece pce) {
     assert(validate_piece(pce));
 
     return EXTRACT_COLOUR(pce);
@@ -117,7 +117,7 @@ inline enum colour pce_get_colour(const enum piece pce) {
  * @param pce   The piece
  * @return      The piece value
  */
-inline uint32_t pce_get_value(const enum piece pce) {
+uint32_t pce_get_value(const enum piece pce) {
     assert(validate_piece(pce));
 
     return (uint32_t)(pce >> VALUE_SHIFT);
@@ -129,10 +129,9 @@ bool pce_is_king(const enum piece pce) {
 
 /**
 * @brief        Populates an array of all pieces.
-* @param        Pointer to array that is populated
-* @return       The array
+* @param  pce_array      Pointer to array that is populated
 */
-inline void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]) {
+void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]) {
     int i = 0;
 
     pce_array[i++] = WHITE_PAWN;

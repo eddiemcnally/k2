@@ -48,6 +48,9 @@
 static uint64_t first(void);
 static uint64_t second(void);
 
+static void test_new_code(const enum square from_sq, const enum square to_sq, struct move *mv);
+static struct move test_existing_code(const enum square from_sq, const enum square to_sq);
+
 int main(void) {
 
     uint64_t accum_1 = 0;
@@ -87,20 +90,32 @@ int main(void) {
 }
 
 static uint64_t first(void) {
-    uint64_t bb = 0xFFFFFFFFFFFFFFFF;
-    // for (enum square sq = a1; sq <= h8; sq++) {
-    //     bb_pop_1st_bit_and_clear(&bb);
-    // }
-    // REQUIRE(bb == 0, "should be zero)");
+    uint64_t bb = 0;
+    for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
+        for (enum square to_sq = a1; to_sq <= h8; to_sq++) {
+            struct move mv = test_existing_code(from_sq, to_sq);
+            bb += mv.val;
+        }
+    }
     return bb;
 }
 
 static uint64_t second(void) {
-    uint64_t bb = 0xFFFFFFFFFFFFFFFF;
-    // for (enum square sq = a1; sq <= h8; sq++) {
-    //     const enum square sq1 = bb_pop_1st_bit_and_clear(bb);
-    //     bb_clear_square(&bb, sq1);
-    // }
-    // REQUIRE(bb == 0, "should be zero)");
+    uint64_t bb = 0;
+    for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
+        for (enum square to_sq = a1; to_sq <= h8; to_sq++) {
+            struct move mv;
+            test_new_code(from_sq, to_sq, &mv);
+            bb += mv.val;
+        }
+    }
     return bb;
+}
+
+static void test_new_code(const enum square from_sq, const enum square to_sq, struct move *mv) {
+    *mv = move_encode_quiet(from_sq, to_sq);
+}
+
+static struct move test_existing_code(const enum square from_sq, const enum square to_sq) {
+    return move_encode_quiet(from_sq, to_sq);
 }

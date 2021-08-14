@@ -38,6 +38,7 @@
 #include "occupancy_mask.h"
 #include "square.h"
 #include "stats.h"
+#include "utils.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -69,10 +70,13 @@ bool att_chk_is_sq_attacked(const struct position *const pos, const enum square 
         return is_white_attacking(pos, sq);
     case BLACK:
         return is_black_attacking(pos, sq);
+    default:
+        REQUIRE(false, "Invalid attacking side");
+        break;
     }
 }
 
-inline static bool is_white_attacking(const struct position *const pos, const enum square sq) {
+static bool is_white_attacking(const struct position *const pos, const enum square sq) {
     const struct board *brd = pos_get_board(pos);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
@@ -118,7 +122,7 @@ inline static bool is_white_attacking(const struct position *const pos, const en
     return false;
 }
 
-inline static bool is_black_attacking(const struct position *const pos, const enum square sq) {
+static bool is_black_attacking(const struct position *const pos, const enum square sq) {
     const struct board *brd = pos_get_board(pos);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
@@ -165,12 +169,12 @@ inline static bool is_black_attacking(const struct position *const pos, const en
     return false;
 }
 
-inline static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
+static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
     const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);
     return (attacking_bb & pawn_bb) != 0;
 }
 
-inline static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
+static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
     const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);
     return (attacking_bb & pawn_bb) != 0;
 }

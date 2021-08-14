@@ -85,7 +85,7 @@ struct board *brd_allocate(void) {
 /**
  * @brief De-allocated the board
  * 
- * @param brd 
+ * @param brd The board
  */
 void brd_deallocate(struct board *brd) {
     REQUIRE(brd->init_flag == INIT_KEY, "Board struct isn't initialised");
@@ -99,7 +99,7 @@ void brd_deallocate(struct board *brd) {
  * @param brd The board
  * @return A bitboard with a bit set for each occupier square
  */
-inline uint64_t brd_get_board_bb(const struct board *const brd) {
+uint64_t brd_get_board_bb(const struct board *const brd) {
     assert(validate_board(brd));
     return brd->bb_colour[PCE_COL_ARRAY_OFFSET_WHITE] | brd->bb_colour[PCE_COL_ARRAY_OFFSET_BLACK];
 }
@@ -163,7 +163,6 @@ void brd_add_piece(struct board *const brd, const enum piece pce, const enum squ
  * @brief Returns the material value for the given side/colour 
  * 
  * @param brd           The board
- * @param side          The side 
  * @return int32_t      The current material value
  */
 struct material brd_get_material(const struct board *const brd) {
@@ -225,7 +224,8 @@ void brd_remove_from_square(struct board *const brd, const enum square sq) {
  *
  * @param brd   The board
  * @param pce   The piece to move
- * @param mv    The move
+ * @param from_sq The from square
+ * @param to_sq     The to square
  */
 void brd_move_piece(struct board *const brd, const enum piece pce, const enum square from_sq, const enum square to_sq) {
 
@@ -304,7 +304,7 @@ enum square brd_get_black_king_square(const struct board *const brd) {
 /**
  * @brief Returns a bitboard representing the WHITE rook and queen positions
  * 
- * @param brd 
+ * @param brd The board
  * @return uint64_t The rook and queen bitboard
  */
 uint64_t brd_get_white_rook_queen_bb(const struct board *const brd) {
@@ -314,7 +314,7 @@ uint64_t brd_get_white_rook_queen_bb(const struct board *const brd) {
 /**
  * @brief Returns a bitboard representing the BLACK rook and queen positions
  * 
- * @param brd 
+ * @param brd The board
  * @return uint64_t The rook and queen bitboard
  */
 uint64_t brd_get_black_rook_queen_bb(const struct board *const brd) {
@@ -324,7 +324,7 @@ uint64_t brd_get_black_rook_queen_bb(const struct board *const brd) {
 /**
  * @brief Returns a bitboard representing the WHITE bishop and queen positions
  * 
- * @param brd 
+ * @param brd The board
  * @return uint64_t The bishop and queen bitboard
  */
 uint64_t brd_get_white_bishop_queen_bb(const struct board *const brd) {
@@ -334,7 +334,7 @@ uint64_t brd_get_white_bishop_queen_bb(const struct board *const brd) {
 /**
  * @brief Returns a bitboard representing the BLACK bishop and queen positions
  * 
- * @param brd 
+ * @param brd The board
  * @return uint64_t The bishop and queen bitboard
  */
 uint64_t brd_get_black_bishop_queen_bb(const struct board *const brd) {
@@ -447,7 +447,7 @@ bool brd_compare(const struct board *const first, const struct board *const seco
 /**
  * @brief Prints a representation of the board
  * 
- * @param brd 
+ * @param brd The board
  */
 void brd_print(const struct board *const brd) {
 

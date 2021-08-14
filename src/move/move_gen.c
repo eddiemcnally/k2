@@ -163,6 +163,7 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
 
     default:
         REQUIRE(false, "Invalid side");
+        break;
     }
 }
 
@@ -413,13 +414,13 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct position *const
         const uint64_t bb_slider = bb_get_square_as_bb(from_sq);
 
         // diagonal move
-        uint64_t diag1 = (all_pce_bb & diag_masks.positive) - (2 * bb_slider);
-        uint64_t diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.positive) - (2 * bb_reverse(bb_slider)));
+        uint64_t diag1 = (all_pce_bb & diag_masks.positive) - (bb_slider << 1);
+        uint64_t diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.positive) - (bb_reverse(bb_slider) << 1));
         const uint64_t diagpos = diag1 ^ diag2;
 
         // anti-diagonal moves
-        diag1 = (all_pce_bb & diag_masks.negative) - (2 * bb_slider);
-        diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.negative) - (2 * bb_reverse(bb_slider)));
+        diag1 = (all_pce_bb & diag_masks.negative) - (bb_slider << 1);
+        diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.negative) - (bb_reverse(bb_slider) << 1));
         const uint64_t diagneg = diag1 ^ diag2;
 
         const uint64_t all_moves = (diagpos & diag_masks.positive) | (diagneg & diag_masks.negative);
@@ -440,7 +441,7 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct position *const
 /**
  * @brief Generate all sliding moves for rank and files
  * 
- * @param brd The position
+ * @param pos The position
  * @param rook_queen_bb The conflated bitboard for queen and rook pieces 
  * @param side_to_move The side to move
  * @param mvl The move List
@@ -468,12 +469,12 @@ static void get_sliding_rank_file_moves(const struct position *const pos, const 
         // create slider bb for this square
         const uint64_t bb_slider = bb_get_square_as_bb(from_sq);
 
-        const uint64_t horiz1 = all_pce_bb - (2 * bb_slider);
-        const uint64_t horiz2 = bb_reverse(bb_reverse(all_pce_bb) - (2 * bb_reverse(bb_slider)));
+        const uint64_t horiz1 = all_pce_bb - (bb_slider << 1);
+        const uint64_t horiz2 = bb_reverse(bb_reverse(all_pce_bb) - (bb_reverse(bb_slider) << 1));
         const uint64_t horizontal = horiz1 ^ horiz2;
 
-        const uint64_t vert1 = (all_pce_bb & vmask) - (2 * bb_slider);
-        const uint64_t vert2 = bb_reverse(bb_reverse(all_pce_bb & vmask) - (2 * bb_reverse(bb_slider)));
+        const uint64_t vert1 = (all_pce_bb & vmask) - (bb_slider << 1);
+        const uint64_t vert2 = bb_reverse(bb_reverse(all_pce_bb & vmask) - (bb_reverse(bb_slider) << 1));
         const uint64_t vertical = vert1 ^ vert2;
 
         const uint64_t all_moves = (horizontal & hmask) | (vertical & vmask);
@@ -492,25 +493,18 @@ static void get_sliding_rank_file_moves(const struct position *const pos, const 
 static bool encode_quiet_or_capt_move(const enum square from_sq, const enum square to_sq,
                                       const enum move_gen_type gen_type, const uint64_t all_pce_bb,
                                       struct move *const mv) {
-
-    switch (gen_type) {
-    case CAPTURE_ONLY:
-        if (bb_is_set(all_pce_bb, to_sq)) {
-            *mv = move_encode_capture(from_sq, to_sq);
-            return true;
-        }
-        break;
-    case ALL_MOVES:
+    if (gen_type == ALL_MOVES) {
         if (bb_is_set(all_pce_bb, to_sq)) {
             *mv = move_encode_capture(from_sq, to_sq);
         } else {
             *mv = move_encode_quiet(from_sq, to_sq);
         }
         return true;
-    default:
-        REQUIRE(false, "Invalid move gen type");
-        break;
+    } else if (bb_is_set(all_pce_bb, to_sq)) {
+        *mv = move_encode_capture(from_sq, to_sq);
+        return true;
     }
+
     return false;
 }
 
@@ -692,8 +686,7 @@ static void mv_gen_black_castle_moves(const struct position *const pos, struct m
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-__attribute__((always_inline)) static void mv_add_to_movelist(const struct position *const pos,
-                                                              struct move_list *const mvl, const struct move mv) {
+static void mv_add_to_movelist(const struct position *const pos, struct move_list *const mvl, const struct move mv) {
     mvl_add(mvl, mv);
 
 #ifdef ENABLE_STATS
