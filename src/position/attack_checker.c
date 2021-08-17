@@ -82,36 +82,28 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
 
     // conflate rook and queen
     const uint64_t rook_queen_bb = brd_get_white_rook_queen_bb(brd);
-    if (rook_queen_bb != 0) {
-        if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
-            return true;
-        }
+    if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
+        return true;
     }
 
     // conflate bishop and queen
     const uint64_t bishop_queen_bb = brd_get_white_bishop_queen_bb(brd);
-    if (bishop_queen_bb) {
-        if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
-            return true;
-        }
+    if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
+        return true;
     }
 
     const uint64_t knight_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
-    if (knight_bb != 0) {
-        if (is_knight_attacking(knight_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_KNIGHT);
-            return true;
-        }
+    if (is_knight_attacking(knight_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_KNIGHT);
+        return true;
     }
 
     const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
-    if (wp_bb != 0) {
-        if (is_white_pawn_attacking(wp_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_PAWN);
-            return true;
-        }
+    if (is_white_pawn_attacking(wp_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_PAWN);
+        return true;
     }
 
     const enum square king_sq = brd_get_white_king_square(brd);
@@ -128,36 +120,28 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
 
     // conflate rook and queen
     const uint64_t rook_queen_bb = brd_get_black_rook_queen_bb(brd);
-    if (rook_queen_bb != 0) {
-        if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
-            return true;
-        }
+    if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
+        return true;
     }
 
     // conflate bishop and queen
     const uint64_t bishop_queen_bb = brd_get_black_bishop_queen_bb(brd);
-    if (bishop_queen_bb != 0) {
-        if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
-            return true;
-        }
+    if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
+        return true;
     }
 
     const uint64_t knight_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
-    if (knight_bb != 0) {
-        if (is_knight_attacking(knight_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_KNIGHT);
-            return true;
-        }
+    if (is_knight_attacking(knight_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_KNIGHT);
+        return true;
     }
 
     const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
-    if (bp_bb != 0) {
-        if (is_black_pawn_attacking(bp_bb, sq)) {
-            REG_ATTACK_TYPE(pos, ATT_PAWN);
-            return true;
-        }
+    if (is_black_pawn_attacking(bp_bb, sq)) {
+        REG_ATTACK_TYPE(pos, ATT_PAWN);
+        return true;
     }
 
     const enum square king_sq = brd_get_black_king_square(brd);

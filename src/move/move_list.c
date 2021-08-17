@@ -94,7 +94,8 @@ void mvl_add(struct move_list *const mvl, const struct move mv) {
     assert(validate_move_list(mvl));
     assert(validate_move(mv));
 
-    REQUIRE(mvl->move_count < MOVE_LIST_MAX_LEN, "Move list : attemot to add past end of array");
+    REQUIRE(mvl->move_count < MOVE_LIST_MAX_LEN, "Move list : attempt to add past end of array");
+
     mvl->move_list[mvl->move_count] = mv;
     mvl->move_count++;
 }

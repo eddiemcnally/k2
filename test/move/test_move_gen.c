@@ -519,7 +519,7 @@ void test_move_white_pawns_promotion_2(void **state) {
 }
 
 void test_move_white_pawns_1(void **state) {
-    const char *RANDOM_FEN_1 = "1qN3r1/pR1B4/2PpPPb1/Bp1Pr1p1/kN1n2p1/2P1PP1P/PPp2nPp/K1R4Q w - - 0 1\n";
+    const char *RANDOM_FEN_1 = "2N5/pR1B4/2PpPPb1/Bp1Pr1p1/kN1n2p1/2P1PP1P/PPp2nPp/K1R4Q w - - 0 1\n";
 
     struct position *pos = pos_create();
     pos_initialise(RANDOM_FEN_1, pos);

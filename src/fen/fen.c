@@ -162,20 +162,18 @@ bool fen_has_bq_castle_perms(const struct parsed_fen *const pf) {
 }
 
 /**
- * @brief       Given the struct, attempts to get the piece on the given square
+ * @brief       Given the struct, returns the en passant square
  *
  * @param       pf              The FEN struct
- * @param       sq              The square being tested
- * @return      true if a piece was found, false otherwise
+ * @return      En passant square or NO_SQUARE
  */
-bool fen_try_get_en_pass_sq(const struct parsed_fen *const pf, enum square *sq) {
+enum square fen_get_en_pass_sq(const struct parsed_fen *const pf) {
     assert(validate_struct_init(pf));
 
     if (pf->is_en_pass_set == true) {
-        *sq = pf->en_pass_sq;
-        return true;
+        return pf->en_pass_sq;
     }
-    return false;
+    return NO_SQUARE;
 }
 
 /**

@@ -243,6 +243,8 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     bb_move_bit(&brd->piece_bitboards[pce_off], from_sq, to_sq);
     bb_move_bit(&brd->bb_colour[col_off], from_sq, to_sq);
 
+    REQUIRE(brd->pce_square[from_sq] == pce, "Unexpected piece on square");
+
     brd->pce_square[from_sq] = NO_PIECE;
     brd->pce_square[to_sq] = pce;
 }

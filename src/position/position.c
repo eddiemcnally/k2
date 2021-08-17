@@ -185,6 +185,9 @@ void pos_initialise(const char *fen, struct position *const pos) {
  */
 void pos_destroy(struct position *const pos) {
     assert(validate_position(pos));
+
+    REQUIRE(pos->init_flag == STRUCT_INIT_KEY, "Position structure not initialised");
+
     brd_deallocate(pos->brd);
 
 #ifdef ENABLE_STATS
@@ -288,6 +291,7 @@ enum move_legality pos_make_move(struct position *const pos, const struct move m
     const enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
     const enum piece pce_capt = brd_get_piece_on_square(pos->brd, to_sq);
 
+    // save state
     position_hist_push(pos, mv, pce_to_move, pce_capt);
 
     pos->state.ply++;
@@ -355,12 +359,14 @@ enum move_legality pos_make_move(struct position *const pos, const struct move m
     }
 
     // some cleanup
+    // ============
     const enum move_legality legality = get_move_legal_status(pos, mv);
     if (move_is_double_pawn(mv) == false) {
         pos->state.en_passant_sq = NO_SQUARE;
     }
-    // clean out any castle permissions
-    update_castle_perms(pos, mv, pce_to_move);
+    if (cast_perm_has_permissions(pos->state.castle_perm_container)) {
+        update_castle_perms(pos, mv, pce_to_move);
+    }
 
     swap_side(pos);
 
@@ -374,8 +380,11 @@ struct move pos_take_move(struct position *const pos) {
     enum piece pce_moved;
     enum piece captured_piece;
 
+    // restore state
     position_hist_pop(pos, &mv, &pce_moved, &captured_piece);
 
+    // now update the board
+    // ====================
     const enum move_type mv_type = move_get_move_type(mv);
 
     switch (mv_type) {
@@ -477,32 +486,6 @@ static void reverse_en_passant_move(struct position *const pos, const struct mov
         break;
     default:
         REQUIRE(false, "Invalid side : reverse en passant");
-        break;
-    }
-}
-
-static void reverse_castle_move(struct position *const pos, const struct move mv, const enum colour side) {
-    switch (side) {
-    case WHITE:
-        if (move_is_king_castle(mv)) {
-            brd_move_piece(pos->brd, WHITE_KING, g1, e1);
-            brd_move_piece(pos->brd, WHITE_ROOK, f1, h1);
-        } else {
-            brd_move_piece(pos->brd, WHITE_KING, c1, e1);
-            brd_move_piece(pos->brd, WHITE_ROOK, d1, a1);
-        }
-        break;
-    case BLACK:
-        if (move_is_king_castle(mv)) {
-            brd_move_piece(pos->brd, BLACK_KING, g8, e8);
-            brd_move_piece(pos->brd, BLACK_ROOK, f8, h8);
-        } else {
-            brd_move_piece(pos->brd, BLACK_KING, c8, e8);
-            brd_move_piece(pos->brd, BLACK_ROOK, d8, a8);
-        }
-        break;
-    default:
-        REQUIRE(false, "Invalid colour");
         break;
     }
 }
@@ -612,78 +595,6 @@ static void do_capture_move(struct position *const pos, const enum square from_s
     pos_move_piece(pos, pce_to_move, from_sq, to_sq);
 }
 
-static void update_castle_perms(struct position *const pos, const struct move mv, const enum piece pce_being_moved) {
-    if (move_is_castle(mv)) {
-        // already handled elsewhere
-        return;
-    }
-
-    if (cast_perm_has_no_permissions(pos_get_cast_perm(pos))) {
-        return;
-    }
-
-    const enum piece_role pce_role = pce_get_piece_role(pce_being_moved);
-    const enum square to_sq = move_decode_to_sq(mv);
-    const enum square from_sq = move_decode_from_sq(mv);
-
-    if (pce_role == KING) {
-        // king moved, reset castle permissions
-        const enum colour side = pce_get_colour(pce_being_moved);
-        if (side == WHITE) {
-            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
-            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
-        } else {
-            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
-            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
-        }
-    } else if (pce_role == ROOK) {
-        // rook moved, reset castle permissions
-        const enum colour side = pce_get_colour(pce_being_moved);
-        if (side == WHITE) {
-            switch (from_sq) {
-            case a1:
-                pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
-                break;
-            case h1:
-                pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
-                break;
-            default:
-                break;
-            }
-        } else {
-            switch (from_sq) {
-            case a8:
-                pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
-                break;
-            case h8:
-                pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
-                break;
-            default:
-                break;
-            }
-        }
-    }
-
-    if (move_is_capture(mv)) {
-        switch (to_sq) {
-        case a8:
-            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
-            break;
-        case h8:
-            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
-            break;
-        case a1:
-            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
-            break;
-        case h1:
-            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
-            break;
-        default:
-            break;
-        }
-    }
-}
-
 static enum move_legality get_move_legal_status(const struct position *const pos, const struct move mov) {
     const enum colour side_to_move = pos_get_side_to_move(pos);
     const enum colour attacking_side = pce_swap_side(side_to_move);
@@ -706,36 +617,6 @@ static enum move_legality get_move_legal_status(const struct position *const pos
     }
 
     return LEGAL_MOVE;
-}
-
-static bool is_castle_move_legal(const struct position *const pos, const struct move mov,
-                                 const enum colour side_to_move, const enum colour attacking_side) {
-    uint64_t cast_bb = 0;
-    assert(move_is_castle(mov));
-
-    if (move_is_king_castle(mov)) {
-        if (side_to_move == WHITE) {
-            cast_bb = WK_CAST_BB;
-        } else {
-            cast_bb = BK_CAST_BB;
-        }
-    } else if (move_is_queen_castle(mov)) {
-        if (side_to_move == WHITE) {
-            cast_bb = WQ_CAST_BB;
-        } else {
-            cast_bb = BQ_CAST_BB;
-        }
-    } else {
-        REQUIRE(false, "is_castle_move_legal : unexpected condition");
-    }
-
-    while (cast_bb != 0) {
-        const enum square sq = bb_pop_1st_bit_and_clear(&cast_bb);
-        if (att_chk_is_sq_attacked(pos, sq, attacking_side)) {
-            return false;
-        }
-    }
-    return true;
 }
 
 static void make_king_side_castle_move(struct position *const pos) {
@@ -794,15 +675,7 @@ static void make_en_passant_move(struct position *const pos, const enum square f
 
 static void populate_position_from_fen(struct position *const pos, const struct parsed_fen *fen) {
     pos->state.side_to_move = fen_get_side_to_move(fen);
-
-    enum square en_pass;
-    bool found_en_pass = fen_try_get_en_pass_sq(fen, &en_pass);
-    if (found_en_pass) {
-        pos->state.en_passant_sq = en_pass;
-    } else {
-        pos->state.en_passant_sq = NO_SQUARE;
-    }
-
+    pos->state.en_passant_sq = fen_get_en_pass_sq(fen);
     pos->state.fifty_move_counter = 0;
     pos->state.ply = fen_get_half_move_cnt(fen);
     pos->state.history_ply = fen_get_full_move_cnt(fen);
@@ -998,3 +871,160 @@ static void pos_add_piece(struct position *const pos, const enum piece pce, cons
 
     pos->state.hashkey = hash_piece_update(pce, sq, pos->state.hashkey);
 }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+
+static void reverse_castle_move(struct position *const pos, const struct move mv, const enum colour side) {
+    const enum move_type mvt = move_get_move_type(mv);
+    switch (side) {
+    case WHITE:
+        switch (mvt) {
+        case MV_TYPE_KING_CASTLE:
+            brd_move_piece(pos->brd, WHITE_KING, g1, e1);
+            brd_move_piece(pos->brd, WHITE_ROOK, f1, h1);
+            break;
+        case MV_TYPE_QUEEN_CASTLE:
+            brd_move_piece(pos->brd, WHITE_KING, c1, e1);
+            brd_move_piece(pos->brd, WHITE_ROOK, d1, a1);
+            break;
+        default:
+            REQUIRE(false, "invalid castle type");
+            break;
+        }
+        break;
+    case BLACK:
+        switch (mvt) {
+        case MV_TYPE_KING_CASTLE:
+            brd_move_piece(pos->brd, BLACK_KING, g8, e8);
+            brd_move_piece(pos->brd, BLACK_ROOK, f8, h8);
+            break;
+        case MV_TYPE_QUEEN_CASTLE:
+            brd_move_piece(pos->brd, BLACK_KING, c8, e8);
+            brd_move_piece(pos->brd, BLACK_ROOK, d8, a8);
+            break;
+        default:
+            REQUIRE(false, "invalid castle type");
+            break;
+        }
+        break;
+    default:
+        REQUIRE(false, "Invalid colour");
+        break;
+    }
+}
+
+static void update_castle_perms(struct position *const pos, const struct move mv, const enum piece pce_being_moved) {
+    if (move_is_castle(mv)) {
+        // already handled elsewhere
+        return;
+    }
+
+    const enum square to_sq = move_decode_to_sq(mv);
+    const enum square from_sq = move_decode_from_sq(mv);
+
+    switch (pce_being_moved) {
+    case WHITE_KING:
+        pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+        pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+        break;
+    case BLACK_KING:
+        pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+        pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+        break;
+    case WHITE_ROOK:
+        switch (from_sq) {
+        case a1:
+            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+            break;
+        case h1:
+            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+            break;
+        default:
+            break;
+        }
+        break;
+    case BLACK_ROOK:
+        switch (from_sq) {
+        case a8:
+            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+            break;
+        case h8:
+            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+            break;
+        default:
+            break;
+        }
+        break;
+    default:
+        break;
+    }
+
+    if (move_is_capture(mv)) {
+        switch (to_sq) {
+        case a8:
+            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+            break;
+        case h8:
+            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+            break;
+        case a1:
+            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+            break;
+        case h1:
+            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+static bool is_castle_move_legal(const struct position *const pos, const struct move mov,
+                                 const enum colour side_to_move, const enum colour attacking_side) {
+    uint64_t cast_bb = 0;
+    assert(move_is_castle(mov));
+
+    const enum move_type mvt = move_get_move_type(mov);
+    switch (side_to_move) {
+    case WHITE:
+        switch (mvt) {
+        case MV_TYPE_KING_CASTLE:
+            cast_bb = WK_CAST_BB;
+            break;
+        case MV_TYPE_QUEEN_CASTLE:
+            cast_bb = WQ_CAST_BB;
+            break;
+        default:
+            REQUIRE(false, "Invalid castle move type");
+            break;
+        }
+        break;
+    case BLACK:
+        switch (mvt) {
+        case MV_TYPE_KING_CASTLE:
+            cast_bb = BK_CAST_BB;
+            break;
+        case MV_TYPE_QUEEN_CASTLE:
+            cast_bb = BQ_CAST_BB;
+            break;
+        default:
+            REQUIRE(false, "Invalid castle move type");
+            break;
+        }
+        break;
+    default:
+        REQUIRE(false, "Invalid side");
+        break;
+    }
+
+    while (cast_bb != 0) {
+        const enum square sq = bb_pop_1st_bit_and_clear(&cast_bb);
+        if (att_chk_is_sq_attacked(pos, sq, attacking_side)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+#pragma GCC diagnostic pop

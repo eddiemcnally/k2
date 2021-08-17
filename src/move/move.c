@@ -399,6 +399,17 @@ bool move_is_queen_castle(const struct move mv) {
 }
 
 /**
+ * @brief      Returns the move type
+ *
+ * @param[in]  mv    The move
+ *
+ * @return     The move type enum{ description_of_the_return_value }
+ */
+enum move_type move_get_type(const struct move mv) {
+    return (enum move_type)(mv.val & MV_MASK_FLAGS);
+}
+
+/**
  * @brief       Tests the given move, returns true if a Capture move, false
  * otherwise
  *

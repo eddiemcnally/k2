@@ -89,7 +89,6 @@ void bb_move_bit(uint64_t *const bb, const enum square from_sq, const enum squar
     assert(!bb_is_set(*bb, to_sq));
 
     uint64_t b = *bb;
-    // assume bits are as expected, so xor them
     b ^= ((uint64_t)0x01 << from_sq);
     b ^= ((uint64_t)0x01 << to_sq);
     *bb = b;

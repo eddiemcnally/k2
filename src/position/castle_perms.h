@@ -49,7 +49,7 @@ enum castle_permission {
 
 struct cast_perm_container cast_perm_init(void);
 
-bool cast_perm_has_no_permissions(const struct cast_perm_container cp_cont);
+bool cast_perm_has_permissions(const struct cast_perm_container cp_cont);
 
 bool cast_perm_has_white_kingside_permissions(const struct cast_perm_container cp_cont);
 bool cast_perm_has_white_queenside_permissions(const struct cast_perm_container cp_cont);
@@ -67,5 +67,5 @@ uint8_t cast_perm_get_offset(const enum castle_permission cp);
 void cast_perm_clear_white_permissions(struct cast_perm_container *const cp_cont);
 void cast_perm_clear_black_permissions(struct cast_perm_container *const cp_cont);
 
-bool validate_castle_permissions(const struct cast_perm_container cp);
+bool validate_castle_permission_struct(const struct cast_perm_container cp);
 bool validate_castle_permission(const enum castle_permission cp);

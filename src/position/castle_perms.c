@@ -61,11 +61,13 @@ struct cast_perm_container cast_perm_init(void) {
  * @brief Tests if there are any castle permissions active
  * 
  * @param cp_cont The castle permission struct
- * @return true If there are no castle permissions active
- * @return false If there are castle permissions active
+ * @return true If there are castle permissions active
+ * @return false If there are no castle permissions active
  */
-bool cast_perm_has_no_permissions(const struct cast_perm_container cp_cont) {
-    return cp_cont.val == 0;
+bool cast_perm_has_permissions(const struct cast_perm_container cp_cont) {
+    assert(validate_castle_permission_struct(cp_cont));
+
+    return cp_cont.val != CASTLE_PERM_NONE;
 }
 
 /**
@@ -76,6 +78,8 @@ bool cast_perm_has_no_permissions(const struct cast_perm_container cp_cont) {
  * @return false If there are no white king-side castle permissions active
  */
 bool cast_perm_has_white_kingside_permissions(const struct cast_perm_container cp_cont) {
+    assert(validate_castle_permission_struct(cp_cont));
+
     return (cp_cont.val & CAST_PERM_WK) != 0;
 }
 
@@ -87,6 +91,8 @@ bool cast_perm_has_white_kingside_permissions(const struct cast_perm_container c
  * @return false If there are no white Queen-side castle permissions active
  */
 bool cast_perm_has_white_queenside_permissions(const struct cast_perm_container cp_cont) {
+    assert(validate_castle_permission_struct(cp_cont));
+
     return (cp_cont.val & CAST_PERM_WQ) != 0;
 }
 
@@ -98,6 +104,8 @@ bool cast_perm_has_white_queenside_permissions(const struct cast_perm_container 
  * @return     true when white has castle permissions
  */
 bool cast_perm_has_white_permissions(const struct cast_perm_container cp_cont) {
+    assert(validate_castle_permission_struct(cp_cont));
+
     return (cp_cont.val & CAST_PERM_WHITE_MASK) != 0;
 }
 
@@ -109,6 +117,8 @@ bool cast_perm_has_white_permissions(const struct cast_perm_container cp_cont) {
  * @return false If there are no black king-side castle permissions active
  */
 bool cast_perm_has_black_kingside_permissions(const struct cast_perm_container cp_cont) {
+    assert(validate_castle_permission_struct(cp_cont));
+
     return (cp_cont.val & CAST_PERM_BK) != 0;
 }
 
@@ -120,6 +130,8 @@ bool cast_perm_has_black_kingside_permissions(const struct cast_perm_container c
  * @return false If there are no black Queen-side castle permissions active
  */
 bool cast_perm_has_black_queenside_permissions(const struct cast_perm_container cp_cont) {
+    assert(validate_castle_permission_struct(cp_cont));
+
     return (cp_cont.val & CAST_PERM_BQ) != 0;
 }
 
@@ -131,6 +143,8 @@ bool cast_perm_has_black_queenside_permissions(const struct cast_perm_container 
  * @return     true when black has castle permissions
  */
 bool cast_perm_has_black_permissions(const struct cast_perm_container cp_cont) {
+    assert(validate_castle_permission_struct(cp_cont));
+
     return (cp_cont.val & CAST_PERM_BLACK_MASK) != 0;
 }
 /**
@@ -139,6 +153,8 @@ bool cast_perm_has_black_permissions(const struct cast_perm_container cp_cont) {
  * @param cp_cont The permission container
  */
 void cast_perm_clear_white_permissions(struct cast_perm_container *cp_cont) {
+    assert(validate_castle_permission_struct(*cp_cont));
+
     clear_perm_state(cp_cont, CAST_PERM_WK);
     clear_perm_state(cp_cont, CAST_PERM_WQ);
 }
@@ -148,6 +164,8 @@ void cast_perm_clear_white_permissions(struct cast_perm_container *cp_cont) {
  * @param cp_cont The castle permission container 
  */
 void cast_perm_clear_black_permissions(struct cast_perm_container *cp_cont) {
+    assert(validate_castle_permission_struct(*cp_cont));
+
     clear_perm_state(cp_cont, CAST_PERM_BK);
     clear_perm_state(cp_cont, CAST_PERM_BQ);
 }
@@ -215,9 +233,9 @@ bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_
     return cp1.val == cp2.val;
 }
 
-bool validate_castle_permissions(const struct cast_perm_container cp) {
+bool validate_castle_permission_struct(const struct cast_perm_container cp) {
     uint8_t val = cp.val;
-    val = val >> 3; // everything above this it must be zero
+    val = val >> 4; // everything above this it must be zero
     return val == 0;
 }
 

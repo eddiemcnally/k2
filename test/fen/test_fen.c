@@ -283,30 +283,25 @@ void test_fen_en_passant(void **state) {
     const char *RANDOM_FEN_4 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - g3 0 3\n";
     const char *RANDOM_FEN_5 = "r6r/p1pkqp1p/5n2/np1pp1p1/1bP1P3/PPNB1NPb/1B1PQP1P/R4RK1 b - - 0 3\n";
 
-    enum square enp_sq;
     struct parsed_fen *brd = fen_parse(RANDOM_FEN_1);
-    bool found = fen_try_get_en_pass_sq(brd, &enp_sq);
-    assert_true(found);
+    enum square enp_sq = fen_get_en_pass_sq(brd);
     assert_true(enp_sq == f6);
 
     brd = fen_parse(RANDOM_FEN_2);
-    found = fen_try_get_en_pass_sq(brd, &enp_sq);
-    assert_true(found);
+    enp_sq = fen_get_en_pass_sq(brd);
     assert_true(enp_sq == c6);
 
     brd = fen_parse(RANDOM_FEN_3);
-    found = fen_try_get_en_pass_sq(brd, &enp_sq);
-    assert_true(found);
+    enp_sq = fen_get_en_pass_sq(brd);
     assert_true(enp_sq == b3);
 
     brd = fen_parse(RANDOM_FEN_4);
-    found = fen_try_get_en_pass_sq(brd, &enp_sq);
-    assert_true(found);
+    enp_sq = fen_get_en_pass_sq(brd);
     assert_true(enp_sq == g3);
 
     brd = fen_parse(RANDOM_FEN_5);
-    found = fen_try_get_en_pass_sq(brd, &enp_sq);
-    assert_false(found);
+    enp_sq = fen_get_en_pass_sq(brd);
+    assert_true(enp_sq == NO_SQUARE);
 }
 
 void test_fen_half_move_count(void **state) {

@@ -64,5 +64,5 @@ void test_castle_permissions_no_perms_get_set(void **state) {
     assert_false(cast_perm_has_black_kingside_permissions(cp));
     assert_false(cast_perm_has_black_queenside_permissions(cp));
 
-    assert_true(cast_perm_has_no_permissions(cp));
+    assert_false(cast_perm_has_permissions(cp));
 }

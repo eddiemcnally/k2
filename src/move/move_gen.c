@@ -186,9 +186,14 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
     const uint64_t black_pce_bb = brd_get_colour_bb(brd, BLACK);
 
     const enum square en_pass_sq = pos_get_en_pass_sq(pos);
-    uint64_t en_pass_sq_as_bb = 0;
     if (en_pass_sq != NO_SQUARE) {
-        en_pass_sq_as_bb = bb_get_square_as_bb(en_pass_sq);
+        const uint64_t att_squares_bb = occ_mask_get_bb_white_pawns_attacking_sq(en_pass_sq);
+        uint64_t att_enp_pawn_bb = all_pawns_bb & att_squares_bb;
+        while (att_enp_pawn_bb != 0) {
+            const enum square from_sq = bb_pop_1st_bit_and_clear(&att_enp_pawn_bb);
+            const struct move en_pass_move = move_encode_enpassant(from_sq, en_pass_sq);
+            mv_add_to_movelist(pos, mvl, en_pass_move);
+        }
     }
 
     while (all_pawns_bb != 0) {
@@ -203,6 +208,7 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
                 const enum square from_plus_2 = sq_get_square_plus_1_rank(from_plus_1);
                 try_encode_double_pawn_move(pos, from_sq, from_plus_1, from_plus_2, mvl, all_pce_bb);
 
+                // quiet move
                 if (bb_is_set(all_pce_bb, from_plus_1) == false) {
                     struct move quiet_move = move_encode_quiet(from_sq, from_plus_1);
                     mv_add_to_movelist(pos, mvl, quiet_move);
@@ -256,16 +262,11 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
                 const struct move capt_move = move_encode_capture(from_sq, capt_to_sq);
                 mv_add_to_movelist(pos, mvl, capt_move);
             }
-            // en passant
-            if (en_pass_sq != NO_SQUARE) {
-                // check to see if current square is attacking the en passant square
-                const uint64_t pawn_attack_bb = occ_mask_get_white_pawn_capture_non_first_double_move(from_sq);
-                if ((pawn_attack_bb & en_pass_sq_as_bb) != 0) {
-                    const struct move en_pass_move = move_encode_enpassant(from_sq, en_pass_sq);
-                    mv_add_to_movelist(pos, mvl, en_pass_move);
-                }
-            }
         } break;
+        case RANK_1:
+        case RANK_8:
+            REQUIRE(false, "Unexpected pawn on Rank 1 or Rank 8");
+            break;
         default:
             // invalid rank
             REQUIRE(false, "Unexpected rank for white");
@@ -293,9 +294,14 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
     const uint64_t white_pce_bb = brd_get_colour_bb(brd, WHITE);
 
     const enum square en_pass_sq = pos_get_en_pass_sq(pos);
-    uint64_t en_pass_sq_as_bb = 0;
     if (en_pass_sq != NO_SQUARE) {
-        en_pass_sq_as_bb = bb_get_square_as_bb(en_pass_sq);
+        const uint64_t att_squares_bb = occ_mask_get_bb_black_pawns_attacking_sq(en_pass_sq);
+        uint64_t att_enp_pawn_bb = all_pawns_bb & att_squares_bb;
+        while (att_enp_pawn_bb != 0) {
+            const enum square from_sq = bb_pop_1st_bit_and_clear(&att_enp_pawn_bb);
+            const struct move en_pass_move = move_encode_enpassant(from_sq, en_pass_sq);
+            mv_add_to_movelist(pos, mvl, en_pass_move);
+        }
     }
 
     while (all_pawns_bb != 0) {
@@ -363,16 +369,11 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
                 const struct move capt_move = move_encode_capture(from_sq, capt_to_sq);
                 mv_add_to_movelist(pos, mvl, capt_move);
             }
-            // en passant
-            if (en_pass_sq != NO_SQUARE) {
-                // check to see if current square is attacking the en passant square
-                const uint64_t pawn_attack_bb = occ_mask_get_black_pawn_capture_non_first_double_move(from_sq);
-                if ((pawn_attack_bb & en_pass_sq_as_bb) != 0) {
-                    const struct move en_pass_move = move_encode_enpassant(from_sq, en_pass_sq);
-                    mv_add_to_movelist(pos, mvl, en_pass_move);
-                }
-            }
         } break;
+        case RANK_1:
+        case RANK_8:
+            REQUIRE(false, "Unexpected pawn on Rank 1 or Rank 8");
+            break;
         default:
             // invalid rank
             REQUIRE(false, "Unexpected rank for black");

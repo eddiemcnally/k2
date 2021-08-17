@@ -52,9 +52,6 @@ set (SOURCES
         ${PERFT_DIR}/perft.c
         ${SEARCH_DIR}/search.c
         ${SEARCH_DIR}/transposition_table.c
-        ${SEARCH_DIR}/quiesence.c
-        ${SEARCH_DIR}/quiesence.c 
-        ${SEARCH_DIR}/alpha_beta.c
         )
 
 message("Setting up K2 Engine include files...")
@@ -110,6 +107,7 @@ set(CC_WARNINGS "-Wall \
 -Wstrict-aliasing=2 \
 -Wstrict-overflow=5 \
 -Wstrict-prototypes \
+-Wswitch-enum \
 -Wswitch-default \
 -Wundef \
 -Wunused-parameter \
@@ -133,7 +131,7 @@ set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
 # set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  -D ENABLE_STATS ")
 #
 #
-# uncomment to enable runtime release-mode asserts
+# uncomment to enable release-mode asserts
 # set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  -D ENABLE_REQUIRE ")
 #
 #
@@ -150,7 +148,6 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS}  ${E
 -flto=full \
 -O3 \
 -m64 \
--fno-common \
 -mtune=native")
 
 # ---- Profiling ----
