@@ -186,7 +186,7 @@ void pos_initialise(const char *fen, struct position *const pos) {
 void pos_destroy(struct position *const pos) {
     assert(validate_position(pos));
 
-    REQUIRE(pos->init_flag == STRUCT_INIT_KEY, "Position structure not initialised");
+    REQUIRE(pos->struct_init_key == STRUCT_INIT_KEY, "Position structure not initialised");
 
     brd_deallocate(pos->brd);
 
@@ -361,13 +361,11 @@ enum move_legality pos_make_move(struct position *const pos, const struct move m
     // some cleanup
     // ============
     const enum move_legality legality = get_move_legal_status(pos, mv);
-    if (move_is_double_pawn(mv) == false) {
+    if (!move_is_double_pawn(mv)) {
         pos->state.en_passant_sq = NO_SQUARE;
     }
-    if (cast_perm_has_permissions(pos->state.castle_perm_container)) {
-        update_castle_perms(pos, mv, pce_to_move);
-    }
-
+    update_castle_perms(pos, mv, pce_to_move);
+    
     swap_side(pos);
 
     return legality;
@@ -386,7 +384,6 @@ struct move pos_take_move(struct position *const pos) {
     // now update the board
     // ====================
     const enum move_type mv_type = move_get_move_type(mv);
-
     switch (mv_type) {
     case MV_TYPE_QUIET:
         reverse_quiet_move(pos, mv, pce_moved);
@@ -731,7 +728,7 @@ static void position_hist_push(struct position *const pos, const struct move mv,
     assert(validate_piece(captured_piece));
     REQUIRE(pos->history.num_used_slots < MAX_GAME_MOVES, "Position history limit reached");
 
-    struct history_item *free_slot = &pos->history.items[pos->history.num_used_slots];
+    struct history_item *const free_slot = &pos->history.items[pos->history.num_used_slots];
 
     __builtin_memcpy_inline(&free_slot->state, &pos->state, sizeof(struct game_state));
 
@@ -750,7 +747,7 @@ static void position_hist_pop(struct position *const pos, struct move *mv, enum 
     assert(captured_piece != NULL);
 
     pos->history.num_used_slots--;
-    struct history_item *free_slot = &pos->history.items[pos->history.num_used_slots];
+    struct history_item *const free_slot = &pos->history.items[pos->history.num_used_slots];
 
     __builtin_memcpy_inline(&pos->state, &free_slot->state, sizeof(struct game_state));
 
@@ -920,63 +917,99 @@ static void update_castle_perms(struct position *const pos, const struct move mv
         return;
     }
 
+    const struct cast_perm_container cpc = pos->state.castle_perm_container;
+    if (!cast_perm_has_permissions(cpc)) {
+        return;
+    }
+
     const enum square to_sq = move_decode_to_sq(mv);
     const enum square from_sq = move_decode_from_sq(mv);
 
+    // handle situations where a capture of a rook requires that the opposite side's castle
+    // permissions need to be updated.
+    if (move_is_capture(mv)) {
+        switch (to_sq) {
+        case a8:
+            if (cast_perm_has_black_queenside_permissions(cpc)) {
+                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), a8) == BLACK_ROOK, "unexpected piece on a8");
+                pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+            }
+            break;
+        case h8:
+            if (cast_perm_has_black_kingside_permissions(cpc)) {
+                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), h8) == BLACK_ROOK, "unexpected piece on h8");
+                pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+            }
+            break;
+        case a1:
+            if (cast_perm_has_white_queenside_permissions(cpc)) {
+                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), a1) == WHITE_ROOK, "unexpected piece on a1");
+                pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+            }
+            break;
+        case h1:
+            if (cast_perm_has_white_kingside_permissions(cpc)) {
+                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), h1) == WHITE_ROOK, "unexpected piece on h1");
+                pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+            }
+            break;
+        default:
+            // normal capture move....do nothing
+            break;
+        }
+    }
+
+    // now check the condition where a king or rook is moved, and the castle permissions need
+    // to be updated.
     switch (pce_being_moved) {
     case WHITE_KING:
-        pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
-        pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+        if (cast_perm_has_white_permissions(cpc)) {
+            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+        }
         break;
     case BLACK_KING:
-        pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
-        pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+        if (cast_perm_has_black_permissions(cpc)) {
+            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+        }
         break;
     case WHITE_ROOK:
         switch (from_sq) {
         case a1:
-            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+            if (cast_perm_has_white_queenside_permissions(cpc)) {
+                pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
+            }
             break;
         case h1:
-            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+            if (cast_perm_has_white_kingside_permissions(cpc)) {
+                pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
+            }
             break;
         default:
+            REQUIRE(false, "invalid white rook castle square");
             break;
         }
         break;
     case BLACK_ROOK:
         switch (from_sq) {
         case a8:
-            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+            if (cast_perm_has_black_queenside_permissions(cpc)) {
+                pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
+            }
             break;
         case h8:
-            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+            if (cast_perm_has_black_kingside_permissions(cpc)) {
+                pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
+            }
             break;
         default:
+            REQUIRE(false, "invalid black rook castle square");
             break;
         }
         break;
     default:
         break;
-    }
-
-    if (move_is_capture(mv)) {
-        switch (to_sq) {
-        case a8:
-            pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
-            break;
-        case h8:
-            pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
-            break;
-        case a1:
-            pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
-            break;
-        case h1:
-            pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
-            break;
-        default:
-            break;
-        }
     }
 }
 

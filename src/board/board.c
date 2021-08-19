@@ -474,6 +474,7 @@ void brd_print(const struct board *const brd) {
     for (enum file f = FILE_A; f <= FILE_H; f++) {
         printf("%3c", 'a' + f);
     }
+    printf("\n   ");
 }
 
 // ==================================================================

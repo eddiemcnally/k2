@@ -49,8 +49,6 @@ enum cast_perm_bitmap {
 
 static void set_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
 static void clear_perm_state(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
-static void set_perm(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
-static void clear_perm(struct cast_perm_container *cp_cont, const enum cast_perm_bitmap perm);
 
 struct cast_perm_container cast_perm_init(void) {
     struct cast_perm_container p = {0};
@@ -253,17 +251,9 @@ bool validate_castle_permission(const enum castle_permission cp) {
 }
 
 static void set_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
-    set_perm(cp, perm);
-}
-
-static void clear_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
-    clear_perm(cp, perm);
-}
-
-static void set_perm(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
     cp->val |= perm;
 }
 
-static void clear_perm(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
+static void clear_perm_state(struct cast_perm_container *cp, const enum cast_perm_bitmap perm) {
     cp->val &= ~perm;
 }

@@ -33,6 +33,7 @@
  */
 
 #include "bitboard.h"
+#include "utils.h"
 #include <assert.h>
 #include <stdio.h>
 
@@ -46,6 +47,7 @@ static const uint64_t EMPTY_BITBOARD = 0;
  */
 void bb_set_square(uint64_t *const bb, const enum square sq) {
     assert(validate_square(sq));
+    REQUIRE(((*bb >> sq) & 0x01) == 0, "bit already set");
 
     *bb = *bb | ((uint64_t)0x01 << sq);
 }
@@ -70,6 +72,8 @@ uint64_t bb_get_square_as_bb(const enum square sq) {
  */
 void bb_clear_square(uint64_t *const bb, const enum square sq) {
     assert(validate_square(sq));
+
+    REQUIRE(((*bb >> sq) & 0x01) == 1, "bit already clear");
 
     *bb = *bb & (~((uint64_t)0x01 << sq));
 }
@@ -118,7 +122,10 @@ bool bb_is_set(const uint64_t bb, const enum square sq) {
  * @return true if bit is clear, false otherwise.
  */
 bool bb_is_clear(const uint64_t bb, const enum square sq) {
-    return !bb_is_set(bb, sq);
+    assert(validate_square(sq));
+
+    uint64_t b = bb >> sq;
+    return (b & 0x01) == 0;
 }
 
 /**

@@ -77,7 +77,7 @@ bool att_chk_is_sq_attacked(const struct position *const pos, const enum square 
 }
 
 static bool is_white_attacking(const struct position *const pos, const enum square sq) {
-    const struct board *brd = pos_get_board(pos);
+    const struct board *const brd = pos_get_board(pos);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
     // conflate rook and queen
@@ -115,7 +115,7 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
 }
 
 static bool is_black_attacking(const struct position *const pos, const enum square sq) {
-    const struct board *brd = pos_get_board(pos);
+    const struct board *const brd = pos_get_board(pos);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
     // conflate rook and queen
