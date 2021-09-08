@@ -32,17 +32,19 @@
 #include <stdio.h>
 
 enum colour {
-    WHITE = 0,
-    BLACK = 1,
+    WHITE,
+    BLACK,
 };
 
 // piece bitmap (uint32_t)
 //
 // XXXX XXXX XXXX XXXX ---- ---- ---- ----   Piece Value
+// ---- ---- ---- ---- XXXX XXXX ---- ----   Unused
 // ---- ---- ---- ---- ---- ---- -XXX ----   Piece Role
 // ---- ---- ---- ---- ---- ---- X--- ----   Colour 0-> White, 1 -> Black
 // ---- ---- ---- ---- ---- ---- ---- XXXX   Offset when used as an array lookup
-//====================================================================
+//
+//
 // ---- ---- ---- ---- ---- ---- -000 ----   Pawn
 // ---- ---- ---- ---- ---- ---- -001 ----   Bishop
 // ---- ---- ---- ---- ---- ---- -010 ----   Knight
@@ -51,6 +53,7 @@ enum colour {
 // ---- ---- ---- ---- ---- ---- -101 ----   King
 // ---- ---- ---- ---- ---- ---- 1--- ----   BLACK = 1, WHITE = 0
 //                                           Array offsets
+//                                           =============
 // ---- ---- ---- ---- ---- ---- ---- 0000   White   Pawn Offset
 // ---- ---- ---- ---- ---- ---- ---- 0001           Bishop Offset
 // ---- ---- ---- ---- ---- ---- ---- 0010           Knight Offset
@@ -64,7 +67,15 @@ enum colour {
 // ---- ---- ---- ---- ---- ---- ---- 1010           Queen Offset
 // ---- ---- ---- ---- ---- ---- ---- 1011           King Offset
 
-enum piece_role { PAWN = 0x00, BISHOP = 0x01, KNIGHT = 0x02, ROOK = 0x03, QUEEN = 0x04, KING = 0x05 };
+// clang-format off
+enum piece_role { 
+    PAWN, 
+    BISHOP, 
+    KNIGHT, 
+    ROOK, 
+    QUEEN, 
+    KING 
+};
 
 #define ROLE_AS_INDEX(r) ((uint8_t)(r))
 #define ROLE_SHIFT (4)
@@ -72,24 +83,24 @@ enum piece_role { PAWN = 0x00, BISHOP = 0x01, KNIGHT = 0x02, ROOK = 0x03, QUEEN 
 #define VALUE_SHIFT (16)
 
 enum piece_array_offsets {
-    WP_OFF = 0x00,
-    WB_OFF = 0x01,
-    WN_OFF = 0x02,
-    WR_OFF = 0x03,
-    WQ_OFF = 0x04,
-    WK_OFF = 0x05,
-    BP_OFF = 0x06,
-    BB_OFF = 0x07,
-    BN_OFF = 0x08,
-    BR_OFF = 0x09,
-    BQ_OFF = 0x0A,
-    BK_OFF = 0x0B,
+    WP_OFF,
+    WB_OFF,
+    WN_OFF,
+    WR_OFF,
+    WQ_OFF,
+    WK_OFF,
+    BP_OFF,
+    BB_OFF,
+    BN_OFF,
+    BR_OFF,
+    BQ_OFF,
+    BK_OFF,
 };
 
 #define COLOUR_MASK ((uint8_t)0x80)
 #define OFFSET_MASK ((uint8_t)0x0F)
-/**
- * Piece values
+
+/* Piece values
  * values taken from here: 
  * https://www.chessprogramming.org/Simplified_Evaluation_Function 
  */
@@ -122,7 +133,7 @@ enum piece {
     BLACK_QUEEN = PCE_CTOR_BLACK(QUEEN, BQ_OFF, PCE_VAL_QUEEN),
     BLACK_KING = PCE_CTOR_BLACK(KING, BK_OFF, PCE_VAL_KING),
 
-    NO_PIECE = (uint32_t)0x7FFFFFFF
+    NO_PIECE
 };
 
 #define NUM_COLOURS (2)
@@ -130,8 +141,8 @@ enum piece {
 #define NUM_PIECES (NUM_PIECE_ROLES * NUM_COLOURS)
 
 #define OFFSET_SHIFT (0)
-#define PCE_GET_ARRAY_INDEX(pce) ((uint8_t)((pce & OFFSET_MASK) >> OFFSET_SHIFT))
-#define PCE_COL_GET_ARRAY_INDEX(col) ((uint8_t)(col))
+#define PCE_GET_ARRAY_INDEX(pce) ((int)((pce & OFFSET_MASK) >> OFFSET_SHIFT))
+#define PCE_COL_GET_ARRAY_INDEX(col) ((int)(col))
 
 #define PCE_COL_ARRAY_OFFSET_WHITE ((PCE_COL_GET_ARRAY_INDEX(WHITE)))
 #define PCE_COL_ARRAY_OFFSET_BLACK ((PCE_COL_GET_ARRAY_INDEX(BLACK)))
@@ -145,6 +156,8 @@ enum piece {
 #define PCE_ARRAY_OFFSET_BLACK_QUEEN ((PCE_GET_ARRAY_INDEX(BLACK_QUEEN)))
 #define PCE_ARRAY_OFFSET_BLACK_ROOK ((PCE_GET_ARRAY_INDEX(BLACK_ROOK)))
 #define PCE_ARRAY_OFFSET_BLACK_KING ((PCE_GET_ARRAY_INDEX(BLACK_KING)))
+
+// clang-format on
 
 enum piece_role pce_get_piece_role(const enum piece pce);
 bool pce_is_white(const enum piece pce);

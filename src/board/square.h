@@ -42,11 +42,11 @@ enum square {
     a7, b7, c7, d7, e7, f7, g7, h7,
     a8, b8, c8, d8, e8, f8, g8, h8,
 
-    NO_SQUARE = 0xFF
+    NO_SQUARE
 };
 
 enum rank { 
-    RANK_1 = 0, 
+    RANK_1, 
     RANK_2, 
     RANK_3, 
     RANK_4, 
@@ -57,7 +57,7 @@ enum rank {
 };
 
 enum file { 
-    FILE_A = 0, 
+    FILE_A, 
     FILE_B, 
     FILE_C, 
     FILE_D, 

@@ -40,9 +40,10 @@
 #define REQUIRE(cond, text)                                                                                            \
     if (!(cond)) {                                                                                                     \
         fprintf(stderr, "FATAL: Error condition\n");                                                                   \
-        fprintf(stderr, "\tFile :     %s\n", __FILE__);                                                                \
-        fprintf(stderr, "\tLine :     %d\n", __LINE__);                                                                \
-        fprintf(stderr, "\tText :     %s\n", text);                                                                    \
+        fprintf(stderr, "\tFile     :    %s\n", __FILE__);                                                             \
+        fprintf(stderr, "\tLine     :    %s\n", __LINE__);                                                             \
+        fprintf(stderr, "\tFunction :    %d\n", __FUNCTION__);                                                         \
+        fprintf(stderr, "\tText     :    %s\n", text);                                                                 \
         print_stacktrace();                                                                                            \
         exit(EXIT_FAILURE);                                                                                            \
     }

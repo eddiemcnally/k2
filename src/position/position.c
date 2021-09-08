@@ -365,7 +365,7 @@ enum move_legality pos_make_move(struct position *const pos, const struct move m
         pos->state.en_passant_sq = NO_SQUARE;
     }
     update_castle_perms(pos, mv, pce_to_move);
-    
+
     swap_side(pos);
 
     return legality;
@@ -643,12 +643,14 @@ static void make_queen_side_castle_move(struct position *const pos) {
     case WHITE:
         pos_move_piece(pos, WHITE_KING, e1, c1);
         pos_move_piece(pos, WHITE_ROOK, a1, d1);
+
         pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
         break;
     case BLACK:
         pos_move_piece(pos, BLACK_KING, e8, c8);
         pos_move_piece(pos, BLACK_ROOK, a8, d8);
+
         pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
         pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
         break;
@@ -745,6 +747,8 @@ static void position_hist_pop(struct position *const pos, struct move *mv, enum 
     assert(mv != NULL);
     assert(pce_moved != NULL);
     assert(captured_piece != NULL);
+
+    REQUIRE(pos->history.num_used_slots > 0, "Attemot to pop history past end of list");
 
     pos->history.num_used_slots--;
     struct history_item *const free_slot = &pos->history.items[pos->history.num_used_slots];

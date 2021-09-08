@@ -84,6 +84,9 @@ int main(void) {
         TEST(test_move_list_reset_list),
         TEST(test_move_list_contains_move),
         TEST(test_move_list_compare),
+        TEST(test_move_list_move_highest_score_to_top_highest_already_at_top),
+        TEST(test_move_list_move_highest_score_to_top_highest_is_moved_to_top),
+        TEST(test_move_list_move_highest_score_to_top_only_1_move_in_list),
 
         // Pieces
         TEST(test_piece_is_white),

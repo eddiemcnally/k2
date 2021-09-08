@@ -44,7 +44,7 @@ struct position;
 // clang-format off
 
 enum move_legality { 
-    LEGAL_MOVE = 0, 
+    LEGAL_MOVE   = 0, 
     ILLEGAL_MOVE = 1 
 };
 

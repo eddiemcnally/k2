@@ -37,15 +37,17 @@ struct cast_perm_container {
 };
 
 enum castle_permission {
-    CASTLE_PERM_NONE = 0,
-    CASTLE_PERM_WQ = 1,
-    CASTLE_PERM_WK = 2,
-    CASTLE_PERM_BQ = 3,
-    CASTLE_PERM_BK = 4,
+    CASTLE_PERM_NONE,
+    CASTLE_PERM_WQ,
+    CASTLE_PERM_WK,
+    CASTLE_PERM_BQ,
+    CASTLE_PERM_BK,
 };
 
 // include the "no-permisisons" state
 #define NUM_CASTLE_PERMS 5
+
+#define CP_ARRAY_OFFSET(cp) ((int)cp)
 
 struct cast_perm_container cast_perm_init(void);
 
@@ -62,7 +64,6 @@ bool cast_perm_has_black_permissions(const struct cast_perm_container cp_cont);
 void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *const cp_cont,
                               const bool state);
 bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2);
-uint8_t cast_perm_get_offset(const enum castle_permission cp);
 
 void cast_perm_clear_white_permissions(struct cast_perm_container *const cp_cont);
 void cast_perm_clear_black_permissions(struct cast_perm_container *const cp_cont);

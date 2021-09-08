@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const uint16_t MOVE_LIST_INIT_KEY = 0xdead;
+#define MOVE_LIST_INIT_KEY (0xDEAD)
 
 // ==================================================================
 //
@@ -191,6 +191,31 @@ bool mvl_compare(const struct move_list *const first, const struct move_list *co
         }
     }
     return true;
+}
+
+/**
+ * @brief      Moves the highest score in the array slice to the start of the slice
+ *
+ * @param      mvl                The move list
+ * @param[in]  slice_start_index  The array index that is the start of the slice
+ */
+void mvl_move_highest_score_to_start_of_slice(struct move_list *const mvl, const uint32_t slice_start_index) {
+    int32_t best_score = 0;
+    int highest_score_idx = (int)slice_start_index;
+
+    REQUIRE(slice_start_index < mvl->move_count, "Move List slice start is past end of move list array");
+
+    for (int i = (int)slice_start_index; i < mvl->move_count; i++) {
+        const int32_t score = move_get_score(mvl->move_list[i]);
+        if (score > best_score) {
+            best_score = score;
+            highest_score_idx = i;
+        }
+    }
+
+    const struct move temp_mv = mvl->move_list[slice_start_index];
+    mvl->move_list[slice_start_index] = mvl->move_list[highest_score_idx];
+    mvl->move_list[highest_score_idx] = temp_mv;
 }
 
 // ==================================================================

@@ -69,54 +69,60 @@
  * 1111 ---- ---- ----      Promotion Queen Capture
  */
 
+static struct move encode_from_to_with_flags(const enum square from_sq, const enum square to_sq,
+                                             const uint64_t extra_flags);
+static const char *move_details(const struct move mv);
+
 // bit masks for move
 #define MV_MASK_TO_SQ ((uint64_t)(0x000000000000003F))
 #define MV_MASK_FROM_SQ ((uint64_t)(0x0000000000000FC0))
 #define MV_MASK_FLAGS ((uint64_t)(0x000000000000F000))
 
-enum move_bits_shifts { MV_SHFT_TO_SQ = 0, MV_SHFT_FROM_SQ = 6, MV_SHFT_SCORE = 32 };
+// clang-format off
+enum move_bits_shifts { 
+    MV_SHFT_TO_SQ = 0, 
+    MV_SHFT_FROM_SQ = 6, 
+    MV_SHFT_SCORE = 32 
+};
 
 #define TYPE_TO_FLAG(type) ((uint64_t)(type << 12))
 #define FLAG_TO_TYPE(flag) ((enum move_type)(flag >> 12))
 
 enum move_flags {
-    MV_FLG_QUIET = TYPE_TO_FLAG(MV_TYPE_QUIET),
-    MV_FLG_DOUBLE_PAWN = TYPE_TO_FLAG(MV_TYPE_DOUBLE_PAWN),
-    MV_FLG_KING_CASTLE = TYPE_TO_FLAG(MV_TYPE_KING_CASTLE),
-    MV_FLG_QUEEN_CASTLE = TYPE_TO_FLAG(MV_TYPE_QUEEN_CASTLE),
-    MV_FLG_CAPTURE = TYPE_TO_FLAG(MV_TYPE_CAPTURE),
-    MV_FLG_EN_PASS = TYPE_TO_FLAG(MV_TYPE_EN_PASS),
-    MV_FLG_PROMOTE_KNIGHT = TYPE_TO_FLAG(MV_TYPE_PROMOTE_KNIGHT),
-    MV_FLG_PROMOTE_BISHOP = TYPE_TO_FLAG(MV_TYPE_PROMOTE_BISHOP),
-    MV_FLG_PROMOTE_ROOK = TYPE_TO_FLAG(MV_TYPE_PROMOTE_ROOK),
-    MV_FLG_PROMOTE_QUEEN = TYPE_TO_FLAG(MV_TYPE_PROMOTE_QUEEN),
-    MV_FLG_PROMOTE_KNIGHT_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_KNIGHT_CAPTURE),
-    MV_FLG_PROMOTE_BISHOP_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_BISHOP_CAPTURE),
-    MV_FLG_PROMOTE_ROOK_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_ROOK_CAPTURE),
-    MV_FLG_PROMOTE_QUEEN_CAPTURE = TYPE_TO_FLAG(MV_TYPE_PROMOTE_QUEEN_CAPTURE),
+    MV_FLG_QUIET                    = TYPE_TO_FLAG(MV_TYPE_QUIET),
+    MV_FLG_DOUBLE_PAWN              = TYPE_TO_FLAG(MV_TYPE_DOUBLE_PAWN),
+    MV_FLG_KING_CASTLE              = TYPE_TO_FLAG(MV_TYPE_KING_CASTLE),
+    MV_FLG_QUEEN_CASTLE             = TYPE_TO_FLAG(MV_TYPE_QUEEN_CASTLE),
+    MV_FLG_CAPTURE                  = TYPE_TO_FLAG(MV_TYPE_CAPTURE),
+    MV_FLG_EN_PASS                  = TYPE_TO_FLAG(MV_TYPE_EN_PASS),
+    MV_FLG_PROMOTE_KNIGHT           = TYPE_TO_FLAG(MV_TYPE_PROMOTE_KNIGHT),
+    MV_FLG_PROMOTE_BISHOP           = TYPE_TO_FLAG(MV_TYPE_PROMOTE_BISHOP),
+    MV_FLG_PROMOTE_ROOK             = TYPE_TO_FLAG(MV_TYPE_PROMOTE_ROOK),
+    MV_FLG_PROMOTE_QUEEN            = TYPE_TO_FLAG(MV_TYPE_PROMOTE_QUEEN),
+    MV_FLG_PROMOTE_KNIGHT_CAPTURE   = TYPE_TO_FLAG(MV_TYPE_PROMOTE_KNIGHT_CAPTURE),
+    MV_FLG_PROMOTE_BISHOP_CAPTURE   = TYPE_TO_FLAG(MV_TYPE_PROMOTE_BISHOP_CAPTURE),
+    MV_FLG_PROMOTE_ROOK_CAPTURE     = TYPE_TO_FLAG(MV_TYPE_PROMOTE_ROOK_CAPTURE),
+    MV_FLG_PROMOTE_QUEEN_CAPTURE    = TYPE_TO_FLAG(MV_TYPE_PROMOTE_QUEEN_CAPTURE),
 };
 
 enum move_flag_bits {
     MV_FLG_BIT_PROMOTE = 0x0000000000008000,
-    MV_FLG_BIT_CAPTURE = 0x0000000000004000,
+    MV_FLG_BIT_CAPTURE = 0x0000000000004000
 };
 
-static struct move encode_from_to_with_flags(const enum square from_sq, const enum square to_sq,
-                                             const uint64_t extra_flags);
-static const char *move_details(const struct move mv);
+#define ENCODE_TO_SQ(to_sq)         ((uint64_t)(((uint32_t)to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ))
+#define ENCODE_FROM_SQ(from_sq)     ((uint64_t)(((uint32_t)from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ))
 
-#define ENCODE_TO_SQ(to_sq) ((uint64_t)(((uint32_t)to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ))
-#define ENCODE_FROM_SQ(from_sq) ((uint64_t)(((uint32_t)from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ))
-
-static const uint64_t ENCODE_KING_CASTLE_WHITE = (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(g1) | MV_FLG_KING_CASTLE);
-static const uint64_t ENCODE_KING_CASTLE_BLACK = (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(g8) | MV_FLG_KING_CASTLE);
+static const uint64_t ENCODE_KING_CASTLE_WHITE  = (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(g1) | MV_FLG_KING_CASTLE);
+static const uint64_t ENCODE_KING_CASTLE_BLACK  = (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(g8) | MV_FLG_KING_CASTLE);
 static const uint64_t ENCODE_QUEEN_CASTLE_WHITE = (ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(c1) | MV_FLG_QUEEN_CASTLE);
 static const uint64_t ENCODE_QUEEN_CASTLE_BLACK = (ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(c8) | MV_FLG_QUEEN_CASTLE);
 
-static const struct move MV_QUEEN_CASTLE_BLACK = {.val = ENCODE_QUEEN_CASTLE_BLACK};
-static const struct move MV_QUEEN_CASTLE_WHITE = {.val = ENCODE_QUEEN_CASTLE_WHITE};
-static const struct move MV_KING_CASTLE_BLACK = {.val = ENCODE_KING_CASTLE_BLACK};
-static const struct move MV_KING_CASTLE_WHITE = {.val = ENCODE_KING_CASTLE_WHITE};
+static const struct move MV_QUEEN_CASTLE_BLACK  = {.val = ENCODE_QUEEN_CASTLE_BLACK};
+static const struct move MV_QUEEN_CASTLE_WHITE  = {.val = ENCODE_QUEEN_CASTLE_WHITE};
+static const struct move MV_KING_CASTLE_BLACK   = {.val = ENCODE_KING_CASTLE_BLACK};
+static const struct move MV_KING_CASTLE_WHITE   = {.val = ENCODE_KING_CASTLE_WHITE};
+// clang-format on
 
 // ==================================================================
 //

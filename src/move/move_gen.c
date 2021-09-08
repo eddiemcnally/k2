@@ -52,8 +52,8 @@ static const uint64_t CASTLE_SQ_MASK_BK = 0x6000000000000000;
 static const uint64_t CASTLE_SQ_MASK_BQ = 0x0E00000000000000;
 
 enum move_gen_type {
-    ALL_MOVES = 0,
-    CAPTURE_ONLY = 1,
+    ALL_MOVES,
+    CAPTURE_ONLY,
 };
 
 static void mv_add_to_movelist(const struct position *const pos, struct move_list *const mvl, const struct move mv);
@@ -80,10 +80,10 @@ static void gen_promotions_with_capture(const struct position *const pos, const 
 static void mv_gen_king_knight_moves(const struct position *const pos, const enum piece knight, const enum piece king,
                                      const uint64_t opposite_pce_bb, struct move_list *const mvl,
                                      const enum move_gen_type gen_type);
-static void mv_gen_encode_multiple_quiet(const struct position *const pos, uint64_t bb, const enum square from_sq,
+static void mv_gen_encode_multiple_quiet(const struct position *const pos, const uint64_t bb, const enum square from_sq,
                                          struct move_list *const mvl);
-static void mv_gen_encode_multiple_capture(const struct position *const pos, uint64_t bb, const enum square from_sq,
-                                           struct move_list *const mvl);
+static void mv_gen_encode_multiple_capture(const struct position *const pos, const uint64_t bb,
+                                           const enum square from_sq, struct move_list *const mvl);
 static void mv_gen_white_castle_moves(const struct position *const pos, struct move_list *const mvl,
                                       const struct cast_perm_container castle_perms);
 static void mv_gen_black_castle_moves(const struct position *const pos, struct move_list *const mvl,
@@ -126,12 +126,12 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
 
     switch (side_to_move) {
     case WHITE: {
-        const uint64_t opposite_pce_bb = brd_get_colour_bb(brd, BLACK);
+        const uint64_t opposite_pce_bb = brd_get_black_bb(brd);
         mv_gen_king_knight_moves(pos, WHITE_KNIGHT, WHITE_KING, opposite_pce_bb, mvl, gen_type);
 
         // conflate bishop and queen
         const uint64_t white_queen_bishop_bb = brd_get_white_bishop_queen_bb(brd);
-        const uint64_t all_white_bb = brd_get_colour_bb(brd, WHITE);
+        const uint64_t all_white_bb = brd_get_white_bb(brd);
         get_sliding_diagonal_antidiagonal_moves(pos, white_queen_bishop_bb, all_white_bb, mvl, gen_type);
 
         // conflate rook and queen
@@ -145,12 +145,12 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
     } break;
 
     case BLACK: {
-        const uint64_t opposite_pce_bb = brd_get_colour_bb(brd, WHITE);
+        const uint64_t opposite_pce_bb = brd_get_white_bb(brd);
         mv_gen_king_knight_moves(pos, BLACK_KNIGHT, BLACK_KING, opposite_pce_bb, mvl, gen_type);
 
         // conflate bishop and queen
         const uint64_t black_queen_bishop_bb = brd_get_black_bishop_queen_bb(brd);
-        const uint64_t all_black_bb = brd_get_colour_bb(brd, BLACK);
+        const uint64_t all_black_bb = brd_get_black_bb(brd);
         get_sliding_diagonal_antidiagonal_moves(pos, black_queen_bishop_bb, all_black_bb, mvl, gen_type);
 
         // conflate rook and queen
@@ -185,7 +185,7 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
 
     uint64_t all_pawns_bb = brd_get_piece_bb(brd, WHITE_PAWN);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
-    const uint64_t black_pce_bb = brd_get_colour_bb(brd, BLACK);
+    const uint64_t black_pce_bb = brd_get_black_bb(brd);
 
     const enum square en_pass_sq = pos_get_en_pass_sq(pos);
     if (en_pass_sq != NO_SQUARE) {
@@ -293,7 +293,7 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
 
     uint64_t all_pawns_bb = brd_get_piece_bb(brd, BLACK_PAWN);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
-    const uint64_t white_pce_bb = brd_get_colour_bb(brd, WHITE);
+    const uint64_t white_pce_bb = brd_get_white_bb(brd);
 
     const enum square en_pass_sq = pos_get_en_pass_sq(pos);
     if (en_pass_sq != NO_SQUARE) {
@@ -413,14 +413,15 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct position *const
         const uint64_t bb_slider = bb_get_square_as_bb(from_sq);
 
         // diagonal move
-        uint64_t diag1 = (all_pce_bb & diag_masks.positive) - (bb_slider << 1);
-        uint64_t diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.positive) - (bb_reverse(bb_slider) << 1));
+        const uint64_t diag1 = (all_pce_bb & diag_masks.positive) - (bb_slider << 1);
+        const uint64_t diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.positive) - (bb_reverse(bb_slider) << 1));
         const uint64_t diagpos = diag1 ^ diag2;
 
         // anti-diagonal moves
-        diag1 = (all_pce_bb & diag_masks.negative) - (bb_slider << 1);
-        diag2 = bb_reverse(bb_reverse(all_pce_bb & diag_masks.negative) - (bb_reverse(bb_slider) << 1));
-        const uint64_t diagneg = diag1 ^ diag2;
+        const uint64_t antidiag1 = (all_pce_bb & diag_masks.negative) - (bb_slider << 1);
+        const uint64_t antidiag2 =
+            bb_reverse(bb_reverse(all_pce_bb & diag_masks.negative) - (bb_reverse(bb_slider) << 1));
+        const uint64_t diagneg = antidiag1 ^ antidiag2;
 
         const uint64_t all_moves = (diagpos & diag_masks.positive) | (diagneg & diag_masks.negative);
 
@@ -634,10 +635,11 @@ static void mv_gen_encode_multiple_quiet(const struct position *const pos, uint6
  * @param from_sq The source ("from") square
  * @param mvl Pointer to a move list. All generated moves are appended to this list.
  */
-static void mv_gen_encode_multiple_capture(const struct position *const pos, uint64_t bb, const enum square from_sq,
-                                           struct move_list *const mvl) {
-    while (bb != 0) {
-        const enum square cap_sq = bb_pop_1st_bit_and_clear(&bb);
+static void mv_gen_encode_multiple_capture(const struct position *const pos, const uint64_t bb,
+                                           const enum square from_sq, struct move_list *const mvl) {
+    uint64_t lcl_bb = bb;
+    while (lcl_bb != 0) {
+        const enum square cap_sq = bb_pop_1st_bit_and_clear(&lcl_bb);
         const struct move cap_move = move_encode_capture(from_sq, cap_sq);
         mv_add_to_movelist(pos, mvl, cap_move);
     }

@@ -29,6 +29,7 @@
 #include <stdint.h>
 
 #define MOVE_LIST_MAX_LEN 2048
+
 // struct representing a list of moves
 struct move_list {
     uint16_t struct_init_key;
@@ -47,3 +48,4 @@ uint16_t mvl_get_mvl_max_size(void);
 bool validate_move_list(const struct move_list *const mvl);
 void mvl_print(const struct move_list *const mvl);
 bool mvl_compare(const struct move_list *const first, const struct move_list *const second);
+void mvl_move_highest_score_to_start_of_slice(struct move_list *const mvl, uint32_t slice_start_index);

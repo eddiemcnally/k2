@@ -46,29 +46,18 @@
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types-discards-qualifiers"
 int main(void) {
 
-    char *PERFT =
-        "r3k1r1/8/8/8/8/8/8/R3K2R w KQq - 0 1 ;D1 25 ;D2 560 ;D3 13607 ;D4 320792 ;D5 7848606 ;D6 190755813\n";
+    //mate in 3
+    //soluiton : 1.Ra6 f6 2.Bxf6 Rg7 3.Rxa8#
+    //https://www.sparkchess.com/chess-puzzles/for-beginners-mate-in-three.html
+    const char *MATE_IN_THREE = "r5rk/5p1p/5R2/4B3/8/8/7P/7K w - - 0 1\n";
 
-    const uint8_t DEPTH = 5;
-    struct epd_row perft_details = perft_parse_row(PERFT);
     struct position *pos = pos_create();
+    pos_initialise(MATE_IN_THREE, pos);
 
-    pos_initialise(perft_details.fen, pos);
+    struct search_data info = {0};
+    info.search_depth = 5;
 
-    do_perft(DEPTH, pos);
+    search_position(pos, &info);
 
     pos_destroy(pos);
-
-    // mate in 3
-    // soluiton : 1.Ra6 f6 2.Bxf6 Rg7 3.Rxa8#
-    // https://www.sparkchess.com/chess-puzzles/for-beginners-mate-in-three.html
-    // const char *MATE_IN_THREE = "r5rk/5p1p/5R2/4B3/8/8/7P/7K w - - 0 1\n";
-
-    // struct position *pos = pos_create();
-    // pos_initialise(MATE_IN_THREE, pos);
-
-    // struct search_data info = {0};
-    // info.search_depth = 3;
-
-    // search_position(pos, &info);
 }

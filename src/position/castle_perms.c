@@ -217,16 +217,6 @@ void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_
     }
 }
 
-/**
- * @brief               Converts the Castle Permission to an array offset
- * @param   cp          The Castle permission to convert
- * @return              Array offset
- */
-uint8_t cast_perm_get_offset(const enum castle_permission cp) {
-    assert(validate_castle_permission(cp));
-    return (uint8_t)cp;
-}
-
 bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2) {
     return cp1.val == cp2.val;
 }

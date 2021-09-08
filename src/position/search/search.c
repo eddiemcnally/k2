@@ -133,10 +133,10 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
 
     assert(validate_position(pos));
 
-    printf("AlphaBeta depth=%d\n", depth);
+    //printf("AlphaBeta depth=%d\n", depth);
 
     if (depth == 0) {
-        printf("AlphaBeta depth ZERO, calling quiesence\n");
+        //printf("AlphaBeta depth ZERO, calling quiesence\n");
 
         return quiescence(pos, search_info, alpha, beta);
     }
@@ -186,20 +186,17 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
         REQUIRE(mv_found, "Found position, but can't find move");
     }
 
-    printf("AlphaBeta depth=%d, num moves generated=%d\n", depth, mv_list.move_count);
+    //printf("AlphaBeta depth=%d, num moves generated=%d\n", depth, mv_list.move_count);
 
-    for (int i = 0; i < mv_list.move_count; i++) {
+    for (uint32_t i = 0; i < mv_list.move_count; i++) {
+
+        mvl_move_highest_score_to_start_of_slice(&mv_list, i);
 
         struct move mv = mv_list.move_list[i];
         best_move = mv;
 
-        // TODO - sort moves by score
-
-        //printf("AlphaBeta depth=%d, processing move %s\n", depth, move_print(mv));
-
         enum move_legality legality = pos_make_move(pos, mv);
         if (legality != LEGAL_MOVE) {
-            pos_take_move(pos);
             continue;
         }
 
@@ -218,7 +215,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
             }
             alpha = score;
             best_move = mv;
-            printf("AlphaBeta depth=%d, setting BestMove = %s\n", depth, move_print(mv));
+            //printf("AlphaBeta depth=%d, setting BestMove = %s\n", depth, move_print(mv));
         }
     }
 
@@ -271,6 +268,9 @@ static int32_t quiescence(struct position *pos, struct search_data *search, int3
     uint16_t num_moves = mvl.move_count;
     for (uint16_t i = 0; i < num_moves; i++) {
         struct move mv = mvl.move_list[i];
+
+        //printf("QUIESCENCE : processing move %s\n", move_print(mv));
+
         enum move_legality legality = pos_make_move(pos, mv);
         if (legality != LEGAL_MOVE) {
             pos_take_move(pos);

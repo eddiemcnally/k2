@@ -145,9 +145,9 @@ void brd_add_piece(struct board *const brd, const enum piece pce, const enum squ
     assert(validate_square_empty(brd, sq));
 
     // set bitboards
-    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
+    const int pce_off = PCE_GET_ARRAY_INDEX(pce);
     const enum colour col = pce_get_colour(pce);
-    const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
+    const int col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
     bb_set_square(&brd->piece_bitboards[pce_off], sq);
     bb_set_square(&brd->bb_colour[col_off], sq);
@@ -189,9 +189,9 @@ void brd_remove_piece(struct board *const brd, const enum piece pce, const enum 
     assert(validate_piece(pce));
     assert(validate_pce_on_sq(brd, pce, sq));
 
-    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
+    const int pce_off = PCE_GET_ARRAY_INDEX(pce);
     const enum colour col = pce_get_colour(pce);
-    const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
+    const int col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
     bb_clear_square(&brd->piece_bitboards[pce_off], sq);
     bb_clear_square(&brd->bb_colour[col_off], sq);
@@ -235,9 +235,9 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     assert(brd_is_sq_occupied(brd, to_sq) == false);
     assert(brd_is_sq_occupied(brd, from_sq));
 
-    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
+    const int pce_off = PCE_GET_ARRAY_INDEX(pce);
     const enum colour col = pce_get_colour(pce);
-    const uint8_t col_off = PCE_COL_GET_ARRAY_INDEX(col);
+    const int col_off = PCE_COL_GET_ARRAY_INDEX(col);
 
     // set/clear to/from squares in various bitboards
     bb_move_bit(&brd->piece_bitboards[pce_off], from_sq, to_sq);
@@ -250,19 +250,27 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
 }
 
 /**
- * @brief       Gets the bitboard representing all pieces of the given colour
+ * @brief      Returns a bitboard representing all black pieces
  *
- * @param brd   The board
- * @param colour The colour
+ * @param[in]  brd   The brd
  *
- * @return A bitboard with a bit set for each piece of the given colour
+ * @return     A bitboard with a bit set for each square containing a black piece
  */
-uint64_t brd_get_colour_bb(const struct board *const brd, const enum colour colour) {
-    assert(validate_colour(colour));
+uint64_t brd_get_black_bb(const struct board *const brd) {
     assert(validate_board(brd));
+    return brd->bb_colour[PCE_COL_ARRAY_OFFSET_BLACK];
+}
 
-    uint8_t offset = PCE_COL_GET_ARRAY_INDEX(colour);
-    return brd->bb_colour[offset];
+/**
+ * @brief      Returns a bitboard representing all white pieces
+ *
+ * @param[in]  brd   The brd
+ *
+ * @return     A bitboard with a bit set for each square containing a white piece
+ */
+uint64_t brd_get_white_bb(const struct board *const brd) {
+    assert(validate_board(brd));
+    return brd->bb_colour[PCE_COL_ARRAY_OFFSET_WHITE];
 }
 
 /**
@@ -277,7 +285,7 @@ uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {
     assert(validate_board(brd));
     assert(validate_piece(pce));
 
-    const uint8_t offset = PCE_GET_ARRAY_INDEX(pce);
+    const int offset = PCE_GET_ARRAY_INDEX(pce);
     return brd->piece_bitboards[offset];
 }
 
@@ -392,7 +400,7 @@ bool validate_board(const struct board *const brd) {
     for (int i = 0; i < NUM_PIECES; i++) {
         enum piece p = pce_array[i];
 
-        const uint8_t offset = PCE_GET_ARRAY_INDEX(p);
+        const int offset = PCE_GET_ARRAY_INDEX(p);
         conflated_pce_bb |= brd->piece_bitboards[offset];
         total_bit_count += (uint8_t)__builtin_popcountll(brd->piece_bitboards[offset]);
     }
@@ -436,7 +444,7 @@ bool brd_compare(const struct board *const first, const struct board *const seco
     pce_get_all_pieces(pce_array);
     for (int i = 0; i < NUM_PIECES; i++) {
         enum piece p = pce_array[i];
-        const uint8_t offset = PCE_GET_ARRAY_INDEX(p);
+        const int offset = PCE_GET_ARRAY_INDEX(p);
 
         if (first->piece_bitboards[offset] != second->piece_bitboards[offset]) {
             return false;

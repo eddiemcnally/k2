@@ -45,9 +45,6 @@
 #include <stdint.h>
 #include <string.h>
 
-static int32_t eval_white(const enum piece_role role, const enum square sq);
-static int32_t eval_black(const enum piece_role role, const enum square sq);
-
 // Values for piece square arrays are taken from
 // https://www.chessprogramming.org/Simplified_Evaluation_Function
 //
@@ -160,23 +157,54 @@ int32_t evaluate_position_basic(const struct board * const brd, const enum colou
     uint64_t pce_bb = brd_get_board_bb(brd);
     while (pce_bb != 0) {
         const enum square sq = bb_pop_1st_bit_and_clear(&pce_bb);
-
         const enum piece pce = brd_get_piece_on_square(brd, sq);
-        const enum piece_role role = pce_get_piece_role(pce);
-        const enum colour colour = pce_get_colour(pce);
 
-        switch(colour){
-        case WHITE:
-            score += eval_white(role, sq);
-            break;
-        case BLACK:
-            score -= eval_black(role, sq);
-            break;
-        default:
-            REQUIRE(false, "Invalid colour");
-            break;
-        }        
-    }
+        switch (pce){
+            case WHITE_PAWN:
+                score += PAWN_SQ_VALUE[sq];
+                break;
+            case WHITE_BISHOP:
+                score += BISHOP_SQ_VALUE[sq];
+                break;
+            case WHITE_KNIGHT:
+                score += KNIGHT_SQ_VALUE[sq];
+                break;
+            case WHITE_ROOK:
+                score += ROOK_SQ_VALUE[sq];
+                break;
+            case WHITE_QUEEN:
+                score += QUEEN_SQ_VALUE[sq];
+                break;
+            case WHITE_KING:
+                score += KING_SQ_VALUE[sq];
+                break;
+            // NOTE: black is negative
+            case BLACK_PAWN:
+                score -= PAWN_SQ_VALUE[63 - sq];
+                break;
+            case BLACK_BISHOP:
+                score -= BISHOP_SQ_VALUE[63 - sq];
+                break;
+            case BLACK_KNIGHT:
+                score -= KNIGHT_SQ_VALUE[63 - sq];
+                break;
+            case BLACK_ROOK:
+                score -= ROOK_SQ_VALUE[63 - sq];
+                break;
+            case BLACK_QUEEN:
+                score -= QUEEN_SQ_VALUE[63 - sq];
+                break;
+            case BLACK_KING:
+                score -= KING_SQ_VALUE[63 - sq];
+                break;
+            case NO_PIECE:
+                REQUIRE(false, "Invalid NO_PIECE");
+                break;               
+            default:
+                REQUIRE(false, "Invalid piece");
+                break;               
+        }
+    } // while
 
     if (side_to_move == WHITE) {
         return score;
@@ -185,48 +213,5 @@ int32_t evaluate_position_basic(const struct board * const brd, const enum colou
     }
 }
 
-
- static int32_t eval_white(const enum piece_role role, const enum square sq){
-    switch(role){
-    case PAWN:
-        return PAWN_SQ_VALUE[sq];
-    case BISHOP:
-        return  BISHOP_SQ_VALUE[sq];
-    case KNIGHT:
-        return  KNIGHT_SQ_VALUE[sq];
-    case ROOK:
-        return  ROOK_SQ_VALUE[sq];
-    case QUEEN:
-        return QUEEN_SQ_VALUE[sq];
-    case KING:
-        return KING_SQ_VALUE[sq];
-    default:
-        REQUIRE(false, "Invalid role for White switch");
-    }
-}
-
-
- static int32_t eval_black(const enum piece_role role, const enum square sq){
-    
-    // lookup tables are white-oriented....invert for black
-    const uint32_t offset = 63 - sq;
-
-    switch(role){
-    case PAWN:
-        return PAWN_SQ_VALUE[offset];
-    case BISHOP:
-        return  BISHOP_SQ_VALUE[offset];
-    case KNIGHT:
-        return  KNIGHT_SQ_VALUE[offset];
-    case ROOK:
-        return  ROOK_SQ_VALUE[offset];
-    case QUEEN:
-        return QUEEN_SQ_VALUE[offset];
-    case KING:
-        return KING_SQ_VALUE[offset];
-    default:
-        REQUIRE(false, "Invalid role for Black switch");
-    }
-}
 
 

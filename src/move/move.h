@@ -38,7 +38,7 @@ struct move {
 };
 
 /**
- * bitmap for move
+ * bitmap for move type
  * See https://www.chessprogramming.org/Encoding_Moves
  *
  * 0000     Quiet move
@@ -56,7 +56,6 @@ struct move {
  * 1110     Promotion Rook Capture
  * 1111     Promotion Queen Capture
  */
-
 enum move_type {
     MV_TYPE_QUIET = 0x0,
     MV_TYPE_DOUBLE_PAWN = 0x1,

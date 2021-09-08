@@ -90,7 +90,7 @@ uint64_t hash_piece_update(const enum piece pce, const enum square sq, const uin
     assert(validate_piece(pce));
     assert(validate_square(sq));
 
-    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
+    const int pce_off = PCE_GET_ARRAY_INDEX(pce);
     return key_to_modify ^ piece_keys[pce_off][sq];
 }
 
@@ -112,7 +112,7 @@ uint64_t hash_piece_update_move(const enum piece pce, const enum square from_sq,
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    const uint8_t pce_off = PCE_GET_ARRAY_INDEX(pce);
+    const int pce_off = PCE_GET_ARRAY_INDEX(pce);
     const uint64_t from_hash = key_to_modify ^ piece_keys[pce_off][from_sq];
     const uint64_t to_hash = from_hash ^ piece_keys[pce_off][to_sq];
 
@@ -148,6 +148,6 @@ uint64_t hash_castle_perm(const enum castle_permission cp, const uint64_t key_to
 
     assert(validate_castle_permission(cp));
 
-    const uint8_t cp_off = cast_perm_get_offset(cp);
+    const int cp_off = CP_ARRAY_OFFSET(cp);
     return key_to_modify ^ castle_keys[cp_off];
 }

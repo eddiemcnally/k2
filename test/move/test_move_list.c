@@ -117,3 +117,65 @@ void test_move_list_compare(void **state) {
     mvl_add(&mvl2, m);
     assert_true(mvl_compare(&mvl1, &mvl2));
 }
+
+void test_move_list_move_highest_score_to_top_highest_already_at_top(void **state) {
+    struct move_list mvl = mvl_initialise();
+    const int32_t HIGH_SCORE = 1000;
+
+    struct move highest_mv = move_encode_quiet(a2, a4);
+    move_set_score(&highest_mv, HIGH_SCORE);
+    mvl_add(&mvl, highest_mv);
+
+    struct move mv = move_encode_quiet(b2, b4);
+    move_set_score(&mv, HIGH_SCORE - 1);
+    mvl_add(&mvl, mv);
+
+    mvl_move_highest_score_to_start_of_slice(&mvl, 0);
+
+    struct move found = mvl_get_move_at_offset(&mvl, 0);
+    assert_true(move_compare(found, highest_mv));
+}
+
+void test_move_list_move_highest_score_to_top_highest_is_moved_to_top(void **state) {
+
+    struct move_list mvl = mvl_initialise();
+    const int32_t HIGH_SCORE = 1000;
+
+    struct move second_highest_mv = move_encode_quiet(c2, c4);
+    move_set_score(&second_highest_mv, HIGH_SCORE - 1);
+    mvl_add(&mvl, second_highest_mv);
+    struct move mv = move_encode_quiet(d2, d4);
+    move_set_score(&mv, HIGH_SCORE - 2);
+    mvl_add(&mvl, mv);
+    mv = move_encode_quiet(f2, f4);
+    move_set_score(&mv, HIGH_SCORE - 3);
+    mvl_add(&mvl, mv);
+
+    struct move highest_mv = move_encode_quiet(a2, a4);
+    move_set_score(&highest_mv, HIGH_SCORE);
+    mvl_add(&mvl, highest_mv);
+
+    mvl_move_highest_score_to_start_of_slice(&mvl, 0);
+
+    struct move found = mvl_get_move_at_offset(&mvl, 0);
+    assert_true(move_compare(found, highest_mv));
+
+    // now get the next highest score
+    mvl_move_highest_score_to_start_of_slice(&mvl, 1);
+    found = mvl_get_move_at_offset(&mvl, 1);
+    assert_true(move_compare(found, second_highest_mv));
+}
+
+void test_move_list_move_highest_score_to_top_only_1_move_in_list(void **state) {
+    struct move_list mvl = mvl_initialise();
+    const int32_t HIGH_SCORE = 1000;
+
+    struct move mv = move_encode_quiet(c2, c4);
+    move_set_score(&mv, HIGH_SCORE);
+    mvl_add(&mvl, mv);
+
+    mvl_move_highest_score_to_start_of_slice(&mvl, 0);
+
+    struct move found = mvl_get_move_at_offset(&mvl, 0);
+    assert_true(move_compare(found, mv));
+}
