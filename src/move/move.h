@@ -47,6 +47,8 @@ struct move {
  * 0011     Queen Castle
  * 0100     Capture
  * 0101     En Passant Capture
+ * 0110     UNUSED
+ * 0111     UNUSED
  * 1000     Promotion Knight
  * 1001     Promotion Bishop
  * 1010     Promotion Rook
@@ -56,22 +58,24 @@ struct move {
  * 1110     Promotion Rook Capture
  * 1111     Promotion Queen Capture
  */
+// clang-format off
 enum move_type {
-    MV_TYPE_QUIET = 0x0,
-    MV_TYPE_DOUBLE_PAWN = 0x1,
-    MV_TYPE_KING_CASTLE = 0x2,
-    MV_TYPE_QUEEN_CASTLE = 0x3,
-    MV_TYPE_CAPTURE = 0x4,
-    MV_TYPE_EN_PASS = 0x5,
-    MV_TYPE_PROMOTE_KNIGHT = 0x8,
-    MV_TYPE_PROMOTE_BISHOP = 0x9,
-    MV_TYPE_PROMOTE_ROOK = 0xA,
-    MV_TYPE_PROMOTE_QUEEN = 0xB,
-    MV_TYPE_PROMOTE_KNIGHT_CAPTURE = 0xC,
-    MV_TYPE_PROMOTE_BISHOP_CAPTURE = 0xD,
-    MV_TYPE_PROMOTE_ROOK_CAPTURE = 0xE,
-    MV_TYPE_PROMOTE_QUEEN_CAPTURE = 0xF,
+    MV_TYPE_QUIET           = 0x0,
+    MV_TYPE_DOUBLE_PAWN     = 0x1,
+    MV_TYPE_KING_CASTLE     = 0x2,
+    MV_TYPE_QUEEN_CASTLE    = 0x3,
+    MV_TYPE_CAPTURE         = 0x4,
+    MV_TYPE_EN_PASS         = 0x5,
+    MV_TYPE_PROMOTE_KNIGHT  = 0x8,
+    MV_TYPE_PROMOTE_BISHOP  = 0x9,
+    MV_TYPE_PROMOTE_ROOK    = 0xA,
+    MV_TYPE_PROMOTE_QUEEN   = 0xB,
+    MV_TYPE_PROMOTE_KNIGHT_CAPTURE  = 0xC,
+    MV_TYPE_PROMOTE_BISHOP_CAPTURE  = 0xD,
+    MV_TYPE_PROMOTE_ROOK_CAPTURE    = 0xE,
+    MV_TYPE_PROMOTE_QUEEN_CAPTURE   = 0xF,
 };
+// clang-format on
 
 struct move move_encode_promote_knight(const enum square from_sq, const enum square to_sq);
 struct move move_encode_promote_knight_with_capture(const enum square from_sq, const enum square to_sq);

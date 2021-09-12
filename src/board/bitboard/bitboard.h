@@ -30,6 +30,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define SQUARE_AS_BITBOARD(sq) ((uint64_t)0x01 << (const enum square)sq)
+
 uint64_t bb_get_empty(void);
 uint64_t bb_get_sq_mask(const enum square sq);
 void bb_set_square(uint64_t *restrict const bb, const enum square sq);

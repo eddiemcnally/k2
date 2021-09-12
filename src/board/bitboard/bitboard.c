@@ -49,7 +49,7 @@ void bb_set_square(uint64_t *restrict const bb, const enum square sq) {
     assert(validate_square(sq));
     REQUIRE(((*bb >> sq) & 0x01) == 0, "bit already set");
 
-    *bb = *bb | ((uint64_t)0x01 << sq);
+    *bb |= ((uint64_t)0x01 << sq);
 }
 
 /**
@@ -61,7 +61,7 @@ void bb_set_square(uint64_t *restrict const bb, const enum square sq) {
 uint64_t bb_get_square_as_bb(const enum square sq) {
     assert(validate_square(sq));
 
-    return ((uint64_t)0x01 << sq);
+    return SQUARE_AS_BITBOARD(sq);
 }
 
 /**
@@ -75,7 +75,7 @@ void bb_clear_square(uint64_t *restrict const bb, const enum square sq) {
 
     REQUIRE(((*bb >> sq) & 0x01) == 1, "bit already clear");
 
-    *bb = *bb & (~((uint64_t)0x01 << sq));
+    *bb &= (~((uint64_t)0x01 << sq));
 }
 
 /**
@@ -92,10 +92,8 @@ void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq, const e
     assert(bb_is_set(*bb, from_sq));
     assert(bb_is_cleaf(*bb, to_sq));
 
-    uint64_t b = *bb;
-    b ^= ((uint64_t)0x01 << from_sq);
-    b ^= ((uint64_t)0x01 << to_sq);
-    *bb = b;
+    *bb ^= ((uint64_t)0x01 << from_sq);
+    *bb ^= ((uint64_t)0x01 << to_sq);
 }
 
 /**

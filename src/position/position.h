@@ -44,8 +44,8 @@ struct position;
 // clang-format off
 
 enum move_legality { 
-    LEGAL_MOVE   = 0, 
-    ILLEGAL_MOVE = 1 
+    LEGAL_MOVE, 
+    ILLEGAL_MOVE 
 };
 
 #define INITIAL_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"

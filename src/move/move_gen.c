@@ -46,10 +46,12 @@
 #include <assert.h>
 
 // bitboards for squares between castle squares
-static const uint64_t CASTLE_SQ_MASK_WK = 0x0000000000000060;
-static const uint64_t CASTLE_SQ_MASK_WQ = 0x000000000000000E;
-static const uint64_t CASTLE_SQ_MASK_BK = 0x6000000000000000;
-static const uint64_t CASTLE_SQ_MASK_BQ = 0x0E00000000000000;
+// clang-format off
+static const uint64_t CASTLE_SQ_MASK_WK = SQUARE_AS_BITBOARD(f1) | SQUARE_AS_BITBOARD(g1);
+static const uint64_t CASTLE_SQ_MASK_WQ = SQUARE_AS_BITBOARD(b1) | SQUARE_AS_BITBOARD(c1) | SQUARE_AS_BITBOARD(d1);
+static const uint64_t CASTLE_SQ_MASK_BK = SQUARE_AS_BITBOARD(f8) | SQUARE_AS_BITBOARD(g8);
+static const uint64_t CASTLE_SQ_MASK_BQ = SQUARE_AS_BITBOARD(b8) | SQUARE_AS_BITBOARD(c8) | SQUARE_AS_BITBOARD(d8);
+// clang-format on
 
 enum move_gen_type {
     ALL_MOVES,

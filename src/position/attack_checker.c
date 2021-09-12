@@ -183,40 +183,44 @@ static bool is_king_attacking(const enum square king_sq, const enum square sq) {
 
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
                                                 const enum square sq) {
-    const enum rank sq_rank = sq_get_rank(sq);
-    const enum file sq_file = sq_get_file(sq);
+    // do a quick check before evaluating each piece
+    const uint64_t sq_horiz_vert_bb = occ_mask_get_vertical(sq) | occ_mask_get_horizontal(sq);
+    if ((sq_horiz_vert_bb & attacking_pce_bb) == false) {
+        // nothing shares rank or file with square
+        return false;
+    }
 
-    uint64_t bb = attacking_pce_bb;
-
+    uint64_t bb = attacking_pce_bb & sq_horiz_vert_bb;
     while (bb != 0) {
         const enum square pce_sq = bb_pop_1st_bit_and_clear(&bb);
-
-        if ((sq_get_rank(pce_sq) == sq_rank) || (sq_get_file(pce_sq) == sq_file)) {
-            // possible attack, shared rank and/or file
-            const uint64_t inter_sq = occ_mask_get_inbetween(pce_sq, sq);
-            if ((inter_sq & all_pce_bb) == 0) {
-                // no blocking pieces, is attacked
-                return true;
-            }
+        const uint64_t inter_sq = occ_mask_get_inbetween(pce_sq, sq);
+        if ((inter_sq & all_pce_bb) == 0) {
+            // no blocking pieces, is attacked
+            return true;
         }
     }
     return false;
 }
 
 static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq) {
-    uint64_t bb = attacking_pce_bb;
 
+    // do a quick check to see if the attacking pieces share a diagonal or anti-diagonal with
+    // the square, before checking each individual attacking piece
+    const struct diagonals diags = occ_mask_get_diagonals(sq);
+    const uint64_t diag_bb = diags.positive | diags.negative;
+    if ((diag_bb & attacking_pce_bb) == false) {
+        // nothing shares a diagonal with this square
+        return false;
+    }
+
+    // only need to check pieces that share diags with square
+    uint64_t bb = attacking_pce_bb & diag_bb;
     while (bb != 0) {
         const enum square pce_sq = bb_pop_1st_bit_and_clear(&bb);
-        const uint64_t occ_mask_bishop = occ_mask_get_bishop(pce_sq);
-
-        if (bb_is_set(occ_mask_bishop, sq)) {
-            // the square is potentially attacked (on same diagonal/anti-diagonal)
-            const uint64_t intervening_sq_bb = occ_mask_get_inbetween(pce_sq, sq);
-            if ((intervening_sq_bb & all_pce_bb) == 0) {
-                // no blocking pieces, so square is attacked
-                return true;
-            }
+        const uint64_t intervening_sq_bb = occ_mask_get_inbetween(pce_sq, sq);
+        if ((intervening_sq_bb & all_pce_bb) == 0) {
+            // no blocking pieces, so square is attacked
+            return true;
         }
     }
     return false;
