@@ -45,7 +45,7 @@
  */
 struct board {
     // bitboard for each piece
-    uint64_t piece_bitboards[NUM_PIECES];
+    uint64_t piece_bitboards[NUM_PIECE_TYPES];
 
     // a bitboard per colour, a set bit means that colour occupies that square
     uint64_t bb_colour[NUM_COLOURS];
@@ -395,9 +395,9 @@ bool validate_board(const struct board *const brd) {
     uint64_t conflated_pce_bb = 0;
     uint8_t total_bit_count = 0;
 
-    enum piece pce_array[NUM_PIECES];
+    enum piece pce_array[NUM_PIECE_TYPES];
     pce_get_all_pieces(pce_array);
-    for (int i = 0; i < NUM_PIECES; i++) {
+    for (int i = 0; i < NUM_PIECE_TYPES; i++) {
         enum piece p = pce_array[i];
 
         const int offset = PCE_GET_ARRAY_INDEX(p);
@@ -440,9 +440,9 @@ bool brd_compare(const struct board *const first, const struct board *const seco
         }
     }
 
-    enum piece pce_array[NUM_PIECES];
+    enum piece pce_array[NUM_PIECE_TYPES];
     pce_get_all_pieces(pce_array);
-    for (int i = 0; i < NUM_PIECES; i++) {
+    for (int i = 0; i < NUM_PIECE_TYPES; i++) {
         enum piece p = pce_array[i];
         const int offset = PCE_GET_ARRAY_INDEX(p);
 

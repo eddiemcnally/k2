@@ -131,7 +131,7 @@ bool pce_is_king(const enum piece pce) {
 * @brief        Populates an array of all pieces.
 * @param  pce_array      Pointer to array that is populated
 */
-void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]) {
+void pce_get_all_pieces(enum piece pce_array[NUM_PIECE_TYPES]) {
     int i = 0;
 
     pce_array[i++] = WHITE_PAWN;

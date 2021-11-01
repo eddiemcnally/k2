@@ -39,7 +39,7 @@
 #include "utils.h"
 #include <assert.h>
 
-static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES] = {{0}, {0}};
+static uint64_t piece_keys[NUM_PIECE_TYPES][NUM_SQUARES] = {{0}, {0}};
 static uint64_t side_key = 0;
 static uint64_t castle_keys[NUM_CASTLE_PERMS] = {0};
 static uint64_t en_passant_sq_keys[NUM_SQUARES] = {0};
@@ -53,7 +53,7 @@ uint64_t init_key_mgmt(void) {
 
     uint64_t hashkey = 0;
 
-    for (int num_pces = 0; num_pces < NUM_PIECES; num_pces++) {
+    for (int num_pces = 0; num_pces < NUM_PIECE_TYPES; num_pces++) {
         for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
             const uint64_t rnd = genrand64_int64();
             piece_keys[num_pces][num_sq] = rnd;

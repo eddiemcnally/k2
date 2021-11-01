@@ -42,7 +42,7 @@ void test_board_brd_allocate_deallocate(void **state) {
 void test_board_brd_bulk_add_remove_piece(void **state) {
     struct board *brd = brd_allocate();
 
-    enum piece all_pieces[NUM_PIECES];
+    enum piece all_pieces[NUM_PIECE_TYPES];
     pce_get_all_pieces(all_pieces);
 
     // to avoid asserts in the code, put a piece of each colour on the board and ignore those
@@ -52,7 +52,7 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
     brd_add_piece(brd, WHITE_PAWN, IGNORE_1);
     brd_add_piece(brd, BLACK_PAWN, IGNORE_2);
 
-    for (int i = 0; i < NUM_PIECES; i++) {
+    for (int i = 0; i < NUM_PIECE_TYPES; i++) {
 
         enum piece pce = all_pieces[i];
         for (enum square sq = a1; sq <= h8; sq++) {
@@ -100,7 +100,7 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
 
 void test_board_brd_move_piece(void **state) {
     struct board *brd = brd_allocate();
-    enum piece all_pieces[NUM_PIECES];
+    enum piece all_pieces[NUM_PIECE_TYPES];
     pce_get_all_pieces(all_pieces);
 
     // to avoid asserts in the code, put a piece of each colour on the board and ignore those
@@ -110,7 +110,7 @@ void test_board_brd_move_piece(void **state) {
     brd_add_piece(brd, WHITE_PAWN, IGNORE_1);
     brd_add_piece(brd, BLACK_PAWN, IGNORE_2);
 
-    for (int i = 0; i < NUM_PIECES; i++) {
+    for (int i = 0; i < NUM_PIECE_TYPES; i++) {
 
         enum piece pce = all_pieces[i];
         for (enum square from_sq = a1; from_sq <= h8; from_sq++) {

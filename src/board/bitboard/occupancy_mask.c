@@ -95,6 +95,26 @@ uint64_t occ_mask_get_horizontal(const enum square sq) {
     return RANK_MASK << (r << 3); // rank * 8
 }
 
+uint64_t occ_mask_get_double_pawn_mask_white(const enum square from_sq) {
+    assert(sq_get_rank(from_sq) == RANK_2);
+
+    const uint64_t sq_bb = bb_get_square_as_bb(from_sq);
+
+    const uint64_t plus_1_rank = NORTH(sq_bb);
+    const uint64_t plus_2_rank = NORTH(plus_1_rank);
+    return plus_1_rank | plus_2_rank;
+}
+
+uint64_t occ_mask_get_double_pawn_mask_black(const enum square from_sq) {
+    assert(sq_get_rank(from_sq) == RANK_7);
+
+    const uint64_t sq_bb = bb_get_square_as_bb(from_sq);
+
+    const uint64_t minus_1_rank = SOUTH(sq_bb);
+    const uint64_t minus_2_rank = SOUTH(minus_1_rank);
+    return minus_1_rank | minus_2_rank;
+}
+
 /**
  * @brief Returns a bitboard representing WHITE pawns that can attack the given square
  * 

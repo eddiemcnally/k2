@@ -40,10 +40,10 @@ void test_hashkeys_init_to_non_zero_value(void **state) {
 
 void test_hashkeys_all_pieces_all_squares_before_after_same(void **state) {
 
-    enum piece pce_array[NUM_PIECES];
+    enum piece pce_array[NUM_PIECE_TYPES];
     pce_get_all_pieces(pce_array);
 
-    for (int p = 0; p < NUM_PIECES; p++) {
+    for (int p = 0; p < NUM_PIECE_TYPES; p++) {
         enum piece pce = pce_array[p];
 
         for (enum square sq = a1; sq < h8; sq++) {

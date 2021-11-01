@@ -135,10 +135,10 @@ enum piece {
     NO_PIECE        = 0x7FFFFFFF
 };
 
-#define NUM_COLOURS     (2)
-#define NUM_PIECE_ROLES (6)
-#define NUM_PIECES      (NUM_PIECE_ROLES * NUM_COLOURS)
-#define OFFSET_SHIFT    (0)
+#define NUM_COLOURS         (2)
+#define NUM_PIECE_ROLES     (6)
+#define NUM_PIECE_TYPES     (NUM_PIECE_ROLES * NUM_COLOURS)
+#define OFFSET_SHIFT        (0)
 
 #define PCE_GET_ARRAY_INDEX(pce)        ((int)((pce & OFFSET_MASK) >> OFFSET_SHIFT))
 #define PCE_COL_GET_ARRAY_INDEX(col)    ((int)(col))
@@ -170,5 +170,5 @@ bool validate_piece(const enum piece pce);
 bool validate_piece_role(const enum piece_role pt);
 bool validate_colour(const enum colour col);
 bool validate_label(const char c);
-void pce_get_all_pieces(enum piece pce_array[NUM_PIECES]);
+void pce_get_all_pieces(enum piece pce_array[NUM_PIECE_TYPES]);
 bool pce_is_king(const enum piece pce);

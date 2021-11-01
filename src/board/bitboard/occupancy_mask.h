@@ -74,5 +74,7 @@ uint64_t occ_mask_get_vertical(const enum square sq);
 uint64_t occ_mask_get_horizontal(const enum square sq);
 uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq);
 uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq);
+uint64_t occ_mask_get_double_pawn_mask_white(const enum square from_sq);
+uint64_t occ_mask_get_double_pawn_mask_black(const enum square from_sq);
 
 struct diagonals occ_mask_get_diagonals(const enum square sq);

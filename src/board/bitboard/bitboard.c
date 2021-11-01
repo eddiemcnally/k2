@@ -90,7 +90,7 @@ void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq, const e
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
     assert(bb_is_set(*bb, from_sq));
-    assert(bb_is_cleaf(*bb, to_sq));
+    assert(bb_is_clear(*bb, to_sq));
 
     *bb ^= ((uint64_t)0x01 << from_sq);
     *bb ^= ((uint64_t)0x01 << to_sq);
