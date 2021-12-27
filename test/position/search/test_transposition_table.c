@@ -56,7 +56,7 @@ void test_transposition_table_add_multiple_all_present(void **state) {
 #define TABLE_SIZE (100 * MILLION)
 #define NUM_TO_ADD 20000
 
-    const struct move mv = move_encode_quiet(a1, b2);
+    const uint64_t mv = move_encode_quiet(a1, b2);
     const int32_t score = 1234;
     const enum node_type nt = NODE_EXACT;
     const uint8_t depth = 5;
@@ -72,7 +72,7 @@ void test_transposition_table_add_multiple_all_present(void **state) {
 
     // test all are in the table;
     for (uint64_t i = 0; i < NUM_TO_ADD; i++) {
-        struct move found_mv;
+        uint64_t found_mv;
 
         uint64_t h = i;
 

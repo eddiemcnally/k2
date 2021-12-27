@@ -97,7 +97,7 @@ enum square sq_get_square_minus_1_rank(const enum square sq) {
 
 enum square sq_get_square_plus_2_rank(const enum square sq) {
     assert(validate_square(sq));
-    assert(sq_get_rank(sq) >= RANK_6);
+    assert(sq_get_rank(sq) <= RANK_6);
 
     return (enum square)(sq + 16);
 }
@@ -109,11 +109,35 @@ enum square sq_get_square_minus_2_rank(const enum square sq) {
 }
 
 bool sq_is_valid_rank(const enum rank r) {
-    return r >= RANK_1 && r <= RANK_8;
+    switch (r) {
+    case RANK_1:
+    case RANK_2:
+    case RANK_3:
+    case RANK_4:
+    case RANK_5:
+    case RANK_6:
+    case RANK_7:
+    case RANK_8:
+        return true;
+    default:
+        return false;
+    }
 }
 
 bool sq_is_valid_file(const enum file f) {
-    return f >= FILE_A && f <= FILE_H;
+    switch (f) {
+    case FILE_A:
+    case FILE_B:
+    case FILE_C:
+    case FILE_D:
+    case FILE_E:
+    case FILE_F:
+    case FILE_G:
+    case FILE_H:
+        return true;
+    default:
+        return false;
+    }
 }
 
 /**
@@ -160,7 +184,7 @@ bool validate_square(const enum square sq) {
  * @return      true if valid, false otherwise
  */
 bool validate_rank(const enum rank rank) {
-    return (rank >= RANK_1) && (rank <= RANK_8);
+    return sq_is_valid_rank(rank);
 }
 
 /**
@@ -169,7 +193,7 @@ bool validate_rank(const enum rank rank) {
  * @return      true if valid, false otherwise
  */
 bool validate_file(const enum file file) {
-    return (file >= FILE_A) && (file <= FILE_H);
+    return sq_is_valid_file(file);
 }
 
 /**

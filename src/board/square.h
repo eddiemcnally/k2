@@ -66,6 +66,10 @@ enum file {
     FILE_G, 
     FILE_H 
 };
+
+#define NUM_RANKS   8
+#define NUM_FILES   8
+
 // clang-format on
 
 enum rank sq_get_rank(const enum square sq);

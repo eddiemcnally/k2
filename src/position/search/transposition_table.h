@@ -41,8 +41,8 @@ enum node_type {
 
 void tt_create(uint64_t size_in_bytes);
 void tt_dispose(void);
-bool tt_add(const uint64_t position_hash, const struct move mv, const uint8_t depth, const int32_t score,
+bool tt_add(const uint64_t position_hash, const uint64_t mv, const uint8_t depth, const int32_t score,
             const enum node_type node_type);
-bool tt_probe_position(const uint64_t position_hash, struct move *mv);
+bool tt_probe_position(const uint64_t position_hash, uint64_t *mv);
 uint32_t tt_capacity(void);
 size_t tt_entry_size(void);

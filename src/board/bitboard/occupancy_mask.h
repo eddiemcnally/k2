@@ -25,41 +25,32 @@
  */
 
 #pragma once
+#include "bitboard.h"
 #include "square.h"
 #include <stdint.h>
+
+// clang-format off
 
 struct diagonals {
     uint64_t positive;
     uint64_t negative;
 };
 
-#define RANK_MASK ((uint64_t)0x00000000000000ff)
-#define RANK_1_BB ((uint64_t)RANK_MASK)
-#define RANK_2_BB ((uint64_t)(RANK_1_BB << 8))
-#define RANK_3_BB ((uint64_t)(RANK_2_BB << 8))
-#define RANK_4_BB ((uint64_t)(RANK_3_BB << 8))
-#define RANK_5_BB ((uint64_t)(RANK_4_BB << 8))
-#define RANK_6_BB ((uint64_t)(RANK_5_BB << 8))
-#define RANK_7_BB ((uint64_t)(RANK_6_BB << 8))
-#define RANK_8_BB ((uint64_t)(RANK_7_BB << 8))
+#define RANK_MASK   ((uint64_t)0x00000000000000ff)
+#define FILE_MASK   ((uint64_t)0x0101010101010101)
 
-#define FILE_MASK ((uint64_t)0x0101010101010101)
-#define FILE_A_BB ((uint64_t)FILE_MASK)
-#define FILE_B_BB ((uint64_t)(FILE_A_BB << 1))
-#define FILE_C_BB ((uint64_t)(FILE_B_BB << 1))
-#define FILE_D_BB ((uint64_t)(FILE_C_BB << 1))
-#define FILE_E_BB ((uint64_t)(FILE_D_BB << 1))
-#define FILE_F_BB ((uint64_t)(FILE_E_BB << 1))
-#define FILE_G_BB ((uint64_t)(FILE_F_BB << 1))
-#define FILE_H_BB ((uint64_t)(FILE_G_BB << 1))
+#define FILE_A_BB   ((uint64_t)(FILE_MASK << (int)FILE_A))
+#define FILE_H_BB   ((uint64_t)(FILE_MASK << (int)FILE_H))
 
-#define NORTH_EAST(bb) ((uint64_t)((bb & ~FILE_H_BB) << 9))
-#define SOUTH_EAST(bb) ((uint64_t)((bb & ~FILE_H_BB) >> 7))
-#define NORTH_WEST(bb) ((uint64_t)((bb & ~FILE_A_BB) << 7))
-#define SOUTH_WEST(bb) ((uint64_t)((bb & ~FILE_A_BB) >> 9))
+#define NORTH_EAST(bb)  ((uint64_t)((bb & ~FILE_H_BB) << 9))
+#define SOUTH_EAST(bb)  ((uint64_t)((bb & ~FILE_H_BB) >> 7))
+#define NORTH_WEST(bb)  ((uint64_t)((bb & ~FILE_A_BB) << 7))
+#define SOUTH_WEST(bb)  ((uint64_t)((bb & ~FILE_A_BB) >> 9))
 
-#define NORTH(bb) ((uint64_t)(bb << 8))
-#define SOUTH(bb) ((uint64_t)(bb >> 8))
+#define NORTH(bb)       ((uint64_t)(bb << 8))
+#define SOUTH(bb)       ((uint64_t)(bb >> 8))
+
+// clang-format on
 
 void occ_mask_init(void);
 uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2);

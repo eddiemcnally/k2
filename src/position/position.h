@@ -65,10 +65,11 @@ struct engine_stats *pos_get_stats(const struct position *const pos);
 
 struct board *pos_get_board(const struct position *const pos);
 enum square pos_get_en_pass_sq(const struct position *const pos);
+bool pos_is_en_passant_active(const struct position *const pos);
 enum colour pos_get_side_to_move(const struct position *const pos);
 
-enum move_legality pos_make_move(struct position *const pos, const struct move mv);
-struct move pos_take_move(struct position *const pos);
+enum move_legality pos_make_move(struct position *const pos, const uint64_t mv);
+uint64_t pos_take_move(struct position *const pos);
 
 bool validate_position(const struct position *const pos);
 bool pos_compare(const struct position *const first, const struct position *const second);

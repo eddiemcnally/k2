@@ -46,7 +46,7 @@
 #include <stdio.h>
 
 static struct pv_line get_pv_line(uint8_t depth, struct position *pos);
-static bool move_exists(struct position *pos, const struct move mv);
+static bool move_exists(struct position *pos, const uint64_t mv);
 static int32_t quiescence(struct position *const pos, struct search_data *const search, int32_t alpha, int32_t beta);
 static int32_t alpha_beta_search(const int32_t alpha, int32_t beta, uint8_t depth, struct position *const pos,
                                  struct search_data *const search_info);
@@ -55,7 +55,7 @@ static int32_t alpha_beta_search(const int32_t alpha, int32_t beta, uint8_t dept
 
 struct pv_line {
     uint16_t num_moves;
-    struct move line[MAX_SEARCH_DEPTH];
+    uint64_t line[MAX_SEARCH_DEPTH];
 };
 
 void search_position(struct position *pos, struct search_data *search_info) {
@@ -74,7 +74,7 @@ void search_position(struct position *pos, struct search_data *search_info) {
 
         const struct pv_line line = get_pv_line(depth, pos);
 
-        const struct move best_move = line.line[0];
+        const uint64_t best_move = line.line[0];
 
         printf("SEARCH : depth=%d, PV Line size=%d\n", depth, line.num_moves);
         printf("SEARCH : Best move %s\n", move_print(best_move));
@@ -87,7 +87,7 @@ static struct pv_line get_pv_line(uint8_t depth, struct position *pos) {
 
     struct pv_line retval;
 
-    struct move mv;
+    uint64_t mv;
     bool found = tt_probe_position(pos_get_hash(pos), &mv);
     uint8_t i = 0;
 
@@ -109,7 +109,7 @@ static struct pv_line get_pv_line(uint8_t depth, struct position *pos) {
     return retval;
 }
 
-static bool move_exists(struct position *pos, const struct move mv) {
+static bool move_exists(struct position *pos, const uint64_t mv) {
     struct move_list mvl = mvl_initialise();
 
     mv_gen_all_moves(pos, &mvl);
@@ -161,7 +161,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
     }
 
     int32_t score = NEG_INFINITY;
-    struct move best_move;
+    uint64_t best_move;
     bool legal_moves_available = false;
     const int32_t entry_alpha = alpha;
     const uint64_t pos_hash = pos_get_hash(pos);
@@ -171,14 +171,14 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
     mv_gen_all_moves(pos, &mv_list);
 
     // check if position already exists
-    struct move tt_move = {0};
+    uint64_t tt_move = {0};
     const bool found_in_tt = tt_probe_position(pos_hash, &tt_move);
     if (found_in_tt) {
         bool mv_found = false;
         for (int i = 0; i < mv_list.move_count; i++) {
-            struct move new_mv = mv_list.move_list[i];
+            uint64_t new_mv = mv_list.move_list[i];
             if (move_compare(tt_move, new_mv)) {
-                move_set_score(&new_mv, 2000000);
+                new_mv = move_set_score(new_mv, 2000000);
                 mv_found = true;
                 break;
             }
@@ -192,7 +192,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
 
         mvl_move_highest_score_to_start_of_slice(&mv_list, i);
 
-        struct move mv = mv_list.move_list[i];
+        uint64_t mv = mv_list.move_list[i];
         best_move = mv;
 
         enum move_legality legality = pos_make_move(pos, mv);
@@ -263,11 +263,11 @@ static int32_t quiescence(struct position *pos, struct search_data *search, int3
 
     mv_gen_only_capture_moves(pos, &mvl);
 
-    struct move best_move;
+    uint64_t best_move;
 
     uint16_t num_moves = mvl.move_count;
     for (uint16_t i = 0; i < num_moves; i++) {
-        struct move mv = mvl.move_list[i];
+        uint64_t mv = mvl.move_list[i];
 
         //printf("QUIESCENCE : processing move %s\n", move_print(mv));
 

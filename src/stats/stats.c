@@ -120,7 +120,7 @@ void stats_reg_board_remove_piece(struct engine_stats *const stats) {
  * @param      stats  The statistics struct
  * @param[in]  mv     The move being registered
  */
-void stats_reg_move(struct engine_stats *const stats, const struct move mv) {
+void stats_reg_move(struct engine_stats *const stats, const uint64_t mv) {
     REQUIRE(stats->init_flag == INIT_KEY, "Stats struct isn't initialised");
 
     stats->move_gen.num_moves++;

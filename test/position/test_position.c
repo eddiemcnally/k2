@@ -38,7 +38,7 @@ struct mv_from_to {
 };
 
 struct decode_move {
-    struct move mv;
+    uint64_t mv;
     enum piece decoded_piece;
 };
 
@@ -92,7 +92,7 @@ void test_position_make_move_white_double_first_move(void **state) {
                                   {.from_sq = e2, .to_sq = e4}, {.from_sq = f2, .to_sq = f4},
                                   {.from_sq = g2, .to_sq = g4}, {.from_sq = h2, .to_sq = h4}};
 
-    struct move quiet_move = move_encode_quiet(a7, a6);
+    uint64_t quiet_move = move_encode_quiet(a7, a6);
 
     for (int i = 0; i < 8; i++) {
 
@@ -102,7 +102,7 @@ void test_position_make_move_white_double_first_move(void **state) {
         struct position *pos = pos_create();
         pos_initialise(INITIAL_FEN, pos);
 
-        struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
+        uint64_t mv = move_encode_pawn_double_first(from_sq, to_sq);
 
         // baseline, not set
         enum square enp_sq = pos_get_en_pass_sq(pos);
@@ -144,7 +144,7 @@ void test_position_make_move_black_double_first_move(void **state) {
                                   {.from_sq = e7, .to_sq = e5}, {.from_sq = f7, .to_sq = f5},
                                   {.from_sq = g7, .to_sq = g5}, {.from_sq = h7, .to_sq = h5}};
 
-    struct move quiet_move = move_encode_quiet(a2, a3);
+    uint64_t quiet_move = move_encode_quiet(a2, a3);
 
     for (int i = 0; i < 8; i++) {
         struct position *pos = pos_create();
@@ -153,7 +153,7 @@ void test_position_make_move_black_double_first_move(void **state) {
         const enum square from_sq = moves[i].from_sq;
         const enum square to_sq = moves[i].to_sq;
 
-        struct move mv = move_encode_pawn_double_first(from_sq, to_sq);
+        uint64_t mv = move_encode_pawn_double_first(from_sq, to_sq);
 
         // baseline, not set
         enum square enp_sq = pos_get_en_pass_sq(pos);
@@ -201,11 +201,11 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
 
     // validate the starting position
     pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     // validate initial castling permissions
@@ -215,7 +215,7 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
     assert_true(cast_perm_has_black_kingside_permissions(start_cp));
     assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
-    struct move wk_castle = move_encode_castle_kingside_white();
+    uint64_t wk_castle = move_encode_castle_kingside_white();
 
     // make move
     enum move_legality legality = pos_make_move(pos, wk_castle);
@@ -223,11 +223,11 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
 
     // verify end squares are as expected
     pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     // check castle permissions are updated
@@ -253,11 +253,11 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     // validate the starting position
     pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     // validate initial castling permissions
@@ -267,7 +267,7 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
     assert_true(cast_perm_has_black_kingside_permissions(start_cp));
     assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
-    struct move wk_castle = move_encode_castle_queenside_white();
+    uint64_t wk_castle = move_encode_castle_queenside_white();
 
     // make move
     enum move_legality legality = pos_make_move(pos, wk_castle);
@@ -275,11 +275,11 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
 
     // verify end squares are as expected
     pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     // check castle permissions are updated
@@ -305,11 +305,11 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
 
     // validate the starting position
     pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     assert_true(pos_get_side_to_move(pos) == BLACK);
@@ -321,7 +321,7 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     assert_true(cast_perm_has_black_kingside_permissions(start_cp));
     assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
-    struct move bq_castle = move_encode_castle_queenside_black();
+    uint64_t bq_castle = move_encode_castle_queenside_black();
 
     // make move
     enum move_legality legality = pos_make_move(pos, bq_castle);
@@ -329,11 +329,11 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
 
     // verify end squares are as expected
     pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     // check castle permissions are updated
@@ -359,11 +359,11 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
 
     // validate the starting position
     pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     // validate initial castling permissions
@@ -373,7 +373,7 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
     assert_true(cast_perm_has_black_kingside_permissions(start_cp));
     assert_true(cast_perm_has_black_queenside_permissions(start_cp));
 
-    struct move bk_castle = move_encode_castle_kingside_black();
+    uint64_t bk_castle = move_encode_castle_kingside_black();
 
     // make move
     enum move_legality legality = pos_make_move(pos, bk_castle);
@@ -381,11 +381,11 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
 
     // verify end squares are as expected
     pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     // check castle permissions are updated
@@ -404,7 +404,7 @@ void test_position_make_move_castle_white_kingside_move_invalid(void **state) {
         "4k3/8/q7/8/8/8/8/R3K2R w K - 0 1",  "4k3/8/8/q7/8/8/8/R3K2R w K - 0 1",  "4k3/q7/8/8/8/8/8/R3K2R w K - 0 1"};
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
-    struct move wk_castle = move_encode_castle_kingside_white();
+    uint64_t wk_castle = move_encode_castle_kingside_white();
 
     for (int i = 0; i < fen_sz; i++) {
 
@@ -436,7 +436,7 @@ void test_position_make_move_castle_black_kingside_move_invalid(void **state) {
                               "r3k2r/7Q/8/8/8/8/8/4K3 b k - 0 1",  "r3k2r/6Q1/8/8/8/8/8/4K3 b k - 0 1"};
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
-    struct move bk_castle = move_encode_castle_kingside_black();
+    uint64_t bk_castle = move_encode_castle_kingside_black();
 
     for (int i = 0; i < fen_sz; i++) {
 
@@ -467,7 +467,7 @@ void test_position_make_move_castle_white_queenside_move_invalid(void **state) {
     };
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
-    struct move wq_castle = move_encode_castle_queenside_white();
+    uint64_t wq_castle = move_encode_castle_queenside_white();
 
     for (int i = 0; i < fen_sz; i++) {
 
@@ -497,7 +497,7 @@ void test_position_make_move_castle_black_queenside_move_invalid(void **state) {
                               "r3k2r/8/3Q4/8/8/8/8/4K3 b q - 0 1"};
 
     const uint8_t fen_sz = (sizeof(fen_list) / sizeof(const char *));
-    struct move bq_castle = move_encode_castle_queenside_black();
+    uint64_t bq_castle = move_encode_castle_queenside_black();
 
     for (int i = 0; i < fen_sz; i++) {
 
@@ -604,7 +604,7 @@ void test_position_brd_is_sq_occupied(void **state) {
 void test_position_make_move_black_knight(void **state) {
     const char *test_fen = "5N2/B7/3n1k2/pP1K3B/2P5/1b3p1P/2p1n1pP/N1b5 b - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(e2, d4),   move_encode_quiet(e2, c3),   move_encode_quiet(e2, g1),
         move_encode_quiet(e2, g3),   move_encode_quiet(e2, f4),
 
@@ -614,9 +614,9 @@ void test_position_make_move_black_knight(void **state) {
         move_encode_capture(d6, b5), move_encode_capture(d6, c4),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -650,14 +650,14 @@ void test_position_make_move_black_knight(void **state) {
 void test_position_make_move_white_knight(void **state) {
     const char *test_fen = "5N2/B7/5k2/pP1K3B/2P5/1b3pnP/n1p3pP/N1b5 w - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(f8, d7), move_encode_quiet(f8, e6),   move_encode_quiet(f8, g6),
         move_encode_quiet(f8, h7), move_encode_capture(a1, b3), move_encode_capture(a1, c2),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -691,16 +691,16 @@ void test_position_make_move_white_knight(void **state) {
 void test_position_make_move_black_bishop(void **state) {
     const char *test_fen = "6K1/4k3/1Q6/p6B/P1P1BP2/1bp2p2/3b2pP/8 b - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(b3, a2),   move_encode_quiet(b3, c2),   move_encode_quiet(b3, d1),
         move_encode_quiet(d2, e1),   move_encode_quiet(d2, e3),   move_encode_quiet(d2, c1),
 
         move_encode_capture(b3, a4), move_encode_capture(b3, c4), move_encode_capture(d2, f4),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -734,7 +734,7 @@ void test_position_make_move_black_bishop(void **state) {
 void test_position_make_move_white_bishop(void **state) {
     const char *test_fen = "6K1/8/1Q3k2/p6B/P1P1BP2/1b3p2/2p3pP/4b3 w - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(e4, d3),   move_encode_quiet(e4, d5),   move_encode_quiet(e4, d6),
         move_encode_quiet(e4, b7),   move_encode_quiet(e4, a8),   move_encode_quiet(e4, f5),
         move_encode_quiet(e4, g6),   move_encode_quiet(e4, h7),   move_encode_quiet(h5, g4),
@@ -743,9 +743,9 @@ void test_position_make_move_white_bishop(void **state) {
         move_encode_capture(e4, c2), move_encode_capture(e4, f3), move_encode_capture(h5, f3),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -779,7 +779,7 @@ void test_position_make_move_white_bishop(void **state) {
 void test_position_make_move_black_queen(void **state) {
     const char *test_fen = "7k/8/1Q5b/p4q1B/P1P1BP2/1bp2p2/6pP/2K5 b - - 0 1n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(f5, g5),   move_encode_quiet(f5, e5),
 
         move_encode_quiet(f5, d5),   move_encode_quiet(f5, c5),   move_encode_quiet(f5, b5),
@@ -793,9 +793,9 @@ void test_position_make_move_black_queen(void **state) {
         move_encode_capture(f5, h5), move_encode_capture(f5, f4), move_encode_capture(f5, e4),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -829,7 +829,7 @@ void test_position_make_move_black_queen(void **state) {
 void test_position_make_move_white_queen(void **state) {
     const char *test_fen = "7k/8/1Q5b/p4q1B/P1P1BP2/1bp2p2/6pP/2K5 w - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(b6, a6),   move_encode_quiet(b6, c6),   move_encode_quiet(b6, d6),
         move_encode_quiet(b6, e6),   move_encode_quiet(b6, f6),   move_encode_quiet(b6, g6),
         move_encode_quiet(b6, b5),   move_encode_quiet(b6, b4),   move_encode_quiet(b6, b7),
@@ -840,9 +840,9 @@ void test_position_make_move_white_queen(void **state) {
         move_encode_capture(b6, a5), move_encode_capture(b6, h6), move_encode_capture(b6, b3),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -876,7 +876,7 @@ void test_position_make_move_white_queen(void **state) {
 void test_position_make_move_white_discovered_attack_on_king_invalid_move(void **state) {
     const char *test_fen = "7k/8/1Q5b/p4q1B/P1P2P2/1bp2p2/2B3pP/3K4 w - - 0 1\n";
 
-    const struct move mv = move_encode_quiet(c2, b1);
+    const uint64_t mv = move_encode_quiet(c2, b1);
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
@@ -889,7 +889,7 @@ void test_position_make_move_white_discovered_attack_on_king_invalid_move(void *
 void test_position_make_move_black_discovered_attack_on_king_invalid_move(void **state) {
     const char *test_fen = "Q4b1k/8/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
 
-    const struct move mv = move_encode_quiet(f8, a3);
+    const uint64_t mv = move_encode_quiet(f8, a3);
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
@@ -902,14 +902,14 @@ void test_position_make_move_black_discovered_attack_on_king_invalid_move(void *
 void test_position_make_move_black_king_valid_moves(void **state) {
     const char *test_fen = "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(g8, h8),
         move_encode_quiet(g8, f8),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -932,15 +932,15 @@ void test_position_make_move_black_king_valid_moves(void **state) {
 void test_position_make_move_black_king_invalid_moves(void **state) {
     const char *test_fen = "3b2k1/Q7/8/p4q1B/P1P1BP2/1bp2p2/6pP/6K1 b - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(g8, f7),
         move_encode_quiet(g8, g7),
         move_encode_quiet(g8, h7),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
@@ -955,14 +955,14 @@ void test_position_make_move_black_king_invalid_moves(void **state) {
 void test_position_make_move_white_king_valid_moves(void **state) {
     const char *test_fen = "3b2K1/2q5/8/p6B/P1P1BQ2/1bp2p2/6pP/3k4 w - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(g8, h8),
         move_encode_quiet(g8, f8),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         const enum square from_sq = move_decode_from_sq(mv);
         const enum square to_sq = move_decode_to_sq(mv);
 
@@ -985,15 +985,15 @@ void test_position_make_move_white_king_valid_moves(void **state) {
 void test_position_make_move_white_king_invalid_moves(void **state) {
     const char *test_fen = "3b2K1/2q5/8/p6B/P1P1BQ2/1bp2p2/6pP/3k4 w - - 0 1\n";
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_quiet(g8, f7),
         move_encode_quiet(g8, g7),
         move_encode_quiet(g8, h7),
     };
 
-    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(const struct move));
+    const uint8_t mv_sz = (sizeof(mv_list) / sizeof(uint64_t));
     for (int i = 0; i < mv_sz; i++) {
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
         struct position *pos = pos_create();
         pos_initialise(test_fen, pos);
 
@@ -1013,7 +1013,7 @@ void test_position_make_move_black_en_passant(void **state) {
     struct board *brd = pos_get_board(pos);
 
     // double first move
-    const struct move mv = move_encode_pawn_double_first(c2, c4);
+    const uint64_t mv = move_encode_pawn_double_first(c2, c4);
     enum move_legality legality = pos_make_move(pos, mv);
 
     assert_true(legality == LEGAL_MOVE);
@@ -1023,7 +1023,7 @@ void test_position_make_move_black_en_passant(void **state) {
     assert_true(enp_sq == c3);
 
     // en passant move
-    const struct move en_pass_mv = move_encode_enpassant(b4, c3);
+    const uint64_t en_pass_mv = move_encode_enpassant(b4, c3);
     legality = pos_make_move(pos, en_pass_mv);
 
     assert_false(brd_is_sq_occupied(brd, c4));
@@ -1045,7 +1045,7 @@ void test_position_make_move_white_en_passant(void **state) {
     struct board *brd = pos_get_board(pos);
 
     // double first move
-    const struct move mv = move_encode_pawn_double_first(g7, g5);
+    const uint64_t mv = move_encode_pawn_double_first(g7, g5);
     enum move_legality legality = pos_make_move(pos, mv);
 
     assert_true(legality == LEGAL_MOVE);
@@ -1055,7 +1055,7 @@ void test_position_make_move_white_en_passant(void **state) {
     assert_true(enp_sq == g6);
 
     // en passant move
-    const struct move en_pass_mv = move_encode_enpassant(f5, g6);
+    const uint64_t en_pass_mv = move_encode_enpassant(f5, g6);
     legality = pos_make_move(pos, en_pass_mv);
 
     assert_false(brd_is_sq_occupied(brd, g5));
@@ -1079,7 +1079,7 @@ void test_position_make_move_white_promotion(void **state) {
     };
 
     for (int i = 0; i < 4; i++) {
-        const struct move mv = mv_list[i].mv;
+        const uint64_t mv = mv_list[i].mv;
         enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
@@ -1112,7 +1112,7 @@ void test_position_make_move_black_promotion(void **state) {
     };
 
     for (int i = 0; i < 4; i++) {
-        const struct move mv = mv_list[i].mv;
+        const uint64_t mv = mv_list[i].mv;
         enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
@@ -1145,7 +1145,7 @@ void test_position_make_move_white_promotion_capture(void **state) {
     };
 
     for (int i = 0; i < 4; i++) {
-        const struct move mv = mv_list[i].mv;
+        const uint64_t mv = mv_list[i].mv;
         enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
@@ -1178,7 +1178,7 @@ void test_position_make_move_black_promotion_capture(void **state) {
     };
 
     for (int i = 0; i < 4; i++) {
-        const struct move mv = mv_list[i].mv;
+        const uint64_t mv = mv_list[i].mv;
         enum piece expected_prom_pce = mv_list[i].decoded_piece;
 
         struct position *pos = pos_create();
@@ -1213,7 +1213,7 @@ void test_position_make_move_then_take_move_positions_restored_as_expected(void 
     // confirm they're the same before testing
     assert_true(pos_compare(pos, pos_original));
 
-    const struct move mv = move_encode_pawn_double_first(g7, g5);
+    const uint64_t mv = move_encode_pawn_double_first(g7, g5);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1232,7 +1232,7 @@ void test_position_make_move_sparse_board_black_to_move(void **state) {
     struct position *pos = pos_create();
     pos_initialise(test_fen, pos);
 
-    const struct move mv = move_encode_capture(b2, a1);
+    const uint64_t mv = move_encode_capture(b2, a1);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1249,7 +1249,7 @@ void test_position_make_take_double_pawn_move_white(void **state) {
     struct position *pos = pos_create();
     pos_initialise(fen, pos);
 
-    const struct move mv = move_encode_pawn_double_first(c2, c4);
+    const uint64_t mv = move_encode_pawn_double_first(c2, c4);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1271,7 +1271,7 @@ void test_position_make_take_quiet_move_white(void **state) {
     struct position *pos = pos_create();
     pos_initialise(fen, pos);
 
-    const struct move mv = move_encode_quiet(f3, g5);
+    const uint64_t mv = move_encode_quiet(f3, g5);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1293,7 +1293,7 @@ void test_position_make_take_double_pawn_move_black(void **state) {
     struct position *pos = pos_create();
     pos_initialise(fen, pos);
 
-    const struct move mv = move_encode_pawn_double_first(b7, b5);
+    const uint64_t mv = move_encode_pawn_double_first(b7, b5);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1315,7 +1315,7 @@ void test_position_make_take_quiet_move_black(void **state) {
     struct position *pos = pos_create();
     pos_initialise(fen, pos);
 
-    const struct move mv = move_encode_quiet(f6, e4);
+    const uint64_t mv = move_encode_quiet(f6, e4);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1337,7 +1337,7 @@ void test_position_make_take_capture_move_white(void **state) {
     struct position *pos = pos_create();
     pos_initialise(fen, pos);
 
-    const struct move mv = move_encode_capture(c5, b7);
+    const uint64_t mv = move_encode_capture(c5, b7);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1359,7 +1359,7 @@ void test_position_make_take_capture_move_black(void **state) {
     struct position *pos = pos_create();
     pos_initialise(fen, pos);
 
-    const struct move mv = move_encode_capture(e3, c2);
+    const uint64_t mv = move_encode_capture(e3, c2);
     enum move_legality legality = pos_make_move(pos, mv);
     assert_true(legality == LEGAL_MOVE);
 
@@ -1373,7 +1373,7 @@ void test_position_make_take_capture_move_black(void **state) {
 
 void test_position_make_take_en_passant_white_capture(void **state) {
     const char *fen = "4k3/8/8/5Pp1/8/8/8/4K3 w - g6 0 1\n";
-    const struct move mv = move_encode_enpassant(f5, g6);
+    const uint64_t mv = move_encode_enpassant(f5, g6);
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1395,7 +1395,7 @@ void test_position_make_take_en_passant_white_capture(void **state) {
 
 void test_position_make_take_en_passant_black_capture(void **state) {
     const char *fen = "4k3/8/8/8/5Pp1/8/8/4K3 b - f3 0 1\n";
-    const struct move mv = move_encode_enpassant(g4, f3);
+    const uint64_t mv = move_encode_enpassant(g4, f3);
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1417,7 +1417,7 @@ void test_position_make_take_en_passant_black_capture(void **state) {
 
 void test_position_make_take_queen_castle_white(void **state) {
     const char *fen = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R w KQkq - 0 1\n";
-    const struct move mv = move_encode_castle_queenside_white();
+    const uint64_t mv = move_encode_castle_queenside_white();
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1439,7 +1439,7 @@ void test_position_make_take_queen_castle_white(void **state) {
 
 void test_position_make_take_king_castle_white(void **state) {
     const char *fen = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R w KQkq - 0 1\n";
-    const struct move mv = move_encode_castle_kingside_white();
+    const uint64_t mv = move_encode_castle_kingside_white();
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1461,7 +1461,7 @@ void test_position_make_take_king_castle_white(void **state) {
 
 void test_position_make_take_queen_castle_black(void **state) {
     const char *fen = "r3k2r/p1pp1p1p/bpn1qnp1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
-    const struct move mv = move_encode_castle_queenside_black();
+    const uint64_t mv = move_encode_castle_queenside_black();
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1483,7 +1483,7 @@ void test_position_make_take_queen_castle_black(void **state) {
 
 void test_position_make_take_king_castle_black(void **state) {
     const char *fen = "r2qk2r/p1pp1p1p/bpn2np1/2b1p3/4P3/1PNPBN2/P1PQBPPP/R3K2R b KQkq - 0 1\n";
-    const struct move mv = move_encode_castle_kingside_black();
+    const uint64_t mv = move_encode_castle_kingside_black();
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1505,7 +1505,7 @@ void test_position_make_take_king_castle_black(void **state) {
 
 void test_position_make_take_quiet_promotion_white(void **state) {
     const char *fen = "8/2P5/8/7k/1p6/8/8/4K3 w - - 0 1\n";
-    const struct move mv = move_encode_promote_bishop(c7, c8);
+    const uint64_t mv = move_encode_promote_bishop(c7, c8);
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1527,7 +1527,7 @@ void test_position_make_take_quiet_promotion_white(void **state) {
 
 void test_position_make_take_quiet_promotion_black(void **state) {
     const char *fen = "8/8/8/7k/2P5/8/1p6/4K3 b - - 0 1\n";
-    const struct move mv = move_encode_promote_bishop(b2, b1);
+    const uint64_t mv = move_encode_promote_bishop(b2, b1);
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1549,7 +1549,7 @@ void test_position_make_take_quiet_promotion_black(void **state) {
 
 void test_position_make_take_capture_promotion_white(void **state) {
     const char *fen = "3n4/2P5/8/7k/8/8/1p6/4K3 w - - 0 1\n";
-    const struct move mv = move_encode_promote_bishop_with_capture(c7, d8);
+    const uint64_t mv = move_encode_promote_bishop_with_capture(c7, d8);
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1571,7 +1571,7 @@ void test_position_make_take_capture_promotion_white(void **state) {
 
 void test_position_make_take_capture_promotion_black(void **state) {
     const char *fen = "8/2P5/8/7k/8/8/1p6/2N1K3 b - - 0 1\n";
-    const struct move mv = move_encode_promote_bishop_with_capture(b2, c1);
+    const uint64_t mv = move_encode_promote_bishop_with_capture(b2, c1);
 
     // initial position for comparison
     struct position *init_pos = pos_create();
@@ -1603,7 +1603,7 @@ void test_position_hash_updated_white_pawn_quiet_move(void **state) {
 
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
-    const struct move pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
+    const uint64_t pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
@@ -1627,7 +1627,7 @@ void test_position_hash_updated_black_pawn_quiet_move(void **state) {
 
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
-    const struct move pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
+    const uint64_t pawn_move = move_encode_quiet(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
@@ -1651,7 +1651,7 @@ void test_position_hash_updated_white_pawn_capture_move(void **state) {
 
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
-    const struct move pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
+    const uint64_t pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, expected_hash);
@@ -1675,7 +1675,7 @@ void test_position_hash_updated_black_pawn_capture_move(void **state) {
 
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
-    const struct move pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
+    const uint64_t pawn_move = move_encode_capture(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, expected_hash);
@@ -1698,7 +1698,7 @@ void test_position_hash_updated_white_pawn_double_first_move(void **state) {
 
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
-    const struct move pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
+    const uint64_t pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
@@ -1721,7 +1721,7 @@ void test_position_hash_updated_black_pawn_double_first_move(void **state) {
 
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
-    const struct move pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
+    const uint64_t pawn_move = move_encode_pawn_double_first(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
@@ -1747,7 +1747,7 @@ void test_position_hash_updated_white_en_passant(void **state) {
     const enum square TO_SQ = g6;
     const enum square EN_PASS_SQ = TO_SQ;
     const enum square BLK_PAWN_SQ = g5;
-    const struct move en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
+    const uint64_t en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update(BLACK_PAWN, BLK_PAWN_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_PAWN, FROM_SQ, TO_SQ, expected_hash);
@@ -1778,7 +1778,7 @@ void test_position_hash_updated_black_en_passant(void **state) {
     const enum square TO_SQ = c3;
     const enum square EN_PASS_SQ = TO_SQ;
     const enum square WHITE_PAWN_SQ = c4;
-    const struct move en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
+    const uint64_t en_pass_mv = move_encode_enpassant(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update(WHITE_PAWN, WHITE_PAWN_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_PAWN, FROM_SQ, TO_SQ, expected_hash);
@@ -1800,7 +1800,7 @@ void test_position_hash_updated_white_promotion_quiet(void **state) {
     const enum square FROM_SQ = c7;
     const enum square TO_SQ = c8;
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_promote_queen(FROM_SQ, TO_SQ),
         move_encode_promote_knight(FROM_SQ, TO_SQ),
         move_encode_promote_rook(FROM_SQ, TO_SQ),
@@ -1818,7 +1818,7 @@ void test_position_hash_updated_white_promotion_quiet(void **state) {
         const uint64_t orig_pos_hash = pos_get_hash(pos);
         assert_true(orig_pos_hash != 0);
 
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
 
         uint64_t expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
@@ -1840,7 +1840,7 @@ void test_position_hash_updated_black_promotion_quiet(void **state) {
     const enum square FROM_SQ = b2;
     const enum square TO_SQ = b1;
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_promote_queen(FROM_SQ, TO_SQ),
         move_encode_promote_knight(FROM_SQ, TO_SQ),
         move_encode_promote_rook(FROM_SQ, TO_SQ),
@@ -1858,7 +1858,7 @@ void test_position_hash_updated_black_promotion_quiet(void **state) {
         const uint64_t orig_pos_hash = pos_get_hash(pos);
         assert_true(orig_pos_hash != 0);
 
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
 
         uint64_t expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(PROMOTION_PCE, TO_SQ, expected_hash);
@@ -1880,7 +1880,7 @@ void test_position_hash_updated_white_promotion_capture(void **state) {
     const enum square FROM_SQ = c7;
     const enum square TO_SQ = d8;
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_promote_queen_with_capture(FROM_SQ, TO_SQ),
         move_encode_promote_knight_with_capture(FROM_SQ, TO_SQ),
         move_encode_promote_rook_with_capture(FROM_SQ, TO_SQ),
@@ -1898,7 +1898,7 @@ void test_position_hash_updated_white_promotion_capture(void **state) {
         const uint64_t orig_pos_hash = pos_get_hash(pos);
         assert_true(orig_pos_hash != 0);
 
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
 
         uint64_t expected_hash = hash_piece_update(WHITE_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(BLACK_KNIGHT, TO_SQ, expected_hash);
@@ -1921,7 +1921,7 @@ void test_position_hash_updated_black_promotion_capture(void **state) {
     const enum square FROM_SQ = c2;
     const enum square TO_SQ = d1;
 
-    struct move mv_list[] = {
+    uint64_t mv_list[] = {
         move_encode_promote_queen_with_capture(FROM_SQ, TO_SQ),
         move_encode_promote_knight_with_capture(FROM_SQ, TO_SQ),
         move_encode_promote_rook_with_capture(FROM_SQ, TO_SQ),
@@ -1939,7 +1939,7 @@ void test_position_hash_updated_black_promotion_capture(void **state) {
         const uint64_t orig_pos_hash = pos_get_hash(pos);
         assert_true(orig_pos_hash != 0);
 
-        const struct move mv = mv_list[i];
+        const uint64_t mv = mv_list[i];
 
         uint64_t expected_hash = hash_piece_update(BLACK_PAWN, FROM_SQ, orig_pos_hash);
         expected_hash = hash_piece_update(WHITE_KNIGHT, TO_SQ, expected_hash);
@@ -1969,7 +1969,7 @@ void test_position_hash_updated_white_move_quiet(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_quiet(FROM_SQ, TO_SQ);
+    const uint64_t mv = move_encode_quiet(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update_move(WHITE_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
@@ -1996,7 +1996,7 @@ void test_position_hash_updated_white_move_capture(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_capture(FROM_SQ, TO_SQ);
+    const uint64_t mv = move_encode_capture(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update(BLACK_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_BISHOP, FROM_SQ, TO_SQ, expected_hash);
@@ -2024,7 +2024,7 @@ void test_position_hash_updated_black_move_quiet(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_quiet(FROM_SQ, TO_SQ);
+    const uint64_t mv = move_encode_quiet(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update_move(BLACK_BISHOP, FROM_SQ, TO_SQ, orig_pos_hash);
     expected_hash = hash_side_update(expected_hash);
@@ -2051,7 +2051,7 @@ void test_position_hash_updated_black_move_capture(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_capture(FROM_SQ, TO_SQ);
+    const uint64_t mv = move_encode_capture(FROM_SQ, TO_SQ);
 
     uint64_t expected_hash = hash_piece_update(WHITE_PAWN, TO_SQ, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_ROOK, FROM_SQ, TO_SQ, expected_hash);
@@ -2076,7 +2076,7 @@ void test_position_hash_updated_white_king_castle(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_castle_kingside_white();
+    const uint64_t mv = move_encode_castle_kingside_white();
 
     uint64_t expected_hash = hash_piece_update_move(WHITE_ROOK, h1, f1, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_KING, e1, g1, expected_hash);
@@ -2103,7 +2103,7 @@ void test_position_hash_updated_white_queen_castle(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_castle_queenside_white();
+    const uint64_t mv = move_encode_castle_queenside_white();
 
     uint64_t expected_hash = hash_piece_update_move(WHITE_ROOK, a1, d1, orig_pos_hash);
     expected_hash = hash_piece_update_move(WHITE_KING, e1, c1, expected_hash);
@@ -2130,7 +2130,7 @@ void test_position_hash_updated_black_king_castle(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_castle_kingside_black();
+    const uint64_t mv = move_encode_castle_kingside_black();
 
     uint64_t expected_hash = hash_piece_update_move(BLACK_ROOK, h8, f8, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_KING, e8, g8, expected_hash);
@@ -2157,7 +2157,7 @@ void test_position_hash_updated_black_queen_castle(void **state) {
     const uint64_t orig_pos_hash = pos_get_hash(pos);
     assert_true(orig_pos_hash != 0);
 
-    const struct move mv = move_encode_castle_queenside_black();
+    const uint64_t mv = move_encode_castle_queenside_black();
 
     uint64_t expected_hash = hash_piece_update_move(BLACK_ROOK, a8, d8, orig_pos_hash);
     expected_hash = hash_piece_update_move(BLACK_KING, e8, c8, expected_hash);

@@ -37,41 +37,45 @@
 #include <cmocka.h>
 
 static void contains_promote(const struct move_list *mvl, const enum square from_sq, const enum square to_sq,
-                             const enum piece_role pce_role, const bool is_capture);
+                             const enum piece pce, const bool is_capture);
 static bool contains_all_4_promotion_moves(const enum square from_sq, const enum square to_sq,
                                            const struct move_list *mvl, const bool is_capture);
 
 #define CONTAINS_QUIET(mvl, from, to)                                                                                  \
     ({                                                                                                                 \
-        struct move mv;                                                                                                \
+        uint64_t mv;                                                                                                   \
         mv = move_encode_quiet(from, to);                                                                              \
         assert_true(mvl_contains_move(&mvl, mv));                                                                      \
     })
 #define CONTAINS_CAPTURE(mvl, from, to)                                                                                \
     ({                                                                                                                 \
-        struct move mv;                                                                                                \
+        uint64_t mv;                                                                                                   \
         mv = move_encode_capture(from, to);                                                                            \
         assert_true(mvl_contains_move(&mvl, mv));                                                                      \
     })
 
 static void contains_promote(const struct move_list *mvl, const enum square from_sq, const enum square to_sq,
-                             const enum piece_role pce_role, const bool is_capture) {
-    struct move mv = {0};
+                             const enum piece pce, const bool is_capture) {
+    uint64_t mv = {0};
     if (is_capture) {
-        switch (pce_role) {
-        case QUEEN:
+        switch (pce) {
+        case WHITE_QUEEN:
+        case BLACK_QUEEN:
             mv = move_encode_promote_queen_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case KNIGHT:
+        case WHITE_KNIGHT:
+        case BLACK_KNIGHT:
             mv = move_encode_promote_knight_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case ROOK:
+        case WHITE_ROOK:
+        case BLACK_ROOK:
             mv = move_encode_promote_rook_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case BISHOP:
+        case WHITE_BISHOP:
+        case BLACK_BISHOP:
             mv = move_encode_promote_bishop_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
@@ -80,20 +84,24 @@ static void contains_promote(const struct move_list *mvl, const enum square from
             return;
         }
     } else {
-        switch (pce_role) {
-        case QUEEN:
+        switch (pce) {
+        case WHITE_QUEEN:
+        case BLACK_QUEEN:
             mv = move_encode_promote_queen(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case KNIGHT:
+        case WHITE_KNIGHT:
+        case BLACK_KNIGHT:
             mv = move_encode_promote_knight(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case ROOK:
+        case WHITE_ROOK:
+        case BLACK_ROOK:
             mv = move_encode_promote_rook(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case BISHOP:
+        case WHITE_BISHOP:
+        case BLACK_BISHOP:
             mv = move_encode_promote_bishop(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
@@ -303,10 +311,10 @@ void test_move_white_castling_WK_WQ(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move wk_cast = move_encode_castle_kingside_white();
+    uint64_t wk_cast = move_encode_castle_kingside_white();
     assert_true(mvl_contains_move(&mvl, wk_cast));
 
-    struct move wq_cast = move_encode_castle_queenside_white();
+    uint64_t wq_cast = move_encode_castle_queenside_white();
     assert_true(mvl_contains_move(&mvl, wq_cast));
 }
 
@@ -319,10 +327,10 @@ void test_move_white_castling_WK_only(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move wk_cast = move_encode_castle_kingside_white();
+    uint64_t wk_cast = move_encode_castle_kingside_white();
     assert_true(mvl_contains_move(&mvl, wk_cast));
 
-    struct move wq_cast = move_encode_castle_queenside_white();
+    uint64_t wq_cast = move_encode_castle_queenside_white();
     assert_false(mvl_contains_move(&mvl, wq_cast));
 }
 
@@ -335,10 +343,10 @@ void test_move_white_castling_WQ_only(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move wk_cast = move_encode_castle_kingside_white();
+    uint64_t wk_cast = move_encode_castle_kingside_white();
     assert_false(mvl_contains_move(&mvl, wk_cast));
 
-    struct move wq_cast = move_encode_castle_queenside_white();
+    uint64_t wq_cast = move_encode_castle_queenside_white();
     assert_true(mvl_contains_move(&mvl, wq_cast));
 }
 
@@ -402,10 +410,10 @@ void test_move_black_castling_BK_BQ(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move bk_cast = move_encode_castle_kingside_black();
+    uint64_t bk_cast = move_encode_castle_kingside_black();
     assert_true(mvl_contains_move(&mvl, bk_cast));
 
-    struct move bq_cast = move_encode_castle_queenside_black();
+    uint64_t bq_cast = move_encode_castle_queenside_black();
     assert_true(mvl_contains_move(&mvl, bq_cast));
 }
 
@@ -418,10 +426,10 @@ void test_move_black_castling_BK_only(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move bk_cast = move_encode_castle_kingside_black();
+    uint64_t bk_cast = move_encode_castle_kingside_black();
     assert_true(mvl_contains_move(&mvl, bk_cast));
 
-    struct move bq_cast = move_encode_castle_queenside_black();
+    uint64_t bq_cast = move_encode_castle_queenside_black();
     assert_false(mvl_contains_move(&mvl, bq_cast));
 }
 
@@ -434,10 +442,10 @@ void test_move_black_castling_BQ_only(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move bk_cast = move_encode_castle_kingside_black();
+    uint64_t bk_cast = move_encode_castle_kingside_black();
     assert_false(mvl_contains_move(&mvl, bk_cast));
 
-    struct move bq_cast = move_encode_castle_queenside_black();
+    uint64_t bq_cast = move_encode_castle_queenside_black();
     assert_true(mvl_contains_move(&mvl, bq_cast));
 }
 
@@ -458,7 +466,7 @@ void test_move_white_pawns_promotion_1(void **state) {
 
 static bool contains_all_4_promotion_moves(const enum square from_sq, const enum square to_sq,
                                            const struct move_list *mvl, const bool is_capture) {
-    struct move mv = {0};
+    uint64_t mv = {0};
     if (is_capture) {
         mv = move_encode_promote_knight_with_capture(from_sq, to_sq);
         if (mvl_contains_move(mvl, mv) == false) {
@@ -572,7 +580,7 @@ void test_move_white_pawns_first_move_double_1(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_pawn_double_first(a2, a4);
+    uint64_t mv = move_encode_pawn_double_first(a2, a4);
     assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(d2, d4);
@@ -592,7 +600,7 @@ void test_move_white_pawns_first_move_double_2(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_pawn_double_first(a2, a4);
+    uint64_t mv = move_encode_pawn_double_first(a2, a4);
     assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(b2, b4);
@@ -615,7 +623,7 @@ void test_move_white_pawns_en_passant_1(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_enpassant(g5, h6);
+    uint64_t mv = move_encode_enpassant(g5, h6);
     assert_true(mvl_contains_move(&mvl, mv));
 }
 
@@ -628,7 +636,7 @@ void test_move_white_pawns_en_passant_2(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_enpassant(b5, a6);
+    uint64_t mv = move_encode_enpassant(b5, a6);
     assert_true(mvl_contains_move(&mvl, mv));
 }
 
@@ -641,7 +649,7 @@ void test_move_white_pawns_en_passant_3(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_enpassant(b5, c6);
+    uint64_t mv = move_encode_enpassant(b5, c6);
     assert_true(mvl_contains_move(&mvl, mv));
 }
 
@@ -686,7 +694,7 @@ void test_move_black_pawns_1(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move double_mv = move_encode_pawn_double_first(a7, a5);
+    uint64_t double_mv = move_encode_pawn_double_first(a7, a5);
     assert_true(mvl_contains_move(&mvl, double_mv));
 
     CONTAINS_QUIET(mvl, a7, a6);
@@ -735,7 +743,7 @@ void test_move_black_pawns_first_move_double_1(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_pawn_double_first(a7, a5);
+    uint64_t mv = move_encode_pawn_double_first(a7, a5);
     assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(b7, b5);
@@ -754,7 +762,7 @@ void test_move_black_pawns_first_move_double_2(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_pawn_double_first(a7, a5);
+    uint64_t mv = move_encode_pawn_double_first(a7, a5);
     assert_true(mvl_contains_move(&mvl, mv));
 
     mv = move_encode_pawn_double_first(f7, f5);
@@ -770,7 +778,7 @@ void test_move_black_pawns_en_passant_1(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_enpassant(b4, a3);
+    uint64_t mv = move_encode_enpassant(b4, a3);
     assert_true(mvl_contains_move(&mvl, mv));
 }
 
@@ -784,7 +792,7 @@ void test_move_black_pawns_en_passant_2(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_enpassant(g4, f3);
+    uint64_t mv = move_encode_enpassant(g4, f3);
     assert_true(mvl_contains_move(&mvl, mv));
 }
 
@@ -797,7 +805,7 @@ void test_move_black_pawns_en_passant_3(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move mv = move_encode_enpassant(f4, e3);
+    uint64_t mv = move_encode_enpassant(f4, e3);
     assert_true(mvl_contains_move(&mvl, mv));
 }
 
@@ -1065,7 +1073,7 @@ void test_move_all_moves_4_knights_opening_white_to_move(void **state) {
 
     mv_gen_all_moves(pos, &mvl);
 
-    struct move double_mv = move_encode_pawn_double_first(a2, a4);
+    uint64_t double_mv = move_encode_pawn_double_first(a2, a4);
     assert_true(mvl_contains_move(&mvl, double_mv));
     double_mv = move_encode_pawn_double_first(b2, b4);
     assert_true(mvl_contains_move(&mvl, double_mv));
@@ -1128,10 +1136,10 @@ void test_move_white_capture_only_moves(void **state) {
     CONTAINS_CAPTURE(mvl, f2, g3);
     CONTAINS_CAPTURE(mvl, g4, f5);
 
-    contains_promote(&mvl, f7, g8, QUEEN, true);
-    contains_promote(&mvl, f7, g8, ROOK, true);
-    contains_promote(&mvl, f7, g8, BISHOP, true);
-    contains_promote(&mvl, f7, g8, KNIGHT, true);
+    contains_promote(&mvl, f7, g8, WHITE_QUEEN, true);
+    contains_promote(&mvl, f7, g8, WHITE_ROOK, true);
+    contains_promote(&mvl, f7, g8, WHITE_BISHOP, true);
+    contains_promote(&mvl, f7, g8, WHITE_KNIGHT, true);
 }
 
 void test_move_black_capture_only_moves(void **state) {
@@ -1157,8 +1165,8 @@ void test_move_black_capture_only_moves(void **state) {
     CONTAINS_CAPTURE(mvl, b4, c3);
     CONTAINS_CAPTURE(mvl, f5, g4);
 
-    contains_promote(&mvl, g2, f1, QUEEN, true);
-    contains_promote(&mvl, g2, f1, ROOK, true);
-    contains_promote(&mvl, g2, f1, BISHOP, true);
-    contains_promote(&mvl, g2, f1, KNIGHT, true);
+    contains_promote(&mvl, g2, f1, BLACK_QUEEN, true);
+    contains_promote(&mvl, g2, f1, BLACK_ROOK, true);
+    contains_promote(&mvl, g2, f1, BLACK_BISHOP, true);
+    contains_promote(&mvl, g2, f1, BLACK_KNIGHT, true);
 }

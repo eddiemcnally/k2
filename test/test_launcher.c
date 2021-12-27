@@ -98,8 +98,12 @@ int main(void) {
         TEST(test_piece_get_piece_from_label),
         TEST(test_piece_get_array_idx),
         TEST(test_piece_get_piece_label),
-        TEST(test_piece_role),
         TEST(test_piece_is_king),
+        TEST(test_piece_is_pawn),
+        TEST(test_piece_is_rook),
+        TEST(test_piece_is_queen),
+        TEST(test_piece_is_bishop),
+        TEST(test_piece_is_knight),
 
         // Position
         TEST(test_position_get_set_castle_permissions),

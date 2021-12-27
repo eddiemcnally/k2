@@ -81,19 +81,29 @@ void bb_clear_square(uint64_t *restrict const bb, const enum square sq) {
 /**
  * @brief      Clears the bit representing the from_sq and sets the bit representing the to_sq
  *
- * @param      bb       Pointer to the bitboard
+ * @param      bb1      Pointer to the bitboard #1
+ * @param      bb2      Pointer to the bitboard #2
  * @param[in]  from_sq  The from sq
  * @param[in]  to_sq    To sq
  */
-void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq, const enum square to_sq) {
+void bb_move_bit(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square from_sq,
+                 const enum square to_sq) {
 
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
-    assert(bb_is_set(*bb, from_sq));
-    assert(bb_is_clear(*bb, to_sq));
+    assert(bb_is_set(*bb1, from_sq));
+    assert(bb_is_clear(*bb1, to_sq));
+    assert(bb_is_set(*bb2, from_sq));
+    assert(bb_is_clear(*bb2, to_sq));
 
-    *bb ^= ((uint64_t)0x01 << from_sq);
-    *bb ^= ((uint64_t)0x01 << to_sq);
+    const uint64_t from_bb = bb_get_square_as_bb(from_sq);
+    const uint64_t to_bb = bb_get_square_as_bb(to_sq);
+
+    // just xor's...assumes bits are set/cleared as expected before this runs
+    *bb1 ^= from_bb;
+    *bb1 ^= to_bb;
+    *bb2 ^= from_bb;
+    *bb2 ^= to_bb;
 }
 
 /**
@@ -181,7 +191,7 @@ void bb_print_as_board(const uint64_t bb) {
  * @param bb    The bitboard
  * @return      The reversed bitboard
  */
-uint64_t bb_reverse(uint64_t bb) {
+__attribute__((always_inline)) uint64_t bb_reverse(uint64_t bb) {
     // see https://clang.llvm.org/docs/LanguageExtensions.html#builtin-functions
     return __builtin_bitreverse64(bb);
 }

@@ -37,13 +37,13 @@
 #include <assert.h>
 
 enum cast_perm_bitmap {
-    CAST_PERM_WK = 0x01 << 0,
-    CAST_PERM_WQ = 0x01 << 1,
-    CAST_PERM_BK = 0x01 << 2,
-    CAST_PERM_BQ = 0x01 << 3,
+    CAST_PERM_WK = (0x01 << 0),
+    CAST_PERM_WQ = (0x01 << 1),
+    CAST_PERM_BK = (0x01 << 2),
+    CAST_PERM_BQ = (0x01 << 3),
 
-    CAST_PERM_WHITE_MASK = CAST_PERM_WK | CAST_PERM_WQ,
-    CAST_PERM_BLACK_MASK = CAST_PERM_BK | CAST_PERM_BQ,
+    CAST_PERM_WHITE_MASK = (CAST_PERM_WK | CAST_PERM_WQ),
+    CAST_PERM_BLACK_MASK = (CAST_PERM_BK | CAST_PERM_BQ),
 
 };
 

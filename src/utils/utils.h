@@ -51,6 +51,15 @@
 #define REQUIRE(cond, text)
 #endif
 
+#define FATAL(text)                                                                                                    \
+    fprintf(stderr, "FATAL: Error condition\n");                                                                       \
+    fprintf(stderr, "\tFile     :    %s\n", __FILE__);                                                                 \
+    fprintf(stderr, "\tLine     :    %d\n", __LINE__);                                                                 \
+    fprintf(stderr, "\tFunction :    %s\n", __FUNCTION__);                                                             \
+    fprintf(stderr, "\tText     :    %s\n", text);                                                                     \
+    print_stacktrace();                                                                                                \
+    exit(EXIT_FAILURE);
+
 //void set_priority_and_affinity(void);
 void print_stacktrace(void);
 double get_time_of_day_in_secs(void);

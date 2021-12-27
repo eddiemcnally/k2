@@ -27,7 +27,7 @@
 /*! @addtogroup OccupancyMasks
  *
  * @ingroup OccupancyMasks
- * @{
+ * @
  * @details A set of pre-calculated occupancy masks for various pieces on each square.
  *
  */
@@ -53,12 +53,24 @@ static void gen_rook_mask(void);
 //              - For these occupancy masks, element [0] is a1, and [63] is h8
 //              - The bit mask represents the set of possible target squares for a piece on a given square
 //
+// clang-format off
 static uint64_t in_between_sq[NUM_SQUARES][NUM_SQUARES] = {{0}, {0}};
-static uint64_t knight_occupancy_masks[NUM_SQUARES] = {0};
-static uint64_t king_occupancy_masks[NUM_SQUARES] = {0};
-static struct diagonals diagonal_masks[NUM_SQUARES] = {0};
-static uint64_t queen_occupancy_masks[NUM_SQUARES] = {0};
-static uint64_t rook_occupancy_masks[NUM_SQUARES] = {0};
+static uint64_t knight_occupancy_masks[NUM_SQUARES]     = {0};
+static uint64_t king_occupancy_masks[NUM_SQUARES]       = {0};
+static struct diagonals diagonal_masks[NUM_SQUARES]     = {0};
+static uint64_t queen_occupancy_masks[NUM_SQUARES]      = {0};
+static uint64_t rook_occupancy_masks[NUM_SQUARES]       = {0};
+
+
+// WHITE double pawn masks
+#define FILE_A_WHITE_DOUBLE_PAWN_MASK       ((uint64_t)(SQUARE_AS_BITBOARD(a3) | SQUARE_AS_BITBOARD(a4)))
+#define FILE_WHITE_DOUBLE_PAWN_MASK(file)   ((uint64_t)(FILE_A_WHITE_DOUBLE_PAWN_MASK << (int)f))
+
+// BLACK double pawn masks
+#define FILE_A_BLACK_DOUBLE_PAWN_MASK       ((uint64_t)(SQUARE_AS_BITBOARD(a5) | SQUARE_AS_BITBOARD(a6)))
+#define FILE_BLACK_DOUBLE_PAWN_MASK(file)   ((uint64_t)(FILE_A_BLACK_DOUBLE_PAWN_MASK << (int)f))
+
+// clang-format on
 
 void occ_mask_init(void) {
     gen_in_between_sq_mask();
@@ -98,21 +110,15 @@ uint64_t occ_mask_get_horizontal(const enum square sq) {
 uint64_t occ_mask_get_double_pawn_mask_white(const enum square from_sq) {
     assert(sq_get_rank(from_sq) == RANK_2);
 
-    const uint64_t sq_bb = bb_get_square_as_bb(from_sq);
-
-    const uint64_t plus_1_rank = NORTH(sq_bb);
-    const uint64_t plus_2_rank = NORTH(plus_1_rank);
-    return plus_1_rank | plus_2_rank;
+    const enum file f = sq_get_file(from_sq);
+    return FILE_WHITE_DOUBLE_PAWN_MASK(f);
 }
 
 uint64_t occ_mask_get_double_pawn_mask_black(const enum square from_sq) {
     assert(sq_get_rank(from_sq) == RANK_7);
 
-    const uint64_t sq_bb = bb_get_square_as_bb(from_sq);
-
-    const uint64_t minus_1_rank = SOUTH(sq_bb);
-    const uint64_t minus_2_rank = SOUTH(minus_1_rank);
-    return minus_1_rank | minus_2_rank;
+    const enum file f = sq_get_file(from_sq);
+    return FILE_BLACK_DOUBLE_PAWN_MASK(f);
 }
 
 /**

@@ -38,12 +38,26 @@
 #include <ctype.h>
 #include <stdio.h>
 
-#define ROLE_MASK ((uint8_t)0x70)
-#define COLOUR_SHIFT (7)
+/* Piece values
+ * values taken from here: 
+ * https://www.chessprogramming.org/Simplified_Evaluation_Function 
+ */
+// clang-format off
+enum piece_values {
+    PCE_VAL_PAWN    = 100,
+    PCE_VAL_BISHOP  = 330,
+    PCE_VAL_KNIGHT  = 320,
+    PCE_VAL_ROOK    = 500,
+    PCE_VAL_QUEEN   = 900,
+    PCE_VAL_KING    = 20000
+};
 
-#define EXTRACT_COLOUR(pce) ((enum colour)((pce & COLOUR_MASK) >> COLOUR_SHIFT))
-#define EXTRACT_PIECE_ROLE(pce) ((enum piece_role)((pce & ROLE_MASK) >> ROLE_SHIFT))
+#define COL_MASK (0x01)
 
+static uint32_t piece_values[NUM_PIECE_TYPES] = {0};
+
+// clang-format on
+//
 // ==================================================================
 //
 // public functions
@@ -51,16 +65,27 @@
 // ==================================================================
 
 /**
- * @brief           Returns the piece_role  
- *
- * @param pce       The piece
+ * @brief Initialises any state needed for piece management
  * 
- * @return          the piece_type
  */
-enum piece_role pce_get_piece_role(const enum piece pce) {
-    assert(validate_piece(pce));
+void piece_init(void) {
+    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_PAWN)] = PCE_VAL_PAWN;
+    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_PAWN)] = PCE_VAL_PAWN;
 
-    return EXTRACT_PIECE_ROLE(pce);
+    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_BISHOP)] = PCE_VAL_BISHOP;
+    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_BISHOP)] = PCE_VAL_BISHOP;
+
+    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_KNIGHT)] = PCE_VAL_KNIGHT;
+    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_KNIGHT)] = PCE_VAL_KNIGHT;
+
+    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_ROOK)] = PCE_VAL_ROOK;
+    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_ROOK)] = PCE_VAL_ROOK;
+
+    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_QUEEN)] = PCE_VAL_QUEEN;
+    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_QUEEN)] = PCE_VAL_QUEEN;
+
+    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_KING)] = PCE_VAL_KING;
+    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_KING)] = PCE_VAL_KING;
 }
 
 /**
@@ -72,7 +97,7 @@ enum piece_role pce_get_piece_role(const enum piece pce) {
 bool pce_is_white(const enum piece pce) {
     assert(validate_piece(pce));
 
-    return (EXTRACT_COLOUR(pce) == WHITE);
+    return (pce & COL_MASK) == 0;
 }
 
 /**
@@ -84,7 +109,7 @@ bool pce_is_white(const enum piece pce) {
 bool pce_is_black(const enum piece pce) {
     assert(validate_piece(pce));
 
-    return (EXTRACT_COLOUR(pce) == BLACK);
+    return (pce & COL_MASK) != 0;
 }
 
 /**
@@ -108,7 +133,7 @@ enum colour pce_swap_side(const enum colour col) {
 enum colour pce_get_colour(const enum piece pce) {
     assert(validate_piece(pce));
 
-    return EXTRACT_COLOUR(pce);
+    return (enum colour)(pce & COL_MASK);
 }
 
 /**
@@ -120,11 +145,33 @@ enum colour pce_get_colour(const enum piece pce) {
 uint32_t pce_get_value(const enum piece pce) {
     assert(validate_piece(pce));
 
-    return (uint32_t)(pce >> VALUE_SHIFT);
+    uint32_t offset = PIECE_AS_ARRAY_OFFSET(pce);
+    return piece_values[offset];
 }
 
 bool pce_is_king(const enum piece pce) {
-    return ((pce >> ROLE_SHIFT) & KING);
+    assert(validate_piece(pce));
+    return (pce == WHITE_KING) || (pce == BLACK_KING);
+}
+bool pce_is_rook(const enum piece pce) {
+    assert(validate_piece(pce));
+    return (pce == WHITE_ROOK) || (pce == BLACK_ROOK);
+}
+bool pce_is_pawn(const enum piece pce) {
+    assert(validate_piece(pce));
+    return (pce == WHITE_PAWN) || (pce == BLACK_PAWN);
+}
+bool pce_is_bishop(const enum piece pce) {
+    assert(validate_piece(pce));
+    return (pce == WHITE_BISHOP) || (pce == BLACK_BISHOP);
+}
+bool pce_is_knight(const enum piece pce) {
+    assert(validate_piece(pce));
+    return (pce == WHITE_KNIGHT) || (pce == BLACK_KNIGHT);
+}
+bool pce_is_queen(const enum piece pce) {
+    assert(validate_piece(pce));
+    return (pce == WHITE_QUEEN) || (pce == BLACK_QUEEN);
 }
 
 /**
@@ -158,39 +205,35 @@ void pce_get_all_pieces(enum piece pce_array[NUM_PIECE_TYPES]) {
 char pce_get_label(const enum piece pce) {
     assert(validate_piece(pce));
 
-    enum colour col = EXTRACT_COLOUR(pce);
-    enum piece_role pt = EXTRACT_PIECE_ROLE(pce);
-
-    char retval;
-
-    switch (pt) {
-    case PAWN:
-        retval = 'p';
-        break;
-    case BISHOP:
-        retval = 'b';
-        break;
-    case KNIGHT:
-        retval = 'n';
-        break;
-    case ROOK:
-        retval = 'r';
-        break;
-    case QUEEN:
-        retval = 'q';
-        break;
-    case KING:
-        retval = 'k';
-        break;
+    switch (pce) {
+    case WHITE_PAWN:
+        return 'P';
+    case WHITE_BISHOP:
+        return 'B';
+    case WHITE_KNIGHT:
+        return 'N';
+    case WHITE_ROOK:
+        return 'R';
+    case WHITE_QUEEN:
+        return 'Q';
+    case WHITE_KING:
+        return 'K';
+    case BLACK_PAWN:
+        return 'p';
+    case BLACK_BISHOP:
+        return 'b';
+    case BLACK_KNIGHT:
+        return 'n';
+    case BLACK_ROOK:
+        return 'r';
+    case BLACK_QUEEN:
+        return 'q';
+    case BLACK_KING:
+        return 'k';
+    case NO_PIECE:
     default:
-        REQUIRE(false, "Invalid Piece");
+        FATAL("Invalid Piece");
     }
-
-    if (col == WHITE) {
-        retval = (char)toupper(retval);
-    }
-
-    return retval;
 }
 
 /**
@@ -232,8 +275,9 @@ enum piece pce_get_from_label(const char c) {
         return BLACK_QUEEN;
     case 'k':
         return BLACK_KING;
+    case NO_PIECE:
     default:
-        REQUIRE(false, "Invalid Piece label char");
+        FATAL("Invalid Piece label char");
     }
 
 #pragma GCC diagnostic pop
@@ -250,50 +294,27 @@ bool validate_piece(const enum piece pce) {
         return true;
     }
 
-    const enum piece_role pt = EXTRACT_PIECE_ROLE(pce);
-    assert(validate_piece_role(pt));
-    const enum colour col = EXTRACT_COLOUR(pce);
-    assert(validate_colour(col));
+    switch (pce) {
+    case WHITE_PAWN:
+    case WHITE_BISHOP:
+    case WHITE_KNIGHT:
+    case WHITE_ROOK:
+    case WHITE_QUEEN:
+    case WHITE_KING:
+    case BLACK_PAWN:
+    case BLACK_BISHOP:
+    case BLACK_KNIGHT:
+    case BLACK_ROOK:
+    case BLACK_QUEEN:
+    case BLACK_KING:
+        return true;
 
-    switch (pt) {
-    case PAWN:
-    case KNIGHT:
-    case BISHOP:
-    case ROOK:
-    case QUEEN:
-    case KING:
-        break;
+    case NO_PIECE:
     default:
-        assert(false);
+        return false;
     }
-
-    validate_colour(col);
-
-    return true;
 }
 
-/**
- * @brief       Validates a piece type within expected range of values
- *
- * @param pt    The piece type
- */
-bool validate_piece_role(const enum piece_role pt) {
-
-    switch (pt) {
-    case PAWN:
-    case KNIGHT:
-    case BISHOP:
-    case ROOK:
-    case QUEEN:
-    case KING:
-        break;
-    default:
-        print_stacktrace();
-        assert(false);
-        break;
-    }
-    return true;
-}
 /**
  * @brief       Validates a colour is within expected range of values
  *
@@ -305,7 +326,7 @@ bool validate_colour(const enum colour col) {
     case BLACK:
         return true;
     default:
-        assert(false);
+        return false;
     }
 }
 
@@ -327,8 +348,6 @@ bool validate_label(const char c) {
     case 'K':
         return true;
     default:
-        printf("Invalid label %c\n", c);
-        assert(false);
+        return false;
     }
-    return false;
 }

@@ -48,10 +48,7 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
                                                 const enum square sq);
 static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
-static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
-static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq);
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
-static bool is_king_attacking(const enum square king_sq, const enum square sq);
 
 #ifdef ENABLE_STATS
 #define REG_ATTACK_TYPE(pos, att_type) stats_reg_illegal_move_attacking_pce(pos_get_stats(pos), att_type);
@@ -101,16 +98,19 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
     }
 
     const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
-    if (is_white_pawn_attacking(wp_bb, sq)) {
+    const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);
+    if ((attacking_bb & wp_bb) != 0) {
         REG_ATTACK_TYPE(pos, ATT_PAWN);
         return true;
     }
 
     const enum square king_sq = brd_get_white_king_square(brd);
-    if (is_king_attacking(king_sq, sq)) {
+    const uint64_t occ_mask = occ_mask_get_king(king_sq);
+    if (bb_is_set(occ_mask, sq)) {
         REG_ATTACK_TYPE(pos, ATT_KING);
         return true;
     }
+
     return false;
 }
 
@@ -139,28 +139,20 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
     }
 
     const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
-    if (is_black_pawn_attacking(bp_bb, sq)) {
+    const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);
+    if ((attacking_bb & bp_bb) != 0) {
         REG_ATTACK_TYPE(pos, ATT_PAWN);
         return true;
     }
 
     const enum square king_sq = brd_get_black_king_square(brd);
-    if (is_king_attacking(king_sq, sq)) {
+    const uint64_t occ_mask = occ_mask_get_king(king_sq);
+    if (bb_is_set(occ_mask, sq)) {
         REG_ATTACK_TYPE(pos, ATT_KING);
         return true;
     }
 
     return false;
-}
-
-static bool is_white_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
-    const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);
-    return (attacking_bb & pawn_bb) != 0;
-}
-
-static bool is_black_pawn_attacking(const uint64_t pawn_bb, const enum square sq) {
-    const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);
-    return (attacking_bb & pawn_bb) != 0;
 }
 
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) {
@@ -176,16 +168,11 @@ static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) 
     return bb_is_set(knight_attack_sq, sq);
 }
 
-static bool is_king_attacking(const enum square king_sq, const enum square sq) {
-    const uint64_t occ_mask = occ_mask_get_king(king_sq);
-    return bb_is_set(occ_mask, sq);
-}
-
 static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
                                                 const enum square sq) {
     // do a quick check before evaluating each piece
     const uint64_t sq_horiz_vert_bb = occ_mask_get_vertical(sq) | occ_mask_get_horizontal(sq);
-    if ((sq_horiz_vert_bb & attacking_pce_bb) == false) {
+    if ((sq_horiz_vert_bb & attacking_pce_bb) == 0) {
         // nothing shares rank or file with square
         return false;
     }
@@ -225,3 +212,5 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
     }
     return false;
 }
+
+

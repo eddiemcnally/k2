@@ -473,131 +473,131 @@ void test_board_brd_get_piece_on_square(void **state) {
     struct board *brd = pos_get_board(pos);
 
     enum piece pce = brd_get_piece_on_square(brd, a4);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, a7);
-    assert_true(pce_get_piece_role(pce) == QUEEN);
+    assert_true(pce_is_queen(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, b1);
-    assert_true(pce_get_piece_role(pce) == BISHOP);
+    assert_true(pce_is_bishop(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, b2);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, b4);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, b6);
-    assert_true(pce_get_piece_role(pce) == KING);
+    assert_true(pce_is_king(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, b7);
-    assert_true(pce_get_piece_role(pce) == BISHOP);
+    assert_true(pce_is_bishop(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, b8);
-    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_is_knight(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, c1);
-    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_is_knight(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, c3);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, c4);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, d1);
-    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_is_knight(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, d3);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, d5);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, d8);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, e1);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, e2);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, e4);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, e8);
-    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_is_knight(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, f1);
-    assert_true(pce_get_piece_role(pce) == QUEEN);
+    assert_true(pce_is_queen(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, f3);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, f4);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, f5);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, f6);
-    assert_true(pce_get_piece_role(pce) == BISHOP);
+    assert_true(pce_is_bishop(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, f8);
-    assert_true(pce_get_piece_role(pce) == BISHOP);
+    assert_true(pce_is_bishop(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, g2);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, g3);
-    assert_true(pce_get_piece_role(pce) == ROOK);
+    assert_true(pce_is_rook(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, g4);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, g5);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, h2);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, h3);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, h6);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 }
 
@@ -612,19 +612,19 @@ void test_board_brd_get_piece_on_square_1(void **state) {
     enum piece pce;
 
     pce = brd_get_piece_on_square(brd, a1);
-    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_is_knight(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 
     pce = brd_get_piece_on_square(brd, a2);
-    assert_true(pce_get_piece_role(pce) == KNIGHT);
+    assert_true(pce_is_knight(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, a5);
-    assert_true(pce_get_piece_role(pce) == PAWN);
+    assert_true(pce_is_pawn(pce));
     assert_true(pce_get_colour(pce) == BLACK);
 
     pce = brd_get_piece_on_square(brd, a7);
-    assert_true(pce_get_piece_role(pce) == BISHOP);
+    assert_true(pce_is_bishop(pce));
     assert_true(pce_get_colour(pce) == WHITE);
 }
 

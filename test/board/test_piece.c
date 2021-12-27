@@ -30,23 +30,23 @@
 #include "piece.h"
 #include <cmocka.h>
 
-static void label_piece_colour_validate(const char label, const enum piece_role pt, const enum colour col);
+static void label_piece_colour_validate(const char label, const enum piece pt, const enum colour col);
 
 void test_piece_get_piece_from_label(void **state) {
 
-    label_piece_colour_validate('P', PAWN, WHITE);
-    label_piece_colour_validate('B', BISHOP, WHITE);
-    label_piece_colour_validate('N', KNIGHT, WHITE);
-    label_piece_colour_validate('R', ROOK, WHITE);
-    label_piece_colour_validate('Q', QUEEN, WHITE);
-    label_piece_colour_validate('K', KING, WHITE);
+    label_piece_colour_validate('P', WHITE_PAWN, WHITE);
+    label_piece_colour_validate('B', WHITE_BISHOP, WHITE);
+    label_piece_colour_validate('N', WHITE_KNIGHT, WHITE);
+    label_piece_colour_validate('R', WHITE_ROOK, WHITE);
+    label_piece_colour_validate('Q', WHITE_QUEEN, WHITE);
+    label_piece_colour_validate('K', WHITE_KING, WHITE);
 
-    label_piece_colour_validate('p', PAWN, BLACK);
-    label_piece_colour_validate('b', BISHOP, BLACK);
-    label_piece_colour_validate('n', KNIGHT, BLACK);
-    label_piece_colour_validate('r', ROOK, BLACK);
-    label_piece_colour_validate('q', QUEEN, BLACK);
-    label_piece_colour_validate('k', KING, BLACK);
+    label_piece_colour_validate('p', BLACK_PAWN, BLACK);
+    label_piece_colour_validate('b', BLACK_BISHOP, BLACK);
+    label_piece_colour_validate('n', BLACK_KNIGHT, BLACK);
+    label_piece_colour_validate('r', BLACK_ROOK, BLACK);
+    label_piece_colour_validate('q', BLACK_QUEEN, BLACK);
+    label_piece_colour_validate('k', BLACK_KING, BLACK);
 }
 
 void test_piece_get_piece_label(void **state) {
@@ -89,6 +89,8 @@ void test_piece_get_piece_label(void **state) {
 }
 
 void test_piece_values(void **state) {
+    piece_init();
+
     assert_true(pce_get_value(WHITE_PAWN) == 100);
     assert_true(pce_get_value(WHITE_BISHOP) == 330);
     assert_true(pce_get_value(WHITE_KNIGHT) == 320);
@@ -147,18 +149,23 @@ void test_piece_get_colour_black_pieces(void **state) {
 }
 
 void test_piece_get_array_idx(void **state) {
-    assert_true(PCE_GET_ARRAY_INDEX(WHITE_PAWN) == 0);
-    assert_true(PCE_GET_ARRAY_INDEX(WHITE_BISHOP) == 1);
-    assert_true(PCE_GET_ARRAY_INDEX(WHITE_KNIGHT) == 2);
-    assert_true(PCE_GET_ARRAY_INDEX(WHITE_ROOK) == 3);
-    assert_true(PCE_GET_ARRAY_INDEX(WHITE_QUEEN) == 4);
-    assert_true(PCE_GET_ARRAY_INDEX(WHITE_KING) == 5);
-    assert_true(PCE_GET_ARRAY_INDEX(BLACK_PAWN) == 6);
-    assert_true(PCE_GET_ARRAY_INDEX(BLACK_BISHOP) == 7);
-    assert_true(PCE_GET_ARRAY_INDEX(BLACK_KNIGHT) == 8);
-    assert_true(PCE_GET_ARRAY_INDEX(BLACK_ROOK) == 9);
-    assert_true(PCE_GET_ARRAY_INDEX(BLACK_QUEEN) == 10);
-    assert_true(PCE_GET_ARRAY_INDEX(BLACK_KING) == 11);
+    assert_true(PIECE_AS_ARRAY_OFFSET(WHITE_PAWN) == 0);
+    assert_true(PIECE_AS_ARRAY_OFFSET(BLACK_PAWN) == 1);
+
+    assert_true(PIECE_AS_ARRAY_OFFSET(WHITE_BISHOP) == 2);
+    assert_true(PIECE_AS_ARRAY_OFFSET(BLACK_BISHOP) == 3);
+
+    assert_true(PIECE_AS_ARRAY_OFFSET(WHITE_KNIGHT) == 4);
+    assert_true(PIECE_AS_ARRAY_OFFSET(BLACK_KNIGHT) == 5);
+
+    assert_true(PIECE_AS_ARRAY_OFFSET(WHITE_ROOK) == 6);
+    assert_true(PIECE_AS_ARRAY_OFFSET(BLACK_ROOK) == 7);
+
+    assert_true(PIECE_AS_ARRAY_OFFSET(WHITE_QUEEN) == 8);
+    assert_true(PIECE_AS_ARRAY_OFFSET(BLACK_QUEEN) == 9);
+
+    assert_true(PIECE_AS_ARRAY_OFFSET(WHITE_KING) == 10);
+    assert_true(PIECE_AS_ARRAY_OFFSET(BLACK_KING) == 11);
 }
 
 void test_piece_swap_side(void **state) {
@@ -187,22 +194,6 @@ void test_piece_is_white(void **state) {
     assert_true(pce_is_white(pce));
 }
 
-void test_piece_role(void **state) {
-    assert_true(pce_get_piece_role(WHITE_PAWN) == PAWN);
-    assert_true(pce_get_piece_role(WHITE_BISHOP) == BISHOP);
-    assert_true(pce_get_piece_role(WHITE_KNIGHT) == KNIGHT);
-    assert_true(pce_get_piece_role(WHITE_ROOK) == ROOK);
-    assert_true(pce_get_piece_role(WHITE_QUEEN) == QUEEN);
-    assert_true(pce_get_piece_role(WHITE_KING) == KING);
-
-    assert_true(pce_get_piece_role(BLACK_PAWN) == PAWN);
-    assert_true(pce_get_piece_role(BLACK_BISHOP) == BISHOP);
-    assert_true(pce_get_piece_role(BLACK_KNIGHT) == KNIGHT);
-    assert_true(pce_get_piece_role(BLACK_ROOK) == ROOK);
-    assert_true(pce_get_piece_role(BLACK_QUEEN) == QUEEN);
-    assert_true(pce_get_piece_role(BLACK_KING) == KING);
-}
-
 void test_piece_is_black(void **state) {
 
     enum piece pce = BLACK_PAWN;
@@ -229,8 +220,32 @@ void test_piece_is_king(void **state) {
     assert_true(pce_is_king(BLACK_KING));
 }
 
-static void label_piece_colour_validate(const char label, const enum piece_role pt, const enum colour col) {
-    enum piece pce = pce_get_from_label(label);
-    assert_true(pce_get_piece_role(pce) == pt);
+void test_piece_is_pawn(void **state) {
+    assert_true(pce_is_pawn(WHITE_PAWN));
+    assert_true(pce_is_pawn(BLACK_PAWN));
+}
+
+void test_piece_is_bishop(void **state) {
+    assert_true(pce_is_bishop(WHITE_BISHOP));
+    assert_true(pce_is_bishop(BLACK_BISHOP));
+}
+
+void test_piece_is_knight(void **state) {
+    assert_true(pce_is_knight(WHITE_KNIGHT));
+    assert_true(pce_is_knight(BLACK_KNIGHT));
+}
+
+void test_piece_is_rook(void **state) {
+    assert_true(pce_is_rook(WHITE_ROOK));
+    assert_true(pce_is_rook(BLACK_ROOK));
+}
+void test_piece_is_queen(void **state) {
+    assert_true(pce_is_queen(WHITE_QUEEN));
+    assert_true(pce_is_queen(BLACK_QUEEN));
+}
+
+static void label_piece_colour_validate(const char label, const enum piece pce, const enum colour col) {
+    enum piece converted_pce = pce_get_from_label(label);
+    assert_true(converted_pce == pce);
     assert_true(pce_get_colour(pce) == col);
 }
