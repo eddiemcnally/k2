@@ -89,7 +89,6 @@ void test_piece_get_piece_label(void **state) {
 }
 
 void test_piece_values(void **state) {
-    piece_init();
 
     assert_true(pce_get_value(WHITE_PAWN) == 100);
     assert_true(pce_get_value(WHITE_BISHOP) == 330);

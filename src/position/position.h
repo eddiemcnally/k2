@@ -30,7 +30,6 @@
 #include "move.h"
 #include "piece.h"
 #include "square.h"
-#include "stats.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -58,10 +57,6 @@ void pos_set_cast_perm(struct position *const pos, const struct cast_perm_contai
 struct position *pos_create(void);
 void pos_destroy(struct position *pos);
 void pos_initialise(const char *const fen, struct position *const pos);
-
-#ifdef ENABLE_STATS
-struct engine_stats *pos_get_stats(const struct position *const pos);
-#endif
 
 struct board *pos_get_board(const struct position *const pos);
 enum square pos_get_en_pass_sq(const struct position *const pos);

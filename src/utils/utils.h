@@ -32,37 +32,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
- * @brief A non-debug mode runtime assert.
- * 
- */
-#ifdef ENABLE_REQUIRE
-#define REQUIRE(cond, text)                                                                                            \
-    if (!(cond)) {                                                                                                     \
-        fprintf(stderr, "FATAL: Error condition\n");                                                                   \
-        fprintf(stderr, "\tFile     :    %s\n", __FILE__);                                                             \
-        fprintf(stderr, "\tLine     :    %s\n", __LINE__);                                                             \
-        fprintf(stderr, "\tFunction :    %d\n", __FUNCTION__);                                                         \
-        fprintf(stderr, "\tText     :    %s\n", text);                                                                 \
-        print_stacktrace();                                                                                            \
-        exit(EXIT_FAILURE);                                                                                            \
-    }
-#else
-#define REQUIRE(cond, text)
-#endif
-
-#define FATAL(text)                                                                                                    \
-    fprintf(stderr, "FATAL: Error condition\n");                                                                       \
-    fprintf(stderr, "\tFile     :    %s\n", __FILE__);                                                                 \
-    fprintf(stderr, "\tLine     :    %d\n", __LINE__);                                                                 \
-    fprintf(stderr, "\tFunction :    %s\n", __FUNCTION__);                                                             \
-    fprintf(stderr, "\tText     :    %s\n", text);                                                                     \
-    print_stacktrace();                                                                                                \
-    exit(EXIT_FAILURE);
-
-//void set_priority_and_affinity(void);
 void print_stacktrace(void);
 double get_time_of_day_in_secs(void);
 double get_elapsed_time_in_secs(double start_time);
 uint64_t round_down_to_nearest_power_2(uint64_t n);
 void prefetch(void *addr);
+
+/**
+ * @brief A non-debug mode runtime assert.
+ * 
+ */
+#define REQUIRE(cond, text)                                                                                            \
+    if (!(cond)) {                                                                                                     \
+        fprintf(stderr, "FATAL: Error condition\n");                                                                   \
+        fprintf(stderr, "\tFile     :    %s\n", __FILE__);                                                             \
+        fprintf(stderr, "\tLine     :    %d\n", __LINE__);                                                             \
+        fprintf(stderr, "\tFunction :    %s\n", __FUNCTION__);                                                         \
+        fprintf(stderr, "\tText     :    %s\n", text);                                                                 \
+        print_stacktrace();                                                                                            \
+        exit(EXIT_FAILURE);                                                                                            \
+    }

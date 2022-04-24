@@ -123,11 +123,11 @@ void test_move_list_move_highest_score_to_top_highest_already_at_top(void **stat
     const int32_t HIGH_SCORE = 1000;
 
     uint64_t highest_mv = move_encode_quiet(a2, a4);
-    highest_mv = move_set_score(highest_mv, HIGH_SCORE);
+    move_set_score(&highest_mv, HIGH_SCORE);
     mvl_add(&mvl, highest_mv);
 
     uint64_t mv = move_encode_quiet(b2, b4);
-    mv = move_set_score(mv, HIGH_SCORE - 1);
+    move_set_score(&mv, HIGH_SCORE - 1);
     mvl_add(&mvl, mv);
 
     mvl_move_highest_score_to_start_of_slice(&mvl, 0);
@@ -142,17 +142,17 @@ void test_move_list_move_highest_score_to_top_highest_is_moved_to_top(void **sta
     const int32_t HIGH_SCORE = 1000;
 
     uint64_t second_highest_mv = move_encode_quiet(c2, c4);
-    second_highest_mv = move_set_score(second_highest_mv, HIGH_SCORE - 1);
+    move_set_score(&second_highest_mv, HIGH_SCORE - 1);
     mvl_add(&mvl, second_highest_mv);
     uint64_t mv = move_encode_quiet(d2, d4);
-    mv = move_set_score(mv, HIGH_SCORE - 2);
+    move_set_score(&mv, HIGH_SCORE - 2);
     mvl_add(&mvl, mv);
     mv = move_encode_quiet(f2, f4);
-    mv = move_set_score(mv, HIGH_SCORE - 3);
+    move_set_score(&mv, HIGH_SCORE - 3);
     mvl_add(&mvl, mv);
 
     uint64_t highest_mv = move_encode_quiet(a2, a4);
-    highest_mv = move_set_score(highest_mv, HIGH_SCORE);
+    move_set_score(&highest_mv, HIGH_SCORE);
     mvl_add(&mvl, highest_mv);
 
     mvl_move_highest_score_to_start_of_slice(&mvl, 0);
@@ -171,7 +171,7 @@ void test_move_list_move_highest_score_to_top_only_1_move_in_list(void **state) 
     const int32_t HIGH_SCORE = 1000;
 
     uint64_t mv = move_encode_quiet(c2, c4);
-    mv = move_set_score(mv, HIGH_SCORE);
+    move_set_score(&mv, HIGH_SCORE);
     mvl_add(&mvl, mv);
 
     mvl_move_highest_score_to_start_of_slice(&mvl, 0);

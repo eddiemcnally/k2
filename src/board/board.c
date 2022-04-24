@@ -201,7 +201,8 @@ void brd_remove_piece(struct board *const brd, const enum piece pce, const enum 
     const uint32_t material = pce_get_value(pce);
 
     brd->material[col_off] -= material;
-    REQUIRE(brd->material[col_off] > 0, "Material can't be <= zero");
+
+    assert(brd->material[col_off] > 0);
 }
 
 /**
@@ -243,7 +244,7 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     // set/clear to/from squares in various bitboards
     bb_move_bit(&brd->piece_bitboards[pce_off], &brd->bb_colour[col_off], from_sq, to_sq);
 
-    REQUIRE(brd->pce_square[from_sq] == pce, "Unexpected piece on square");
+    assert(brd->pce_square[from_sq] == pce);
 
     brd->pce_square[from_sq] = NO_PIECE;
     brd->pce_square[to_sq] = pce;
@@ -363,6 +364,8 @@ uint64_t brd_get_black_bishop_queen_bb(const struct board *const brd) {
 bool validate_board(const struct board *const brd) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
     enum square sq;
 
     // conflate colour bitboards
@@ -411,6 +414,8 @@ bool validate_board(const struct board *const brd) {
     }
 
     assert(total_bit_count == num_bits_on_board);
+    assert(conflated_pce_bb ==
+           (brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE] | brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK]));
 
     assert(brd->init_flag == INIT_KEY);
 

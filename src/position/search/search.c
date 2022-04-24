@@ -64,13 +64,11 @@ void search_position(struct position *pos, struct search_data *search_info) {
 
     tt_create(TT_SIZE_IN_BYTES);
 
-    int32_t best_score = INT_MIN;
-
     for (uint8_t depth = 1; depth <= search_info->search_depth; depth++) {
 
         printf("Search depth=%d\n", depth);
 
-        best_score = alpha_beta_search(NEG_INFINITY, INFINITY, depth, pos, search_info);
+        alpha_beta_search(NEG_INFINITY, INFINITY, depth, pos, search_info);
 
         const struct pv_line line = get_pv_line(depth, pos);
 
@@ -174,16 +172,13 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
     uint64_t tt_move = {0};
     const bool found_in_tt = tt_probe_position(pos_hash, &tt_move);
     if (found_in_tt) {
-        bool mv_found = false;
         for (int i = 0; i < mv_list.move_count; i++) {
-            uint64_t new_mv = mv_list.move_list[i];
-            if (move_compare(tt_move, new_mv)) {
-                new_mv = move_set_score(new_mv, 2000000);
-                mv_found = true;
+            uint64_t *new_mv = &mv_list.move_list[i];
+            if (move_compare(tt_move, *new_mv)) {
+                move_set_score(new_mv, 2000000);
                 break;
             }
         }
-        REQUIRE(mv_found, "Found position, but can't find move");
     }
 
     //printf("AlphaBeta depth=%d, num moves generated=%d\n", depth, mv_list.move_count);
@@ -197,6 +192,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, uint8_t depth, str
 
         enum move_legality legality = pos_make_move(pos, mv);
         if (legality != LEGAL_MOVE) {
+            pos_take_move(pos);
             continue;
         }
 
@@ -288,17 +284,20 @@ static int32_t quiescence(struct position *pos, struct search_data *search, int3
 
         if (score > alpha) {
             if (score >= beta) {
+                tt_add(pos_get_hash(pos), best_move, search->search_depth, alpha, NODE_BETA);
+
                 return beta;
             }
 
             alpha = score;
+            tt_add(pos_get_hash(pos), best_move, search->search_depth, alpha, NODE_ALPHA);
+
             best_move = mv;
         }
     }
 
-    if (alpha != orig_alpha) {
-        // TODO
-        // tt_add(pos_get_hash(pos), best_move, search->search_depth);
+    if (orig_alpha != alpha) {
+        tt_add(pos_get_hash(pos), best_move, search->search_depth, alpha, NODE_EXACT);
     }
 
     return alpha;

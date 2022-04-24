@@ -22,7 +22,6 @@ set(POSN_DIR            ${K2_PROJECT_SOURCE_DIR}/position)
 set(EVAL_DIR            ${K2_PROJECT_SOURCE_DIR}/position/evaluation)
 set(MOVE_DIR            ${K2_PROJECT_SOURCE_DIR}/move)
 set(UTILS_DIR           ${K2_PROJECT_SOURCE_DIR}/utils)
-set(STATS_DIR           ${K2_PROJECT_SOURCE_DIR}/stats)
 set(PERFT_DIR           ${K2_PROJECT_SOURCE_DIR}/perft)
 set(SEARCH_DIR          ${K2_PROJECT_SOURCE_DIR}/position/search)
 set(ROOT_DIR            ${K2_PROJECT_SOURCE_DIR})
@@ -42,7 +41,6 @@ set (SOURCES
         ${POSN_DIR}/castle_perms.c
         ${POSN_DIR}/attack_checker.c
         ${EVAL_DIR}/basic_evaluator.c
-        ${STATS_DIR}/stats.c
         ${MOVE_DIR}/move.c
         ${MOVE_DIR}/move_list.c
         ${MOVE_DIR}/move_gen.c
@@ -63,7 +61,6 @@ set(INCLUDES
         ${POSN_DIR}
         ${EVAL_DIR}
         ${MOVE_DIR}
-        ${STATS_DIR}
         ${UTILS_DIR}
         ${PERFT_DIR}
         ${SEARCH_DIR}
@@ -120,30 +117,7 @@ set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
 set(CMAKE_CONFIGURATION_TYPES "Debug" CACHE STRING "" FORCE)
 
 
-
-#########################################
-#
-# Compiler flags to enable misc features
-#
-#
-# uncomment these to enable Engine stats
-# set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  -D ENABLE_STATS ")
-# set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  -D ENABLE_STATS ")
-#
-#
-# uncomment to enable release-mode asserts
-# set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}  -D ENABLE_REQUIRE ")
-#
-#
-#
-#########################################
-
-
-
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  ${ENABLE_STATS} -std=c17 -fsanitize=undefined ${CC_WARNINGS} ")
-
-
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS}  ${ENABLE_STATS} \
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} \
 -DNDEBUG \
 -flto=full \
 -O3 \

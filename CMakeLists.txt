@@ -9,6 +9,7 @@ cmake_minimum_required(VERSION 3.0)
 message("*** Setting up K2 build environment ***")
 
 
+
 project(k2_chess_engine)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)

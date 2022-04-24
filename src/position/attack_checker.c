@@ -37,7 +37,6 @@
 #include "board.h"
 #include "occupancy_mask.h"
 #include "square.h"
-#include "stats.h"
 #include "utils.h"
 #include <assert.h>
 #include <stdbool.h>
@@ -49,12 +48,6 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
                                                 const enum square sq);
 static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
-
-#ifdef ENABLE_STATS
-#define REG_ATTACK_TYPE(pos, att_type) stats_reg_illegal_move_attacking_pce(pos_get_stats(pos), att_type);
-#else
-#define REG_ATTACK_TYPE(pos, att_type)
-#endif
 
 bool att_chk_is_sq_attacked(const struct position *const pos, const enum square sq, const enum colour attacking_side) {
 
@@ -80,34 +73,29 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
     // conflate rook and queen
     const uint64_t rook_queen_bb = brd_get_white_rook_queen_bb(brd);
     if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
         return true;
     }
 
     // conflate bishop and queen
     const uint64_t bishop_queen_bb = brd_get_white_bishop_queen_bb(brd);
     if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
         return true;
     }
 
     const uint64_t knight_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
     if (is_knight_attacking(knight_bb, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_KNIGHT);
         return true;
     }
 
     const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
     const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);
     if ((attacking_bb & wp_bb) != 0) {
-        REG_ATTACK_TYPE(pos, ATT_PAWN);
         return true;
     }
 
     const enum square king_sq = brd_get_white_king_square(brd);
     const uint64_t occ_mask = occ_mask_get_king(king_sq);
     if (bb_is_set(occ_mask, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_KING);
         return true;
     }
 
@@ -121,34 +109,29 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
     // conflate rook and queen
     const uint64_t rook_queen_bb = brd_get_black_rook_queen_bb(brd);
     if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_VERT_HORIZ);
         return true;
     }
 
     // conflate bishop and queen
     const uint64_t bishop_queen_bb = brd_get_black_bishop_queen_bb(brd);
     if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_DIAGONAL);
         return true;
     }
 
     const uint64_t knight_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
     if (is_knight_attacking(knight_bb, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_KNIGHT);
         return true;
     }
 
     const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
     const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);
     if ((attacking_bb & bp_bb) != 0) {
-        REG_ATTACK_TYPE(pos, ATT_PAWN);
         return true;
     }
 
     const enum square king_sq = brd_get_black_king_square(brd);
     const uint64_t occ_mask = occ_mask_get_king(king_sq);
     if (bb_is_set(occ_mask, sq)) {
-        REG_ATTACK_TYPE(pos, ATT_KING);
         return true;
     }
 
@@ -212,5 +195,3 @@ static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t att
     }
     return false;
 }
-
-

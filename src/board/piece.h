@@ -73,7 +73,6 @@ enum piece {
 #define NUM_PIECE_TYPES (12)
 
 // clang-format on
-void piece_init(void);
 
 bool pce_is_white(const enum piece pce);
 bool pce_is_black(const enum piece pce);

@@ -109,7 +109,7 @@ bool move_is_king_castle(const uint64_t mv);
 bool move_is_queen_castle(const uint64_t mv);
 char *move_print(const uint64_t mv);
 
-uint64_t move_set_score(const uint64_t mv, const int32_t score);
+void move_set_score(uint64_t *mv, const int32_t score);
 int32_t move_get_score(const uint64_t mv);
 
 bool validate_move(const uint64_t mv);

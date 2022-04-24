@@ -54,8 +54,6 @@ enum piece_values {
 
 #define COL_MASK (0x01)
 
-static uint32_t piece_values[NUM_PIECE_TYPES] = {0};
-
 // clang-format on
 //
 // ==================================================================
@@ -63,30 +61,6 @@ static uint32_t piece_values[NUM_PIECE_TYPES] = {0};
 // public functions
 //
 // ==================================================================
-
-/**
- * @brief Initialises any state needed for piece management
- * 
- */
-void piece_init(void) {
-    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_PAWN)] = PCE_VAL_PAWN;
-    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_PAWN)] = PCE_VAL_PAWN;
-
-    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_BISHOP)] = PCE_VAL_BISHOP;
-    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_BISHOP)] = PCE_VAL_BISHOP;
-
-    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_KNIGHT)] = PCE_VAL_KNIGHT;
-    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_KNIGHT)] = PCE_VAL_KNIGHT;
-
-    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_ROOK)] = PCE_VAL_ROOK;
-    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_ROOK)] = PCE_VAL_ROOK;
-
-    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_QUEEN)] = PCE_VAL_QUEEN;
-    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_QUEEN)] = PCE_VAL_QUEEN;
-
-    piece_values[PIECE_AS_ARRAY_OFFSET(WHITE_KING)] = PCE_VAL_KING;
-    piece_values[PIECE_AS_ARRAY_OFFSET(BLACK_KING)] = PCE_VAL_KING;
-}
 
 /**
  * @brief       Tests if the given piece is WHITE
@@ -145,8 +119,30 @@ enum colour pce_get_colour(const enum piece pce) {
 uint32_t pce_get_value(const enum piece pce) {
     assert(validate_piece(pce));
 
-    uint32_t offset = PIECE_AS_ARRAY_OFFSET(pce);
-    return piece_values[offset];
+    switch (pce) {
+    case WHITE_PAWN:
+    case BLACK_PAWN:
+        return PCE_VAL_PAWN;
+    case WHITE_BISHOP:
+    case BLACK_BISHOP:
+        return PCE_VAL_BISHOP;
+    case WHITE_KNIGHT:
+    case BLACK_KNIGHT:
+        return PCE_VAL_KNIGHT;
+    case WHITE_ROOK:
+    case BLACK_ROOK:
+        return PCE_VAL_ROOK;
+    case WHITE_QUEEN:
+    case BLACK_QUEEN:
+        return PCE_VAL_QUEEN;
+    case WHITE_KING:
+    case BLACK_KING:
+        return PCE_VAL_KING;
+    case NO_PIECE:
+        REQUIRE(false, "Invalid use of NO_PIECE");
+    default:
+        REQUIRE(false, "Invalid piece");
+    }
 }
 
 bool pce_is_king(const enum piece pce) {
@@ -232,7 +228,7 @@ char pce_get_label(const enum piece pce) {
         return 'k';
     case NO_PIECE:
     default:
-        FATAL("Invalid Piece");
+        REQUIRE(false, "Invalid Piece");
     }
 }
 
@@ -277,7 +273,7 @@ enum piece pce_get_from_label(const char c) {
         return BLACK_KING;
     case NO_PIECE:
     default:
-        FATAL("Invalid Piece label char");
+        REQUIRE(false, "Invalid Piece label char");
     }
 
 #pragma GCC diagnostic pop

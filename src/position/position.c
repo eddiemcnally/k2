@@ -40,7 +40,6 @@
 #include "hashkeys.h"
 #include "move.h"
 #include "occupancy_mask.h"
-#include "stats.h"
 #include "utils.h"
 #include <assert.h>
 
@@ -81,17 +80,10 @@ struct position_history {
 // represents the current game position
 struct position {
     struct game_state state;
-
     // current board representation
     struct board *brd;
-
     // position history
     struct position_history history;
-
-#ifdef ENABLE_STATS
-    struct engine_stats *stats;
-#endif
-
     uint16_t struct_init_key;
 };
 
@@ -155,14 +147,8 @@ struct position *pos_create() {
     struct board *brd = brd_allocate();
     retval->brd = brd;
 
-#ifdef ENABLE_STATS
-    struct engine_stats *stats = stats_create();
-    retval->stats = stats;
-#endif
-
     init_key_mgmt();
     occ_mask_init();
-    piece_init();
 
     return retval;
 }
@@ -190,11 +176,6 @@ void pos_destroy(struct position *const pos) {
 
     brd_deallocate(pos->brd);
 
-#ifdef ENABLE_STATS
-    stats_display(pos->stats);
-    stats_destroy(pos->stats);
-#endif
-
     memset(pos, 0, sizeof(struct position));
     free(pos);
 }
@@ -213,12 +194,6 @@ struct board *pos_get_board(const struct position *const pos) {
 uint16_t pos_get_ply(const struct position *const pos) {
     return pos->state.ply;
 }
-
-#ifdef ENABLE_STATS
-struct engine_stats *pos_get_stats(const struct position *const pos) {
-    return pos->stats;
-}
-#endif
 
 /**
  * @brief       Gets the side to move from the position struct
@@ -736,7 +711,7 @@ static void position_hist_push(struct position *const pos, const uint64_t mv, co
     assert(validate_move(mv));
     assert(validate_piece(pce_moved));
     assert(validate_piece(captured_piece));
-    REQUIRE(pos->history.num_used_slots < MAX_GAME_MOVES, "Position history limit reached");
+    assert(pos->history.num_used_slots < MAX_GAME_MOVES);
 
     struct history_item *const free_slot = &pos->history.items[pos->history.num_used_slots];
 
@@ -756,7 +731,7 @@ static void position_hist_pop(struct position *const pos, uint64_t *const mv, en
     assert(pce_moved != NULL);
     assert(captured_piece != NULL);
 
-    REQUIRE(pos->history.num_used_slots > 0, "Attempt to pop history past start of list");
+    assert(pos->history.num_used_slots > 0);
 
     pos->history.num_used_slots--;
     struct history_item *const free_slot = &pos->history.items[pos->history.num_used_slots];
@@ -863,21 +838,11 @@ static void pos_move_piece(struct position *const pos, const enum piece pce, con
 
 static void pos_remove_piece(struct position *const pos, const enum piece pce, const enum square sq) {
     brd_remove_piece(pos->brd, pce, sq);
-
-#ifdef ENABLE_STATS
-    stats_reg_board_remove_piece(pos->stats);
-#endif
-
     pos->state.hashkey = hash_piece_update(pce, sq, pos->state.hashkey);
 }
 
 static void pos_add_piece(struct position *const pos, const enum piece pce, const enum square sq) {
     brd_add_piece(pos->brd, pce, sq);
-
-#ifdef ENABLE_STATS
-    stats_reg_board_add_piece(pos->stats);
-#endif
-
     pos->state.hashkey = hash_piece_update(pce, sq, pos->state.hashkey);
 }
 
@@ -943,25 +908,21 @@ static void update_castle_perms(struct position *const pos, const uint64_t mv, c
         switch (to_sq) {
         case a8:
             if (cast_perm_has_black_queenside_permissions(cpc)) {
-                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), a8) == BLACK_ROOK, "unexpected piece on a8");
                 pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
             }
             break;
         case h8:
             if (cast_perm_has_black_kingside_permissions(cpc)) {
-                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), h8) == BLACK_ROOK, "unexpected piece on h8");
                 pos_update_castle_perm(pos, CASTLE_PERM_BK, false);
             }
             break;
         case a1:
             if (cast_perm_has_white_queenside_permissions(cpc)) {
-                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), a1) == WHITE_ROOK, "unexpected piece on a1");
                 pos_update_castle_perm(pos, CASTLE_PERM_WQ, false);
             }
             break;
         case h1:
             if (cast_perm_has_white_kingside_permissions(cpc)) {
-                REQUIRE(brd_get_piece_on_square(pos_get_board(pos), h1) == WHITE_ROOK, "unexpected piece on h1");
                 pos_update_castle_perm(pos, CASTLE_PERM_WK, false);
             }
             break;
@@ -999,7 +960,6 @@ static void update_castle_perms(struct position *const pos, const uint64_t mv, c
             }
             break;
         default:
-            REQUIRE(false, "invalid white rook castle square");
             break;
         }
         break;
@@ -1016,7 +976,6 @@ static void update_castle_perms(struct position *const pos, const uint64_t mv, c
             }
             break;
         default:
-            REQUIRE(false, "invalid black rook castle square");
             break;
         }
         break;

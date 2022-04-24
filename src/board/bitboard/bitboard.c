@@ -47,7 +47,8 @@ static const uint64_t EMPTY_BITBOARD = 0;
  */
 void bb_set_square(uint64_t *restrict const bb, const enum square sq) {
     assert(validate_square(sq));
-    REQUIRE(((*bb >> sq) & 0x01) == 0, "bit already set");
+    // should be clear
+    assert(((*bb >> sq) & 0x01) == 0);
 
     *bb |= ((uint64_t)0x01 << sq);
 }
@@ -72,8 +73,7 @@ uint64_t bb_get_square_as_bb(const enum square sq) {
  */
 void bb_clear_square(uint64_t *restrict const bb, const enum square sq) {
     assert(validate_square(sq));
-
-    REQUIRE(((*bb >> sq) & 0x01) == 1, "bit already clear");
+    assert(((*bb >> sq) & 0x01) == 1);
 
     *bb &= (~((uint64_t)0x01 << sq));
 }

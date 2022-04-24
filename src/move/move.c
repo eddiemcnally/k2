@@ -485,9 +485,9 @@ bool move_compare(const uint64_t mv1, const uint64_t mv2) {
  * @param mv The move
  * @param score The score value to set
  */
-uint64_t move_set_score(const uint64_t mv, const int32_t score) {
+void move_set_score(uint64_t *mv, const int32_t score) {
     const uint64_t lcl_score = (uint64_t)score;
-    return mv | (uint64_t)(lcl_score << (uint64_t)MV_SHFT_SCORE);
+    *mv = *mv | (uint64_t)(lcl_score << (uint64_t)MV_SHFT_SCORE);
 }
 
 /**

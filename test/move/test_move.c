@@ -280,7 +280,7 @@ void test_move_set_get_score(void **state) {
 
         const int32_t score = scores[i];
 
-        mv = move_set_score(mv, score);
+        move_set_score(&mv, score);
         const int32_t retr_score = move_get_score(mv);
 
         assert_true(retr_score == score);
