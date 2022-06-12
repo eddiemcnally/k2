@@ -89,8 +89,6 @@ int main(void) {
         TEST(test_move_list_move_highest_score_to_top_only_1_move_in_list),
 
         // Pieces
-        TEST(test_piece_is_white),
-        TEST(test_piece_is_black),
         TEST(test_piece_get_colour_white_pieces),
         TEST(test_piece_get_colour_black_pieces),
         TEST(test_piece_swap_side),
@@ -98,12 +96,6 @@ int main(void) {
         TEST(test_piece_get_piece_from_label),
         TEST(test_piece_get_array_idx),
         TEST(test_piece_get_piece_label),
-        TEST(test_piece_is_king),
-        TEST(test_piece_is_pawn),
-        TEST(test_piece_is_rook),
-        TEST(test_piece_is_queen),
-        TEST(test_piece_is_bishop),
-        TEST(test_piece_is_knight),
 
         // Position
         TEST(test_position_get_set_castle_permissions),

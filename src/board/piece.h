@@ -40,56 +40,51 @@ enum colour {
 
 #define NUM_COLOURS (2)
 
-
-#define COLOUR_AS_ARRAY_OFFSET(colour)  ((uint8_t)colour)
+#define COLOUR_AS_ARRAY_OFFSET(colour)  ((uint8_t)(colour))
 #define COLOUR_AS_ARRAY_OFFSET_WHITE    (COLOUR_AS_ARRAY_OFFSET(WHITE))
 #define COLOUR_AS_ARRAY_OFFSET_BLACK    (COLOUR_AS_ARRAY_OFFSET(BLACK))
 
-#define PIECE_AS_ARRAY_OFFSET(pce)      ((uint8_t)pce)
-
-// white is even, black is odd
-enum piece {
-    WHITE_PAWN,
-    BLACK_PAWN,
-
-    WHITE_BISHOP,
-    BLACK_BISHOP,
-
-    WHITE_KNIGHT,
-    BLACK_KNIGHT,
-
-    WHITE_ROOK,
-    BLACK_ROOK,
-
-    WHITE_QUEEN,
-    BLACK_QUEEN,
-
-    WHITE_KING, 
-    BLACK_KING,
-
-    NO_PIECE
+enum piece_role {
+    PAWN,
+    BISHOP,
+    KNIGHT,
+    ROOK,
+    QUEEN,
+    KING,
 };
 
-#define NUM_PIECE_TYPES (12)
+struct piece;
+
+#define NUM_PIECES (12)
 
 // clang-format on
 
-bool pce_is_white(const enum piece pce);
-bool pce_is_black(const enum piece pce);
-
 enum colour pce_swap_side(const enum colour side);
-enum colour pce_get_colour(const enum piece pce);
-uint32_t pce_get_value(const enum piece pce);
-char pce_get_label(const enum piece pce);
-enum piece pce_get_from_label(const char c);
-bool validate_piece(const enum piece pce);
-bool validate_colour(const enum colour col);
-bool validate_label(const char c);
-void pce_get_all_pieces(enum piece pce_array[NUM_PIECE_TYPES]);
 
-bool pce_is_king(const enum piece pce);
-bool pce_is_rook(const enum piece pce);
-bool pce_is_pawn(const enum piece pce);
-bool pce_is_bishop(const enum piece pce);
-bool pce_is_knight(const enum piece pce);
-bool pce_is_queen(const enum piece pce);
+uint32_t pce_get_value(const struct piece *const piece);
+enum colour pce_get_colour(const struct piece *const piece);
+enum piece_role pce_get_role(const struct piece *const piece);
+uint8_t pce_get_array_offset(const struct piece *const piece);
+
+const struct piece *pce_get_from_label(const char c);
+const struct piece *pce_get(const enum piece_role role, const enum colour colour);
+
+const struct piece *pce_get_white_pawn(void);
+const struct piece *pce_get_black_pawn(void);
+const struct piece *pce_get_white_bishop(void);
+const struct piece *pce_get_black_bishop(void);
+const struct piece *pce_get_white_knight(void);
+const struct piece *pce_get_black_knight(void);
+const struct piece *pce_get_white_rook(void);
+const struct piece *pce_get_black_rook(void);
+const struct piece *pce_get_white_queen(void);
+const struct piece *pce_get_black_queen(void);
+const struct piece *pce_get_white_king(void);
+const struct piece *pce_get_black_king(void);
+
+char pce_get_label(const struct piece *const piece);
+
+bool validate_piece(const struct piece *const piece);
+bool validate_colour(const enum colour col);
+bool validate_piece_role(const enum piece_role role);
+bool validate_label(const char label);

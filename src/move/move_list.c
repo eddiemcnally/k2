@@ -93,8 +93,7 @@ uint64_t mvl_get_move_at_offset(const struct move_list *const mvl, uint16_t offs
 void mvl_add(struct move_list *const mvl, const uint64_t mv) {
     assert(validate_move_list(mvl));
     assert(validate_move(mv));
-
-    REQUIRE(mvl->move_count < MOVE_LIST_MAX_LEN, "Move list : attempt to add past end of array");
+    assert(mvl->move_count < MOVE_LIST_MAX_LEN);
 
     mvl->move_list[mvl->move_count] = mv;
     mvl->move_count++;

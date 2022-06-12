@@ -32,8 +32,6 @@
 #include <stdint.h>
 
 void test_piece_create(void **state);
-void test_piece_is_white(void **state);
-void test_piece_is_black(void **state);
 void test_piece_get_colour_white_pieces(void **state);
 void test_piece_get_colour_black_pieces(void **state);
 void test_piece_swap_side(void **state);
@@ -42,9 +40,3 @@ void test_piece_get_piece_from_label(void **state);
 void test_piece_get_array_idx(void **state);
 void test_pce_get_piece(void **state);
 void test_piece_get_piece_label(void **state);
-void test_piece_is_king(void **state);
-void test_piece_is_pawn(void **state);
-void test_piece_is_bishop(void **state);
-void test_piece_is_knight(void **state);
-void test_piece_is_queen(void **state);
-void test_piece_is_rook(void **state);

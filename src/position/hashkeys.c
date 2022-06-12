@@ -39,7 +39,7 @@
 #include "utils.h"
 #include <assert.h>
 
-static uint64_t piece_keys[NUM_PIECE_TYPES][NUM_SQUARES] = {{0}, {0}};
+static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES] = {{0}, {0}};
 static uint64_t side_key = 0;
 static uint64_t castle_keys[NUM_CASTLE_PERMS] = {0};
 static uint64_t en_passant_sq_keys[NUM_SQUARES] = {0};
@@ -53,7 +53,7 @@ uint64_t init_key_mgmt(void) {
 
     uint64_t hashkey = 0;
 
-    for (int num_pces = 0; num_pces < NUM_PIECE_TYPES; num_pces++) {
+    for (int num_pces = 0; num_pces < NUM_PIECES; num_pces++) {
         for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
             const uint64_t rnd = genrand64_int64();
             piece_keys[num_pces][num_sq] = rnd;
@@ -79,42 +79,24 @@ uint64_t init_key_mgmt(void) {
     return hashkey;
 }
 
-/**
- * @brief               Flips the hash based on the piece and square
- * @param pce           The piece 
- * @param sq            The square
- * @param key_to_modify The hashkey to modify
- * @return              The updated hash key
- */
-uint64_t hash_piece_update(const enum piece pce, const enum square sq, const uint64_t key_to_modify) {
+uint64_t hash_piece_update(const struct piece *const pce, const enum square sq, const uint64_t key_to_modify) {
     assert(validate_piece(pce));
     assert(validate_square(sq));
 
-    const int pce_off = PIECE_AS_ARRAY_OFFSET(pce);
-    return key_to_modify ^ piece_keys[pce_off][sq];
+    return key_to_modify ^ piece_keys[pce_get_array_offset(pce)][sq];
 }
 
 bool hash_compare(const uint64_t hashkey1, const uint64_t hashkey2) {
     return hashkey1 == hashkey2;
 }
 
-/**
- * @brief               Flips the hash based on the piece and from- and to-square
- * @param pce           The piece 
- * @param from_sq       The from square
- * @param to_sq         The to square
- * @param key_to_modify The hashkey to modify
- * @return              The updated hash key
- */
-uint64_t hash_piece_update_move(const enum piece pce, const enum square from_sq, const enum square to_sq,
+uint64_t hash_piece_update_move(const struct piece *const pce, const enum square from_sq, const enum square to_sq,
                                 const uint64_t key_to_modify) {
     assert(validate_piece(pce));
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    const int pce_off = PIECE_AS_ARRAY_OFFSET(pce);
-
-    const uint64_t *pce_array = piece_keys[pce_off];
+    const uint64_t *pce_array = piece_keys[pce_get_array_offset(pce)];
     const uint64_t from_hash = key_to_modify ^ *(pce_array + from_sq);
     const uint64_t to_hash = from_hash ^ *(pce_array + to_sq);
 

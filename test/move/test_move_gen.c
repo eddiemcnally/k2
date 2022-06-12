@@ -37,7 +37,7 @@
 #include <cmocka.h>
 
 static void contains_promote(const struct move_list *mvl, const enum square from_sq, const enum square to_sq,
-                             const enum piece pce, const bool is_capture);
+                             const struct piece *pce, const bool is_capture);
 static bool contains_all_4_promotion_moves(const enum square from_sq, const enum square to_sq,
                                            const struct move_list *mvl, const bool is_capture);
 
@@ -55,27 +55,24 @@ static bool contains_all_4_promotion_moves(const enum square from_sq, const enum
     })
 
 static void contains_promote(const struct move_list *mvl, const enum square from_sq, const enum square to_sq,
-                             const enum piece pce, const bool is_capture) {
+                             const struct piece *pce, const bool is_capture) {
     uint64_t mv = {0};
+    const enum piece_role role = pce_get_role(pce);
     if (is_capture) {
-        switch (pce) {
-        case WHITE_QUEEN:
-        case BLACK_QUEEN:
+        switch (role) {
+        case QUEEN:
             mv = move_encode_promote_queen_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case WHITE_KNIGHT:
-        case BLACK_KNIGHT:
+        case KNIGHT:
             mv = move_encode_promote_knight_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case WHITE_ROOK:
-        case BLACK_ROOK:
+        case ROOK:
             mv = move_encode_promote_rook_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case WHITE_BISHOP:
-        case BLACK_BISHOP:
+        case BISHOP:
             mv = move_encode_promote_bishop_with_capture(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
@@ -84,24 +81,20 @@ static void contains_promote(const struct move_list *mvl, const enum square from
             return;
         }
     } else {
-        switch (pce) {
-        case WHITE_QUEEN:
-        case BLACK_QUEEN:
+        switch (role) {
+        case QUEEN:
             mv = move_encode_promote_queen(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case WHITE_KNIGHT:
-        case BLACK_KNIGHT:
+        case KNIGHT:
             mv = move_encode_promote_knight(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case WHITE_ROOK:
-        case BLACK_ROOK:
+        case ROOK:
             mv = move_encode_promote_rook(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
-        case WHITE_BISHOP:
-        case BLACK_BISHOP:
+        case BISHOP:
             mv = move_encode_promote_bishop(from_sq, to_sq);
             assert_true(mvl_contains_move(mvl, mv));
             return;
@@ -1136,10 +1129,10 @@ void test_move_white_capture_only_moves(void **state) {
     CONTAINS_CAPTURE(mvl, f2, g3);
     CONTAINS_CAPTURE(mvl, g4, f5);
 
-    contains_promote(&mvl, f7, g8, WHITE_QUEEN, true);
-    contains_promote(&mvl, f7, g8, WHITE_ROOK, true);
-    contains_promote(&mvl, f7, g8, WHITE_BISHOP, true);
-    contains_promote(&mvl, f7, g8, WHITE_KNIGHT, true);
+    contains_promote(&mvl, f7, g8, pce_get_white_queen(), true);
+    contains_promote(&mvl, f7, g8, pce_get_white_rook(), true);
+    contains_promote(&mvl, f7, g8, pce_get_white_bishop(), true);
+    contains_promote(&mvl, f7, g8, pce_get_white_knight(), true);
 }
 
 void test_move_black_capture_only_moves(void **state) {
@@ -1165,8 +1158,8 @@ void test_move_black_capture_only_moves(void **state) {
     CONTAINS_CAPTURE(mvl, b4, c3);
     CONTAINS_CAPTURE(mvl, f5, g4);
 
-    contains_promote(&mvl, g2, f1, BLACK_QUEEN, true);
-    contains_promote(&mvl, g2, f1, BLACK_ROOK, true);
-    contains_promote(&mvl, g2, f1, BLACK_BISHOP, true);
-    contains_promote(&mvl, g2, f1, BLACK_KNIGHT, true);
+    contains_promote(&mvl, g2, f1, pce_get_black_queen(), true);
+    contains_promote(&mvl, g2, f1, pce_get_black_rook(), true);
+    contains_promote(&mvl, g2, f1, pce_get_black_bishop(), true);
+    contains_promote(&mvl, g2, f1, pce_get_black_knight(), true);
 }

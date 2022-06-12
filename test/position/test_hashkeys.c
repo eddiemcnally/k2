@@ -30,6 +30,9 @@
 #include "hashkeys.h"
 #include <cmocka.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types-discards-qualifiers"
+
 void test_hashkeys_init_to_non_zero_value(void **state) {
 
     init_key_mgmt();
@@ -40,16 +43,19 @@ void test_hashkeys_init_to_non_zero_value(void **state) {
 
 void test_hashkeys_all_pieces_all_squares_before_after_same(void **state) {
 
-    enum piece pce_array[NUM_PIECE_TYPES];
-    pce_get_all_pieces(pce_array);
+    const struct piece *all_pieces[] = {
+        pce_get_white_pawn(),   pce_get_white_bishop(), pce_get_white_knight(), pce_get_white_rook(),
+        pce_get_white_queen(),  pce_get_white_king(),   pce_get_black_pawn(),   pce_get_black_bishop(),
+        pce_get_black_knight(), pce_get_black_rook(),   pce_get_black_queen(),  pce_get_black_king(),
+    };
 
-    for (int p = 0; p < NUM_PIECE_TYPES; p++) {
-        enum piece pce = pce_array[p];
+    for (int p = 0; p < NUM_PIECES; p++) {
+        const struct piece *pce = all_pieces[p];
 
         for (enum square sq = a1; sq < h8; sq++) {
             // hash before
             uint64_t before_hash = init_key_mgmt();
-            ;
+
             assert_true(before_hash != 0);
 
             // flip the hash for piece/square
@@ -121,3 +127,5 @@ void test_hashkeys_all_en_passant_squares_before_after_same(void **state) {
         assert_true(before_hash == after_second_flip_hash);
     }
 }
+
+#pragma GCC diagnostic pop

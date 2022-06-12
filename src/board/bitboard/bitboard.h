@@ -37,8 +37,7 @@ uint64_t bb_get_sq_mask(const enum square sq);
 void bb_set_square(uint64_t *restrict const bb, const enum square sq);
 uint64_t bb_get_square_as_bb(const enum square sq);
 void bb_clear_square(uint64_t *restrict const bb, const enum square sq);
-void bb_move_bit(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square from_sq,
-                 const enum square to_sq);
+void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq, const enum square to_sq);
 bool bb_is_set(const uint64_t bb, const enum square sq);
 bool bb_is_clear(const uint64_t bb, const enum square sq);
 uint64_t bb_reverse(uint64_t bb);

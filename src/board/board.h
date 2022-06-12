@@ -44,18 +44,20 @@ struct board;
 void brd_deallocate(struct board *const brd);
 bool validate_board(const struct board *const brd);
 bool brd_is_sq_occupied(const struct board *const brd, const enum square sq);
-void brd_add_piece(struct board *const brd, const enum piece pce, const enum square sq);
 uint64_t brd_get_board_bb(const struct board *const brd);
-uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce);
+uint64_t brd_get_piece_bb(const struct board *const brd, const struct piece *const pce);
 uint64_t brd_get_white_rook_queen_bb(const struct board *const brd);
 uint64_t brd_get_black_rook_queen_bb(const struct board *const brd);
 uint64_t brd_get_white_bishop_queen_bb(const struct board *const brd);
 uint64_t brd_get_black_bishop_queen_bb(const struct board *const brd);
 
-void brd_remove_piece(struct board *const brd, const enum piece pce, const enum square sq);
-void brd_remove_from_square(struct board *const brd, const enum square sq);
-void brd_move_piece(struct board *const brd, const enum piece pce, const enum square from_sq, const enum square to_sq);
+enum colour brd_get_colour_on_sq(const struct board *const brd, const enum square sq);
 
+void brd_add_piece(struct board *const brd, const struct piece *const pce, const enum square sq);
+void brd_remove_piece(struct board *const brd, const struct piece *const pce, const enum square sq);
+void brd_remove_from_square(struct board *const brd, const enum square sq);
+void brd_move_piece(struct board *const brd, const struct piece *const pce, const enum square from_sq,
+                    const enum square to_sq);
 uint64_t brd_get_black_bb(const struct board *const brd);
 uint64_t brd_get_white_bb(const struct board *const brd);
 
@@ -64,6 +66,6 @@ void brd_print(const struct board *const brd);
 
 enum square brd_get_white_king_square(const struct board *const brd);
 enum square brd_get_black_king_square(const struct board *const brd);
-enum piece brd_get_piece_on_square(const struct board *const brd, const enum square sq);
+const struct piece *brd_get_piece_on_square(const struct board *const brd, const enum square sq);
 struct material brd_get_material(const struct board *const brd);
 struct board *brd_allocate(void);

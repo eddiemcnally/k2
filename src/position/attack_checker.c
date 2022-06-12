@@ -49,6 +49,15 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
 static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
 static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
 
+/**
+ * @brief Tests if a the given square is being attacked by the given colour
+ * @details For a given position, tests if the given square is attacked by any piece of the given colour.
+ * 
+ * @param pos The position
+ * @param sq The square to test
+ * @param attacking_side The attacking colour
+ * @return True if attacked, false otherwise
+ */
 bool att_chk_is_sq_attacked(const struct position *const pos, const enum square sq, const enum colour attacking_side) {
 
     assert(validate_position(pos));
@@ -82,12 +91,12 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
         return true;
     }
 
-    const uint64_t knight_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
+    const uint64_t knight_bb = brd_get_piece_bb(brd, pce_get_white_knight());
     if (is_knight_attacking(knight_bb, sq)) {
         return true;
     }
 
-    const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
+    const uint64_t wp_bb = brd_get_piece_bb(brd, pce_get_white_pawn());
     const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);
     if ((attacking_bb & wp_bb) != 0) {
         return true;
@@ -118,12 +127,12 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
         return true;
     }
 
-    const uint64_t knight_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
+    const uint64_t knight_bb = brd_get_piece_bb(brd, pce_get_black_knight());
     if (is_knight_attacking(knight_bb, sq)) {
         return true;
     }
 
-    const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
+    const uint64_t bp_bb = brd_get_piece_bb(brd, pce_get_black_pawn());
     const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);
     if ((attacking_bb & bp_bb) != 0) {
         return true;

@@ -157,52 +157,65 @@ int32_t evaluate_position_basic(const struct board * const brd, const enum colou
     uint64_t pce_bb = brd_get_board_bb(brd);
     while (pce_bb != 0) {
         const enum square sq = bb_pop_1st_bit_and_clear(&pce_bb);
-        const enum piece pce = brd_get_piece_on_square(brd, sq);
+        const struct piece* pce = brd_get_piece_on_square(brd, sq);
+        const enum piece_role role = pce_get_role(pce);
 
-        switch (pce){
-            case WHITE_PAWN:
-                score += PAWN_SQ_VALUE[sq];
-                break;
-            case WHITE_BISHOP:
-                score += BISHOP_SQ_VALUE[sq];
-                break;
-            case WHITE_KNIGHT:
-                score += KNIGHT_SQ_VALUE[sq];
-                break;
-            case WHITE_ROOK:
-                score += ROOK_SQ_VALUE[sq];
-                break;
-            case WHITE_QUEEN:
-                score += QUEEN_SQ_VALUE[sq];
-                break;
-            case WHITE_KING:
-                score += KING_SQ_VALUE[sq];
-                break;
-            // NOTE: black is negative
-            case BLACK_PAWN:
-                score -= PAWN_SQ_VALUE[63 - sq];
-                break;
-            case BLACK_BISHOP:
-                score -= BISHOP_SQ_VALUE[63 - sq];
-                break;
-            case BLACK_KNIGHT:
-                score -= KNIGHT_SQ_VALUE[63 - sq];
-                break;
-            case BLACK_ROOK:
-                score -= ROOK_SQ_VALUE[63 - sq];
-                break;
-            case BLACK_QUEEN:
-                score -= QUEEN_SQ_VALUE[63 - sq];
-                break;
-            case BLACK_KING:
-                score -= KING_SQ_VALUE[63 - sq];
-                break;
-            case NO_PIECE:
-                REQUIRE(false, "Invalid NO_PIECE");
-                break;               
+        switch(pce_get_colour(pce)){
+            case WHITE:
+            {
+                switch(role){
+                case PAWN:
+                    score += PAWN_SQ_VALUE[sq];
+                    break;
+                case BISHOP:
+                    score += BISHOP_SQ_VALUE[sq];
+                    break;
+                case KNIGHT:
+                    score += KNIGHT_SQ_VALUE[sq];
+                    break;
+                case ROOK:
+                    score += ROOK_SQ_VALUE[sq];
+                    break;
+                case QUEEN:
+                    score += QUEEN_SQ_VALUE[sq];
+                    break;
+                case KING:
+                    score += KING_SQ_VALUE[sq];
+                    break;
+                default:
+                    REQUIRE(false, "Invalid piece");
+                }
+            }
+            break;
+            case BLACK:
+            {
+                switch(role){
+                   // NOTE: black is negative
+                case PAWN:
+                    score -= PAWN_SQ_VALUE[63 - sq];
+                    break;
+                case BISHOP:
+                    score -= BISHOP_SQ_VALUE[63 - sq];
+                    break;
+                case KNIGHT:
+                    score -= KNIGHT_SQ_VALUE[63 - sq];
+                    break;
+                case ROOK:
+                    score -= ROOK_SQ_VALUE[63 - sq];
+                    break;
+                case QUEEN:
+                    score -= QUEEN_SQ_VALUE[63 - sq];
+                    break;
+                case KING:
+                    score -= KING_SQ_VALUE[63 - sq];
+                    break; 
+                default:
+                    REQUIRE(false, "Invalid piece");
+                }
+            }
+            break;
             default:
-                REQUIRE(false, "Invalid piece");
-                break;               
+                REQUIRE(false, "Invalid colour");
         }
     } // while
 

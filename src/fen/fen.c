@@ -59,7 +59,7 @@ static bool validate_struct_init(const struct parsed_fen *const pf);
 // ==================================================================
 
 struct piece_location {
-    enum piece piece;
+    const struct piece *piece;
     bool is_occupied;
 };
 
@@ -131,20 +131,14 @@ struct parsed_fen *fen_parse(const char *fen_string) {
     return retval;
 }
 
-/**
- * @brief       Tries to extract the piece on the given square using the parsed_fen struct
- *
- * @param       pf      The struct containing the parsed FEN
- * @param       sq      The square
- * @param       pce     Pointer where returned piece will be saved
- * @return      true if piece found, false otherwise
- */
-bool fen_try_get_piece_on_sq(const struct parsed_fen *const pf, const enum square sq, enum piece *pce) {
+bool fen_try_get_piece_on_sq(const struct parsed_fen *const pf, const enum square sq, const struct piece **pce) {
+
     if (pf->pieces[sq].is_occupied == true) {
         *pce = pf->pieces[sq].piece;
         //printf("returning piece %c\n", get_label(*pce));
         return true;
     }
+    *pce = NULL;
     return false;
 }
 
@@ -255,7 +249,7 @@ static void handle_rank(struct parsed_fen *const pf, const enum rank rank, const
     enum file file = FILE_A;
 
     while (*pieces) {
-        enum piece piece_to_add;
+        const struct piece *piece_to_add;
         bool piece_found = true;
 
         char c = *pieces;

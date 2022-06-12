@@ -284,7 +284,7 @@ uint64_t move_encode_capture(const enum square from_sq, const enum square to_sq)
  *
  * @return      The encoded move
  */
-__attribute__((always_inline)) uint64_t move_encode_castle_kingside_white(void) {
+uint64_t move_encode_castle_kingside_white(void) {
     return ENCODE_KING_CASTLE_WHITE;
 }
 
@@ -293,7 +293,7 @@ __attribute__((always_inline)) uint64_t move_encode_castle_kingside_white(void) 
  *
  * @return      The encoded move
  */
-__attribute__((always_inline)) uint64_t move_encode_castle_kingside_black(void) {
+uint64_t move_encode_castle_kingside_black(void) {
     return ENCODE_KING_CASTLE_BLACK;
 }
 
@@ -302,7 +302,7 @@ __attribute__((always_inline)) uint64_t move_encode_castle_kingside_black(void) 
  *
  * @return      The encoded move
  */
-__attribute__((always_inline)) uint64_t move_encode_castle_queenside_white(void) {
+uint64_t move_encode_castle_queenside_white(void) {
     return ENCODE_QUEEN_CASTLE_WHITE;
 }
 
@@ -311,7 +311,7 @@ __attribute__((always_inline)) uint64_t move_encode_castle_queenside_white(void)
  *
  * @return      The encoded move
  */
-__attribute__((always_inline)) uint64_t move_encode_castle_queenside_black(void) {
+uint64_t move_encode_castle_queenside_black(void) {
     return ENCODE_QUEEN_CASTLE_BLACK;
 }
 
