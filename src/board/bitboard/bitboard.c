@@ -54,18 +54,6 @@ void bb_set_square(uint64_t *restrict const bb, const enum square sq) {
 }
 
 /**
- * @brief       Returns a bitboard with the bit set representing the given square
- *
- * @param sq    The square
- * @return      The bitboard with the square set
- */
-uint64_t bb_get_square_as_bb(const enum square sq) {
-    assert(validate_square(sq));
-
-    return SQUARE_AS_BITBOARD(sq);
-}
-
-/**
  * @brief       Clear bit in bitboard representing the given square
  *
  * @param bb    Pointer to bitboard
@@ -85,14 +73,15 @@ void bb_clear_square(uint64_t *restrict const bb, const enum square sq) {
  * @param[in]  from_sq  The from sq
  * @param[in]  to_sq    To sq
  */
-void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq, const enum square to_sq) {
+__attribute__((always_inline)) void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq,
+                                                const enum square to_sq) {
 
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
     assert(bb_is_clear(*bb, to_sq));
 
-    const uint64_t from_bb = bb_get_square_as_bb(from_sq);
-    const uint64_t to_bb = bb_get_square_as_bb(to_sq);
+    const uint64_t from_bb = SQUARE_AS_BITBOARD(from_sq);
+    const uint64_t to_bb = SQUARE_AS_BITBOARD(to_sq);
 
     // just xor's...assumes bits are set/cleared as expected before this runs
     *bb ^= from_bb;

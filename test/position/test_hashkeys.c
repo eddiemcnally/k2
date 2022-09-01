@@ -43,14 +43,13 @@ void test_hashkeys_init_to_non_zero_value(void **state) {
 
 void test_hashkeys_all_pieces_all_squares_before_after_same(void **state) {
 
-    const struct piece *all_pieces[] = {
-        pce_get_white_pawn(),   pce_get_white_bishop(), pce_get_white_knight(), pce_get_white_rook(),
-        pce_get_white_queen(),  pce_get_white_king(),   pce_get_black_pawn(),   pce_get_black_bishop(),
-        pce_get_black_knight(), pce_get_black_rook(),   pce_get_black_queen(),  pce_get_black_king(),
+    const enum piece all_pieces[] = {
+        WHITE_PAWN, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK, WHITE_QUEEN, WHITE_KING,
+        BLACK_PAWN, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, BLACK_QUEEN, BLACK_KING,
     };
 
     for (int p = 0; p < NUM_PIECES; p++) {
-        const struct piece *pce = all_pieces[p];
+        enum piece pce = all_pieces[p];
 
         for (enum square sq = a1; sq < h8; sq++) {
             // hash before

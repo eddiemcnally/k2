@@ -91,12 +91,12 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
         return true;
     }
 
-    const uint64_t knight_bb = brd_get_piece_bb(brd, pce_get_white_knight());
+    const uint64_t knight_bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
     if (is_knight_attacking(knight_bb, sq)) {
         return true;
     }
 
-    const uint64_t wp_bb = brd_get_piece_bb(brd, pce_get_white_pawn());
+    const uint64_t wp_bb = brd_get_piece_bb(brd, WHITE_PAWN);
     const uint64_t attacking_bb = occ_mask_get_bb_white_pawns_attacking_sq(sq);
     if ((attacking_bb & wp_bb) != 0) {
         return true;
@@ -127,12 +127,12 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
         return true;
     }
 
-    const uint64_t knight_bb = brd_get_piece_bb(brd, pce_get_black_knight());
+    const uint64_t knight_bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
     if (is_knight_attacking(knight_bb, sq)) {
         return true;
     }
 
-    const uint64_t bp_bb = brd_get_piece_bb(brd, pce_get_black_pawn());
+    const uint64_t bp_bb = brd_get_piece_bb(brd, BLACK_PAWN);
     const uint64_t attacking_bb = occ_mask_get_bb_black_pawns_attacking_sq(sq);
     if ((attacking_bb & bp_bb) != 0) {
         return true;

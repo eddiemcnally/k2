@@ -59,7 +59,7 @@ static bool validate_struct_init(const struct parsed_fen *const pf);
 // ==================================================================
 
 struct piece_location {
-    const struct piece *piece;
+    enum piece piece;
     bool is_occupied;
 };
 
@@ -131,15 +131,12 @@ struct parsed_fen *fen_parse(const char *fen_string) {
     return retval;
 }
 
-bool fen_try_get_piece_on_sq(const struct parsed_fen *const pf, const enum square sq, const struct piece **pce) {
+enum piece fen_get_piece_on_sq(const struct parsed_fen *const pf, const enum square sq) {
 
     if (pf->pieces[sq].is_occupied == true) {
-        *pce = pf->pieces[sq].piece;
-        //printf("returning piece %c\n", get_label(*pce));
-        return true;
+        return pf->pieces[sq].piece;
     }
-    *pce = NULL;
-    return false;
+    return NO_PIECE;
 }
 
 bool fen_has_wk_castle_perms(const struct parsed_fen *const pf) {
@@ -249,7 +246,7 @@ static void handle_rank(struct parsed_fen *const pf, const enum rank rank, const
     enum file file = FILE_A;
 
     while (*pieces) {
-        const struct piece *piece_to_add;
+        enum piece piece_to_add;
         bool piece_found = true;
 
         char c = *pieces;

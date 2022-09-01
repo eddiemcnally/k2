@@ -34,7 +34,7 @@
 #include <cmocka.h>
 
 struct sq_pce {
-    struct piece *piece;
+    enum piece piece;
     bool has_piece;
 };
 #pragma GCC diagnostic push
@@ -47,59 +47,58 @@ void test_fen_pieces_init_position(void **state) {
     struct sq_pce data[NUM_SQUARES];
     for (int i = a1; i < h8; i++) {
         data[i].has_piece = false;
-        data[i].piece = NULL;
+        data[i].piece = NO_PIECE;
     }
 
     data[a1].has_piece = true;
-    data[a1].piece = pce_get_white_rook();
+    data[a1].piece = WHITE_ROOK;
     data[b1].has_piece = true;
-    data[b1].piece = pce_get_white_knight();
+    data[b1].piece = WHITE_KNIGHT;
     data[c1].has_piece = true;
-    data[c1].piece = pce_get_white_bishop();
+    data[c1].piece = WHITE_BISHOP;
     data[d1].has_piece = true;
-    data[d1].piece = pce_get_white_queen();
+    data[d1].piece = WHITE_QUEEN;
     data[e1].has_piece = true;
-    data[e1].piece = pce_get_white_king();
+    data[e1].piece = WHITE_KING;
     data[f1].has_piece = true;
-    data[f1].piece = pce_get_white_bishop();
+    data[f1].piece = WHITE_BISHOP;
     data[g1].has_piece = true;
-    data[g1].piece = pce_get_white_knight();
+    data[g1].piece = WHITE_KNIGHT;
     data[h1].has_piece = true;
-    data[h1].piece = pce_get_white_rook();
+    data[h1].piece = WHITE_ROOK;
     for (int i = a2; i <= h2; i++) {
         data[i].has_piece = true;
-        data[i].piece = pce_get_white_pawn();
+        data[i].piece = WHITE_PAWN;
     }
 
     data[a8].has_piece = true;
-    data[a8].piece = pce_get_black_rook();
+    data[a8].piece = BLACK_ROOK;
     data[b8].has_piece = true;
-    data[b8].piece = pce_get_black_knight();
+    data[b8].piece = BLACK_KNIGHT;
     data[c8].has_piece = true;
-    data[c8].piece = pce_get_black_bishop();
+    data[c8].piece = BLACK_BISHOP;
     data[d8].has_piece = true;
-    data[d8].piece = pce_get_black_queen();
+    data[d8].piece = BLACK_QUEEN;
     data[e8].has_piece = true;
-    data[e8].piece = pce_get_black_king();
+    data[e8].piece = BLACK_KING;
     data[f8].has_piece = true;
-    data[f8].piece = pce_get_black_bishop();
+    data[f8].piece = BLACK_BISHOP;
     data[g8].has_piece = true;
-    data[g8].piece = pce_get_black_knight();
+    data[g8].piece = BLACK_KNIGHT;
     data[h8].has_piece = true;
-    data[h8].piece = pce_get_black_rook();
+    data[h8].piece = BLACK_ROOK;
     for (int i = a7; i <= h7; i++) {
         data[i].has_piece = true;
-        data[i].piece = pce_get_black_pawn();
+        data[i].piece = BLACK_PAWN;
     }
 
-    bool found = false;
-    struct piece *pce;
+    enum piece pce;
     for (int s = a1; s <= h8; s++) {
         struct sq_pce d = data[s];
 
-        bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
+        pce = fen_get_piece_on_sq(brd, (enum square)s);
 
-        if (b == true) {
+        if (pce != NO_PIECE) {
             assert_true(pce == d.piece);
         }
     }
@@ -109,8 +108,8 @@ void test_fen_pieces_init_position(void **state) {
         for (int f = FILE_A; f <= FILE_H; f++) {
             enum square sq = sq_gen_from_rank_file((enum rank)r, (enum file)f);
 
-            found = fen_try_get_piece_on_sq(brd, sq, &pce);
-            assert_false(found);
+            pce = fen_get_piece_on_sq(brd, sq);
+            assert_true(pce == NO_PIECE);
         }
     }
 }
@@ -128,92 +127,92 @@ void test_fen_pieces_random_position_1(void **state) {
 
     // RANK 1
     data[a1].has_piece = true;
-    data[a1].piece = pce_get_white_rook();
+    data[a1].piece = WHITE_ROOK;
 
     data[f1].has_piece = true;
-    data[f1].piece = pce_get_white_rook();
+    data[f1].piece = WHITE_ROOK;
     data[g1].has_piece = true;
-    data[g1].piece = pce_get_white_king();
+    data[g1].piece = WHITE_KING;
 
     // RANK 2
     data[b2].has_piece = true;
-    data[b2].piece = pce_get_white_bishop();
+    data[b2].piece = WHITE_BISHOP;
     data[d2].has_piece = true;
-    data[d2].piece = pce_get_white_pawn();
+    data[d2].piece = WHITE_PAWN;
     data[e2].has_piece = true;
-    data[e2].piece = pce_get_white_queen();
+    data[e2].piece = WHITE_QUEEN;
     data[f2].has_piece = true;
-    data[f2].piece = pce_get_white_pawn();
+    data[f2].piece = WHITE_PAWN;
     data[h2].has_piece = true;
-    data[h2].piece = pce_get_white_pawn();
+    data[h2].piece = WHITE_PAWN;
 
     // RANK 3
     data[a3].has_piece = true;
-    data[a3].piece = pce_get_white_pawn();
+    data[a3].piece = WHITE_PAWN;
     data[b3].has_piece = true;
-    data[b3].piece = pce_get_white_pawn();
+    data[b3].piece = WHITE_PAWN;
     data[c3].has_piece = true;
-    data[c3].piece = pce_get_white_knight();
+    data[c3].piece = WHITE_KNIGHT;
     data[d3].has_piece = true;
-    data[d3].piece = pce_get_white_bishop();
+    data[d3].piece = WHITE_BISHOP;
     data[f3].has_piece = true;
-    data[f3].piece = pce_get_white_knight();
+    data[f3].piece = WHITE_KNIGHT;
     data[g3].has_piece = true;
-    data[g3].piece = pce_get_white_pawn();
+    data[g3].piece = WHITE_PAWN;
     data[h3].has_piece = true;
-    data[h3].piece = pce_get_black_bishop();
+    data[h3].piece = BLACK_BISHOP;
 
     // RANK 4
     data[b4].has_piece = true;
-    data[b4].piece = pce_get_black_bishop();
+    data[b4].piece = BLACK_BISHOP;
     data[c4].has_piece = true;
-    data[c4].piece = pce_get_white_pawn();
+    data[c4].piece = WHITE_PAWN;
     data[e4].has_piece = true;
-    data[e4].piece = pce_get_white_pawn();
+    data[e4].piece = WHITE_PAWN;
 
     // RANK 5
     data[a5].has_piece = true;
-    data[a5].piece = pce_get_black_knight();
+    data[a5].piece = BLACK_KNIGHT;
     data[b5].has_piece = true;
-    data[b5].piece = pce_get_black_pawn();
+    data[b5].piece = BLACK_PAWN;
     data[d5].has_piece = true;
-    data[d5].piece = pce_get_black_pawn();
+    data[d5].piece = BLACK_PAWN;
     data[e5].has_piece = true;
-    data[e5].piece = pce_get_black_pawn();
+    data[e5].piece = BLACK_PAWN;
     data[g5].has_piece = true;
-    data[g5].piece = pce_get_black_pawn();
+    data[g5].piece = BLACK_PAWN;
 
     // RANK 6
     data[f6].has_piece = true;
-    data[f6].piece = pce_get_black_knight();
+    data[f6].piece = BLACK_KNIGHT;
 
     // RANK 7
     data[a7].has_piece = true;
-    data[a7].piece = pce_get_black_pawn();
+    data[a7].piece = BLACK_PAWN;
     data[c7].has_piece = true;
-    data[c7].piece = pce_get_black_pawn();
+    data[c7].piece = BLACK_PAWN;
     data[d7].has_piece = true;
-    data[d7].piece = pce_get_black_king();
+    data[d7].piece = BLACK_KING;
     data[e7].has_piece = true;
-    data[e7].piece = pce_get_black_queen();
+    data[e7].piece = BLACK_QUEEN;
     data[f7].has_piece = true;
-    data[f7].piece = pce_get_black_pawn();
+    data[f7].piece = BLACK_PAWN;
     data[h7].has_piece = true;
-    data[h7].piece = pce_get_black_pawn();
+    data[h7].piece = BLACK_PAWN;
 
     // RANK 8
     data[a8].has_piece = true;
-    data[a8].piece = pce_get_black_rook();
+    data[a8].piece = BLACK_ROOK;
     data[h8].has_piece = true;
-    data[h8].piece = pce_get_black_rook();
+    data[h8].piece = BLACK_ROOK;
 
-    struct piece *pce;
+    enum piece pce;
     for (int s = a1; s <= h8; s++) {
         struct sq_pce d = data[s];
 
-        bool b = fen_try_get_piece_on_sq(brd, (enum square)s, &pce);
+        pce = fen_get_piece_on_sq(brd, (enum square)s);
 
-        if (b == true) {
+        if (pce != NO_PIECE) {
             assert_true(pce == d.piece);
         }
     }

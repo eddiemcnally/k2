@@ -128,7 +128,7 @@ uint64_t occ_mask_get_double_pawn_mask_black(const enum square from_sq) {
  * @return uint64_t A bitboard representing WHITE pawns that can attack the square
  */
 uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
-    const uint64_t bb = bb_get_square_as_bb(sq);
+    const uint64_t bb = SQUARE_AS_BITBOARD(sq);
     return SOUTH_EAST(bb) | SOUTH_WEST(bb);
 }
 
@@ -139,7 +139,7 @@ uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
  * @return uint64_t A bitboard representing BLACK pawns that can attack the square
  */
 uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
-    const uint64_t bb = bb_get_square_as_bb(sq);
+    const uint64_t bb = SQUARE_AS_BITBOARD(sq);
     return NORTH_EAST(bb) | NORTH_WEST(bb);
 }
 
@@ -152,7 +152,7 @@ uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
 uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
 
-    const uint64_t sq_bb = bb_get_square_as_bb(sq);
+    const uint64_t sq_bb = SQUARE_AS_BITBOARD(sq);
     return NORTH_EAST(sq_bb) | NORTH_WEST(sq_bb);
 }
 
@@ -165,7 +165,7 @@ uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square
 uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq) {
     assert(validate_square(sq));
 
-    const uint64_t sq_bb = bb_get_square_as_bb(sq);
+    const uint64_t sq_bb = SQUARE_AS_BITBOARD(sq);
     return SOUTH_EAST(sq_bb) | SOUTH_WEST(sq_bb);
 }
 

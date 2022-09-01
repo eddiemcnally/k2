@@ -46,18 +46,17 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
     // squares
     const enum square IGNORE_1 = a1;
     const enum square IGNORE_2 = b1;
-    brd_add_piece(brd, pce_get_white_pawn(), IGNORE_1);
-    brd_add_piece(brd, pce_get_black_pawn(), IGNORE_2);
+    brd_add_piece(brd, WHITE_PAWN, IGNORE_1);
+    brd_add_piece(brd, BLACK_PAWN, IGNORE_2);
 
-    const struct piece *all_pieces[] = {
-        pce_get_white_pawn(),   pce_get_white_bishop(), pce_get_white_knight(), pce_get_white_rook(),
-        pce_get_white_queen(),  pce_get_white_king(),   pce_get_black_pawn(),   pce_get_black_bishop(),
-        pce_get_black_knight(), pce_get_black_rook(),   pce_get_black_queen(),  pce_get_black_king(),
+    const enum piece all_pieces[] = {
+        WHITE_PAWN, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK, WHITE_QUEEN, WHITE_KING,
+        BLACK_PAWN, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, BLACK_QUEEN, BLACK_KING,
 
     };
 
     for (int i = 0; i < NUM_PIECES; i++) {
-        const struct piece *pce = all_pieces[i];
+        const enum piece pce = all_pieces[i];
         for (enum square sq = a1; sq <= h8; sq++) {
 
             // test squares to ensure material always >= 0
@@ -78,7 +77,7 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
             struct material material_after_add = brd_get_material(brd);
 
             // verify it's there
-            const struct piece *found_pce = brd_get_piece_on_square(brd, sq);
+            const enum piece found_pce = brd_get_piece_on_square(brd, sq);
 
             assert_true(found_pce == pce);
             bool is_occupied = brd_is_sq_occupied(brd, sq);
@@ -109,22 +108,21 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
 void test_board_brd_move_piece(void **state) {
     struct board *brd = brd_allocate();
 
-    const struct piece *all_pieces[] = {
-        pce_get_white_pawn(),   pce_get_white_bishop(), pce_get_white_knight(), pce_get_white_rook(),
-        pce_get_white_queen(),  pce_get_white_king(),   pce_get_black_pawn(),   pce_get_black_bishop(),
-        pce_get_black_knight(), pce_get_black_rook(),   pce_get_black_queen(),  pce_get_black_king(),
+    const enum piece all_pieces[] = {
+        WHITE_PAWN, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK, WHITE_QUEEN, WHITE_KING,
+        BLACK_PAWN, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK, BLACK_QUEEN, BLACK_KING,
     };
 
     // to avoid asserts in the code, put a piece of each colour on the board and ignore those
     // squares
     const enum square IGNORE_1 = a1;
     const enum square IGNORE_2 = b1;
-    brd_add_piece(brd, pce_get_white_pawn(), IGNORE_1);
-    brd_add_piece(brd, pce_get_black_pawn(), IGNORE_2);
+    brd_add_piece(brd, WHITE_PAWN, IGNORE_1);
+    brd_add_piece(brd, BLACK_PAWN, IGNORE_2);
 
     for (int i = 0; i < NUM_PIECES; i++) {
 
-        const struct piece *pce = all_pieces[i];
+        const enum piece pce = all_pieces[i];
         for (enum square from_sq = a1; from_sq <= h8; from_sq++) {
             for (enum square to_sq = a1; to_sq <= h8; to_sq++) {
                 if (from_sq == to_sq) {
@@ -152,7 +150,7 @@ void test_board_brd_move_piece(void **state) {
                 brd_add_piece(brd, pce, from_sq);
 
                 // verify it's there
-                const struct piece *found_pce = brd_get_piece_on_square(brd, from_sq);
+                enum piece found_pce = brd_get_piece_on_square(brd, from_sq);
                 assert_true(found_pce == pce);
                 bool is_occupied = brd_is_sq_occupied(brd, from_sq);
                 assert_true(is_occupied);
@@ -196,7 +194,7 @@ void test_board_brd_get_piece_bb(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    uint64_t bb = brd_get_piece_bb(brd, pce_get_white_pawn());
+    uint64_t bb = brd_get_piece_bb(brd, WHITE_PAWN);
     assert_true(bb_is_set(bb, b2));
     assert_true(bb_is_set(bb, d3));
     assert_true(bb_is_set(bb, e2));
@@ -206,22 +204,22 @@ void test_board_brd_get_piece_bb(void **state) {
     assert_true(bb_is_set(bb, g5));
     assert_true(bb_is_set(bb, h2));
 
-    bb = brd_get_piece_bb(brd, pce_get_white_bishop());
+    bb = brd_get_piece_bb(brd, WHITE_BISHOP);
     assert_true(bb_is_set(bb, b7));
     assert_true(bb_is_set(bb, f8));
 
-    bb = brd_get_piece_bb(brd, pce_get_white_knight());
+    bb = brd_get_piece_bb(brd, WHITE_KNIGHT);
     assert_true(bb_is_set(bb, c1));
     assert_true(bb_is_set(bb, e8));
 
-    bb = brd_get_piece_bb(brd, pce_get_white_rook());
+    bb = brd_get_piece_bb(brd, WHITE_ROOK);
     assert_true(bb_is_set(bb, a4));
     assert_true(bb_is_set(bb, d8));
 
-    bb = brd_get_piece_bb(brd, pce_get_white_queen());
+    bb = brd_get_piece_bb(brd, WHITE_QUEEN);
     assert_true(bb_is_set(bb, f1));
 
-    bb = brd_get_piece_bb(brd, pce_get_black_pawn());
+    bb = brd_get_piece_bb(brd, BLACK_PAWN);
     assert_true(bb_is_set(bb, c3));
     assert_true(bb_is_set(bb, c4));
     assert_true(bb_is_set(bb, d5));
@@ -231,19 +229,19 @@ void test_board_brd_get_piece_bb(void **state) {
     assert_true(bb_is_set(bb, h3));
     assert_true(bb_is_set(bb, h6));
 
-    bb = brd_get_piece_bb(brd, pce_get_black_bishop());
+    bb = brd_get_piece_bb(brd, BLACK_BISHOP);
     assert_true(bb_is_set(bb, b1));
     assert_true(bb_is_set(bb, f6));
 
-    bb = brd_get_piece_bb(brd, pce_get_black_knight());
+    bb = brd_get_piece_bb(brd, BLACK_KNIGHT);
     assert_true(bb_is_set(bb, d1));
     assert_true(bb_is_set(bb, b8));
 
-    bb = brd_get_piece_bb(brd, pce_get_black_rook());
+    bb = brd_get_piece_bb(brd, BLACK_ROOK);
     assert_true(bb_is_set(bb, e1));
     assert_true(bb_is_set(bb, g3));
 
-    bb = brd_get_piece_bb(brd, pce_get_black_queen());
+    bb = brd_get_piece_bb(brd, BLACK_QUEEN);
     assert_true(bb_is_set(bb, a7));
 
     pos_destroy(pos);
@@ -492,7 +490,7 @@ void test_board_brd_get_piece_on_square(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    struct piece *pce = brd_get_piece_on_square(brd, a4);
+    enum piece pce = brd_get_piece_on_square(brd, a4);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
@@ -629,7 +627,7 @@ void test_board_brd_get_piece_on_square_1(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    struct piece *pce;
+    enum piece pce;
 
     pce = brd_get_piece_on_square(brd, a1);
     assert_true(pce_get_role(pce) == KNIGHT);
@@ -662,14 +660,14 @@ void test_board_compare(void **state) {
 
     assert_true(brd_compare(brd1, brd2));
 
-    brd_add_piece(brd1, pce_get_black_pawn(), a1);
+    brd_add_piece(brd1, BLACK_PAWN, a1);
     assert_false(brd_compare(brd1, brd2));
-    brd_remove_piece(brd1, pce_get_black_pawn(), a1);
+    brd_remove_piece(brd1, BLACK_PAWN, a1);
     assert_true(brd_compare(brd1, brd2));
 
-    brd_move_piece(brd1, pce_get_white_pawn(), a5, a6);
+    brd_move_piece(brd1, WHITE_PAWN, a5, a6);
     assert_false(brd_compare(brd1, brd2));
-    brd_move_piece(brd1, pce_get_white_pawn(), a6, a5);
+    brd_move_piece(brd1, WHITE_PAWN, a6, a5);
     assert_true(brd_compare(brd1, brd2));
 }
 
@@ -682,15 +680,15 @@ void test_board_material_white(void **state) {
     struct board *brd = pos_get_board(pos);
     struct material base_white_material = brd_get_material(brd);
 
-    brd_add_piece(brd, pce_get_white_pawn(), h1);
+    brd_add_piece(brd, WHITE_PAWN, h1);
     struct material white_material = brd_get_material(brd);
-    assert_int_equal(white_material.white, (base_white_material.white + (int32_t)pce_get_value(pce_get_white_pawn())));
-    brd_remove_piece(brd, pce_get_white_pawn(), h1);
+    assert_int_equal(white_material.white, (base_white_material.white + (int32_t)pce_get_value(WHITE_PAWN)));
+    brd_remove_piece(brd, WHITE_PAWN, h1);
 
-    brd_add_piece(brd, pce_get_white_queen(), h1);
+    brd_add_piece(brd, WHITE_QUEEN, h1);
     white_material = brd_get_material(brd);
-    assert_int_equal(white_material.white, (base_white_material.white + (int32_t)pce_get_value(pce_get_white_queen())));
-    brd_remove_piece(brd, pce_get_white_queen(), h1);
+    assert_int_equal(white_material.white, (base_white_material.white + (int32_t)pce_get_value(WHITE_QUEEN)));
+    brd_remove_piece(brd, WHITE_QUEEN, h1);
 }
 
 void test_board_material_black(void **state) {
@@ -702,13 +700,13 @@ void test_board_material_black(void **state) {
     struct board *brd = pos_get_board(pos);
     const struct material base_black_material = brd_get_material(brd);
 
-    brd_add_piece(brd, pce_get_black_pawn(), h1);
+    brd_add_piece(brd, BLACK_PAWN, h1);
     struct material black_material = brd_get_material(brd);
-    assert_int_equal(black_material.black, (base_black_material.black + (int32_t)pce_get_value(pce_get_black_pawn())));
-    brd_remove_piece(brd, pce_get_black_pawn(), h1);
+    assert_int_equal(black_material.black, (base_black_material.black + (int32_t)pce_get_value(BLACK_PAWN)));
+    brd_remove_piece(brd, BLACK_PAWN, h1);
 
-    brd_add_piece(brd, pce_get_black_queen(), h1);
+    brd_add_piece(brd, BLACK_QUEEN, h1);
     black_material = brd_get_material(brd);
-    assert_int_equal(black_material.black, (base_black_material.black + (int32_t)pce_get_value(pce_get_black_queen())));
-    brd_remove_piece(brd, pce_get_black_queen(), h1);
+    assert_int_equal(black_material.black, (base_black_material.black + (int32_t)pce_get_value(BLACK_QUEEN)));
+    brd_remove_piece(brd, BLACK_QUEEN, h1);
 }
