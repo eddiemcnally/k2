@@ -156,15 +156,14 @@ void brd_add_piece(struct board *const brd, const enum piece pce, const enum squ
     const enum colour colour = pce_get_colour(pce);
     const uint8_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
 
-    bb_set_square(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], sq);
-    bb_set_square(&brd->bb_colour[col_off], sq);
+    bb_set_square_multi(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], &brd->bb_colour[col_off], sq);
     brd->pce_square[sq] = pce;
 
     // add material
     const uint32_t material = pce_get_value(pce);
     brd->material[col_off] += material;
 
-    if (pce_get_role(pce) == KING) {
+    if (pce_is_king(pce)) {
         brd->king_squares[col_off] = sq;
     }
 }
@@ -195,15 +194,14 @@ void brd_remove_piece(struct board *const brd, const enum piece pce, const enum 
     const enum colour col = pce_get_colour(pce);
     const int col_off = COLOUR_AS_ARRAY_OFFSET(col);
 
-    bb_clear_square(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], sq);
-    bb_clear_square(&brd->bb_colour[col_off], sq);
+    bb_clear_square_multi(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], &brd->bb_colour[col_off], sq);
     brd->pce_square[sq] = NO_PIECE;
 
     const uint32_t material = pce_get_value(pce);
     brd->material[col_off] -= material;
     assert(brd->material[col_off] > 0);
 
-    if (pce_get_role(pce) == KING) {
+    if (pce_is_king(pce)) {
         REQUIRE(false, "Attempted to remove King from board");
     }
 }
@@ -228,15 +226,14 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     const uint8_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
 
     // set/clear to/from squares in various bitboards
-    bb_move_bit(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], from_sq, to_sq);
-    bb_move_bit(&brd->bb_colour[col_off], from_sq, to_sq);
+    bb_move_bit_multi(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], &brd->bb_colour[col_off], from_sq, to_sq);
 
     assert(brd->pce_square[from_sq] == pce);
 
     brd->pce_square[from_sq] = NO_PIECE;
     brd->pce_square[to_sq] = pce;
 
-    if (pce_get_role(pce) == KING) {
+    if (pce_is_king(pce)) {
         brd->king_squares[col_off] = to_sq;
     }
 }
@@ -266,17 +263,12 @@ uint64_t brd_get_white_bb(const struct board *const brd) {
 }
 
 enum colour brd_get_colour_on_sq(const struct board *const brd, const enum square sq) {
-    const uint64_t white_bb = brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE];
-    if (bb_is_set(white_bb, sq)) {
-        return WHITE;
+    const enum piece pce = brd_get_piece_on_square(brd, sq);
+    if (pce == NO_PIECE) {
+        REQUIRE(false, "Expecting piece on square");
     }
 
-    const uint64_t black_bb = brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK];
-    if (bb_is_set(black_bb, sq)) {
-        return BLACK;
-    }
-
-    REQUIRE(false, "Invalid colour");
+    return pce_get_colour(pce);
 }
 
 uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {

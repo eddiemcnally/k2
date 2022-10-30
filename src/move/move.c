@@ -42,8 +42,9 @@
  */
 
 // 64 bit encoding is as follows:
-//      FF FF FF FF -- -- -- --         Move Score (int32)
-//      -- -- -- -- -- -- FF FF         Move encoding (see bitmap below)
+//      XX XX XX XX -- -- -- --         Move Score (int32)
+//      -- -- -- -- XX XX -- --         Unused
+//      -- -- -- -- -- -- XX XX         Move encoding (see bitmap below)
 //
 //
 

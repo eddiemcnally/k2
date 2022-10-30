@@ -70,6 +70,10 @@ __attribute__((always_inline)) enum piece_role pce_get_role(const enum piece pce
     return (enum piece_role)((pce & PCE_MASK_ROLE) >> PCE_SHIFT_ROLE);
 }
 
+__attribute__((always_inline)) bool pce_is_king(const enum piece pce) {
+    return (bool)((pce & PCE_MASK_IS_KING) != 0);
+}
+
 char pce_get_label(const enum piece pce) {
     switch (pce) {
     case WHITE_PAWN:

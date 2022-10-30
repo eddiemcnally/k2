@@ -58,28 +58,30 @@ enum move_gen_type {
 };
 
 static void mv_gen_white_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type);
+                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb);
 static void mv_gen_black_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type);
-static void get_sliding_rank_file_moves(const struct board *const brd, const uint64_t colour_bb,
-                                        const uint64_t rook_queen_bb, struct move_list *const mvl,
-                                        const enum move_gen_type gen_type);
-static void get_sliding_diagonal_antidiagonal_moves(const struct board *const brd, const uint64_t colour_bb,
-                                                    const uint64_t queen_bishop_bb, struct move_list *const mvl,
-                                                    const enum move_gen_type gen_type);
+                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb);
+static void get_sliding_rank_file_moves(const uint64_t colour_bb, const uint64_t rook_queen_bb,
+                                        struct move_list *const mvl, const enum move_gen_type gen_type,
+                                        const uint64_t all_pce_bb);
+static void get_sliding_diagonal_antidiagonal_moves(const uint64_t colour_bb, const uint64_t queen_bishop_bb,
+                                                    struct move_list *const mvl, const enum move_gen_type gen_type,
+                                                    const uint64_t all_pce_bb);
 static void gen_promotions(const enum square from_sq, const enum square to_sq, struct move_list *const mvl);
 static void gen_promotions_with_capture(const enum square from_sq, const enum square to_sq,
                                         struct move_list *const mvl);
 static void mv_gen_knight_moves(const struct board *const brd, const enum piece knight, const uint64_t opposite_pce_bb,
-                                struct move_list *const mvl, const enum move_gen_type gen_type);
+                                struct move_list *const mvl, const enum move_gen_type gen_type,
+                                const uint64_t all_pce_bb);
 static void mv_gen_king_moves(const struct board *const brd, const enum piece king, const uint64_t opposite_pce_bb,
-                              struct move_list *const mvl, const enum move_gen_type gen_type);
+                              struct move_list *const mvl, const enum move_gen_type gen_type,
+                              const uint64_t all_pce_bb);
 static void mv_gen_encode_multiple_capture(uint64_t bb, const enum square from_sq, struct move_list *const mvl);
 static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq, struct move_list *const mvl);
-static void mv_gen_white_castle_moves(const struct position *const pos, struct move_list *const mvl,
-                                      const struct cast_perm_container castle_perms);
-static void mv_gen_black_castle_moves(const struct position *const pos, struct move_list *const mvl,
-                                      const struct cast_perm_container castle_perms);
+static void mv_gen_white_castle_moves(struct move_list *const mvl, const struct cast_perm_container castle_perms,
+                                      const uint64_t all_pce_bb);
+static void mv_gen_black_castle_moves(struct move_list *const mvl, const struct cast_perm_container castle_perms,
+                                      const uint64_t all_pce_bb);
 static void mv_gen_moves(const struct position *const pos, struct move_list *const mvl,
                          const enum move_gen_type gen_type);
 
@@ -117,44 +119,45 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
     const struct cast_perm_container castle_perms = pos_get_cast_perm(pos);
     const uint64_t black_pce_bb = brd_get_black_bb(brd);
     const uint64_t white_pce_bb = brd_get_white_bb(brd);
+    const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
     switch (side_to_move) {
     case WHITE: {
-        mv_gen_king_moves(brd, WHITE_KING, black_pce_bb, mvl, gen_type);
-        mv_gen_knight_moves(brd, WHITE_KNIGHT, black_pce_bb, mvl, gen_type);
+        mv_gen_king_moves(brd, WHITE_KING, black_pce_bb, mvl, gen_type, all_pce_bb);
+        mv_gen_knight_moves(brd, WHITE_KNIGHT, black_pce_bb, mvl, gen_type, all_pce_bb);
 
         // bishop and queen
         const uint64_t queen_bishop_bb = brd_get_white_bishop_queen_bb(brd);
-        get_sliding_diagonal_antidiagonal_moves(brd, white_pce_bb, queen_bishop_bb, mvl, gen_type);
+        get_sliding_diagonal_antidiagonal_moves(white_pce_bb, queen_bishop_bb, mvl, gen_type, all_pce_bb);
 
         // rook and queen
         const uint64_t rook_queen_bb = brd_get_white_rook_queen_bb(brd);
-        get_sliding_rank_file_moves(brd, white_pce_bb, rook_queen_bb, mvl, gen_type);
+        get_sliding_rank_file_moves(white_pce_bb, rook_queen_bb, mvl, gen_type, all_pce_bb);
 
         if (cast_perm_has_white_permissions(castle_perms) && (gen_type == ALL_MOVES)) {
-            mv_gen_white_castle_moves(pos, mvl, castle_perms);
+            mv_gen_white_castle_moves(mvl, castle_perms, all_pce_bb);
         }
 
-        mv_gen_white_pawn_moves(pos, mvl, gen_type);
+        mv_gen_white_pawn_moves(pos, mvl, gen_type, all_pce_bb);
     } break;
 
     case BLACK: {
-        mv_gen_king_moves(brd, BLACK_KING, white_pce_bb, mvl, gen_type);
-        mv_gen_knight_moves(brd, BLACK_KNIGHT, white_pce_bb, mvl, gen_type);
+        mv_gen_king_moves(brd, BLACK_KING, white_pce_bb, mvl, gen_type, all_pce_bb);
+        mv_gen_knight_moves(brd, BLACK_KNIGHT, white_pce_bb, mvl, gen_type, all_pce_bb);
 
         // bishop and queen
         const uint64_t queen_bishop_bb = brd_get_black_bishop_queen_bb(brd);
-        get_sliding_diagonal_antidiagonal_moves(brd, black_pce_bb, queen_bishop_bb, mvl, gen_type);
+        get_sliding_diagonal_antidiagonal_moves(black_pce_bb, queen_bishop_bb, mvl, gen_type, all_pce_bb);
 
         // rook and queen
         const uint64_t rook_queen_bb = brd_get_black_rook_queen_bb(brd);
-        get_sliding_rank_file_moves(brd, black_pce_bb, rook_queen_bb, mvl, gen_type);
+        get_sliding_rank_file_moves(black_pce_bb, rook_queen_bb, mvl, gen_type, all_pce_bb);
 
         if (cast_perm_has_black_permissions(castle_perms) && (gen_type == ALL_MOVES)) {
-            mv_gen_black_castle_moves(pos, mvl, castle_perms);
+            mv_gen_black_castle_moves(mvl, castle_perms, all_pce_bb);
         }
 
-        mv_gen_black_pawn_moves(pos, mvl, gen_type);
+        mv_gen_black_pawn_moves(pos, mvl, gen_type, all_pce_bb);
     } break;
 
     default:
@@ -163,22 +166,14 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
     }
 }
 
-/**
- * @brief Generate White Pawn moves
- * 
- * @param pos The position
- * @param mvl The move list
- * @param gen_type The type of moves to generate
- */
 static void mv_gen_white_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type) {
+                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb) {
     assert(validate_position(pos));
     assert(validate_move_list(mvl));
 
     const struct board *const brd = pos_get_board(pos);
 
     uint64_t all_pawns_bb = brd_get_piece_bb(brd, WHITE_PAWN);
-    const uint64_t all_pce_bb = brd_get_board_bb(brd);
     const uint64_t black_pce_bb = brd_get_black_bb(brd);
 
     if (pos_is_en_passant_active(pos)) {
@@ -275,22 +270,14 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
     }
 }
 
-/**
- * @brief Generate Black Pawn moves
- * 
- * @param pos The position
- * @param mvl The move list
- * @param gen_type The type of moves to generate
- */
 static void mv_gen_black_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type) {
+                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb) {
     assert(validate_position(pos));
     assert(validate_move_list(mvl));
 
     const struct board *const brd = pos_get_board(pos);
 
     uint64_t all_pawns_bb = brd_get_piece_bb(brd, BLACK_PAWN);
-    const uint64_t all_pce_bb = brd_get_board_bb(brd);
     const uint64_t white_pce_bb = brd_get_white_bb(brd);
 
     if (pos_is_en_passant_active(pos)) {
@@ -390,19 +377,18 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
 /**
  * @brief Generate sliding diagonal and antidiagonal moves 
  * 
- * @param brd               The board
  * @param colour_bb         Bitboard for pieces of the colour that's moving
  * @param queen_bishop_bb   Bitboard of queen and bishop pieces
  * @param mvl               The move list
  * @param gen_type          The move type to generate
+ * @param all_pce_bb        Bitboard of all pieces on the board
  */
-static void get_sliding_diagonal_antidiagonal_moves(const struct board *const brd, const uint64_t colour_bb,
-                                                    const uint64_t queen_bishop_bb, struct move_list *const mvl,
-                                                    const enum move_gen_type gen_type) {
+static void get_sliding_diagonal_antidiagonal_moves(const uint64_t colour_bb, const uint64_t queen_bishop_bb,
+                                                    struct move_list *const mvl, const enum move_gen_type gen_type,
+                                                    const uint64_t all_pce_bb) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
 
-    const uint64_t all_pce_bb = brd_get_board_bb(brd);
     uint64_t pce_to_move_bb = queen_bishop_bb;
 
     while (pce_to_move_bb != 0) {
@@ -450,18 +436,17 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct board *const br
 /**
  * @brief Generate all sliding moves for rank and files
  * 
- * @param brd           The board
  * @param colour_bb     The bitboard of all pieces of the side to move
  * @param rook_queen_bb Bitboard for rook and queen
  * @param mvl           The move List
  * @param gen_type      The type of moves to generate
+ * @param all_pce_bb    Bitboard to represent all pieces on the board
  */
-static void get_sliding_rank_file_moves(const struct board *const brd, const uint64_t colour_bb,
-                                        const uint64_t rook_queen_bb, struct move_list *const mvl,
-                                        const enum move_gen_type gen_type) {
+static void get_sliding_rank_file_moves(const uint64_t colour_bb, const uint64_t rook_queen_bb,
+                                        struct move_list *const mvl, const enum move_gen_type gen_type,
+                                        const uint64_t all_pce_bb) {
 
     // taken from https://www.chessprogramming.org/Hyperbola_Quintessence
-    const uint64_t all_pce_bb = brd_get_board_bb(brd);
     const uint64_t reversed_all_pce_bb = bb_reverse(all_pce_bb);
 
     uint64_t pce_to_move_bb = rook_queen_bb;
@@ -540,18 +525,18 @@ static void gen_promotions_with_capture(const enum square from_sq, const enum sq
 /**
  * @brief Generates Knight moves
  * 
- * @param brd       the board
- * @param knight    the knight piece
+ * @param brd           the board
+ * @param knight        the knight piece
  * @param opposite_pce_bb the opposite colour pieces as a bitboard
- * @param mvl       the move list
- * @param gen_type  the move types to generate
+ * @param mvl           the move list
+ * @param gen_type      the move types to generate
+ * @param all_pce_bb    Bitboard representing all pieces on the board
  */
 static void mv_gen_knight_moves(const struct board *const brd, const enum piece knight, const uint64_t opposite_pce_bb,
-                                struct move_list *const mvl, const enum move_gen_type gen_type) {
+                                struct move_list *const mvl, const enum move_gen_type gen_type,
+                                const uint64_t all_pce_bb) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
-
-    const uint64_t all_pce_bb = brd_get_board_bb(brd);
     const uint64_t free_squares = ~all_pce_bb;
 
     // knight
@@ -580,18 +565,19 @@ static void mv_gen_knight_moves(const struct board *const brd, const enum piece 
 /**
  * @brief Generates King moves
  * 
- * @param brd       the board
- * @param king      the king piece
+ * @param brd           the board
+ * @param king          the king piece
  * @param opposite_pce_bb the opposite colour pieces as a bitboard
- * @param mvl       the move list
- * @param gen_type  the move types to generate
+ * @param mvl           the move list
+ * @param gen_type      the move types to generate
+ * @param all_pce_bb    botboard representing all pieces on the board
  */
 static void mv_gen_king_moves(const struct board *const brd, const enum piece king, const uint64_t opposite_pce_bb,
-                              struct move_list *const mvl, const enum move_gen_type gen_type) {
+                              struct move_list *const mvl, const enum move_gen_type gen_type,
+                              const uint64_t all_pce_bb) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
 
-    const uint64_t all_pce_bb = brd_get_board_bb(brd);
     const uint64_t free_squares = ~all_pce_bb;
 
     uint64_t king_bb = brd_get_piece_bb(brd, king);
@@ -644,38 +630,32 @@ static void mv_gen_encode_multiple_capture(uint64_t bb, const enum square from_s
     }
 }
 
-static void mv_gen_white_castle_moves(const struct position *const pos, struct move_list *const mvl,
-                                      const struct cast_perm_container cp) {
-    const struct board *const brd = pos_get_board(pos);
-    const uint64_t occupied_bb = brd_get_board_bb(brd);
-
+static void mv_gen_white_castle_moves(struct move_list *const mvl, const struct cast_perm_container cp,
+                                      const uint64_t all_pce_bb) {
     if (cast_perm_has_white_kingside_permissions(cp)) {
-        if ((occupied_bb & CASTLE_SQ_MASK_WK) == 0) {
+        if ((all_pce_bb & CASTLE_SQ_MASK_WK) == 0) {
             const uint64_t mv = move_encode_castle_kingside_white();
             mvl_add(mvl, mv);
         }
     }
     if (cast_perm_has_white_queenside_permissions(cp)) {
-        if ((occupied_bb & CASTLE_SQ_MASK_WQ) == 0) {
+        if ((all_pce_bb & CASTLE_SQ_MASK_WQ) == 0) {
             const uint64_t mv = move_encode_castle_queenside_white();
             mvl_add(mvl, mv);
         }
     }
 }
 
-static void mv_gen_black_castle_moves(const struct position *const pos, struct move_list *const mvl,
-                                      const struct cast_perm_container cp) {
-    const struct board *const brd = pos_get_board(pos);
-    const uint64_t occupied_bb = brd_get_board_bb(brd);
-
+static void mv_gen_black_castle_moves(struct move_list *const mvl, const struct cast_perm_container cp,
+                                      const uint64_t all_pce_bb) {
     if (cast_perm_has_black_kingside_permissions(cp)) {
-        if ((occupied_bb & CASTLE_SQ_MASK_BK) == 0) {
+        if ((all_pce_bb & CASTLE_SQ_MASK_BK) == 0) {
             const uint64_t mv = move_encode_castle_kingside_black();
             mvl_add(mvl, mv);
         }
     }
     if (cast_perm_has_black_queenside_permissions(cp)) {
-        if ((occupied_bb & CASTLE_SQ_MASK_BQ) == 0) {
+        if ((all_pce_bb & CASTLE_SQ_MASK_BQ) == 0) {
             const uint64_t mv = move_encode_castle_queenside_black();
             mvl_add(mvl, mv);
         }

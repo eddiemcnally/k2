@@ -53,6 +53,18 @@ void bb_set_square(uint64_t *restrict const bb, const enum square sq) {
     *bb |= ((uint64_t)0x01 << sq);
 }
 
+void bb_set_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square sq) {
+    assert(validate_square(sq));
+    // should be clear
+    assert(((*bb1 >> sq) & 0x01) == 0);
+    assert(((*bb2 >> sq) & 0x01) == 0);
+
+    const uint64_t sq_as_bb = ((uint64_t)0x01 << sq);
+
+    *bb1 |= sq_as_bb;
+    *bb2 |= sq_as_bb;
+}
+
 /**
  * @brief       Clear bit in bitboard representing the given square
  *
@@ -64,6 +76,17 @@ void bb_clear_square(uint64_t *restrict const bb, const enum square sq) {
     assert(((*bb >> sq) & 0x01) == 1);
 
     *bb &= (~((uint64_t)0x01 << sq));
+}
+
+void bb_clear_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square sq) {
+    assert(validate_square(sq));
+    assert(((*bb1 >> sq) & 0x01) == 1);
+    assert(((*bb2 >> sq) & 0x01) == 1);
+
+    const uint64_t sq_as_bb = ~((uint64_t)0x01 << sq);
+
+    *bb1 &= sq_as_bb;
+    *bb2 &= sq_as_bb;
 }
 
 /**
@@ -86,6 +109,23 @@ __attribute__((always_inline)) void bb_move_bit(uint64_t *restrict const bb, con
     // just xor's...assumes bits are set/cleared as expected before this runs
     *bb ^= from_bb;
     *bb ^= to_bb;
+}
+
+__attribute__((always_inline)) void bb_move_bit_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2,
+                                                      const enum square from_sq, const enum square to_sq) {
+
+    assert(validate_square(from_sq));
+    assert(validate_square(to_sq));
+    assert(bb_is_clear(*bb, to_sq));
+
+    const uint64_t from_bb = SQUARE_AS_BITBOARD(from_sq);
+    const uint64_t to_bb = SQUARE_AS_BITBOARD(to_sq);
+
+    // just xor's...assumes bits are set/cleared as expected before this runs
+    *bb1 ^= from_bb;
+    *bb1 ^= to_bb;
+    *bb2 ^= from_bb;
+    *bb2 ^= to_bb;
 }
 
 /**
