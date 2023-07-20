@@ -84,8 +84,11 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -o3 ${TEST_RUNNER_COMPILER_W
 
 
 # CMocka on MacOs (homebrew)
-set(CMOCKA_INCL /opt/homebrew/Cellar/cmocka/1.1.5/include)
-set(CMOCKA_LIB /opt/homebrew/Cellar/cmocka/1.1.5/lib/libcmocka-static.a)
+set(CMOCKA_INCL /opt/homebrew/Cellar/cmocka/1.1.7/include)
+#set(CMOCKA_LIB /opt/homebrew/Cellar/cmocka/1.1.7/lib/libcmocka-static.a)
+
+set(CMOCKA_LIB /opt/homebrew/Cellar/cmocka/1.1.7/lib/libcmocka.dylib)
+
 
 # Define the include directories.
 # Variable is shared with the test launcher

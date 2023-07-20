@@ -139,7 +139,7 @@ static const uint64_t BQ_CAST_BB = (uint64_t)((0x01L << c8) | (0x01L << d8) | (0
  *
  * @return      An initialised Position struct
  */
-struct position *pos_create() {
+struct position *pos_create(void) {
     struct position *retval = (struct position *)malloc(sizeof(struct position));
     init_pos_struct(retval);
 
