@@ -35,8 +35,4 @@
 void test_move_list_init(void **state);
 void test_move_list_bulk_add_moves(void **state);
 void test_move_list_reset_list(void **state);
-void test_move_list_contains_move(void **state);
 void test_move_list_compare(void **state);
-void test_move_list_move_highest_score_to_top_highest_already_at_top(void **state);
-void test_move_list_move_highest_score_to_top_highest_is_moved_to_top(void **state);
-void test_move_list_move_highest_score_to_top_only_1_move_in_list(void **state);

@@ -34,18 +34,18 @@
 struct move_list {
     uint16_t struct_init_key;
     uint16_t move_count;
-    uint64_t move_list[MOVE_LIST_MAX_LEN];
+    struct move move_list[MOVE_LIST_MAX_LEN];
 };
 
 struct move_list mvl_initialise(void);
 uint16_t mvl_get_move_count(const struct move_list *const mvl);
-uint64_t mvl_get_move_at_offset(const struct move_list *const mvl, uint16_t offset);
-void mvl_add(struct move_list *const mvl, uint64_t mv);
+struct move mvl_get_move_at_offset(const struct move_list *const mvl, uint16_t offset);
+void mvl_add(struct move_list *const mvl, struct move mv);
 void mvl_reset(struct move_list *const mvl);
-bool mvl_contains_move(const struct move_list *const mvl, const uint64_t mv);
+bool mvl_contains_move(const struct move_list *const mvl, const struct move mv);
 
 uint16_t mvl_get_mvl_max_size(void);
 bool validate_move_list(const struct move_list *const mvl);
 void mvl_print(const struct move_list *const mvl);
 bool mvl_compare(const struct move_list *const first, const struct move_list *const second);
-void mvl_move_highest_score_to_start_of_slice(struct move_list *const mvl, uint32_t slice_start_index);
+//void mvl_move_highest_score_to_start_of_slice(struct move_list *const mvl, uint32_t slice_start_index);

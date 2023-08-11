@@ -56,7 +56,7 @@ uint64_t do_perft(const uint8_t depth, struct position *pos) {
     //printf("generated move cnt %d\n", mvl.move_count);
 
     for (int i = 0; i < mvl.move_count; i++) {
-        const uint64_t mv = mvl.move_list[i];
+        const struct move mv = mvl.move_list[i];
         const enum move_legality legality = pos_make_move(pos, mv);
 
         if (legality == LEGAL_MOVE) {

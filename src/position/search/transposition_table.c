@@ -48,7 +48,7 @@ static bool validate_node_type(const enum node_type nt);
 
 struct tt_entry {
     uint64_t position_hash;
-    uint64_t mv;
+    struct move mv;
     int32_t score;
     uint8_t depth;
     bool slot_used;
@@ -103,7 +103,7 @@ size_t tt_entry_size(void) {
  * @return true if position info was added to TT
  * @return false if the position info was not added to the TT
  */
-bool tt_add(const uint64_t position_hash, const uint64_t mv, const uint8_t depth, const int32_t score,
+bool tt_add(const uint64_t position_hash, const struct move mv, const uint8_t depth, const int32_t score,
             const enum node_type node_type) {
     assert(validate_move(mv));
     assert(validate_node_type(node_type));
@@ -138,7 +138,7 @@ bool tt_add(const uint64_t position_hash, const uint64_t mv, const uint8_t depth
  * @return true if the hash is present
  * @return false if the has is not present
  */
-bool tt_probe_position(const uint64_t position_hash, uint64_t *mv) {
+bool tt_probe_position(const uint64_t position_hash, struct move *mv) {
     const uint32_t hash_idx = get_index(position_hash);
 
     const struct tt_entry *elem = &tt[hash_idx];

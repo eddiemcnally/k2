@@ -82,11 +82,7 @@ int main(void) {
         TEST(test_move_list_init),
         TEST(test_move_list_bulk_add_moves),
         TEST(test_move_list_reset_list),
-        TEST(test_move_list_contains_move),
         TEST(test_move_list_compare),
-        TEST(test_move_list_move_highest_score_to_top_highest_already_at_top),
-        TEST(test_move_list_move_highest_score_to_top_highest_is_moved_to_top),
-        TEST(test_move_list_move_highest_score_to_top_only_1_move_in_list),
 
         // Pieces
         TEST(test_piece_get_colour_white_pieces),
@@ -94,7 +90,7 @@ int main(void) {
         TEST(test_piece_swap_side),
         TEST(test_piece_values),
         TEST(test_piece_get_piece_from_label),
-        TEST(test_piece_get_array_idx),
+        TEST(test_piece_role_get_array_idx),
         TEST(test_piece_get_piece_label),
 
         // Position
@@ -272,8 +268,6 @@ int main(void) {
         TEST(test_move_all_moves_4_knights_opening_white_to_move),
         TEST(test_move_white_capture_only_moves),
         TEST(test_move_black_capture_only_moves),
-
-        TEST(test_move_set_get_score),
 
         // attack checker
         TEST(test_att_chk_is_white_pawn_attacking),

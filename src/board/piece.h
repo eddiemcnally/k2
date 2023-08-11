@@ -31,6 +31,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "score.h"
+
 // clang-format off
 
 enum colour { 
@@ -38,103 +40,49 @@ enum colour {
     BLACK 
 };
 
+#define COLOUR_AS_ARRAY_OFFSET(colour)  ((size_t)colour)
+#define ROLE_AS_ARRAY_OFFSET(role)      ((size_t)role)
+
+
 #define NUM_COLOURS (2)
 
-#define COLOUR_AS_ARRAY_OFFSET(colour)  ((uint8_t)(colour))
-#define COLOUR_AS_ARRAY_OFFSET_WHITE    (COLOUR_AS_ARRAY_OFFSET(WHITE))
-#define COLOUR_AS_ARRAY_OFFSET_BLACK    (COLOUR_AS_ARRAY_OFFSET(BLACK))
-
-/* Piece values
- * values taken from here: 
- * https://www.chessprogramming.org/Simplified_Evaluation_Function 
- */
-enum piece_values {
-    PCE_VAL_PAWN    = 100,
-    PCE_VAL_BISHOP  = 330,
-    PCE_VAL_KNIGHT  = 320,
-    PCE_VAL_ROOK    = 500,
-    PCE_VAL_QUEEN   = 900,
-    PCE_VAL_KING    = 20000
-};
-
 enum piece_role {
-    PAWN,
-    BISHOP,
-    KNIGHT,
-    ROOK,
-    QUEEN,
-    KING,
+    PAWN    = 0x00,
+    BISHOP  = 0x01,
+    KNIGHT  = 0x02,
+    ROOK    = 0x03,
+    QUEEN   = 0x04,
+    KING    = 0x05,
 };
 
-// Piece bitmap (32 bits)
-// ---- ---- ---- ---- ---- ---- ---- -XXX      role
-// ---- ---- ---- ---- ---- ---- ---- X---      colour
-// ---- ---- ---- ---- ---- ---- XXXX ----      piece array offset
-// ---- ---- ---- ---- ---- ---X ---- ----      is king
-// ---- ---- ---- ---- XXXX XXX- ---- ----      unused
-// XXXX XXXX XXXX XXXX ---- ---- ---- ----      piece value
-
-#define PCE_MASK_ROLE       (0x00000007)
-#define PCE_MASK_COLOUR     (0x00000008)
-#define PCE_MASK_OFFSET     (0x000000F0)
-#define PCE_MASK_IS_KING    (0x00000100)
-#define PCE_MASK_VALUE      (0xFFFF0000)
-
-#define PCE_SHIFT_ROLE      0
-#define PCE_SHIFT_COLOUR    3
-#define PCE_SHIFT_OFFSET    4
-#define PCE_SHIFT_IS_KING   8
-#define PCE_SHIFT_VALUE     16
 
 #define NUM_PIECES          (12)
-#define NO_PIECE            (0xFFFFFFFF)
+#define NUM_PIECE_ROLES     (6)
+#define NO_PIECE            (0xFF)
 
-#define PIECE_AS_ARRAY_OFFSET(pce)   ((int)((pce & PCE_MASK_OFFSET) >> PCE_SHIFT_OFFSET))
+#define PCE_COL_MASK        (0x80)
 
-
-enum pce_offset{
-    WP_OFF,
-    WB_OFF,
-    WN_OFF,
-    WR_OFF,
-    WQ_OFF,
-    WK_OFF,
-    BP_OFF,
-    BB_OFF,
-    BN_OFF,
-    BR_OFF,
-    BQ_OFF,
-    BK_OFF,       
-};
-
-#define GEN_PIECE_BIT_MAP(role, colour, value, offset, is_king)  ((uint32_t)(                                    \
-                                (uint32_t)(((uint32_t)role    << PCE_SHIFT_ROLE)     & PCE_MASK_ROLE)    \
-                              | (uint32_t)(((uint32_t)colour  << PCE_SHIFT_COLOUR)   & PCE_MASK_COLOUR)  \
-                              | (uint32_t)(((uint32_t)offset  << PCE_SHIFT_OFFSET)   & PCE_MASK_OFFSET)  \
-                              | (uint32_t)(((uint32_t)value   << PCE_SHIFT_VALUE)    & PCE_MASK_VALUE)   \
-                              | (uint32_t)(((uint32_t)is_king << PCE_SHIFT_IS_KING)  & PCE_MASK_IS_KING) \
-                              ))
 
 enum piece {
-    WHITE_PAWN      = GEN_PIECE_BIT_MAP(PAWN,   WHITE, PCE_VAL_PAWN,    WP_OFF, false),
-    WHITE_BISHOP    = GEN_PIECE_BIT_MAP(BISHOP, WHITE, PCE_VAL_BISHOP,  WB_OFF, false),   
-    WHITE_KNIGHT    = GEN_PIECE_BIT_MAP(KNIGHT, WHITE, PCE_VAL_KNIGHT,  WN_OFF, false),
-    WHITE_ROOK      = GEN_PIECE_BIT_MAP(ROOK,   WHITE, PCE_VAL_ROOK,    WR_OFF, false),
-    WHITE_QUEEN     = GEN_PIECE_BIT_MAP(QUEEN,  WHITE, PCE_VAL_QUEEN,   WQ_OFF, false),
-    WHITE_KING      = GEN_PIECE_BIT_MAP(KING,   WHITE, PCE_VAL_KING,    WK_OFF, true),
-    BLACK_PAWN      = GEN_PIECE_BIT_MAP(PAWN,   BLACK, PCE_VAL_PAWN,    BP_OFF, false),
-    BLACK_BISHOP    = GEN_PIECE_BIT_MAP(BISHOP, BLACK, PCE_VAL_BISHOP,  BB_OFF, false),   
-    BLACK_KNIGHT    = GEN_PIECE_BIT_MAP(KNIGHT, BLACK, PCE_VAL_KNIGHT,  BN_OFF, false),
-    BLACK_ROOK      = GEN_PIECE_BIT_MAP(ROOK,   BLACK, PCE_VAL_ROOK,    BR_OFF, false),
-    BLACK_QUEEN     = GEN_PIECE_BIT_MAP(QUEEN,  BLACK, PCE_VAL_QUEEN,   BQ_OFF, false),
-    BLACK_KING      = GEN_PIECE_BIT_MAP(KING,   BLACK, PCE_VAL_KING,    BK_OFF, true)      
+    WHITE_PAWN      = PAWN,
+    WHITE_BISHOP    = BISHOP,   
+    WHITE_KNIGHT    = KNIGHT,
+    WHITE_ROOK      = ROOK,
+    WHITE_QUEEN     = QUEEN,
+    WHITE_KING      = KING,
+    BLACK_PAWN      = (PAWN | PCE_COL_MASK),
+    BLACK_BISHOP    = (BISHOP | PCE_COL_MASK),   
+    BLACK_KNIGHT    = (KNIGHT | PCE_COL_MASK),
+    BLACK_ROOK      = (ROOK | PCE_COL_MASK),
+    BLACK_QUEEN     = (QUEEN | PCE_COL_MASK),
+    BLACK_KING      = (KING | PCE_COL_MASK)      
 };
 
 // clang-format on
 
 enum colour pce_swap_side(const enum colour side);
-
-uint32_t pce_get_value(const enum piece pce);
+enum piece_role pce_get_role(const enum piece pce);
+Score pce_get_value(const enum piece pce);
 enum colour pce_get_colour(const enum piece pce);
 enum piece_role pce_get_role(const enum piece pce);
 enum piece pce_get_from_label(const char c);

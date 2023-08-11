@@ -57,7 +57,7 @@ int main(void) {
     struct search_data info = {0};
     info.search_depth = 5;
 
-    search_position(pos, &info);
+    //search_position(pos, &info);
 
     pos_destroy(pos);
 }

@@ -48,4 +48,4 @@ struct search_data {
 #define INFINITY INT_MAX
 #define NEG_INFINITY INT_MIN
 
-void search_position(struct position *const pos, struct search_data *const search_info);
+//void search_position(struct position *const pos, struct search_data *const search_info);

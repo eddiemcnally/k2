@@ -35,43 +35,30 @@
 #include "bitboard.h"
 #include "move.h"
 #include "piece.h"
+#include "score.h"
 #include "square.h"
 #include "utils.h"
 #include <assert.h>
+
+struct colour_info {
+    uint64_t colour_bb;
+    uint64_t piece_bb[NUM_PIECE_ROLES];
+    Score material;
+    enum square king_sq;
+};
 
 /**
  * @brief struct for containing the board
  * 
  */
 struct board {
-    // bitboard for each piece and colour
-    uint64_t bb_piece[NUM_PIECES];
-
-    // a bitboard per colour, a set bit means that colour occupies that square
-    uint64_t bb_colour[NUM_COLOURS];
-
-    // total material value for each colour
-    int32_t material[NUM_COLOURS];
+    struct colour_info colour_info[NUM_COLOURS];
 
     // contains the piece on a given square
     enum piece pce_square[NUM_SQUARES];
 
-    // king squares
-    enum square king_squares[NUM_COLOURS];
-
     uint32_t init_flag;
 };
-
-// clang-format off
-#define PCE_OFFSET_WHITE_ROOK   (PIECE_AS_ARRAY_OFFSET(WHITE_ROOK))
-#define PCE_OFFSET_WHITE_BISHOP (PIECE_AS_ARRAY_OFFSET(WHITE_BISHOP))
-#define PCE_OFFSET_WHITE_QUEEN  (PIECE_AS_ARRAY_OFFSET(WHITE_QUEEN))
-
-#define PCE_OFFSET_BLACK_ROOK   (PIECE_AS_ARRAY_OFFSET(BLACK_ROOK))
-#define PCE_OFFSET_BLACK_BISHOP (PIECE_AS_ARRAY_OFFSET(BLACK_BISHOP))
-#define PCE_OFFSET_BLACK_QUEEN  (PIECE_AS_ARRAY_OFFSET(BLACK_QUEEN))
-
-// clang-format on
 
 static bool validate_square_empty(const struct board *brd, const enum square to_sq);
 static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq);
@@ -116,7 +103,8 @@ void brd_deallocate(struct board *brd) {
 uint64_t brd_get_board_bb(const struct board *const brd) {
     assert(validate_board(brd));
 
-    return brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE] | brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK];
+    return brd->colour_info[COLOUR_AS_ARRAY_OFFSET(WHITE)].colour_bb |
+           brd->colour_info[COLOUR_AS_ARRAY_OFFSET(BLACK)].colour_bb;
 }
 
 /**
@@ -154,32 +142,36 @@ void brd_add_piece(struct board *const brd, const enum piece pce, const enum squ
     assert(validate_board(brd));
 
     const enum colour colour = pce_get_colour(pce);
-    const uint8_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    const enum piece_role role = pce_get_role(pce);
+    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
 
-    bb_set_square_multi(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], &brd->bb_colour[col_off], sq);
-    brd->pce_square[sq] = pce;
+    // update colour-related info
+    bb_set_square(&brd->colour_info[col_off].colour_bb, sq);
+    bb_set_square(&brd->colour_info[col_off].piece_bb[role_off], sq);
 
-    // add material
-    const uint32_t material = pce_get_value(pce);
-    brd->material[col_off] += material;
+    const Score material = pce_get_value(pce);
+    brd->colour_info[col_off].material += material;
 
-    if (pce_is_king(pce)) {
-        brd->king_squares[col_off] = sq;
+    if (role == KING) {
+        brd->colour_info[col_off].king_sq = sq;
     }
+
+    // update generic board info
+    brd->pce_square[sq] = pce;
 }
 
 /**
  * @brief Returns the material value for the given side/colour 
  * 
  * @param brd           The board
- * @return int32_t      The current material value
+ * @return material     The current material value
  */
 struct material brd_get_material(const struct board *const brd) {
     assert(validate_board(brd));
 
-    struct material m = {.white = brd->material[COLOUR_AS_ARRAY_OFFSET_WHITE],
-                         .black = brd->material[COLOUR_AS_ARRAY_OFFSET_BLACK]};
-
+    struct material m = {.white = brd->colour_info[COLOUR_AS_ARRAY_OFFSET(WHITE)].material,
+                         .black = brd->colour_info[COLOUR_AS_ARRAY_OFFSET(BLACK)].material};
     return m;
 }
 
@@ -192,18 +184,17 @@ void brd_remove_piece(struct board *const brd, const enum piece pce, const enum 
     assert(validate_piece(pce));
 
     const enum colour col = pce_get_colour(pce);
-    const int col_off = COLOUR_AS_ARRAY_OFFSET(col);
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(col);
+    const enum piece_role role = pce_get_role(pce);
+    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
 
-    bb_clear_square_multi(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], &brd->bb_colour[col_off], sq);
+    bb_clear_square(&brd->colour_info[col_off].colour_bb, sq);
+    bb_clear_square(&brd->colour_info[col_off].piece_bb[role_off], sq);
+
     brd->pce_square[sq] = NO_PIECE;
 
-    const uint32_t material = pce_get_value(pce);
-    brd->material[col_off] -= material;
-    assert(brd->material[col_off] > 0);
-
-    if (pce_is_king(pce)) {
-        REQUIRE(false, "Attempted to remove King from board");
-    }
+    const Score material = pce_get_value(pce);
+    brd->colour_info[col_off].material -= material;
 }
 
 void brd_remove_from_square(struct board *const brd, const enum square sq) {
@@ -223,10 +214,13 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     assert(brd_is_sq_occupied(brd, from_sq));
 
     const enum colour colour = pce_get_colour(pce);
-    const uint8_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    const enum piece_role role = pce_get_role(pce);
+    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
 
     // set/clear to/from squares in various bitboards
-    bb_move_bit_multi(&brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)], &brd->bb_colour[col_off], from_sq, to_sq);
+    bb_move_bit_multi(&brd->colour_info[col_off].colour_bb, &brd->colour_info[col_off].piece_bb[role_off], from_sq,
+                      to_sq);
 
     assert(brd->pce_square[from_sq] == pce);
 
@@ -234,7 +228,7 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     brd->pce_square[to_sq] = pce;
 
     if (pce_is_king(pce)) {
-        brd->king_squares[col_off] = to_sq;
+        brd->colour_info[col_off].king_sq = to_sq;
     }
 }
 
@@ -247,7 +241,14 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
  */
 uint64_t brd_get_black_bb(const struct board *const brd) {
     assert(validate_board(brd));
-    return brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK];
+
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(BLACK);
+    return brd->colour_info[col_off].colour_bb;
+}
+
+uint64_t brd_get_colour_bb(const struct board *const brd, const enum colour colour) {
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    return brd->colour_info[col_off].colour_bb;
 }
 
 /**
@@ -259,7 +260,8 @@ uint64_t brd_get_black_bb(const struct board *const brd) {
  */
 uint64_t brd_get_white_bb(const struct board *const brd) {
     assert(validate_board(brd));
-    return brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE];
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(WHITE);
+    return brd->colour_info[col_off].colour_bb;
 }
 
 enum colour brd_get_colour_on_sq(const struct board *const brd, const enum square sq) {
@@ -273,67 +275,56 @@ enum colour brd_get_colour_on_sq(const struct board *const brd, const enum squar
 
 uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {
     assert(validate_board(brd));
-    return brd->bb_piece[PIECE_AS_ARRAY_OFFSET(pce)];
+
+    const enum colour colour = pce_get_colour(pce);
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    const enum piece_role role = pce_get_role(pce);
+    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
+
+    return brd->colour_info[col_off].piece_bb[role_off];
+}
+
+enum square brd_get_king_square(const struct board *const brd, const enum colour colour) {
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    return brd->colour_info[col_off].king_sq;
+}
+
+uint64_t brd_get_bb_for_role_colour(const struct board *const brd, const enum piece_role role,
+                                    const enum colour colour) {
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
+
+    return brd->colour_info[col_off].piece_bb[role_off];
 }
 
 /**
- * @brief   Returns the WHITE king square
+ * @brief Returns a bitboard representing the rook and queen positions for a given colour
  * 
- * @param brd The board 
- * @return enum square The white king square
- */
-enum square brd_get_white_king_square(const struct board *const brd) {
-    return brd->king_squares[COLOUR_AS_ARRAY_OFFSET(WHITE)];
-}
-
-/**
- * @brief   Returns the BLACK king square
- * 
- * @param brd The board 
- * @return enum square The black king square
- */
-enum square brd_get_black_king_square(const struct board *const brd) {
-    return brd->king_squares[COLOUR_AS_ARRAY_OFFSET(BLACK)];
-}
-
-/**
- * @brief Returns a bitboard representing the WHITE rook and queen positions
- * 
- * @param brd The board
+ * @param brd       The board
+ * @param colour    The side
  * @return uint64_t The rook and queen bitboard
  */
-uint64_t brd_get_white_rook_queen_bb(const struct board *const brd) {
-    return brd->bb_piece[PCE_OFFSET_WHITE_ROOK] | brd->bb_piece[PCE_OFFSET_WHITE_QUEEN];
+uint64_t brd_get_rook_queen_bb_for_colour(const struct board *const brd, const enum colour colour) {
+    const size_t rook_off = ROLE_AS_ARRAY_OFFSET(ROOK);
+    const size_t queen_off = ROLE_AS_ARRAY_OFFSET(QUEEN);
+
+    return brd->colour_info[COLOUR_AS_ARRAY_OFFSET(colour)].piece_bb[rook_off] |
+           brd->colour_info[COLOUR_AS_ARRAY_OFFSET(colour)].piece_bb[queen_off];
 }
 
 /**
- * @brief Returns a bitboard representing the BLACK rook and queen positions
+ * @brief Returns a bitboard representing the bishop and queen positions for a given colour
  * 
- * @param brd The board
- * @return uint64_t The rook and queen bitboard
- */
-uint64_t brd_get_black_rook_queen_bb(const struct board *const brd) {
-    return brd->bb_piece[PCE_OFFSET_BLACK_ROOK] | brd->bb_piece[PCE_OFFSET_BLACK_QUEEN];
-}
-
-/**
- * @brief Returns a bitboard representing the WHITE bishop and queen positions
- * 
- * @param brd The board
+ * @param brd       The board
+ * @param colour    The side
  * @return uint64_t The bishop and queen bitboard
  */
-uint64_t brd_get_white_bishop_queen_bb(const struct board *const brd) {
-    return brd->bb_piece[PCE_OFFSET_WHITE_BISHOP] | brd->bb_piece[PCE_OFFSET_WHITE_QUEEN];
-}
+uint64_t brd_get_bishop_queen_bb_for_colour(const struct board *const brd, const enum colour colour) {
+    const size_t bishop_off = ROLE_AS_ARRAY_OFFSET(BISHOP);
+    const size_t queen_off = ROLE_AS_ARRAY_OFFSET(QUEEN);
 
-/**
- * @brief Returns a bitboard representing the BLACK bishop and queen positions
- * 
- * @param brd The board
- * @return uint64_t The bishop and queen bitboard
- */
-uint64_t brd_get_black_bishop_queen_bb(const struct board *const brd) {
-    return brd->bb_piece[PCE_OFFSET_BLACK_BISHOP] | brd->bb_piece[PCE_OFFSET_BLACK_QUEEN];
+    return brd->colour_info[COLOUR_AS_ARRAY_OFFSET(colour)].piece_bb[bishop_off] |
+           brd->colour_info[COLOUR_AS_ARRAY_OFFSET(colour)].piece_bb[queen_off];
 }
 
 /**
@@ -349,8 +340,8 @@ bool validate_board(const struct board *const brd) {
     enum square sq;
 
     // conflate colour bitboards
-    const uint64_t conflated_col_bb =
-        brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE] | brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK];
+    const uint64_t conflated_col_bb = brd->colour_info[COLOUR_AS_ARRAY_OFFSET(WHITE)].colour_bb |
+                                      brd->colour_info[COLOUR_AS_ARRAY_OFFSET(BLACK)].colour_bb;
 
     // check various bitboards agree with the pieces on the squares
     for (sq = a1; sq <= h8; sq++) {
@@ -359,7 +350,12 @@ bool validate_board(const struct board *const brd) {
         if (is_occupied) {
             assert(bb_is_set(conflated_col_bb, sq));
             assert(brd->pce_square[sq] != NO_PIECE);
-            assert(bb_is_set(brd->bb_colour[pce_get_colour(brd->pce_square[sq])], sq));
+
+            const enum piece pce = brd->pce_square[sq];
+            const enum colour col = pce_get_colour(pce);
+            const size_t col_off = COLOUR_AS_ARRAY_OFFSET(col);
+
+            assert(bb_is_set(brd->colour_info[col_off].colour_bb, sq));
         } else {
             assert(bb_is_clear(conflated_col_bb, sq));
             assert(brd->pce_square[sq] == NO_PIECE);
@@ -367,7 +363,8 @@ bool validate_board(const struct board *const brd) {
     }
 
     // colour bitboards should AND to zero
-    assert((brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE] & brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK]) == 0 &&
+    assert((brd->colour_info[COLOUR_AS_ARRAY_OFFSET(WHITE)].colour_bb &
+            brd->colour_info[COLOUR_AS_ARRAY_OFFSET(BLACK)].colour_bb) == 0 &&
            "col bb not ANDing as zero");
 
     // can't be more bits set than max pieces on board
@@ -375,23 +372,11 @@ bool validate_board(const struct board *const brd) {
     assert(num_bits_on_board <= 32);
 
     // check colour bitboards and conflated board are the same
-    uint8_t num_white_bits = (uint8_t)__builtin_popcountll(brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE]);
-    uint8_t num_black_bits = (uint8_t)__builtin_popcountll(brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK]);
+    uint8_t num_white_bits = (uint8_t)__builtin_popcountll(brd->colour_info[COLOUR_AS_ARRAY_OFFSET(WHITE)].colour_bb);
+    uint8_t num_black_bits = (uint8_t)__builtin_popcountll(brd->colour_info[COLOUR_AS_ARRAY_OFFSET(BLACK)].colour_bb);
     assert(num_bits_on_board == (num_white_bits + num_black_bits));
 
-    // conflate all piece bitboards, and verify same as board bitboard
-    uint64_t conflated_pce_bb = 0;
-    uint8_t total_bit_count = 0;
-
-    for (int i = 0; i < NUM_PIECES; i++) {
-
-        conflated_pce_bb |= brd->bb_piece[i];
-        total_bit_count += (uint8_t)__builtin_popcountll(brd->bb_piece[i]);
-    }
-
-    assert(total_bit_count == num_bits_on_board);
-    assert(conflated_pce_bb ==
-           (brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_WHITE] | brd->bb_colour[COLOUR_AS_ARRAY_OFFSET_BLACK]));
+    // TODO - check bits set correspond to pieces on squares
 
     assert(brd->init_flag == INIT_KEY);
 
@@ -411,13 +396,42 @@ bool brd_compare(const struct board *const first, const struct board *const seco
     assert(validate_board(first));
     assert(validate_board(second));
 
-    for (int i = 0; i < NUM_COLOURS; i++) {
-        if (first->bb_colour[i] != second->bb_colour[i]) {
+    // compare WHITE colour_info
+    const struct colour_info *col_info_white = &first->colour_info[COLOUR_AS_ARRAY_OFFSET(WHITE)];
+    const struct colour_info *col_info_white_other = &second->colour_info[COLOUR_AS_ARRAY_OFFSET(WHITE)];
+
+    if (col_info_white->material != col_info_white_other->material) {
+        return false;
+    }
+    if (col_info_white->colour_bb != col_info_white_other->colour_bb) {
+        return false;
+    }
+    for (int i = 0; i < NUM_PIECE_ROLES; i++) {
+        if (col_info_white->piece_bb[i] != col_info_white_other->piece_bb[i]) {
             return false;
         }
-        if (first->material[i] != second->material[i]) {
+    }
+    if (col_info_white->king_sq != col_info_white_other->king_sq) {
+        return false;
+    }
+
+    // compare BLACK colour_info
+    const struct colour_info *col_info_black = &first->colour_info[COLOUR_AS_ARRAY_OFFSET(BLACK)];
+    const struct colour_info *col_info_black_other = &second->colour_info[COLOUR_AS_ARRAY_OFFSET(BLACK)];
+
+    if (col_info_black->material != col_info_black_other->material) {
+        return false;
+    }
+    if (col_info_black->colour_bb != col_info_black_other->colour_bb) {
+        return false;
+    }
+    for (int i = 0; i < NUM_PIECE_ROLES; i++) {
+        if (col_info_black->piece_bb[i] != col_info_black_other->piece_bb[i]) {
             return false;
         }
+    }
+    if (col_info_black->king_sq != col_info_black_other->king_sq) {
+        return false;
     }
 
     for (int i = 0; i < NUM_SQUARES; i++) {
@@ -426,10 +440,8 @@ bool brd_compare(const struct board *const first, const struct board *const seco
         }
     }
 
-    for (int i = 0; i < NUM_PIECES; i++) {
-        if (first->bb_piece[i] != second->bb_piece[i]) {
-            return false;
-        }
+    if (first->init_flag != second->init_flag) {
+        return false;
     }
 
     return true;
@@ -474,11 +486,6 @@ void brd_print(const struct board *const brd) {
 
 static void init_struct(struct board *const brd) {
     memset(brd, 0, sizeof(struct board));
-
-    for (int i = 0; i < NUM_COLOURS; i++) {
-        brd->bb_colour[i] = bb_get_empty();
-        brd->material[i] = 0;
-    }
 
     for (enum square sq = a1; sq <= h8; sq++) {
         brd->pce_square[sq] = NO_PIECE;

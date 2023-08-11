@@ -150,45 +150,25 @@ void test_piece_get_colour_black_pieces(void **state) {
     assert_true(pce_get_colour(pce) == BLACK);
 }
 
-// WP,
-// WB,
-// WN,
-// WR,
-// WQ,
-// WK,
-// BP,
-// BB,
-// BN,
-// BR,
-// BQ,
-// BK,
+void test_piece_role_get_array_idx(void **state) {
 
-void test_piece_get_array_idx(void **state) {
-    enum piece pce = WHITE_PAWN;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 0);
-    pce = WHITE_BISHOP;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 1);
-    pce = WHITE_KNIGHT;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 2);
-    pce = WHITE_ROOK;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 3);
-    pce = WHITE_QUEEN;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 4);
-    pce = WHITE_KING;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 5);
+    enum piece_role role = PAWN;
+    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 0);
 
-    pce = BLACK_PAWN;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 6);
-    pce = BLACK_BISHOP;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 7);
-    pce = BLACK_KNIGHT;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 8);
-    pce = BLACK_ROOK;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 9);
-    pce = BLACK_QUEEN;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 10);
-    pce = BLACK_KING;
-    assert_true(PIECE_AS_ARRAY_OFFSET(pce) == 11);
+    role = BISHOP;
+    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 1);
+
+    role = KNIGHT;
+    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 2);
+
+    role = ROOK;
+    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 3);
+
+    role = QUEEN;
+    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 4);
+
+    role = KING;
+    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 5);
 }
 
 void test_piece_swap_side(void **state) {

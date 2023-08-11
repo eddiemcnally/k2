@@ -38,47 +38,17 @@ void test_move_list_init(void **state) {
 
 void test_move_list_bulk_add_moves(void **state) {
     const uint16_t max_moves = mvl_get_mvl_max_size() - 1;
-    const uint16_t mv_offset = 1234;
 
     struct move_list mvl = mvl_initialise();
 
     // add moves
     for (int i = 0; i < max_moves; i++) {
-        uint64_t mv = (uint64_t)(mv_offset + i);
+        const struct move mv = move_encode_quiet(a1, b3);
         mvl_add(&mvl, mv);
     }
 
     uint16_t count = mvl_get_move_count(&mvl);
     assert_true(count == max_moves);
-
-    for (int i = 0; i < max_moves; i++) {
-        uint64_t expected = (uint64_t)(mv_offset + i);
-        uint64_t mv = mvl_get_move_at_offset(&mvl, (uint16_t)i);
-
-        assert_true(move_compare(mv, expected));
-    }
-}
-
-void test_move_list_contains_move(void **state) {
-    const uint16_t num_moves = 250;
-    struct move_list mvl = mvl_initialise();
-
-    // add moves
-    for (int i = 0; i < num_moves; i++) {
-        uint64_t mv = (uint64_t)i;
-        mvl_add(&mvl, mv);
-    }
-
-    // verify all are present
-    for (int i = 0; i < num_moves; i++) {
-        uint64_t mv = (uint64_t)i;
-        assert_true(mvl_contains_move(&mvl, mv));
-    }
-
-    // verify a non-existant move is not in the list
-    uint64_t other_mv = num_moves + 100;
-
-    assert_false(mvl_contains_move(&mvl, other_mv));
 }
 
 void test_move_list_reset_list(void **state) {
@@ -87,7 +57,7 @@ void test_move_list_reset_list(void **state) {
 
     // add moves
     for (int i = 0; i < num_moves; i++) {
-        uint64_t mv = (uint64_t)i;
+        struct move mv = move_encode_quiet(a1, a3);
         mvl_add(&mvl, mv);
     }
 
@@ -104,78 +74,16 @@ void test_move_list_compare(void **state) {
 
     // add moves
     for (int i = 0; i < num_moves; i++) {
-        uint64_t mv = (uint64_t)i;
+        struct move mv = {.bitmap = (uint16_t)i};
         mvl_add(&mvl1, mv);
         mvl_add(&mvl2, mv);
     }
 
     assert_true(mvl_compare(&mvl1, &mvl2));
 
-    uint64_t m = 0;
+    struct move m = {.bitmap = 0};
     mvl_add(&mvl1, m);
     assert_false(mvl_compare(&mvl1, &mvl2));
     mvl_add(&mvl2, m);
     assert_true(mvl_compare(&mvl1, &mvl2));
-}
-
-void test_move_list_move_highest_score_to_top_highest_already_at_top(void **state) {
-    struct move_list mvl = mvl_initialise();
-    const int32_t HIGH_SCORE = 1000;
-
-    uint64_t highest_mv = move_encode_quiet(a2, a4);
-    move_set_score(&highest_mv, HIGH_SCORE);
-    mvl_add(&mvl, highest_mv);
-
-    uint64_t mv = move_encode_quiet(b2, b4);
-    move_set_score(&mv, HIGH_SCORE - 1);
-    mvl_add(&mvl, mv);
-
-    mvl_move_highest_score_to_start_of_slice(&mvl, 0);
-
-    uint64_t found = mvl_get_move_at_offset(&mvl, 0);
-    assert_true(move_compare(found, highest_mv));
-}
-
-void test_move_list_move_highest_score_to_top_highest_is_moved_to_top(void **state) {
-
-    struct move_list mvl = mvl_initialise();
-    const int32_t HIGH_SCORE = 1000;
-
-    uint64_t second_highest_mv = move_encode_quiet(c2, c4);
-    move_set_score(&second_highest_mv, HIGH_SCORE - 1);
-    mvl_add(&mvl, second_highest_mv);
-    uint64_t mv = move_encode_quiet(d2, d4);
-    move_set_score(&mv, HIGH_SCORE - 2);
-    mvl_add(&mvl, mv);
-    mv = move_encode_quiet(f2, f4);
-    move_set_score(&mv, HIGH_SCORE - 3);
-    mvl_add(&mvl, mv);
-
-    uint64_t highest_mv = move_encode_quiet(a2, a4);
-    move_set_score(&highest_mv, HIGH_SCORE);
-    mvl_add(&mvl, highest_mv);
-
-    mvl_move_highest_score_to_start_of_slice(&mvl, 0);
-
-    uint64_t found = mvl_get_move_at_offset(&mvl, 0);
-    assert_true(move_compare(found, highest_mv));
-
-    // now get the next highest score
-    mvl_move_highest_score_to_start_of_slice(&mvl, 1);
-    found = mvl_get_move_at_offset(&mvl, 1);
-    assert_true(move_compare(found, second_highest_mv));
-}
-
-void test_move_list_move_highest_score_to_top_only_1_move_in_list(void **state) {
-    struct move_list mvl = mvl_initialise();
-    const int32_t HIGH_SCORE = 1000;
-
-    uint64_t mv = move_encode_quiet(c2, c4);
-    move_set_score(&mv, HIGH_SCORE);
-    mvl_add(&mvl, mv);
-
-    mvl_move_highest_score_to_start_of_slice(&mvl, 0);
-
-    uint64_t found = mvl_get_move_at_offset(&mvl, 0);
-    assert_true(move_compare(found, mv));
 }

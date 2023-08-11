@@ -122,6 +122,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c17 ${CC_WARNINGS} \
 -flto=full \
 -O3 \
 -m64 \
+-mcpu=apple-m1 \
 -mtune=native")
 
 # ---- Profiling ----

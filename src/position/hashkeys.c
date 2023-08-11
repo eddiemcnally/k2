@@ -39,7 +39,7 @@
 #include "utils.h"
 #include <assert.h>
 
-static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES] = {{0}, {0}};
+static uint64_t piece_keys[NUM_PIECE_ROLES][NUM_COLOURS][NUM_SQUARES] = {{0}, {0}, {0}};
 static uint64_t side_key = 0;
 static uint64_t castle_keys[NUM_CASTLE_PERMS] = {0};
 static uint64_t en_passant_sq_keys[NUM_SQUARES] = {0};
@@ -53,12 +53,15 @@ uint64_t init_key_mgmt(void) {
 
     uint64_t hashkey = 0;
 
-    for (int num_pces = 0; num_pces < NUM_PIECES; num_pces++) {
-        for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
-            const uint64_t rnd = genrand64_int64();
-            piece_keys[num_pces][num_sq] = rnd;
+    for (int num_roles = 0; num_roles < NUM_PIECE_ROLES; num_roles++) {
+        for (int num_cols = 0; num_cols < NUM_COLOURS; num_cols++) {
+            for (int num_sq = 0; num_sq < NUM_SQUARES; num_sq++) {
 
-            hashkey ^= piece_keys[num_pces][num_sq];
+                const uint64_t rnd = genrand64_int64();
+                piece_keys[num_roles][num_cols][num_sq] = rnd;
+
+                hashkey ^= rnd;
+            }
         }
     }
 
@@ -83,12 +86,18 @@ uint64_t hash_piece_update(const enum piece pce, const enum square sq, const uin
     assert(validate_piece(pce));
     assert(validate_square(sq));
 
-    return key_to_modify ^ piece_keys[PIECE_AS_ARRAY_OFFSET(pce)][sq];
+    const enum piece_role role = pce_get_role(pce);
+    const enum colour colour = pce_get_colour(pce);
+
+    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+
+    return key_to_modify ^ piece_keys[role_off][col_off][sq];
 }
 
-bool hash_compare(const uint64_t hashkey1, const uint64_t hashkey2) {
-    return hashkey1 == hashkey2;
-}
+// bool hash_compare(const uint64_t hashkey1, const uint64_t hashkey2) {
+//     return hashkey1 == hashkey2;
+// }
 
 uint64_t hash_piece_update_move(const enum piece pce, const enum square from_sq, const enum square to_sq,
                                 const uint64_t key_to_modify) {
@@ -96,11 +105,16 @@ uint64_t hash_piece_update_move(const enum piece pce, const enum square from_sq,
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    const uint64_t *pce_array = piece_keys[PIECE_AS_ARRAY_OFFSET(pce)];
-    const uint64_t from_hash = key_to_modify ^ *(pce_array + from_sq);
-    const uint64_t to_hash = from_hash ^ *(pce_array + to_sq);
+    const enum piece_role role = pce_get_role(pce);
+    const enum colour colour = pce_get_colour(pce);
 
-    return to_hash;
+    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
+    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
+
+    uint64_t hashkey = key_to_modify ^ piece_keys[role_off][col_off][from_sq];
+    hashkey = key_to_modify ^ piece_keys[role_off][col_off][to_sq];
+
+    return hashkey;
 }
 
 /**
@@ -110,6 +124,10 @@ uint64_t hash_piece_update_move(const enum piece pce, const enum square from_sq,
  */
 uint64_t hash_side_update(const uint64_t key_to_modify) {
     return key_to_modify ^ side_key;
+}
+
+bool hash_compare(const uint64_t hashkey1, const uint64_t hashkey2) {
+    return hashkey1 == hashkey2;
 }
 
 /**

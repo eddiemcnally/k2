@@ -1,6 +1,6 @@
 /*  MIT License
  *
- *  Copyright (c) 2017 Eddie McNally
+ *  Copyright (c) 2023 Eddie McNally
  *
  *  Permission is hereby granted, free of charge, to any person 
  *  obtaining a copy of this software and associated documentation 
@@ -26,26 +26,7 @@
 
 #pragma once
 
-#include <setjmp.h>
-#include <stdarg.h>
 #include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <stdio.h>
 
-void test_move_quiet_move_encode_decode(void **state);
-void test_move_promoted_capture_move_encode_decode(void **state);
-void test_move_promoted_non_capture_move_encode_decode(void **state);
-void test_move_en_passant_move_encode_decode(void **state);
-void test_move_is_double_pawn_white(void **state);
-void test_move_is_double_pawn_black(void **state);
-void test_white_king_castle_encode_and_test(void **state);
-void test_white_queen_castle_encode_and_test(void **state);
-void test_black_king_castle_encode_and_test(void **state);
-void test_black_queen_castle_encode_and_test(void **state);
-void test_move_quiet_encode_decode(void **state);
-void test_move_capture_encode_decode(void **state);
-void test_move_white_king_castle_encode_decode(void **state);
-void test_move_white_queen_castle_encode_decode(void **state);
-void test_move_black_king_castle_encode_decode(void **state);
-void test_move_black_queen_castle_encode_decode(void **state);
-void test_move_double_pawn_move_encode_decode(void **state);
+typedef int32_t Score;

@@ -77,7 +77,7 @@ uint16_t mvl_get_move_count(const struct move_list *const mvl) {
  * @param offset The move offset in the move list
  * @return      The move at the move list offset
  */
-uint64_t mvl_get_move_at_offset(const struct move_list *const mvl, uint16_t offset) {
+struct move mvl_get_move_at_offset(const struct move_list *const mvl, uint16_t offset) {
     assert(validate_move_list(mvl));
     assert(offset <= mvl->move_count - 1);
 
@@ -90,7 +90,7 @@ uint64_t mvl_get_move_at_offset(const struct move_list *const mvl, uint16_t offs
  * @param mvl   The move_list instance
  * @param mv    The move to add
  */
-void mvl_add(struct move_list *const mvl, const uint64_t mv) {
+void mvl_add(struct move_list *const mvl, const struct move mv) {
     assert(validate_move_list(mvl));
     assert(validate_move(mv));
     assert(mvl->move_count < MOVE_LIST_MAX_LEN);
@@ -117,7 +117,7 @@ void mvl_reset(struct move_list *const mvl) {
  * @param mv    The move to search for
  * @return true if move is in list, false otherwise
  */
-bool mvl_contains_move(const struct move_list *const mvl, const uint64_t mv) {
+bool mvl_contains_move(const struct move_list *const mvl, const struct move mv) {
     assert(validate_move_list(mvl));
     assert(validate_move(mv));
 
@@ -140,7 +140,7 @@ void mvl_print(const struct move_list *const mvl) {
     uint16_t move_count = mvl_get_move_count(mvl);
 
     for (uint16_t i = 0; i < move_count; i++) {
-        uint64_t m = mvl_get_move_at_offset(mvl, i);
+        struct move m = mvl_get_move_at_offset(mvl, i);
         printf("%s\n", move_print(m));
     }
 }
@@ -192,30 +192,30 @@ bool mvl_compare(const struct move_list *const first, const struct move_list *co
     return true;
 }
 
-/**
- * @brief      Moves the highest score in the array slice to the start of the slice
- *
- * @param      mvl                The move list
- * @param[in]  slice_start_index  The array index that is the start of the slice
- */
-void mvl_move_highest_score_to_start_of_slice(struct move_list *const mvl, const uint32_t slice_start_index) {
-    int32_t best_score = 0;
-    int highest_score_idx = (int)slice_start_index;
+// /**
+//  * @brief      Moves the highest score in the array slice to the start of the slice
+//  *
+//  * @param      mvl                The move list
+//  * @param[in]  slice_start_index  The array index that is the start of the slice
+//  */
+// void mvl_move_highest_score_to_start_of_slice(struct move_list *const mvl, const uint32_t slice_start_index) {
+//     int32_t best_score = 0;
+//     int highest_score_idx = (int)slice_start_index;
 
-    REQUIRE(slice_start_index < mvl->move_count, "Move List slice start is past end of move list array");
+//     REQUIRE(slice_start_index < mvl->move_count, "Move List slice start is past end of move list array");
 
-    for (int i = (int)slice_start_index; i < mvl->move_count; i++) {
-        const int32_t score = move_get_score(mvl->move_list[i]);
-        if (score > best_score) {
-            best_score = score;
-            highest_score_idx = i;
-        }
-    }
+//     for (int i = (int)slice_start_index; i < mvl->move_count; i++) {
+//         const int32_t score = move_get_score(mvl->move_list[i]);
+//         if (score > best_score) {
+//             best_score = score;
+//             highest_score_idx = i;
+//         }
+//     }
 
-    const uint64_t temp_mv = mvl->move_list[slice_start_index];
-    mvl->move_list[slice_start_index] = mvl->move_list[highest_score_idx];
-    mvl->move_list[highest_score_idx] = temp_mv;
-}
+//     const struct move temp_mv = mvl->move_list[slice_start_index];
+//     mvl->move_list[slice_start_index] = mvl->move_list[highest_score_idx];
+//     mvl->move_list[highest_score_idx] = temp_mv;
+// }
 
 // ==================================================================
 //
