@@ -273,9 +273,12 @@ enum move_legality pos_make_move(struct position *const pos, const struct move m
 
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
-    const enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
-    const enum piece pce_capt = brd_get_piece_on_square(pos->brd, to_sq);
 
+    enum piece pce_to_move;
+    brd_try_get_piece_on_square(pos->brd, from_sq, &pce_to_move);
+
+    enum piece pce_capt;
+    brd_try_get_piece_on_square(pos->brd, to_sq, &pce_capt);
     // save state
     position_hist_push(pos, mv, pce_to_move, pce_capt);
 
@@ -478,7 +481,9 @@ static void do_promotion_quiet(struct position *const pos, const enum piece pce_
 static void do_promotion_capture(struct position *const pos, const enum piece pce_to_move, const enum square from_sq,
                                  const enum square to_sq, const enum piece target_promotion_pce) {
 
-    const enum piece pce_being_captured = brd_get_piece_on_square(pos->brd, to_sq);
+    enum piece pce_being_captured;
+    brd_try_get_piece_on_square(pos->brd, to_sq, &pce_being_captured);
+
     pos_remove_piece(pos, pce_being_captured, to_sq);
 
     pos_remove_piece(pos, pce_to_move, from_sq);
@@ -564,7 +569,8 @@ static void init_pos_struct(struct position *const pos) {
 
 static void do_capture_move(struct position *const pos, const enum square from_sq, const enum square to_sq,
                             const enum piece pce_to_move) {
-    const enum piece pce_capt = brd_get_piece_on_square(pos->brd, to_sq);
+    enum piece pce_capt;
+    brd_try_get_piece_on_square(pos->brd, to_sq, &pce_capt);
 
     pos_remove_piece(pos, pce_capt, to_sq);
     pos_move_piece(pos, pce_to_move, from_sq, to_sq);
@@ -637,13 +643,22 @@ static void make_queen_side_castle_move(struct position *const pos) {
 
 static void make_en_passant_move(struct position *const pos, const enum square from_sq, const enum square to_sq) {
 
-    const enum piece pce_to_move = brd_get_piece_on_square(pos->brd, from_sq);
-    const enum square sq_with_piece =
-        pos->state.side_to_move == WHITE ? sq_get_square_minus_1_rank(to_sq) : sq_get_square_plus_1_rank(to_sq);
-    const enum piece pce_to_remove = brd_get_piece_on_square(pos->brd, sq_with_piece);
+    enum piece piece_to_remove;
+    enum piece piece_to_move;
+    enum square sq_with_piece;
 
-    pos_remove_piece(pos, pce_to_remove, sq_with_piece);
-    pos_move_piece(pos, pce_to_move, from_sq, to_sq);
+    if (pos->state.side_to_move == WHITE) {
+        sq_with_piece = sq_get_square_minus_1_rank(to_sq);
+        piece_to_move = WHITE_PAWN;
+        piece_to_remove = BLACK_PAWN;
+    } else {
+        sq_with_piece = sq_get_square_plus_1_rank(to_sq);
+        piece_to_move = BLACK_PAWN;
+        piece_to_remove = WHITE_PAWN;
+    }
+
+    pos_remove_piece(pos, piece_to_remove, sq_with_piece);
+    pos_move_piece(pos, piece_to_move, from_sq, to_sq);
     pos->state.hashkey = hash_en_passant(to_sq, pos->state.hashkey);
 }
 

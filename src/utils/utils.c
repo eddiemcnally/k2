@@ -64,6 +64,11 @@ void print_stacktrace(void) {
     free(strings);
 }
 
+void print_stacktrace_and_exit(void) {
+    print_stacktrace();
+    exit(-1);
+}
+
 /**
  * @brief       Returns the current time of day in milliseconds
  * @return      Time of day in millis

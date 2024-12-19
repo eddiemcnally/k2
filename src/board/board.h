@@ -50,7 +50,7 @@ uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce);
 uint64_t brd_get_rook_queen_bb_for_colour(const struct board *const brd, const enum colour colour);
 uint64_t brd_get_bishop_queen_bb_for_colour(const struct board *const brd, const enum colour colour);
 
-enum colour brd_get_colour_on_sq(const struct board *const brd, const enum square sq);
+bool brd_try_get_colour_on_sq(const struct board *const brd, const enum square sq, enum colour *colour);
 
 void brd_add_piece(struct board *const brd, const enum piece pce, const enum square sq);
 void brd_remove_piece(struct board *const brd, const enum piece pce, const enum square sq);
@@ -68,6 +68,6 @@ void brd_print(const struct board *const brd);
 
 enum square brd_get_king_square(const struct board *const brd, const enum colour colour);
 
-enum piece brd_get_piece_on_square(const struct board *const brd, const enum square sq);
+bool brd_try_get_piece_on_square(const struct board *const brd, const enum square sq, enum piece *piece);
 struct material brd_get_material(const struct board *const brd);
 struct board *brd_allocate(void);

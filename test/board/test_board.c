@@ -77,7 +77,8 @@ void test_board_brd_bulk_add_remove_piece(void **state) {
             struct material material_after_add = brd_get_material(brd);
 
             // verify it's there
-            const enum piece found_pce = brd_get_piece_on_square(brd, sq);
+            enum piece found_pce;
+            brd_try_get_piece_on_square(brd, sq, &found_pce);
 
             assert_true(found_pce == pce);
             bool is_occupied = brd_is_sq_occupied(brd, sq);
@@ -150,7 +151,8 @@ void test_board_brd_move_piece(void **state) {
                 brd_add_piece(brd, pce, from_sq);
 
                 // verify it's there
-                enum piece found_pce = brd_get_piece_on_square(brd, from_sq);
+                enum piece found_pce;
+                brd_try_get_piece_on_square(brd, from_sq, &found_pce);
                 assert_true(found_pce == pce);
                 bool is_occupied = brd_is_sq_occupied(brd, from_sq);
                 assert_true(is_occupied);
@@ -166,7 +168,7 @@ void test_board_brd_move_piece(void **state) {
                 is_occupied = brd_is_sq_occupied(brd, from_sq);
                 assert_false(is_occupied);
                 // verify it's now on the to_sq
-                found_pce = brd_get_piece_on_square(brd, to_sq);
+                brd_try_get_piece_on_square(brd, to_sq, &found_pce);
                 assert_true(found_pce == pce);
                 is_occupied = brd_is_sq_occupied(brd, to_sq);
                 assert_true(is_occupied);
@@ -481,7 +483,7 @@ void test_board_brd_is_sq_occupied(void **state) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types-discards-qualifiers"
 
-void test_board_brd_get_piece_on_square(void **state) {
+void test_board_brd_try_get_piece_on_square(void **state) {
     const char *FEN = "1n1RNB2/qB6/1k3b1p/3p1PP1/RKp1ppP1/2pP1prp/1P2P1PP/"
                       "1bNnrQ2 w - - 0 1\n";
 
@@ -490,136 +492,137 @@ void test_board_brd_get_piece_on_square(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    enum piece pce = brd_get_piece_on_square(brd, a4);
+    enum piece pce;
+    brd_try_get_piece_on_square(brd, a4, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, a7);
+    brd_try_get_piece_on_square(brd, a7, &pce);
     assert_true(pce_get_role(pce) == QUEEN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, b1);
+    brd_try_get_piece_on_square(brd, b1, &pce);
     assert_true(pce_get_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, b2);
+    brd_try_get_piece_on_square(brd, b2, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, b4);
+    brd_try_get_piece_on_square(brd, b4, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, b6);
+    brd_try_get_piece_on_square(brd, b6, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, b7);
+    brd_try_get_piece_on_square(brd, b7, &pce);
     assert_true(pce_get_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, b8);
+    brd_try_get_piece_on_square(brd, b8, &pce);
     assert_true(pce_get_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, c1);
+    brd_try_get_piece_on_square(brd, c1, &pce);
     assert_true(pce_get_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, c3);
+    brd_try_get_piece_on_square(brd, c3, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, c4);
+    brd_try_get_piece_on_square(brd, c4, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, d1);
+    brd_try_get_piece_on_square(brd, d1, &pce);
     assert_true(pce_get_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, d3);
+    brd_try_get_piece_on_square(brd, d3, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, d5);
+    brd_try_get_piece_on_square(brd, d5, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, d8);
+    brd_try_get_piece_on_square(brd, d8, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, e1);
+    brd_try_get_piece_on_square(brd, e1, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, e2);
+    brd_try_get_piece_on_square(brd, e2, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, e4);
+    brd_try_get_piece_on_square(brd, e4, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, e8);
+    brd_try_get_piece_on_square(brd, e8, &pce);
     assert_true(pce_get_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, f1);
+    brd_try_get_piece_on_square(brd, f1, &pce);
     assert_true(pce_get_role(pce) == QUEEN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, f3);
+    brd_try_get_piece_on_square(brd, f3, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, f4);
+    brd_try_get_piece_on_square(brd, f4, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, f5);
+    brd_try_get_piece_on_square(brd, f5, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, f6);
+    brd_try_get_piece_on_square(brd, f6, &pce);
     assert_true(pce_get_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, f8);
+    brd_try_get_piece_on_square(brd, f8, &pce);
     assert_true(pce_get_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, g2);
+    brd_try_get_piece_on_square(brd, g2, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, g3);
+    brd_try_get_piece_on_square(brd, g3, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, g4);
+    brd_try_get_piece_on_square(brd, g4, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, g5);
+    brd_try_get_piece_on_square(brd, g5, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, h2);
+    brd_try_get_piece_on_square(brd, h2, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, h3);
+    brd_try_get_piece_on_square(brd, h3, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, h6);
+    brd_try_get_piece_on_square(brd, h6, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 }
 
-void test_board_brd_get_piece_on_square_1(void **state) {
+void test_board_brd_try_get_piece_on_square_1(void **state) {
     const char *FEN = "5N2/B7/5k2/pP1K3B/2P5/1b3pnP/n1p3pP/N1b5 w - - 0 1\n";
 
     struct position *pos = pos_create();
@@ -629,19 +632,19 @@ void test_board_brd_get_piece_on_square_1(void **state) {
 
     enum piece pce;
 
-    pce = brd_get_piece_on_square(brd, a1);
+    brd_try_get_piece_on_square(brd, a1, &pce);
     assert_true(pce_get_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(brd, a2);
+    brd_try_get_piece_on_square(brd, a2, &pce);
     assert_true(pce_get_role(pce) == KNIGHT);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, a5);
+    brd_try_get_piece_on_square(brd, a5, &pce);
     assert_true(pce_get_role(pce) == PAWN);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(brd, a7);
+    brd_try_get_piece_on_square(brd, a7, &pce);
     assert_true(pce_get_role(pce) == BISHOP);
     assert_true(pce_get_colour(pce) == WHITE);
 }

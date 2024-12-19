@@ -157,7 +157,8 @@ int32_t evaluate_position_basic(const struct board * const brd, const enum colou
     uint64_t pce_bb = brd_get_board_bb(brd);
     while (pce_bb != 0) {
         const enum square sq = bb_pop_1st_bit_and_clear(&pce_bb);
-        const enum piece pce = brd_get_piece_on_square(brd, sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, sq, &pce);
         
         switch(pce){
         case WHITE_PAWN:

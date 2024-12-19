@@ -203,11 +203,11 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
     const enum square end_king_sq = g1;
 
     // validate the starting position
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
@@ -225,11 +225,11 @@ void test_position_make_move_castle_white_kingside_move_valid_position_updated(v
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
 
@@ -255,11 +255,11 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
     const enum square end_king_sq = c1;
 
     // validate the starting position
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
@@ -277,11 +277,11 @@ void test_position_make_move_castle_white_queenside_move_valid_position_updated(
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == WHITE);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == WHITE);
 
@@ -307,11 +307,11 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     const enum square end_king_sq = c8;
 
     // validate the starting position
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
@@ -331,11 +331,11 @@ void test_position_make_move_castle_black_queenside_move_valid_position_updated(
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
 
@@ -361,11 +361,11 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
     const enum square end_king_sq = g8;
 
     // validate the starting position
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), start_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), start_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
@@ -383,11 +383,11 @@ void test_position_make_move_castle_black_kingside_move_valid_position_updated(v
     assert_true(legality == LEGAL_MOVE);
 
     // verify end squares are as expected
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_rook_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_rook_sq, &pce);
     assert_true(pce_get_role(pce) == ROOK);
     assert_true(pce_get_colour(pce) == BLACK);
 
-    pce = brd_get_piece_on_square(pos_get_board(pos), end_king_sq);
+    brd_try_get_piece_on_square(pos_get_board(pos), end_king_sq, &pce);
     assert_true(pce_get_role(pce) == KING);
     assert_true(pce_get_colour(pce) == BLACK);
 
@@ -643,7 +643,8 @@ void test_position_make_move_black_knight(void **state) {
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == BLACK_KNIGHT);
 
         pos_destroy(pos);
@@ -684,7 +685,8 @@ void test_position_make_move_white_knight(void **state) {
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == WHITE_KNIGHT);
 
         pos_destroy(pos);
@@ -727,7 +729,8 @@ void test_position_make_move_black_bishop(void **state) {
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == BLACK_BISHOP);
 
         pos_destroy(pos);
@@ -772,7 +775,8 @@ void test_position_make_move_white_bishop(void **state) {
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == WHITE_BISHOP);
 
         pos_destroy(pos);
@@ -822,7 +826,8 @@ void test_position_make_move_black_queen(void **state) {
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == BLACK_QUEEN);
 
         pos_destroy(pos);
@@ -869,7 +874,8 @@ void test_position_make_move_white_queen(void **state) {
         }
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == WHITE_QUEEN);
 
         pos_destroy(pos);
@@ -925,7 +931,8 @@ void test_position_make_move_black_king_valid_moves(void **state) {
         assert_true(legality == LEGAL_MOVE);
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == BLACK_KING);
 
         pos_destroy(pos);
@@ -978,7 +985,8 @@ void test_position_make_move_white_king_valid_moves(void **state) {
         assert_true(legality == LEGAL_MOVE);
 
         assert_false(brd_is_sq_occupied(brd, from_sq));
-        enum piece pce = brd_get_piece_on_square(brd, to_sq);
+        enum piece pce;
+        brd_try_get_piece_on_square(brd, to_sq, &pce);
         assert_true(pce == WHITE_KING);
 
         pos_destroy(pos);
@@ -1020,7 +1028,8 @@ void test_position_make_move_black_en_passant(void **state) {
     enum move_legality legality = pos_make_move(pos, mv);
 
     assert_true(legality == LEGAL_MOVE);
-    enum piece old_white_pawn = brd_get_piece_on_square(brd, c4);
+    enum piece old_white_pawn;
+    brd_try_get_piece_on_square(brd, c4, &old_white_pawn);
     assert_true(pce_get_role(old_white_pawn) == PAWN);
     assert_true(pce_get_colour(old_white_pawn) == WHITE);
     enum square enp_sq = pos_get_en_pass_sq(pos);
@@ -1033,7 +1042,8 @@ void test_position_make_move_black_en_passant(void **state) {
     assert_false(brd_is_sq_occupied(brd, c4));
 
     assert_true(brd_is_sq_occupied(brd, c3));
-    enum piece blk_pawn = brd_get_piece_on_square(brd, c3);
+    enum piece blk_pawn;
+    brd_try_get_piece_on_square(brd, c3, &blk_pawn);
     assert_true(blk_pawn == BLACK_PAWN);
     enp_sq = pos_get_en_pass_sq(pos);
     assert_true(enp_sq == NO_SQUARE);
@@ -1053,7 +1063,8 @@ void test_position_make_move_white_en_passant(void **state) {
     enum move_legality legality = pos_make_move(pos, mv);
 
     assert_true(legality == LEGAL_MOVE);
-    enum piece old_black_pawn = brd_get_piece_on_square(brd, g5);
+    enum piece old_black_pawn;
+    brd_try_get_piece_on_square(brd, g5, &old_black_pawn);
     assert_true(pce_get_role(old_black_pawn) == PAWN);
     assert_true(pce_get_colour(old_black_pawn) == BLACK);
     enum square enp_sq = pos_get_en_pass_sq(pos);
@@ -1065,7 +1076,8 @@ void test_position_make_move_white_en_passant(void **state) {
 
     assert_false(brd_is_sq_occupied(brd, g5));
 
-    enum piece white_pawn = brd_get_piece_on_square(brd, g6);
+    enum piece white_pawn;
+    brd_try_get_piece_on_square(brd, g6, &white_pawn);
     assert_true(white_pawn == WHITE_PAWN);
     enp_sq = pos_get_en_pass_sq(pos);
     assert_true(enp_sq == NO_SQUARE);
@@ -1098,7 +1110,8 @@ void test_position_make_move_white_promotion(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        enum piece prom_pce = brd_get_piece_on_square(brd, b8);
+        enum piece prom_pce;
+        brd_try_get_piece_on_square(brd, b8, &prom_pce);
         assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, b7));
 
@@ -1131,7 +1144,8 @@ void test_position_make_move_black_promotion(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        enum piece prom_pce = brd_get_piece_on_square(brd, f1);
+        enum piece prom_pce;
+        brd_try_get_piece_on_square(brd, f1, &prom_pce);
         assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, f2));
 
@@ -1164,7 +1178,8 @@ void test_position_make_move_white_promotion_capture(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        enum piece prom_pce = brd_get_piece_on_square(brd, c8);
+        enum piece prom_pce;
+        brd_try_get_piece_on_square(brd, c8, &prom_pce);
         assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, b7));
 
@@ -1197,7 +1212,8 @@ void test_position_make_move_black_promotion_capture(void **state) {
         enum move_legality legality = pos_make_move(pos, mv);
 
         assert_true(legality == LEGAL_MOVE);
-        enum piece prom_pce = brd_get_piece_on_square(brd, f1);
+        enum piece prom_pce;
+        brd_try_get_piece_on_square(brd, f1, &prom_pce);
         assert_true(prom_pce == expected_prom_pce);
         assert_false(brd_is_sq_occupied(brd, e2));
 

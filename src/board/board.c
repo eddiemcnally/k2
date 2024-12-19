@@ -120,11 +120,12 @@ bool brd_is_sq_occupied(const struct board *const brd, const enum square sq) {
     return brd->pce_square[sq] != NO_PIECE;
 }
 
-enum piece brd_get_piece_on_square(const struct board *const brd, const enum square sq) {
+bool brd_try_get_piece_on_square(const struct board *const brd, const enum square sq, enum piece *piece) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
-    return brd->pce_square[sq];
+    *piece = brd->pce_square[sq];
+    return *piece != NO_PIECE;
 }
 
 /**
@@ -200,9 +201,12 @@ void brd_remove_piece(struct board *const brd, const enum piece pce, const enum 
 void brd_remove_from_square(struct board *const brd, const enum square sq) {
     assert(brd_is_sq_occupied(brd, sq) == true);
 
-    const enum piece pce = brd_get_piece_on_square(brd, sq);
-
-    brd_remove_piece(brd, pce, sq);
+    enum piece piece;
+    bool found = brd_try_get_piece_on_square(brd, sq, &piece);
+    if (!found) {
+        print_stacktrace_and_exit();
+    }
+    brd_remove_piece(brd, piece, sq);
 }
 
 void brd_move_piece(struct board *const brd, const enum piece pce, const enum square from_sq, const enum square to_sq) {
@@ -264,13 +268,15 @@ uint64_t brd_get_white_bb(const struct board *const brd) {
     return brd->colour_info[col_off].colour_bb;
 }
 
-enum colour brd_get_colour_on_sq(const struct board *const brd, const enum square sq) {
-    const enum piece pce = brd_get_piece_on_square(brd, sq);
-    if (pce == NO_PIECE) {
-        REQUIRE(false, "Expecting piece on square");
+bool brd_try_get_colour_on_sq(const struct board *const brd, const enum square sq, enum colour *colour) {
+    enum piece piece;
+    bool found = brd_try_get_piece_on_square(brd, sq, &piece);
+    if (!found) {
+        return false;
     }
 
-    return pce_get_colour(pce);
+    *colour = pce_get_colour(piece);
+    return true;
 }
 
 uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {
@@ -462,8 +468,9 @@ void brd_print(const struct board *const brd) {
             const enum square sq = sq_gen_from_rank_file((enum rank)r, (enum file)f);
 
             if (brd_is_sq_occupied(brd, sq)) {
-                const enum piece pce = brd_get_piece_on_square(brd, sq);
-                printf("%3c", pce_get_label(pce));
+                enum piece piece;
+                brd_try_get_piece_on_square(brd, sq, &piece);
+                printf("%3c", pce_get_label(piece));
             } else {
                 printf("  .");
             }
@@ -510,7 +517,8 @@ static bool validate_pce_on_sq(const struct board *const brd, const enum piece p
         return false;
     }
 
-    const enum piece pce_on_brd = brd_get_piece_on_square(brd, sq);
-    return pce_on_brd == pce;
+    enum piece piece;
+    brd_try_get_piece_on_square(brd, sq, &piece);
+    return piece == pce;
 }
 #pragma GCC diagnostic pop
