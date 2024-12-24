@@ -152,23 +152,12 @@ void test_piece_get_colour_black_pieces(void **state) {
 
 void test_piece_role_get_array_idx(void **state) {
 
-    enum piece_role role = PAWN;
-    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 0);
-
-    role = BISHOP;
-    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 1);
-
-    role = KNIGHT;
-    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 2);
-
-    role = ROOK;
-    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 3);
-
-    role = QUEEN;
-    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 4);
-
-    role = KING;
-    assert_true(ROLE_AS_ARRAY_OFFSET(role) == 5);
+    assert_true(PAWN == 0);
+    assert_true(BISHOP == 1);
+    assert_true(KNIGHT == 2);
+    assert_true(ROOK == 3);
+    assert_true(QUEEN == 4);
+    assert_true(KING == 5);
 }
 
 void test_piece_swap_side(void **state) {

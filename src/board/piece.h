@@ -40,10 +40,6 @@ enum colour {
     BLACK 
 };
 
-#define COLOUR_AS_ARRAY_OFFSET(colour)  ((size_t)colour)
-#define ROLE_AS_ARRAY_OFFSET(role)      ((size_t)role)
-
-
 #define NUM_COLOURS (2)
 
 enum piece_role {
@@ -86,7 +82,6 @@ Score pce_get_value(const enum piece pce);
 enum colour pce_get_colour(const enum piece pce);
 enum piece_role pce_get_role(const enum piece pce);
 enum piece pce_get_from_label(const char c);
-bool pce_is_king(const enum piece pce);
 char pce_get_label(const enum piece pce);
 
 bool validate_piece(const enum piece pce);

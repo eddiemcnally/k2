@@ -39,21 +39,39 @@
 #include <stdio.h>
 #include <string.h>
 
+// clang-format off
+
 /* Piece values
  * values taken from here: 
  * https://www.chessprogramming.org/Simplified_Evaluation_Function 
  */
 enum piece_values {
-    PCE_VAL_PAWN = 100,
-    PCE_VAL_BISHOP = 330,
-    PCE_VAL_KNIGHT = 320,
-    PCE_VAL_ROOK = 500,
-    PCE_VAL_QUEEN = 900,
-    PCE_VAL_KING = 20000
+    PCE_VAL_PAWN    = 100,
+    PCE_VAL_BISHOP  = 330,
+    PCE_VAL_KNIGHT  = 320,
+    PCE_VAL_ROOK    = 500,
+    PCE_VAL_QUEEN   = 900,
+    PCE_VAL_KING    = 20000
 };
+
+static int values_lookup[] = {
+    PCE_VAL_PAWN,
+    PCE_VAL_BISHOP,
+    PCE_VAL_KNIGHT,
+    PCE_VAL_ROOK,
+    PCE_VAL_QUEEN,
+    PCE_VAL_KING
+};
+
 
 #define PCE_COL_SHIFT (7)
 #define PCE_ROLE_MASK (0x7F)
+
+static enum colour flipped_colours[] = {
+    BLACK,
+    WHITE
+};
+// clang-format on
 
 //
 // ==================================================================
@@ -70,36 +88,16 @@ enum piece_values {
  */
 enum colour pce_swap_side(const enum colour col) {
     assert(validate_colour(col));
-
-    return (enum colour)(~col & 0x01);
+    return flipped_colours[col];
 }
 
 __attribute__((always_inline)) Score pce_get_value(const enum piece pce) {
     const enum piece_role role = pce_get_role(pce);
-    switch (role) {
-    case PAWN:
-        return PCE_VAL_PAWN;
-    case BISHOP:
-        return PCE_VAL_BISHOP;
-    case KNIGHT:
-        return PCE_VAL_KNIGHT;
-    case ROOK:
-        return PCE_VAL_ROOK;
-    case QUEEN:
-        return PCE_VAL_QUEEN;
-    case KING:
-        return PCE_VAL_KING;
-    default:
-        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid piece role");
-    }
+    return values_lookup[role];
 }
 
 __attribute__((always_inline)) enum colour pce_get_colour(const enum piece pce) {
     return (enum colour)((pce & PCE_COL_MASK) >> PCE_COL_SHIFT);
-}
-
-__attribute__((always_inline)) bool pce_is_king(const enum piece pce) {
-    return pce_get_role(pce) == KING;
 }
 
 enum piece_role pce_get_role(const enum piece pce) {

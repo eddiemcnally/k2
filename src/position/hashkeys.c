@@ -89,10 +89,7 @@ uint64_t hash_piece_update(const enum piece pce, const enum square sq, const uin
     const enum piece_role role = pce_get_role(pce);
     const enum colour colour = pce_get_colour(pce);
 
-    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
-    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
-
-    return key_to_modify ^ piece_keys[role_off][col_off][sq];
+    return key_to_modify ^ piece_keys[role][colour][sq];
 }
 
 // bool hash_compare(const uint64_t hashkey1, const uint64_t hashkey2) {
@@ -108,11 +105,8 @@ uint64_t hash_piece_update_move(const enum piece pce, const enum square from_sq,
     const enum piece_role role = pce_get_role(pce);
     const enum colour colour = pce_get_colour(pce);
 
-    const size_t role_off = ROLE_AS_ARRAY_OFFSET(role);
-    const size_t col_off = COLOUR_AS_ARRAY_OFFSET(colour);
-
-    uint64_t hashkey = key_to_modify ^ piece_keys[role_off][col_off][from_sq];
-    hashkey = key_to_modify ^ piece_keys[role_off][col_off][to_sq];
+    uint64_t hashkey = key_to_modify ^ piece_keys[role][colour][from_sq];
+    hashkey = key_to_modify ^ piece_keys[role][colour][to_sq];
 
     return hashkey;
 }
