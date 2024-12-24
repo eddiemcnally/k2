@@ -89,7 +89,9 @@ struct board *brd_allocate(void) {
  * @param brd The board
  */
 void brd_deallocate(struct board *brd) {
-    REQUIRE(brd->init_flag == INIT_KEY, "Board struct isn't initialised");
+    if (brd->init_flag != INIT_KEY) {
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Board struct isn't initialised");
+    }
     memset(brd, 0, sizeof(struct board));
     free(brd);
 }
@@ -204,8 +206,9 @@ void brd_remove_from_square(struct board *const brd, const enum square sq) {
     enum piece piece;
     bool found = brd_try_get_piece_on_square(brd, sq, &piece);
     if (!found) {
-        print_stacktrace_and_exit();
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "No piece found when trying to remove from board");
     }
+
     brd_remove_piece(brd, piece, sq);
 }
 

@@ -64,7 +64,12 @@ void print_stacktrace(void) {
     free(strings);
 }
 
-void print_stacktrace_and_exit(void) {
+void print_stacktrace_and_exit(const char *file, const int line, const char *function, const char *text) {
+    printf("*** Error ***\n");
+    printf("\tFile     :    %s\n", file);
+    printf("\tLine     :    %d\n", line);
+    printf("\tFunction :    %s\n", function);
+    printf("\tText     :    %s\n", text);
     print_stacktrace();
     exit(-1);
 }

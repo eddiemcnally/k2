@@ -310,7 +310,7 @@ static void setup_castle_permissions(struct parsed_fen *const pf, const char *pe
             pf->castle_permissions.has_bq_cast_perm = true;
             break;
         default:
-            REQUIRE(false, "invalid Castle Permission character");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "invalid Castle Permission character");
         }
         perms++;
     }

@@ -192,7 +192,7 @@ void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_
             set_perm_state(cp_cont, CAST_PERM_BK);
             break;
         default:
-            REQUIRE(false, "Invalid castle permissions");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid castle permissions");
         }
     } else {
         switch (cp) {
@@ -212,7 +212,7 @@ void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_
             clear_perm_state(cp_cont, CAST_PERM_BK);
             break;
         default:
-            REQUIRE(false, "Invalid castle permissions");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid castle permissions");
         }
     }
 }

@@ -70,7 +70,7 @@ bool att_chk_is_sq_attacked(const struct position *const pos, const enum square 
     case BLACK:
         return is_black_attacking(pos, sq);
     default:
-        REQUIRE(false, "Invalid attacking side");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid attacking side");
         break;
     }
 }

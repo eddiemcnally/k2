@@ -198,8 +198,8 @@ int32_t evaluate_position_basic(const struct board * const brd, const enum colou
             score -= KING_SQ_VALUE[63 - sq];
             break; 
         default:
-            REQUIRE(false, "Invalid piece");
-            break;            
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid piece");
+        break;
         }
     } // while
 

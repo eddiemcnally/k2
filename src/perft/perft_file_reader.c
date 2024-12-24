@@ -84,7 +84,11 @@ struct epd_row perft_parse_row(char *row) {
 
     // local copyt for tokenising
     char local_row[MAX_LINE_LENGTH] = {0};
-    REQUIRE(strlen(row) < MAX_LINE_LENGTH, "Perft - line too long");
+
+    if (strlen(row) >= MAX_LINE_LENGTH) {
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Perft - line too long");
+    }
+
     memcpy(local_row, row, strlen(row));
 
     struct epd_row retval;

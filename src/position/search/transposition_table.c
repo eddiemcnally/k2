@@ -165,7 +165,10 @@ void tt_dispose(void) {
 
 static void set_tt_size(uint64_t size_in_bytes) {
     num_tt_elems = (uint32_t)(size_in_bytes / sizeof(struct tt_entry));
-    REQUIRE(num_tt_elems > MIN_NUM_TT_SLOTS, "Insufficient number of TT slots");
+
+    if (num_tt_elems <= MIN_NUM_TT_SLOTS) {
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Insufficient number of TT slots");
+    }
 
     tt = (struct tt_entry *)calloc(num_tt_elems, sizeof(struct tt_entry));
 }

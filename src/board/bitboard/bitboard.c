@@ -116,7 +116,8 @@ __attribute__((always_inline)) void bb_move_bit_multi(uint64_t *restrict const b
 
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
-    assert(bb_is_clear(*bb, to_sq));
+    assert(bb_is_clear(*bb1, to_sq));
+    assert(bb_is_clear(*bb1, to_sq));
 
     const uint64_t from_bb = SQUARE_AS_BITBOARD(from_sq);
     const uint64_t to_bb = SQUARE_AS_BITBOARD(to_sq);

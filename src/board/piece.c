@@ -90,7 +90,7 @@ __attribute__((always_inline)) Score pce_get_value(const enum piece pce) {
     case KING:
         return PCE_VAL_KING;
     default:
-        REQUIRE(false, "Invalid piece role");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid piece role");
     }
 }
 
@@ -133,7 +133,7 @@ char pce_get_label(const enum piece pce) {
     case BLACK_KING:
         return 'k';
     default:
-        REQUIRE(false, "invalid piece");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid piece");
         return 0;
     }
 }
@@ -166,7 +166,8 @@ enum piece pce_get_from_label(const char c) {
     case 'k':
         return BLACK_KING;
     default:
-        REQUIRE(false, "Invalid piece  label");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid label");
+        return NO_PIECE;
     }
 }
 

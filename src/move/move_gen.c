@@ -132,7 +132,7 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
         mv_gen_black_pawn_moves(pos, mvl, gen_type, all_pce_bb);
     } break;
     default:
-        REQUIRE(false, "Invalid side");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid side");
         break;
     }
 
@@ -237,11 +237,11 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
         } break;
         case RANK_1:
         case RANK_8:
-            REQUIRE(false, "Unexpected pawn on Rank 1 or Rank 8");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected pawn on Rank 1 or Rank 8");
             break;
         default:
             // invalid rank
-            REQUIRE(false, "Unexpected rank for white");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected rank for white");
             break;
         } //switch
     }
@@ -341,11 +341,11 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
         } break;
         case RANK_1:
         case RANK_8:
-            REQUIRE(false, "Unexpected pawn on Rank 1 or Rank 8");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected pawn on Rank 1 or Rank 8");
             break;
         default:
             // invalid rank
-            REQUIRE(false, "Unexpected rank for black");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected rank for black");
             break;
         } //switch
     }
@@ -542,7 +542,7 @@ static void mv_gen_knight_moves(const struct position *const pos, struct move_li
             mv_gen_encode_multiple_quiet((~occupied_sq_bb & occ_mask), from_sq, mvl);
             break;
         default:
-            REQUIRE(false, "Invalid move gen type");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid move gen type");
             break;
         }
     }
@@ -581,7 +581,7 @@ static void mv_gen_king_moves(const struct position *const pos, struct move_list
         mv_gen_encode_multiple_quiet((~occupied_sq_bb & occ_mask), king_sq, mvl);
         break;
     default:
-        REQUIRE(false, "Invalid move gen type");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid move gen type");
         break;
     }
 }

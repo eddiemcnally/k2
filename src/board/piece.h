@@ -36,7 +36,7 @@
 // clang-format off
 
 enum colour { 
-    WHITE,          // must be zero, derived from even piece types
+    WHITE,
     BLACK 
 };
 
@@ -47,12 +47,12 @@ enum colour {
 #define NUM_COLOURS (2)
 
 enum piece_role {
-    PAWN    = 0x00,
-    BISHOP  = 0x01,
-    KNIGHT  = 0x02,
-    ROOK    = 0x03,
-    QUEEN   = 0x04,
-    KING    = 0x05,
+    PAWN,
+    BISHOP,
+    KNIGHT,
+    ROOK,
+    QUEEN,
+    KING,
 };
 
 

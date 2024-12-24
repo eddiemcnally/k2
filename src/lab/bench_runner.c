@@ -83,7 +83,9 @@ int main(void) {
         printf("Test 2 : %lf\n", elapsed_sec_2);
         test_2_time += elapsed_sec_2;
     }
-    REQUIRE(accum_2 == accum_1, "should be the same");
+    if (accum_2 != accum_1) {
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "should be the same");
+    }
 
     printf("Test 1 total: %lf\n", test_1_time);
     printf("Test 2 total: %lf\n", test_2_time);

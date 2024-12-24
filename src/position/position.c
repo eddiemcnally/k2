@@ -170,8 +170,9 @@ void pos_initialise(const char *fen, struct position *const pos) {
  */
 void pos_destroy(struct position *const pos) {
     assert(validate_position(pos));
-
-    REQUIRE(pos->struct_init_key == STRUCT_INIT_KEY, "Position structure not initialised");
+    if (pos->struct_init_key != STRUCT_INIT_KEY) {
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Position structure not initialised");
+    }
 
     brd_deallocate(pos->brd);
 
@@ -342,7 +343,7 @@ enum move_legality pos_make_move(struct position *const pos, const struct move m
         do_promotion_capture(pos, pce_to_move, from_sq, to_sq, rook);
     } break;
     default:
-        REQUIRE(false, "Invalid move type");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid move type");
         break;
     }
 
@@ -400,7 +401,7 @@ struct move pos_take_move(struct position *const pos) {
         reverse_capture_promotion_move(pos, hist.mv, hist.pce_moved, hist.captured_piece);
         break;
     default:
-        REQUIRE(false, "Invalid move type");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid move type");
         break;
     }
 
@@ -436,7 +437,7 @@ static void reverse_quiet_promotion_move(struct position *const pos, const struc
 
 static void reverse_capture_promotion_move(struct position *const pos, const struct move mv, const enum piece pce_moved,
                                            const enum piece captured_piece) {
-    assert(captured_piece != NULL);
+    assert(captured_piece != NO_PIECE);
 
     const enum square from_sq = move_decode_from_sq(mv);
     const enum square to_sq = move_decode_to_sq(mv);
@@ -467,7 +468,7 @@ static void reverse_en_passant_move(struct position *const pos, const struct mov
         brd_add_piece(pos->brd, WHITE_PAWN, bcapture_sq);
         break;
     default:
-        REQUIRE(false, "Invalid side : reverse en passant");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid side : reverse en passant");
         break;
     }
 }
@@ -614,7 +615,7 @@ static void make_king_side_castle_move(struct position *const pos) {
         pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
         break;
     default:
-        REQUIRE(false, "Unexpected condition");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected Colour");
         break;
     }
 }
@@ -636,7 +637,7 @@ static void make_queen_side_castle_move(struct position *const pos) {
         pos_update_castle_perm(pos, CASTLE_PERM_BQ, false);
         break;
     default:
-        REQUIRE(false, "Unexpected condition");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected Colour");
         break;
     }
 }
@@ -870,7 +871,7 @@ static void reverse_castle_move(struct position *const pos, const struct move mv
             brd_move_piece(pos->brd, WHITE_ROOK, d1, a1);
             break;
         default:
-            REQUIRE(false, "invalid castle type");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "invalid castle type");
             break;
         }
         break;
@@ -885,12 +886,12 @@ static void reverse_castle_move(struct position *const pos, const struct move mv
             brd_move_piece(pos->brd, BLACK_ROOK, d8, a8);
             break;
         default:
-            REQUIRE(false, "invalid castle type");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid castle type");
             break;
         }
         break;
     default:
-        REQUIRE(false, "Invalid colour");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid colour");
         break;
     }
 }
@@ -1007,7 +1008,7 @@ static bool is_castle_move_legal(const struct position *const pos, const struct 
             cast_bb = WQ_CAST_BB;
             break;
         default:
-            REQUIRE(false, "Invalid castle move type");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid castle move type");
             break;
         }
         break;
@@ -1020,12 +1021,12 @@ static bool is_castle_move_legal(const struct position *const pos, const struct 
             cast_bb = BQ_CAST_BB;
             break;
         default:
-            REQUIRE(false, "Invalid castle move type");
+            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid castle move type");
             break;
         }
         break;
     default:
-        REQUIRE(false, "Invalid side");
+        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid colour");
         break;
     }
 
