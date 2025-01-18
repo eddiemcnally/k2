@@ -151,7 +151,7 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
     const struct board *const brd = pos_get_board(pos);
 
     uint64_t all_pawns_bb = brd_get_piece_bb(brd, WHITE_PAWN);
-    const uint64_t black_pce_bb = brd_get_black_bb(brd);
+    const uint64_t black_pce_bb = brd_get_colour_bb(brd, BLACK);
 
     if (pos_is_en_passant_active(pos)) {
         const enum square en_pass_sq = pos_get_en_pass_sq(pos);
@@ -255,7 +255,7 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
     const struct board *const brd = pos_get_board(pos);
 
     uint64_t all_pawns_bb = brd_get_piece_bb(brd, BLACK_PAWN);
-    const uint64_t white_pce_bb = brd_get_white_bb(brd);
+    const uint64_t white_pce_bb = brd_get_colour_bb(brd, WHITE);
 
     if (pos_is_en_passant_active(pos)) {
         const enum square en_pass_sq = pos_get_en_pass_sq(pos);
@@ -369,8 +369,8 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct position *const
     const uint64_t occupied_sq_bb = brd_get_board_bb(brd);
     const uint64_t colour_bb = brd_get_colour_bb(brd, side_to_move);
 
-    uint64_t pce_to_move_bb = brd_get_bishop_queen_bb_for_colour(brd, side_to_move);
-
+    uint64_t pce_to_move_bb =
+        brd_get_bb_for_role_colour(brd, BISHOP, side_to_move) | brd_get_bb_for_role_colour(brd, QUEEN, side_to_move);
     while (pce_to_move_bb != 0) {
         const enum square from_sq = bb_pop_1st_bit_and_clear(&pce_to_move_bb);
 
@@ -433,7 +433,8 @@ static void get_sliding_rank_file_moves(const struct position *const pos, struct
     const uint64_t colour_bb = brd_get_colour_bb(brd, side_to_move);
     const uint64_t reversed_occupied_sq_bb = bb_reverse(occupied_sq_bb);
 
-    uint64_t pce_to_move_bb = brd_get_rook_queen_bb_for_colour(brd, side_to_move);
+    uint64_t pce_to_move_bb =
+        brd_get_bb_for_role_colour(brd, ROOK, side_to_move) | brd_get_bb_for_role_colour(brd, QUEEN, side_to_move);
 
     while (pce_to_move_bb != 0) {
 

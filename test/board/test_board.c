@@ -258,7 +258,7 @@ void test_board_brd_get_colour_bb_black(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    uint64_t bb = brd_get_black_bb(brd);
+    uint64_t bb = brd_get_colour_bb(brd, BLACK);
     assert_true(bb_is_set(bb, c3));
     assert_true(bb_is_set(bb, c4));
     assert_true(bb_is_set(bb, d5));
@@ -291,7 +291,7 @@ void test_board_brd_get_colour_bb_white(void **state) {
 
     struct board *brd = pos_get_board(pos);
 
-    uint64_t bb = brd_get_white_bb(brd);
+    uint64_t bb = brd_get_colour_bb(brd, WHITE);
 
     assert_true(bb_is_set(bb, b2));
     assert_true(bb_is_set(bb, d3));

@@ -238,34 +238,8 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     }
 }
 
-/**
- * @brief      Returns a bitboard representing all black pieces
- *
- * @param[in]  brd   The brd
- *
- * @return     A bitboard with a bit set for each square containing a black piece
- */
-uint64_t brd_get_black_bb(const struct board *const brd) {
-    assert(validate_board(brd));
-
-    return brd->colour_info[BLACK].colour_bb;
-}
-
 uint64_t brd_get_colour_bb(const struct board *const brd, const enum colour colour) {
     return brd->colour_info[colour].colour_bb;
-}
-
-/**
- * @brief      Returns a bitboard representing all white pieces
- *
- * @param[in]  brd   The brd
- *
- * @return     A bitboard with a bit set for each square containing a white piece
- */
-uint64_t brd_get_white_bb(const struct board *const brd) {
-    assert(validate_board(brd));
-
-    return brd->colour_info[WHITE].colour_bb;
 }
 
 bool brd_try_get_colour_on_sq(const struct board *const brd, const enum square sq, enum colour *colour) {
@@ -296,29 +270,6 @@ uint64_t brd_get_bb_for_role_colour(const struct board *const brd, const enum pi
                                     const enum colour colour) {
 
     return brd->colour_info[colour].piece_bb[role];
-}
-
-/**
- * @brief Returns a bitboard representing the rook and queen positions for a given colour
- * 
- * @param brd       The board
- * @param colour    The side
- * @return uint64_t The rook and queen bitboard
- */
-uint64_t brd_get_rook_queen_bb_for_colour(const struct board *const brd, const enum colour colour) {
-    return brd->colour_info[colour].piece_bb[ROOK] | brd->colour_info[colour].piece_bb[QUEEN];
-}
-
-/**
- * @brief Returns a bitboard representing the bishop and queen positions for a given colour
- * 
- * @param brd       The board
- * @param colour    The side
- * @return uint64_t The bishop and queen bitboard
- */
-uint64_t brd_get_bishop_queen_bb_for_colour(const struct board *const brd, const enum colour colour) {
-
-    return brd->colour_info[colour].piece_bb[BISHOP] | brd->colour_info[colour].piece_bb[QUEEN];
 }
 
 /**

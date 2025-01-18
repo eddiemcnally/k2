@@ -80,13 +80,17 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
     // conflate rook and queen
-    const uint64_t rook_queen_bb = brd_get_rook_queen_bb_for_colour(brd, WHITE);
+    const uint64_t rook_queen_bb =
+        brd_get_bb_for_role_colour(brd, ROOK, WHITE) | brd_get_bb_for_role_colour(brd, QUEEN, WHITE);
+
     if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
         return true;
     }
 
     // conflate bishop and queen
-    const uint64_t bishop_queen_bb = brd_get_bishop_queen_bb_for_colour(brd, WHITE);
+    const uint64_t bishop_queen_bb =
+        brd_get_bb_for_role_colour(brd, BISHOP, WHITE) | brd_get_bb_for_role_colour(brd, QUEEN, WHITE);
+
     if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
         return true;
     }
@@ -116,13 +120,15 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
     // conflate rook and queen
-    const uint64_t rook_queen_bb = brd_get_rook_queen_bb_for_colour(brd, BLACK);
+    const uint64_t rook_queen_bb =
+        brd_get_bb_for_role_colour(brd, ROOK, BLACK) | brd_get_bb_for_role_colour(brd, QUEEN, BLACK);
     if (is_horizontal_or_vertical_attacking(all_pce_bb, rook_queen_bb, sq)) {
         return true;
     }
 
     // conflate bishop and queen
-    const uint64_t bishop_queen_bb = brd_get_bishop_queen_bb_for_colour(brd, BLACK);
+    const uint64_t bishop_queen_bb =
+        brd_get_bb_for_role_colour(brd, BISHOP, BLACK) | brd_get_bb_for_role_colour(brd, QUEEN, BLACK);
     if (is_diagonally_attacked(all_pce_bb, bishop_queen_bb, sq)) {
         return true;
     }
