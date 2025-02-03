@@ -52,7 +52,7 @@ enum move_legality {
 // clang-format on
 
 struct cast_perm_container pos_get_cast_perm(const struct position *const pos);
-void pos_set_cast_perm(struct position *const pos, const struct cast_perm_container perms);
+void pos_set_cast_perm(struct position *const pos, struct cast_perm_container perms);
 
 struct position *pos_create(void);
 void pos_destroy(struct position *pos);
@@ -63,7 +63,7 @@ enum square pos_get_en_pass_sq(const struct position *const pos);
 bool pos_is_en_passant_active(const struct position *const pos);
 enum colour pos_get_side_to_move(const struct position *const pos);
 
-enum move_legality pos_make_move(struct position *const pos, const struct move mv);
+enum move_legality pos_make_move(struct position *const pos, struct move mv);
 struct move pos_take_move(struct position *const pos);
 
 bool validate_position(const struct position *const pos);

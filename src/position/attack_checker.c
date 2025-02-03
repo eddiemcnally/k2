@@ -42,12 +42,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-static bool is_white_attacking(const struct position *const pos, const enum square sq);
-static bool is_black_attacking(const struct position *const pos, const enum square sq);
-static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
-                                                const enum square sq);
-static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq);
-static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
+static bool is_white_attacking(const struct position *const pos, enum square sq);
+static bool is_black_attacking(const struct position *const pos, enum square sq);
+static bool is_horizontal_or_vertical_attacking(uint64_t all_pce_bb, uint64_t attacking_pce_bb, enum square sq);
+static bool is_diagonally_attacked(uint64_t all_pce_bb, uint64_t attacking_pce_bb, enum square sq);
+static bool is_knight_attacking(uint64_t knight_bb, enum square sq);
 
 /**
  * @brief Tests if a the given square is being attacked by the given colour
@@ -58,7 +57,7 @@ static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq);
  * @param attacking_side The attacking colour
  * @return True if attacked, false otherwise
  */
-bool att_chk_is_sq_attacked(const struct position *const pos, const enum square sq, const enum colour attacking_side) {
+bool att_chk_is_sq_attacked(const struct position *const pos, enum square sq, enum colour attacking_side) {
 
     assert(validate_position(pos));
     assert(validate_square(sq));
@@ -75,7 +74,7 @@ bool att_chk_is_sq_attacked(const struct position *const pos, const enum square 
     }
 }
 
-static bool is_white_attacking(const struct position *const pos, const enum square sq) {
+static bool is_white_attacking(const struct position *const pos, enum square sq) {
     const struct board *const brd = pos_get_board(pos);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
@@ -115,7 +114,7 @@ static bool is_white_attacking(const struct position *const pos, const enum squa
     return false;
 }
 
-static bool is_black_attacking(const struct position *const pos, const enum square sq) {
+static bool is_black_attacking(const struct position *const pos, enum square sq) {
     const struct board *const brd = pos_get_board(pos);
     const uint64_t all_pce_bb = brd_get_board_bb(brd);
 
@@ -153,7 +152,7 @@ static bool is_black_attacking(const struct position *const pos, const enum squa
     return false;
 }
 
-static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) {
+static bool is_knight_attacking(const uint64_t knight_bb, enum square sq) {
     uint64_t bb = knight_bb;
 
     // conflate all knight attack squares for all knights
@@ -166,8 +165,7 @@ static bool is_knight_attacking(const uint64_t knight_bb, const enum square sq) 
     return bb_is_set(knight_attack_sq, sq);
 }
 
-static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb,
-                                                const enum square sq) {
+static bool is_horizontal_or_vertical_attacking(uint64_t all_pce_bb, uint64_t attacking_pce_bb, enum square sq) {
     // do a quick check before evaluating each piece
     const uint64_t sq_horiz_vert_bb = occ_mask_get_vertical(sq) | occ_mask_get_horizontal(sq);
     if ((sq_horiz_vert_bb & attacking_pce_bb) == 0) {
@@ -187,7 +185,7 @@ static bool is_horizontal_or_vertical_attacking(const uint64_t all_pce_bb, const
     return false;
 }
 
-static bool is_diagonally_attacked(const uint64_t all_pce_bb, const uint64_t attacking_pce_bb, const enum square sq) {
+static bool is_diagonally_attacked(uint64_t all_pce_bb, uint64_t attacking_pce_bb, enum square sq) {
 
     // do a quick check to see if the attacking pieces share a diagonal or anti-diagonal with
     // the square, before checking each individual attacking piece

@@ -39,6 +39,7 @@
 #include "square.h"
 #include "utils.h"
 #include <assert.h>
+#include <stdint.h>
 
 struct colour_info {
     uint64_t colour_bb;
@@ -60,8 +61,8 @@ struct board {
     uint32_t init_flag;
 };
 
-static bool validate_square_empty(const struct board *brd, const enum square to_sq);
-static bool validate_pce_on_sq(const struct board *brd, const enum piece pce, enum square sq);
+static bool validate_square_empty(const struct board *const brd, enum square to_sq);
+static bool validate_pce_on_sq(const struct board *const brd, enum piece pce, enum square sq);
 static void init_struct(struct board *brd);
 
 static const uint32_t INIT_KEY = 0xDEADBEEF;
@@ -114,14 +115,14 @@ uint64_t brd_get_board_bb(const struct board *const brd) {
  * @param   sq   the square to test
  * @return  true if square occupied, false otherwise
  */
-bool brd_is_sq_occupied(const struct board *const brd, const enum square sq) {
+bool brd_is_sq_occupied(const struct board *const brd, enum square sq) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
     return brd->pce_square[sq] != NO_PIECE;
 }
 
-bool brd_try_get_piece_on_square(const struct board *const brd, const enum square sq, enum piece *piece) {
+bool brd_try_get_piece_on_square(const struct board *const brd, enum square sq, enum piece *piece) {
     assert(validate_board(brd));
     assert(validate_square(sq));
 
@@ -136,7 +137,7 @@ bool brd_try_get_piece_on_square(const struct board *const brd, const enum squar
  * @param pce   The piece to add
  * @param sq    The square
  */
-void brd_add_piece(struct board *const brd, const enum piece pce, const enum square sq) {
+void brd_add_piece(struct board *const brd, enum piece pce, enum square sq) {
 
     assert(validate_square(sq));
     assert(validate_square_empty(brd, sq));
@@ -175,7 +176,7 @@ struct material brd_get_material(const struct board *const brd) {
     return m;
 }
 
-void brd_remove_piece(struct board *const brd, const enum piece pce, const enum square sq) {
+void brd_remove_piece(struct board *const brd, enum piece pce, enum square sq) {
 
     assert(brd_is_sq_occupied(brd, sq) == true);
     assert(validate_board(brd));
@@ -196,7 +197,7 @@ void brd_remove_piece(struct board *const brd, const enum piece pce, const enum 
     brd->colour_info[colour].material -= material;
 }
 
-void brd_remove_from_square(struct board *const brd, const enum square sq) {
+void brd_remove_from_square(struct board *const brd, enum square sq) {
     assert(brd_is_sq_occupied(brd, sq) == true);
 
     enum piece piece;
@@ -208,7 +209,7 @@ void brd_remove_from_square(struct board *const brd, const enum square sq) {
     brd_remove_piece(brd, piece, sq);
 }
 
-void brd_move_piece(struct board *const brd, const enum piece pce, const enum square from_sq, const enum square to_sq) {
+void brd_move_piece(struct board *const brd, enum piece pce, enum square from_sq, enum square to_sq) {
 
     assert(validate_board(brd));
     assert(validate_piece(pce));
@@ -223,10 +224,13 @@ void brd_move_piece(struct board *const brd, const enum piece pce, const enum sq
     const uint64_t from_bb = SQUARE_AS_BITBOARD(from_sq);
     const uint64_t to_bb = SQUARE_AS_BITBOARD(to_sq);
 
-    brd->colour_info[colour].colour_bb ^= from_bb;
-    brd->colour_info[colour].colour_bb ^= to_bb;
-    brd->colour_info[colour].piece_bb[role] ^= from_bb;
-    brd->colour_info[colour].piece_bb[role] ^= to_bb;
+    uint64_t *col_bb = &brd->colour_info[colour].colour_bb;
+    *col_bb ^= from_bb;
+    *col_bb ^= to_bb;
+
+    uint64_t *role_bb = &brd->colour_info[colour].piece_bb[role];
+    *role_bb ^= from_bb;
+    *role_bb ^= to_bb;
 
     assert(brd->pce_square[from_sq] == pce);
 
@@ -242,7 +246,7 @@ uint64_t brd_get_colour_bb(const struct board *const brd, const enum colour colo
     return brd->colour_info[colour].colour_bb;
 }
 
-bool brd_try_get_colour_on_sq(const struct board *const brd, const enum square sq, enum colour *colour) {
+bool brd_try_get_colour_on_sq(const struct board *const brd, enum square sq, enum colour *colour) {
     enum piece piece;
     bool found = brd_try_get_piece_on_square(brd, sq, &piece);
     if (!found) {
@@ -253,7 +257,7 @@ bool brd_try_get_colour_on_sq(const struct board *const brd, const enum square s
     return true;
 }
 
-uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {
+uint64_t brd_get_piece_bb(const struct board *const brd, enum piece pce) {
     assert(validate_board(brd));
 
     const enum colour colour = pce_get_colour(pce);
@@ -262,12 +266,11 @@ uint64_t brd_get_piece_bb(const struct board *const brd, const enum piece pce) {
     return brd->colour_info[colour].piece_bb[role];
 }
 
-enum square brd_get_king_square(const struct board *const brd, const enum colour colour) {
+enum square brd_get_king_square(const struct board *const brd, enum colour colour) {
     return brd->colour_info[colour].king_sq;
 }
 
-uint64_t brd_get_bb_for_role_colour(const struct board *const brd, const enum piece_role role,
-                                    const enum colour colour) {
+uint64_t brd_get_bb_for_role_colour(const struct board *const brd, enum piece_role role, enum colour colour) {
 
     return brd->colour_info[colour].piece_bb[role];
 }
@@ -439,13 +442,13 @@ static void init_struct(struct board *const brd) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-static bool validate_square_empty(const struct board *brd, const enum square sq) {
+static bool validate_square_empty(const struct board *brd, enum square sq) {
     uint64_t bb = brd_get_board_bb(brd);
     bool is_set = bb_is_set(bb, sq);
     return is_set == false;
 }
 
-static bool validate_pce_on_sq(const struct board *const brd, const enum piece pce, enum square sq) {
+static bool validate_pce_on_sq(const struct board *const brd, enum piece pce, enum square sq) {
 
     if (brd_is_sq_occupied(brd, sq) == false) {
         print_stacktrace();

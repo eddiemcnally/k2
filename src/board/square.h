@@ -72,18 +72,18 @@ enum file {
 
 // clang-format on
 
-enum rank sq_get_rank(const enum square sq);
-enum file sq_get_file(const enum square sq);
-enum square sq_gen_from_rank_file(const enum rank rank, const enum file file);
-enum square sq_get_square_plus_1_rank(const enum square from_sq);
-enum square sq_get_square_minus_1_rank(const enum square from_sq);
-enum square sq_get_square_plus_2_rank(const enum square from_sq);
-enum square sq_get_square_minus_2_rank(const enum square from_sq);
-enum square sq_try_get_sq(const enum rank r, const enum file f);
-char *print_square(const enum square sq);
-bool validate_square(const enum square sq);
-bool validate_rank(const enum rank rank);
-bool validate_file(const enum file file);
-bool validate_en_pass_sq(const enum square sq_to_check);
-bool sq_is_valid_rank(const enum rank r);
-bool sq_is_valid_file(const enum file f);
+enum rank sq_get_rank(enum square sq);
+enum file sq_get_file(enum square sq);
+enum square sq_gen_from_rank_file(enum rank rank, enum file file);
+enum square sq_get_square_plus_1_rank(enum square from_sq);
+enum square sq_get_square_minus_1_rank(enum square from_sq);
+enum square sq_get_square_plus_2_rank(enum square from_sq);
+enum square sq_get_square_minus_2_rank(enum square from_sq);
+enum square sq_try_get_sq(enum rank r, enum file f);
+char *print_square(enum square sq);
+bool validate_square(enum square sq);
+bool validate_rank(enum rank rank);
+bool validate_file(enum file file);
+bool validate_en_pass_sq(enum square sq_to_check);
+bool sq_is_valid_rank(enum rank r);
+bool sq_is_valid_file(enum file f);

@@ -86,25 +86,25 @@ static enum colour flipped_colours[] = {
  * @param col   The given colour
  * @return      The opposite colour
  */
-enum colour pce_swap_side(const enum colour col) {
+enum colour pce_swap_side(enum colour col) {
     assert(validate_colour(col));
     return flipped_colours[col];
 }
 
-__attribute__((always_inline)) Score pce_get_value(const enum piece pce) {
+__attribute__((always_inline)) Score pce_get_value(enum piece pce) {
     const enum piece_role role = pce_get_role(pce);
     return values_lookup[role];
 }
 
-__attribute__((always_inline)) enum colour pce_get_colour(const enum piece pce) {
+__attribute__((always_inline)) enum colour pce_get_colour(enum piece pce) {
     return (enum colour)((pce & PCE_COL_MASK) >> PCE_COL_SHIFT);
 }
 
-enum piece_role pce_get_role(const enum piece pce) {
+enum piece_role pce_get_role(enum piece pce) {
     return (enum piece_role)(pce & PCE_ROLE_MASK);
 }
 
-char pce_get_label(const enum piece pce) {
+char pce_get_label(enum piece pce) {
     switch (pce) {
     case WHITE_PAWN:
         return 'P';
@@ -174,7 +174,7 @@ enum piece pce_get_from_label(const char c) {
  *
  * @param col The colour
  */
-bool validate_colour(const enum colour col) {
+bool validate_colour(enum colour col) {
     switch (col) {
     case WHITE:
     case BLACK:
@@ -184,7 +184,7 @@ bool validate_colour(const enum colour col) {
     }
 }
 
-bool validate_piece_role(const enum piece_role role) {
+bool validate_piece_role(enum piece_role role) {
     switch (role) {
     case PAWN:
     case BISHOP:
@@ -198,7 +198,7 @@ bool validate_piece_role(const enum piece_role role) {
     }
 }
 
-bool validate_label(const char label) {
+bool validate_label(char label) {
     switch (label) {
     case 'P':
     case 'B':
@@ -218,7 +218,7 @@ bool validate_label(const char label) {
     }
 }
 
-bool validate_piece(const enum piece pce) {
+bool validate_piece(enum piece pce) {
     switch (pce) {
     case WHITE_PAWN:
     case WHITE_BISHOP:

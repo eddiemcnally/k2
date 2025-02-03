@@ -131,7 +131,7 @@ struct parsed_fen *fen_parse(const char *fen_string) {
     return retval;
 }
 
-enum piece fen_get_piece_on_sq(const struct parsed_fen *const pf, const enum square sq) {
+enum piece fen_get_piece_on_sq(const struct parsed_fen *const pf, enum square sq) {
 
     if (pf->pieces[sq].is_occupied == true) {
         return pf->pieces[sq].piece;

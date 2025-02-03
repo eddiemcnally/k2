@@ -42,7 +42,7 @@ uint16_t mvl_get_move_count(const struct move_list *const mvl);
 struct move mvl_get_move_at_offset(const struct move_list *const mvl, uint16_t offset);
 void mvl_add(struct move_list *const mvl, struct move mv);
 void mvl_reset(struct move_list *const mvl);
-bool mvl_contains_move(const struct move_list *const mvl, const struct move mv);
+bool mvl_contains_move(const struct move_list *const mvl, struct move mv);
 
 uint16_t mvl_get_mvl_max_size(void);
 bool validate_move_list(const struct move_list *const mvl);

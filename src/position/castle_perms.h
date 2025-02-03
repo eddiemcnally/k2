@@ -51,22 +51,21 @@ enum castle_permission {
 
 struct cast_perm_container cast_perm_init(void);
 
-bool cast_perm_has_permissions(const struct cast_perm_container cp_cont);
+bool cast_perm_has_permissions(struct cast_perm_container cp_cont);
 
-bool cast_perm_has_white_kingside_permissions(const struct cast_perm_container cp_cont);
-bool cast_perm_has_white_queenside_permissions(const struct cast_perm_container cp_cont);
-bool cast_perm_has_white_permissions(const struct cast_perm_container cp_cont);
+bool cast_perm_has_white_kingside_permissions(struct cast_perm_container cp_cont);
+bool cast_perm_has_white_queenside_permissions(struct cast_perm_container cp_cont);
+bool cast_perm_has_white_permissions(struct cast_perm_container cp_cont);
 
-bool cast_perm_has_black_kingside_permissions(const struct cast_perm_container cp_cont);
-bool cast_perm_has_black_queenside_permissions(const struct cast_perm_container cp_cont);
-bool cast_perm_has_black_permissions(const struct cast_perm_container cp_cont);
+bool cast_perm_has_black_kingside_permissions(struct cast_perm_container cp_cont);
+bool cast_perm_has_black_queenside_permissions(struct cast_perm_container cp_cont);
+bool cast_perm_has_black_permissions(struct cast_perm_container cp_cont);
 
-void cast_perm_set_permission(const enum castle_permission cp, struct cast_perm_container *const cp_cont,
-                              const bool state);
-bool cast_compare_perms(const struct cast_perm_container cp1, const struct cast_perm_container cp2);
+void cast_perm_set_permission(enum castle_permission cp, struct cast_perm_container *const cp_cont, bool state);
+bool cast_compare_perms(struct cast_perm_container cp1, struct cast_perm_container cp2);
 
 void cast_perm_clear_white_permissions(struct cast_perm_container *const cp_cont);
 void cast_perm_clear_black_permissions(struct cast_perm_container *const cp_cont);
 
-bool validate_castle_permission_struct(const struct cast_perm_container cp);
-bool validate_castle_permission(const enum castle_permission cp);
+bool validate_castle_permission_struct(struct cast_perm_container cp);
+bool validate_castle_permission(enum castle_permission cp);

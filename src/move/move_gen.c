@@ -58,28 +58,26 @@ enum move_gen_type {
 };
 
 static void mv_gen_white_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb);
+                                    enum move_gen_type gen_type, uint64_t all_pce_bb);
 static void mv_gen_black_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb);
+                                    enum move_gen_type gen_type, uint64_t all_pce_bb);
 static void get_sliding_rank_file_moves(const struct position *const pos, struct move_list *const mvl,
-                                        const enum move_gen_type gen_type);
+                                        enum move_gen_type gen_type);
 static void get_sliding_diagonal_antidiagonal_moves(const struct position *const pos, struct move_list *const mvl,
-                                                    const enum move_gen_type gen_type);
-static void gen_promotions(const enum square from_sq, const enum square to_sq, struct move_list *const mvl);
-static void gen_promotions_with_capture(const enum square from_sq, const enum square to_sq,
-                                        struct move_list *const mvl);
+                                                    enum move_gen_type gen_type);
+static void gen_promotions(enum square from_sq, enum square to_sq, struct move_list *const mvl);
+static void gen_promotions_with_capture(enum square from_sq, enum square to_sq, struct move_list *const mvl);
 static void mv_gen_knight_moves(const struct position *const pos, struct move_list *const mvl,
-                                const enum move_gen_type gen_type);
+                                enum move_gen_type gen_type);
 static void mv_gen_king_moves(const struct position *const pos, struct move_list *const mvl,
-                              const enum move_gen_type gen_type);
-static void mv_gen_encode_multiple_capture(uint64_t bb, const enum square from_sq, struct move_list *const mvl);
-static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq, struct move_list *const mvl);
-static void mv_gen_white_castle_moves(struct move_list *const mvl, const struct cast_perm_container castle_perms,
-                                      const uint64_t all_pce_bb);
-static void mv_gen_black_castle_moves(struct move_list *const mvl, const struct cast_perm_container castle_perms,
-                                      const uint64_t all_pce_bb);
-static void mv_gen_moves(const struct position *const pos, struct move_list *const mvl,
-                         const enum move_gen_type gen_type);
+                              enum move_gen_type gen_type);
+static void mv_gen_encode_multiple_capture(uint64_t bb, enum square from_sq, struct move_list *const mvl);
+static void mv_gen_encode_multiple_quiet(uint64_t bb, enum square from_sq, struct move_list *const mvl);
+static void mv_gen_white_castle_moves(struct move_list *const mvl, struct cast_perm_container castle_perms,
+                                      uint64_t all_pce_bb);
+static void mv_gen_black_castle_moves(struct move_list *const mvl, struct cast_perm_container castle_perms,
+                                      uint64_t all_pce_bb);
+static void mv_gen_moves(const struct position *const pos, struct move_list *const mvl, enum move_gen_type gen_type);
 
 /**
  * @brief       Generates only capture moves from the given position
@@ -108,8 +106,7 @@ void mv_gen_all_moves(const struct position *const pos, struct move_list *const 
     mv_gen_moves(pos, mvl, ALL_MOVES);
 }
 
-static void mv_gen_moves(const struct position *const pos, struct move_list *const mvl,
-                         const enum move_gen_type gen_type) {
+static void mv_gen_moves(const struct position *const pos, struct move_list *const mvl, enum move_gen_type gen_type) {
 
     const struct board *const brd = pos_get_board(pos);
     const struct cast_perm_container castle_perms = pos_get_cast_perm(pos);
@@ -144,7 +141,7 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
 }
 
 static void mv_gen_white_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb) {
+                                    enum move_gen_type gen_type, const uint64_t all_pce_bb) {
     assert(validate_position(pos));
     assert(validate_move_list(mvl));
 
@@ -248,7 +245,7 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
 }
 
 static void mv_gen_black_pawn_moves(const struct position *const pos, struct move_list *const mvl,
-                                    const enum move_gen_type gen_type, const uint64_t all_pce_bb) {
+                                    enum move_gen_type gen_type, uint64_t all_pce_bb) {
     assert(validate_position(pos));
     assert(validate_move_list(mvl));
 
@@ -359,7 +356,7 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
  * @param gen_type          The move type to generate
  */
 static void get_sliding_diagonal_antidiagonal_moves(const struct position *const pos, struct move_list *const mvl,
-                                                    const enum move_gen_type gen_type) {
+                                                    enum move_gen_type gen_type) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
 
@@ -422,7 +419,7 @@ static void get_sliding_diagonal_antidiagonal_moves(const struct position *const
  * @param gen_type          The move type to generate
  */
 static void get_sliding_rank_file_moves(const struct position *const pos, struct move_list *const mvl,
-                                        const enum move_gen_type gen_type) {
+                                        enum move_gen_type gen_type) {
 
     // taken from https://www.chessprogramming.org/Hyperbola_Quintessence
 
@@ -476,7 +473,7 @@ static void get_sliding_rank_file_moves(const struct position *const pos, struct
     }
 }
 
-static void gen_promotions(const enum square from_sq, const enum square to_sq, struct move_list *const mvl) {
+static void gen_promotions(enum square from_sq, enum square to_sq, struct move_list *const mvl) {
 
     struct move mv = move_encode_promote_knight(from_sq, to_sq);
     mvl_add(mvl, mv);
@@ -491,8 +488,7 @@ static void gen_promotions(const enum square from_sq, const enum square to_sq, s
     mvl_add(mvl, mv);
 }
 
-static void gen_promotions_with_capture(const enum square from_sq, const enum square to_sq,
-                                        struct move_list *const mvl) {
+static void gen_promotions_with_capture(enum square from_sq, enum square to_sq, struct move_list *const mvl) {
 
     struct move mv = move_encode_promote_knight_with_capture(from_sq, to_sq);
     mvl_add(mvl, mv);
@@ -515,7 +511,7 @@ static void gen_promotions_with_capture(const enum square from_sq, const enum sq
  * @param gen_type      the move types to generate
  */
 static void mv_gen_knight_moves(const struct position *const pos, struct move_list *const mvl,
-                                const enum move_gen_type gen_type) {
+                                enum move_gen_type gen_type) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
 
@@ -557,7 +553,7 @@ static void mv_gen_knight_moves(const struct position *const pos, struct move_li
  * @param gen_type      the move types to generate
  */
 static void mv_gen_king_moves(const struct position *const pos, struct move_list *const mvl,
-                              const enum move_gen_type gen_type) {
+                              enum move_gen_type gen_type) {
 
     assert((gen_type == CAPTURE_ONLY) || (gen_type == ALL_MOVES));
 
@@ -594,7 +590,7 @@ static void mv_gen_king_moves(const struct position *const pos, struct move_list
  * @param from_sq The source ("from") square
  * @param mvl Pointer to a move list. All generated moves are appended to this list.
  */
-static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq, struct move_list *const mvl) {
+static void mv_gen_encode_multiple_quiet(uint64_t bb, enum square from_sq, struct move_list *const mvl) {
     while (bb != 0) {
         const enum square empty_sq = bb_pop_1st_bit_and_clear(&bb);
         const struct move quiet_move = move_encode_quiet(from_sq, empty_sq);
@@ -609,7 +605,7 @@ static void mv_gen_encode_multiple_quiet(uint64_t bb, const enum square from_sq,
  * @param from_sq The source ("from") square
  * @param mvl Pointer to a move list. All generated moves are appended to this list.
  */
-static void mv_gen_encode_multiple_capture(uint64_t bb, const enum square from_sq, struct move_list *const mvl) {
+static void mv_gen_encode_multiple_capture(uint64_t bb, enum square from_sq, struct move_list *const mvl) {
     while (bb != 0) {
         const enum square cap_sq = bb_pop_1st_bit_and_clear(&bb);
         const struct move cap_move = move_encode_capture(from_sq, cap_sq);
@@ -618,7 +614,7 @@ static void mv_gen_encode_multiple_capture(uint64_t bb, const enum square from_s
 }
 
 static void mv_gen_white_castle_moves(struct move_list *const mvl, const struct cast_perm_container cp,
-                                      const uint64_t all_pce_bb) {
+                                      uint64_t all_pce_bb) {
     if (cast_perm_has_white_kingside_permissions(cp)) {
         if ((all_pce_bb & CASTLE_SQ_MASK_WK) == 0) {
             const struct move mv = move_encode_castle_kingside_white();
@@ -634,7 +630,7 @@ static void mv_gen_white_castle_moves(struct move_list *const mvl, const struct 
 }
 
 static void mv_gen_black_castle_moves(struct move_list *const mvl, const struct cast_perm_container cp,
-                                      const uint64_t all_pce_bb) {
+                                      uint64_t all_pce_bb) {
     if (cast_perm_has_black_kingside_permissions(cp)) {
         if ((all_pce_bb & CASTLE_SQ_MASK_BK) == 0) {
             const struct move mv = move_encode_castle_kingside_black();
