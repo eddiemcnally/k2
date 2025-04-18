@@ -5,7 +5,7 @@
 #
 #
 #
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 4.0)
 
 
 message("*** Setting up K2 Chess Engine Binary build environment ***'")

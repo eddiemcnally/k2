@@ -4,13 +4,14 @@
 #
 #
 #
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 4.0)
 
 message("*** Setting up K2 build environment ***")
 
 
-
-project(k2_chess_engine)
+project(k2_chess_engine VERSION 1.0
+                  		DESCRIPTION "K2 Chess Engine"
+                  		LANGUAGES C)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 message("Setting CMAKE Verbose level '${CMAKE_VERBOSE_MAKEFILE}'")

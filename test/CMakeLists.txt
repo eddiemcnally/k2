@@ -5,7 +5,7 @@
 #
 #
 #
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 4.0)
 
 message("*** Setting up Test Runner Binary build environment ***'")
 
@@ -22,14 +22,12 @@ message("Setting Test Runner root directory to '${TEST_PROJECT_SOURCE_DIR}'")
 # set up some base directories 
 set(TEST_BRD_DIR        ${TEST_PROJECT_SOURCE_DIR}/board)
 set(TEST_BB_DIR         ${TEST_PROJECT_SOURCE_DIR}/board/bitboard)
-set(TEST_OCC_GEN_DIR    ${TEST_PROJECT_SOURCE_DIR}/board/bitboard/occ_mask_gen)
 set(TEST_FEN_DIR        ${TEST_PROJECT_SOURCE_DIR}/fen)
 set(TEST_PERFT_DIR      ${TEST_PROJECT_SOURCE_DIR}/perft)
 set(TEST_POSN_DIR       ${TEST_PROJECT_SOURCE_DIR}/position)
 set(TEST_EVAL_DIR       ${TEST_PROJECT_SOURCE_DIR}/position/evaluation)
 set(TEST_SEARCH_DIR     ${TEST_PROJECT_SOURCE_DIR}/position/search)
 set(TEST_MOVE_DIR       ${TEST_PROJECT_SOURCE_DIR}/move)
-set(TEST_UTILS_DIR      ${TEST_PROJECT_SOURCE_DIR}/utils)
 
 
 message("Setting up Test Runner build target compiler flags...")
