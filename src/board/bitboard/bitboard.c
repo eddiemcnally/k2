@@ -45,7 +45,7 @@ static const uint64_t EMPTY_BITBOARD = 0;
  * @param bb    Pointer to bitboard
  * @param sq    The square
  */
-void bb_set_square(uint64_t *restrict const bb, const enum square sq) {
+void bb_set_square(uint64_t *restrict const bb, enum square sq) {
     assert(validate_square(sq));
     // should be clear
     assert(((*bb >> sq) & 0x01) == 0);
@@ -53,7 +53,7 @@ void bb_set_square(uint64_t *restrict const bb, const enum square sq) {
     *bb |= ((uint64_t)0x01 << sq);
 }
 
-void bb_set_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square sq) {
+void bb_set_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, enum square sq) {
     assert(validate_square(sq));
     // should be clear
     assert(((*bb1 >> sq) & 0x01) == 0);
@@ -71,14 +71,14 @@ void bb_set_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const 
  * @param bb    Pointer to bitboard
  * @param sq    The square
  */
-void bb_clear_square(uint64_t *restrict const bb, const enum square sq) {
+void bb_clear_square(uint64_t *restrict const bb, enum square sq) {
     assert(validate_square(sq));
     assert(((*bb >> sq) & 0x01) == 1);
 
     *bb &= (~((uint64_t)0x01 << sq));
 }
 
-void bb_clear_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square sq) {
+void bb_clear_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, enum square sq) {
     assert(validate_square(sq));
     assert(((*bb1 >> sq) & 0x01) == 1);
     assert(((*bb2 >> sq) & 0x01) == 1);
@@ -96,8 +96,8 @@ void bb_clear_square_multi(uint64_t *restrict const bb1, uint64_t *restrict cons
  * @param[in]  from_sq  The from sq
  * @param[in]  to_sq    To sq
  */
-__attribute__((always_inline)) void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq,
-                                                const enum square to_sq) {
+__attribute__((always_inline)) void bb_move_bit(uint64_t *restrict const bb, enum square from_sq,
+                                                enum square to_sq) {
 
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
@@ -112,7 +112,7 @@ __attribute__((always_inline)) void bb_move_bit(uint64_t *restrict const bb, con
 }
 
 __attribute__((always_inline)) void bb_move_bit_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2,
-                                                      const enum square from_sq, const enum square to_sq) {
+                                                      enum square from_sq, enum square to_sq) {
 
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
@@ -137,7 +137,7 @@ __attribute__((always_inline)) void bb_move_bit_multi(uint64_t *restrict const b
  *
  * @return true if bit is set, false otherwise.
  */
-bool bb_is_set(const uint64_t bb, const enum square sq) {
+bool bb_is_set(const uint64_t bb, enum square sq) {
     assert(validate_square(sq));
 
     const uint64_t b = bb >> sq;
@@ -152,7 +152,7 @@ bool bb_is_set(const uint64_t bb, const enum square sq) {
  *
  * @return true if bit is clear, false otherwise.
  */
-bool bb_is_clear(const uint64_t bb, const enum square sq) {
+bool bb_is_clear(const uint64_t bb, enum square sq) {
     assert(validate_square(sq));
 
     const uint64_t b = bb >> sq;
@@ -168,7 +168,7 @@ bool bb_is_clear(const uint64_t bb, const enum square sq) {
  */
 enum square bb_pop_1st_bit_and_clear(uint64_t *restrict const bb) {
     const int bit_num = __builtin_ctzll(*bb);
-    const enum square sq = (enum square)bit_num;
+    enum square sq = (enum square)bit_num;
     bb_clear_square(bb, sq);
     return sq;
 }

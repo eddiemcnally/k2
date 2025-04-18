@@ -53,19 +53,19 @@ struct diagonals {
 // clang-format on
 
 void occ_mask_init(void);
-uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2);
-uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq);
-uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq);
-uint64_t occ_mask_get_knight(const enum square sq);
-uint64_t occ_mask_get_bishop(const enum square sq);
-uint64_t occ_mask_get_king(const enum square sq);
-uint64_t occ_mask_get_queen(const enum square sq);
-uint64_t occ_mask_get_rook(const enum square sq);
-uint64_t occ_mask_get_vertical(const enum square sq);
-uint64_t occ_mask_get_horizontal(const enum square sq);
-uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq);
-uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq);
-uint64_t occ_mask_get_double_pawn_mask_white(const enum square from_sq);
-uint64_t occ_mask_get_double_pawn_mask_black(const enum square from_sq);
+uint64_t occ_mask_get_inbetween(enum square sq1, enum square sq2);
+uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(enum square sq);
+uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(enum square sq);
+uint64_t occ_mask_get_knight(enum square sq);
+uint64_t occ_mask_get_bishop(enum square sq);
+uint64_t occ_mask_get_king(enum square sq);
+uint64_t occ_mask_get_queen(enum square sq);
+uint64_t occ_mask_get_rook(enum square sq);
+uint64_t occ_mask_get_vertical(enum square sq);
+uint64_t occ_mask_get_horizontal(enum square sq);
+uint64_t occ_mask_get_bb_white_pawns_attacking_sq(enum square sq);
+uint64_t occ_mask_get_bb_black_pawns_attacking_sq(enum square sq);
+uint64_t occ_mask_get_double_pawn_mask_white(enum square from_sq);
+uint64_t occ_mask_get_double_pawn_mask_black(enum square from_sq);
 
-struct diagonals occ_mask_get_diagonals(const enum square sq);
+struct diagonals occ_mask_get_diagonals(enum square sq);

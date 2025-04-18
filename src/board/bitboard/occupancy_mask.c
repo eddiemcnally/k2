@@ -38,7 +38,7 @@
 #include "square.h"
 #include <assert.h>
 
-static uint64_t in_between(const enum square sq1, const enum square sq2);
+static uint64_t in_between(enum square sq1, enum square sq2);
 static void gen_in_between_sq_mask(void);
 static void gen_knight_mask(void);
 static void set_dest_sq_if_valid(enum rank rank, enum file file, uint64_t *bb);
@@ -82,39 +82,39 @@ void occ_mask_init(void) {
     gen_queen_mask();
 }
 
-uint64_t occ_mask_get_inbetween(const enum square sq1, const enum square sq2) {
+uint64_t occ_mask_get_inbetween(enum square sq1, enum square sq2) {
     assert(validate_square(sq1));
     assert(validate_square(sq2));
     return in_between_sq[sq1][sq2];
 }
 
-struct diagonals occ_mask_get_diagonals(const enum square sq) {
+struct diagonals occ_mask_get_diagonals(enum square sq) {
     assert(validate_square(sq));
     return diagonal_masks[sq];
 }
 
-uint64_t occ_mask_get_vertical(const enum square sq) {
+uint64_t occ_mask_get_vertical(enum square sq) {
     assert(validate_square(sq));
 
     const enum file f = sq_get_file(sq);
     return FILE_MASK << f;
 }
 
-uint64_t occ_mask_get_horizontal(const enum square sq) {
+uint64_t occ_mask_get_horizontal(enum square sq) {
     assert(validate_square(sq));
 
     const enum rank r = sq_get_rank(sq);
     return RANK_MASK << (r << 3); // rank * 8
 }
 
-uint64_t occ_mask_get_double_pawn_mask_white(const enum square from_sq) {
+uint64_t occ_mask_get_double_pawn_mask_white(enum square from_sq) {
     assert(sq_get_rank(from_sq) == RANK_2);
 
     const enum file f = sq_get_file(from_sq);
     return FILE_WHITE_DOUBLE_PAWN_MASK(f);
 }
 
-uint64_t occ_mask_get_double_pawn_mask_black(const enum square from_sq) {
+uint64_t occ_mask_get_double_pawn_mask_black(enum square from_sq) {
     assert(sq_get_rank(from_sq) == RANK_7);
 
     const enum file f = sq_get_file(from_sq);
@@ -127,7 +127,7 @@ uint64_t occ_mask_get_double_pawn_mask_black(const enum square from_sq) {
  * @param sq The square being attacked
  * @return uint64_t A bitboard representing WHITE pawns that can attack the square
  */
-uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
+uint64_t occ_mask_get_bb_white_pawns_attacking_sq(enum square sq) {
     const uint64_t bb = SQUARE_AS_BITBOARD(sq);
     return SOUTH_EAST(bb) | SOUTH_WEST(bb);
 }
@@ -138,7 +138,7 @@ uint64_t occ_mask_get_bb_white_pawns_attacking_sq(const enum square sq) {
  * @param sq The square being attacked
  * @return uint64_t A bitboard representing BLACK pawns that can attack the square
  */
-uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
+uint64_t occ_mask_get_bb_black_pawns_attacking_sq(enum square sq) {
     const uint64_t bb = SQUARE_AS_BITBOARD(sq);
     return NORTH_EAST(bb) | NORTH_WEST(bb);
 }
@@ -149,7 +149,7 @@ uint64_t occ_mask_get_bb_black_pawns_attacking_sq(const enum square sq) {
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square sq) {
+uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(enum square sq) {
     assert(validate_square(sq));
 
     const uint64_t sq_bb = SQUARE_AS_BITBOARD(sq);
@@ -162,7 +162,7 @@ uint64_t occ_mask_get_white_pawn_capture_non_first_double_move(const enum square
  * @param sq    The square containing the pawn
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square sq) {
+uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(enum square sq) {
     assert(validate_square(sq));
 
     const uint64_t sq_bb = SQUARE_AS_BITBOARD(sq);
@@ -175,7 +175,7 @@ uint64_t occ_mask_get_black_pawn_capture_non_first_double_move(const enum square
  * @param sq    The square containing the knight
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_knight(const enum square sq) {
+uint64_t occ_mask_get_knight(enum square sq) {
     assert(validate_square(sq));
     return knight_occupancy_masks[sq];
 }
@@ -186,7 +186,7 @@ uint64_t occ_mask_get_knight(const enum square sq) {
  * @param sq    The square containing the Bishop
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_bishop(const enum square sq) {
+uint64_t occ_mask_get_bishop(enum square sq) {
     assert(validate_square(sq));
     struct diagonals diag_masks = occ_mask_get_diagonals(sq);
     return diag_masks.positive | diag_masks.negative;
@@ -198,7 +198,7 @@ uint64_t occ_mask_get_bishop(const enum square sq) {
  * @param sq    The square containing the King
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_king(const enum square sq) {
+uint64_t occ_mask_get_king(enum square sq) {
     assert(validate_square(sq));
     return king_occupancy_masks[sq];
 }
@@ -209,7 +209,7 @@ uint64_t occ_mask_get_king(const enum square sq) {
  * @param sq    The square containing the Queen
  * @return A bitboard representing the occupancy mask§
  */
-uint64_t occ_mask_get_queen(const enum square sq) {
+uint64_t occ_mask_get_queen(enum square sq) {
     assert(validate_square(sq));
     return queen_occupancy_masks[sq];
 }
@@ -220,7 +220,7 @@ uint64_t occ_mask_get_queen(const enum square sq) {
  * @param sq    The square containing the Rook
  * @return A bitboard representing the occupancy mask
  */
-uint64_t occ_mask_get_rook(const enum square sq) {
+uint64_t occ_mask_get_rook(enum square sq) {
     assert(validate_square(sq));
     return rook_occupancy_masks[sq];
 }
@@ -236,7 +236,7 @@ static void gen_in_between_sq_mask(void) {
 // The code is taken from :
 // https://www.chessprogramming.org/Square_Attacked_By#LegalityTest
 //
-static uint64_t in_between(const enum square sq1, const enum square sq2) {
+static uint64_t in_between(enum square sq1, enum square sq2) {
 #define M1 0xffffffffffffffff
 #define A2A7 0x0001010101010100
 #define B2G7 0x0040201008040200

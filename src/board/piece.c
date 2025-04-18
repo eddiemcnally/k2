@@ -91,12 +91,12 @@ enum colour pce_swap_side(enum colour col) {
     return flipped_colours[col];
 }
 
-__attribute__((always_inline)) Score pce_get_value(enum piece pce) {
+Score pce_get_value(enum piece pce) {
     const enum piece_role role = pce_get_role(pce);
     return values_lookup[role];
 }
 
-__attribute__((always_inline)) enum colour pce_get_colour(enum piece pce) {
+enum colour pce_get_colour(enum piece pce) {
     return (enum colour)((pce & PCE_COL_MASK) >> PCE_COL_SHIFT);
 }
 

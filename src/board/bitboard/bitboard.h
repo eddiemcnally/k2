@@ -30,19 +30,19 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define SQUARE_AS_BITBOARD(sq) ((uint64_t)0x01 << (const enum square)sq)
+#define SQUARE_AS_BITBOARD(sq) ((uint64_t)0x01 << (enum square)sq)
 
 uint64_t bb_get_empty(void);
-uint64_t bb_get_sq_mask(const enum square sq);
-void bb_set_square(uint64_t *restrict const bb, const enum square sq);
-void bb_set_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square sq);
-void bb_clear_square(uint64_t *restrict const bb, const enum square sq);
-void bb_clear_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square sq);
-void bb_move_bit(uint64_t *restrict const bb, const enum square from_sq, const enum square to_sq);
-void bb_move_bit_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, const enum square from_sq,
-                       const enum square to_sq);
-bool bb_is_set(const uint64_t bb, const enum square sq);
-bool bb_is_clear(const uint64_t bb, const enum square sq);
+uint64_t bb_get_sq_mask(enum square sq);
+void bb_set_square(uint64_t *restrict const bb, enum square sq);
+void bb_set_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, enum square sq);
+void bb_clear_square(uint64_t *restrict const bb, enum square sq);
+void bb_clear_square_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, enum square sq);
+void bb_move_bit(uint64_t *restrict const bb, enum square from_sq, enum square to_sq);
+void bb_move_bit_multi(uint64_t *restrict const bb1, uint64_t *restrict const bb2, enum square from_sq,
+                       enum square to_sq);
+bool bb_is_set(const uint64_t bb, enum square sq);
+bool bb_is_clear(const uint64_t bb, enum square sq);
 uint64_t bb_reverse(uint64_t bb);
 void bb_print_as_board(const uint64_t bb);
 
