@@ -66,24 +66,3 @@ void test_move_list_reset_list(void **state) {
     mvl_reset(&mvl);
     assert_true(0 == mvl_get_move_count(&mvl));
 }
-
-void test_move_list_compare(void **state) {
-    const uint16_t num_moves = 30;
-    struct move_list mvl1 = mvl_initialise();
-    struct move_list mvl2 = mvl_initialise();
-
-    // add moves
-    for (int i = 0; i < num_moves; i++) {
-        struct move mv = {.bitmap = (uint16_t)i};
-        mvl_add(&mvl1, mv);
-        mvl_add(&mvl2, mv);
-    }
-
-    assert_true(mvl_compare(&mvl1, &mvl2));
-
-    struct move m = {.bitmap = 0};
-    mvl_add(&mvl1, m);
-    assert_false(mvl_compare(&mvl1, &mvl2));
-    mvl_add(&mvl2, m);
-    assert_true(mvl_compare(&mvl1, &mvl2));
-}

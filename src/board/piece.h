@@ -31,7 +31,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "score.h"
+typedef int32_t Score;
 
 // clang-format off
 

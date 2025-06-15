@@ -27,7 +27,6 @@
 #pragma once
 #include "bitboard.h"
 #include "piece.h"
-#include "score.h"
 #include "square.h"
 #include <stdbool.h>
 #include <stdint.h>

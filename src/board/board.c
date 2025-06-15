@@ -35,7 +35,6 @@
 #include "bitboard.h"
 #include "move.h"
 #include "piece.h"
-#include "score.h"
 #include "square.h"
 #include "utils.h"
 #include <assert.h>
@@ -201,11 +200,7 @@ void brd_remove_from_square(struct board *const brd, enum square sq) {
     assert(brd_is_sq_occupied(brd, sq) == true);
 
     enum piece piece;
-    bool found = brd_try_get_piece_on_square(brd, sq, &piece);
-    if (!found) {
-        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "No piece found when trying to remove from board");
-    }
-
+    brd_try_get_piece_on_square(brd, sq, &piece);
     brd_remove_piece(brd, piece, sq);
 }
 

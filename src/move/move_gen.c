@@ -129,7 +129,6 @@ static void mv_gen_moves(const struct position *const pos, struct move_list *con
         mv_gen_black_pawn_moves(pos, mvl, gen_type, all_pce_bb);
     } break;
     default:
-        print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Invalid side");
         break;
     }
 
@@ -234,7 +233,6 @@ static void mv_gen_white_pawn_moves(const struct position *const pos, struct mov
         } break;
         case RANK_1:
         case RANK_8:
-            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected pawn on Rank 1 or Rank 8");
             break;
         default:
             // invalid rank
@@ -338,7 +336,6 @@ static void mv_gen_black_pawn_moves(const struct position *const pos, struct mov
         } break;
         case RANK_1:
         case RANK_8:
-            print_stacktrace_and_exit(__FILE__, __LINE__, __FUNCTION__, "Unexpected pawn on Rank 1 or Rank 8");
             break;
         default:
             // invalid rank

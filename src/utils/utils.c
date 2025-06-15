@@ -46,7 +46,7 @@
 /**
  * @brief       Prints the current stack to STD_OUT
  */
-void print_stacktrace(void) {
+void __attribute__((noinline)) print_stacktrace(void) {
     void *array[10];
     size_t size;
     char **strings;
@@ -64,7 +64,8 @@ void print_stacktrace(void) {
     free(strings);
 }
 
-void print_stacktrace_and_exit(const char *file, const int line, const char *function, const char *text) {
+void __attribute__((noinline)) print_stacktrace_and_exit(const char *file, const int line, const char *function,
+                                                         const char *text) {
     printf("*** Error ***\n");
     printf("\tFile     :    %s\n", file);
     printf("\tLine     :    %d\n", line);

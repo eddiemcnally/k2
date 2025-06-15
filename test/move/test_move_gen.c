@@ -56,7 +56,7 @@ static bool contains_all_4_promotion_moves(const enum square from_sq, const enum
 
 static void contains_promote(const struct move_list *mvl, const enum square from_sq, const enum square to_sq,
                              const enum piece pce, const bool is_capture) {
-    struct move mv = {.bitmap = 0};
+    struct move mv;
     const enum piece_role role = pce_get_role(pce);
     if (is_capture) {
         switch (role) {
@@ -459,7 +459,7 @@ void test_move_white_pawns_promotion_1(void **state) {
 
 static bool contains_all_4_promotion_moves(const enum square from_sq, const enum square to_sq,
                                            const struct move_list *mvl, const bool is_capture) {
-    struct move mv = {.bitmap = 0};
+    struct move mv;
     if (is_capture) {
         mv = move_encode_promote_knight_with_capture(from_sq, to_sq);
         if (mvl_contains_move(mvl, mv) == false) {

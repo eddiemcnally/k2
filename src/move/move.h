@@ -30,12 +30,7 @@
 #include <stdio.h>
 
 #include "piece.h"
-#include "score.h"
 #include "square.h"
-
-struct move {
-    uint16_t bitmap;
-};
 
 /**
  * bitmap for move type
@@ -60,21 +55,29 @@ struct move {
  */
 // clang-format off
 enum move_type {
-    MV_TYPE_QUIET                   = 0x0000,
-    MV_TYPE_DOUBLE_PAWN             = 0x1000,
-    MV_TYPE_KING_CASTLE             = 0x2000,
-    MV_TYPE_QUEEN_CASTLE            = 0x3000,
-    MV_TYPE_CAPTURE                 = 0x4000,
-    MV_TYPE_EN_PASS                 = 0x5000,
-    MV_TYPE_PROMOTE_KNIGHT          = 0x8000,
-    MV_TYPE_PROMOTE_BISHOP          = 0x9000,
-    MV_TYPE_PROMOTE_ROOK            = 0xA000,
-    MV_TYPE_PROMOTE_QUEEN           = 0xB000,
-    MV_TYPE_PROMOTE_KNIGHT_CAPTURE  = 0xC000,
-    MV_TYPE_PROMOTE_BISHOP_CAPTURE  = 0xD000,
-    MV_TYPE_PROMOTE_ROOK_CAPTURE    = 0xE000,
-    MV_TYPE_PROMOTE_QUEEN_CAPTURE   = 0xF000,
+    MV_TYPE_QUIET                   = 0x00,
+    MV_TYPE_DOUBLE_PAWN             = 0x10,
+    MV_TYPE_KING_CASTLE             = 0x20,
+    MV_TYPE_QUEEN_CASTLE            = 0x30,
+    MV_TYPE_CAPTURE                 = 0x40,
+    MV_TYPE_EN_PASS                 = 0x50,
+    MV_TYPE_PROMOTE_KNIGHT          = 0x80,
+    MV_TYPE_PROMOTE_BISHOP          = 0x90,
+    MV_TYPE_PROMOTE_ROOK            = 0xA0,
+    MV_TYPE_PROMOTE_QUEEN           = 0xB0,
+    MV_TYPE_PROMOTE_KNIGHT_CAPTURE  = 0xC0,
+    MV_TYPE_PROMOTE_BISHOP_CAPTURE  = 0xD0,
+    MV_TYPE_PROMOTE_ROOK_CAPTURE    = 0xE0,
+    MV_TYPE_PROMOTE_QUEEN_CAPTURE   = 0xF0,
 };
+
+
+struct move {
+    enum square from_sq;
+    enum square to_sq;
+    enum move_type move_type;
+};
+
 // clang-format on
 
 struct move move_encode_promote_knight(enum square from_sq, enum square to_sq);

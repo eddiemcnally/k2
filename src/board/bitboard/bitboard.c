@@ -96,8 +96,7 @@ void bb_clear_square_multi(uint64_t *restrict const bb1, uint64_t *restrict cons
  * @param[in]  from_sq  The from sq
  * @param[in]  to_sq    To sq
  */
-__attribute__((always_inline)) void bb_move_bit(uint64_t *restrict const bb, enum square from_sq,
-                                                enum square to_sq) {
+__attribute__((always_inline)) void bb_move_bit(uint64_t *restrict const bb, enum square from_sq, enum square to_sq) {
 
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));

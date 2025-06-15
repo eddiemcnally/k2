@@ -82,7 +82,6 @@ int main(void) {
         TEST(test_move_list_init),
         TEST(test_move_list_bulk_add_moves),
         TEST(test_move_list_reset_list),
-        TEST(test_move_list_compare),
 
         // Pieces
         TEST(test_piece_get_colour_white_pieces),

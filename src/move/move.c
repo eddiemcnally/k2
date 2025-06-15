@@ -41,63 +41,9 @@
  *
  */
 
-/**
- * bitmap for move
- * See https://www.chessprogramming.org/Encoding_Moves
- *
- * ---- ---- --11 1111      To Square
- * ---- 1111 11-- ----      From Square
- * 0000 ---- ---- ----      Quiet move
- * 0001 ---- ---- ----      Double Pawn push
- * 0010 ---- ---- ----      King Castle
- * 0011 ---- ---- ----      Queen Castle
- * 0100 ---- ---- ----      Capture
- * 0101 ---- ---- ----      En Passant Capture
- * 1000 ---- ---- ----      Promotion Knight
- * 1001 ---- ---- ----      Promotion Bishop
- * 1010 ---- ---- ----      Promotion Rook
- * 1011 ---- ---- ----      Promotion Queen
- * 1100 ---- ---- ----      Promotion Knight Capture
- * 1101 ---- ---- ----      Promotion Bishop Capture
- * 1110 ---- ---- ----      Promotion Rook Capture
- * 1111 ---- ---- ----      Promotion Queen Capture
- */
+enum move_flag_bits { MV_FLG_BIT_PROMOTE = 0x80, MV_FLG_BIT_CAPTURE = 0x40 };
 
 static const char *move_details(const struct move mv);
-static struct move encode_move(const enum square from_sq, const enum square to_sq, const enum move_type move_type);
-
-// clang-format off
-
-// bit masks for move
-#define MV_MASK_TO_SQ   ((uint16_t)(0x003F))
-#define MV_MASK_FROM_SQ ((uint16_t)(0x0FC0))
-#define MV_MASK_FLAGS   ((uint16_t)(0xF000))
-
-enum move_bits_shifts { 
-    MV_SHFT_TO_SQ   = 0, 
-    MV_SHFT_FROM_SQ = 6
-};
-
-enum move_flag_bits {
-    MV_FLG_BIT_PROMOTE = 0x8000,
-    MV_FLG_BIT_CAPTURE = 0x4000
-};
-
-#define ENCODE_TO_SQ(to_sq)         ((uint16_t)(((uint16_t)to_sq << MV_SHFT_TO_SQ) & MV_MASK_TO_SQ))
-#define ENCODE_FROM_SQ(from_sq)     ((uint16_t)(((uint16_t)from_sq << MV_SHFT_FROM_SQ) & MV_MASK_FROM_SQ))
-
-
-#define ENCODE_KING_CASTLE_WHITE    ((uint16_t)(ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(g1) | MV_TYPE_KING_CASTLE))
-#define ENCODE_KING_CASTLE_BLACK    ((uint16_t)(ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(g8) | MV_TYPE_KING_CASTLE))
-#define ENCODE_QUEEN_CASTLE_WHITE   ((uint16_t)(ENCODE_FROM_SQ(e1) | ENCODE_TO_SQ(c1) | MV_TYPE_QUEEN_CASTLE))
-#define ENCODE_QUEEN_CASTLE_BLACK   ((uint16_t)(ENCODE_FROM_SQ(e8) | ENCODE_TO_SQ(c8) | MV_TYPE_QUEEN_CASTLE))
-
-static const struct move MOVE_KING_CASTLE_WHITE     = {.bitmap = ENCODE_KING_CASTLE_WHITE};
-static const struct move MOVE_QUEEN_CASTLE_WHITE    = {.bitmap = ENCODE_QUEEN_CASTLE_WHITE};
-static const struct move MOVE_KING_CASTLE_BLACK     = {.bitmap = ENCODE_KING_CASTLE_BLACK};
-static const struct move MOVE_QUEEN_CASTLE_BLACK    = {.bitmap = ENCODE_QUEEN_CASTLE_BLACK};
-
-// clang-format on
 
 // ==================================================================
 //
@@ -112,7 +58,7 @@ static const struct move MOVE_QUEEN_CASTLE_BLACK    = {.bitmap = ENCODE_QUEEN_CA
  * @return enum move_type The move type 
  */
 enum move_type move_get_move_type(struct move mv) {
-    return (enum move_type)(((uint16_t)mv.bitmap) & MV_MASK_FLAGS);
+    return mv.move_type;
 }
 
 /**
@@ -123,10 +69,12 @@ enum move_type move_get_move_type(struct move mv) {
  * @return The encoded move
  */
 struct move move_encode_quiet(enum square from_sq, enum square to_sq) {
+
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_QUIET);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_QUIET};
+    return mv;
 }
 
 /**
@@ -140,7 +88,8 @@ struct move move_encode_promote_knight(enum square from_sq, enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_KNIGHT);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_KNIGHT};
+    return mv;
 }
 
 /**
@@ -154,7 +103,8 @@ struct move move_encode_promote_knight_with_capture(enum square from_sq, enum sq
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_KNIGHT_CAPTURE);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_KNIGHT_CAPTURE};
+    return mv;
 }
 
 /**
@@ -168,7 +118,8 @@ struct move move_encode_promote_bishop(enum square from_sq, enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_BISHOP);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_BISHOP};
+    return mv;
 }
 
 /**
@@ -182,7 +133,8 @@ struct move move_encode_promote_bishop_with_capture(enum square from_sq, enum sq
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_BISHOP_CAPTURE);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_BISHOP_CAPTURE};
+    return mv;
 }
 
 /**
@@ -196,7 +148,8 @@ struct move move_encode_promote_rook(enum square from_sq, enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_ROOK);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_ROOK};
+    return mv;
 }
 
 /**
@@ -210,7 +163,8 @@ struct move move_encode_promote_rook_with_capture(enum square from_sq, enum squa
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_ROOK_CAPTURE);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_ROOK_CAPTURE};
+    return mv;
 }
 
 /**
@@ -224,7 +178,8 @@ struct move move_encode_promote_queen(enum square from_sq, enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_QUEEN);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_QUEEN};
+    return mv;
 }
 
 /**
@@ -238,7 +193,8 @@ struct move move_encode_promote_queen_with_capture(enum square from_sq, enum squ
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_PROMOTE_QUEEN_CAPTURE);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_PROMOTE_QUEEN_CAPTURE};
+    return mv;
 }
 
 /**
@@ -251,7 +207,9 @@ struct move move_encode_promote_queen_with_capture(enum square from_sq, enum squ
 struct move move_encode_capture(enum square from_sq, enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
-    return encode_move(from_sq, to_sq, MV_TYPE_CAPTURE);
+
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_CAPTURE};
+    return mv;
 }
 
 /**
@@ -260,7 +218,8 @@ struct move move_encode_capture(enum square from_sq, enum square to_sq) {
  * @return      The encoded move
  */
 struct move move_encode_castle_kingside_white(void) {
-    return MOVE_KING_CASTLE_WHITE;
+    struct move mv = {.from_sq = e1, .to_sq = g1, .move_type = MV_TYPE_KING_CASTLE};
+    return mv;
 }
 
 /**
@@ -269,7 +228,8 @@ struct move move_encode_castle_kingside_white(void) {
  * @return      The encoded move
  */
 struct move move_encode_castle_kingside_black(void) {
-    return MOVE_KING_CASTLE_BLACK;
+    struct move mv = {.from_sq = e8, .to_sq = g8, .move_type = MV_TYPE_KING_CASTLE};
+    return mv;
 }
 
 /**
@@ -278,7 +238,8 @@ struct move move_encode_castle_kingside_black(void) {
  * @return      The encoded move
  */
 struct move move_encode_castle_queenside_white(void) {
-    return MOVE_QUEEN_CASTLE_WHITE;
+    struct move mv = {.from_sq = e1, .to_sq = c1, .move_type = MV_TYPE_QUEEN_CASTLE};
+    return mv;
 }
 
 /**
@@ -287,7 +248,8 @@ struct move move_encode_castle_queenside_white(void) {
  * @return      The encoded move
  */
 struct move move_encode_castle_queenside_black(void) {
-    return MOVE_QUEEN_CASTLE_BLACK;
+    struct move mv = {.from_sq = e8, .to_sq = c8, .move_type = MV_TYPE_QUEEN_CASTLE};
+    return mv;
 }
 
 /**
@@ -300,7 +262,8 @@ struct move move_encode_pawn_double_first(enum square from_sq, enum square to_sq
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_DOUBLE_PAWN);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_DOUBLE_PAWN};
+    return mv;
 }
 
 /**
@@ -314,7 +277,8 @@ struct move move_encode_enpassant(enum square from_sq, enum square to_sq) {
     assert(validate_square(from_sq));
     assert(validate_square(to_sq));
 
-    return encode_move(from_sq, to_sq, MV_TYPE_EN_PASS);
+    struct move mv = {.from_sq = from_sq, .to_sq = to_sq, .move_type = MV_TYPE_EN_PASS};
+    return mv;
 }
 
 /**
@@ -324,7 +288,7 @@ struct move move_encode_enpassant(enum square from_sq, enum square to_sq) {
  * @return The from square
  */
 enum square move_decode_from_sq(struct move mv) {
-    return (enum square)((mv.bitmap & MV_MASK_FROM_SQ) >> MV_SHFT_FROM_SQ);
+    return mv.from_sq;
 }
 
 /**
@@ -334,7 +298,7 @@ enum square move_decode_from_sq(struct move mv) {
  * @return The to square
  */
 enum square move_decode_to_sq(struct move mv) {
-    return (enum square)((mv.bitmap & MV_MASK_TO_SQ) >> MV_SHFT_TO_SQ);
+    return mv.to_sq;
 }
 
 /**
@@ -344,7 +308,7 @@ enum square move_decode_to_sq(struct move mv) {
  * @return      true if quiet, false otherwise
  */
 bool move_is_quiet(const struct move mv) {
-    return (mv.bitmap & MV_MASK_FLAGS) == MV_TYPE_QUIET;
+    return mv.move_type == MV_TYPE_QUIET;
 }
 
 /**
@@ -354,7 +318,7 @@ bool move_is_quiet(const struct move mv) {
  * @return      true if double pawn move, false otherwise
  */
 bool move_is_double_pawn(struct move mv) {
-    return (mv.bitmap & MV_MASK_FLAGS) == MV_TYPE_DOUBLE_PAWN;
+    return mv.move_type == MV_TYPE_DOUBLE_PAWN;
 }
 
 /**
@@ -364,7 +328,7 @@ bool move_is_double_pawn(struct move mv) {
  * @return      true if king-side castle move, false otherwise
  */
 bool move_is_king_castle(struct move mv) {
-    return (mv.bitmap & MV_MASK_FLAGS) == MV_TYPE_KING_CASTLE;
+    return mv.move_type == MV_TYPE_KING_CASTLE;
 }
 
 /**
@@ -374,7 +338,7 @@ bool move_is_king_castle(struct move mv) {
  * @return      true if queen-side castle move, false otherwise
  */
 bool move_is_queen_castle(struct move mv) {
-    return (mv.bitmap & MV_MASK_FLAGS) == MV_TYPE_QUEEN_CASTLE;
+    return mv.move_type == MV_TYPE_QUEEN_CASTLE;
 }
 
 /**
@@ -385,7 +349,7 @@ bool move_is_queen_castle(struct move mv) {
  * @return     The move type enum{ description_of_the_return_value }
  */
 enum move_type move_get_type(struct move mv) {
-    return (enum move_type)(mv.bitmap & MV_MASK_FLAGS);
+    return mv.move_type;
 }
 
 /**
@@ -398,7 +362,7 @@ enum move_type move_get_type(struct move mv) {
 bool move_is_capture(struct move mv) {
     assert(validate_move(mv));
 
-    return (mv.bitmap & MV_FLG_BIT_CAPTURE) != 0;
+    return (mv.move_type & MV_FLG_BIT_CAPTURE) != 0;
 }
 
 /**
@@ -411,7 +375,7 @@ bool move_is_capture(struct move mv) {
 bool move_is_promotion(struct move mv) {
     assert(validate_move(mv));
 
-    return (mv.bitmap & MV_FLG_BIT_PROMOTE) != 0;
+    return (mv.move_type & MV_FLG_BIT_PROMOTE) != 0;
 }
 
 /**
@@ -424,7 +388,7 @@ bool move_is_promotion(struct move mv) {
 bool move_is_en_passant(struct move mv) {
     assert(validate_move(mv));
 
-    return (mv.bitmap & MV_MASK_FLAGS) == MV_TYPE_EN_PASS;
+    return mv.move_type == MV_TYPE_EN_PASS;
 }
 
 /**
@@ -451,16 +415,7 @@ bool move_compare(struct move mv1, struct move mv2) {
     assert(validate_move(mv1));
     assert(validate_move(mv2));
 
-    return mv1.bitmap == mv2.bitmap;
-}
-
-static struct move encode_move(enum square from_sq, enum square to_sq, enum move_type move_type) {
-    uint16_t bitflags = ENCODE_FROM_SQ(from_sq);
-    bitflags |= ENCODE_TO_SQ(to_sq);
-    bitflags |= (uint16_t)move_type;
-
-    const struct move m = {.bitmap = bitflags};
-    return m;
+    return mv1.from_sq == mv2.from_sq && mv1.to_sq == mv2.to_sq && mv1.move_type == mv2.move_type;
 }
 
 /**
@@ -528,10 +483,32 @@ const char *move_details(struct move mv) {
 }
 
 bool validate_move(struct move mv) {
-    const enum square from = move_decode_from_sq(mv);
-    const enum square to = move_decode_to_sq(mv);
-    const bool from_ok = validate_square(from);
-    const bool to_ok = validate_square(to);
 
-    return from_ok && to_ok;
+    const bool from_ok = validate_square(mv.from_sq);
+    const bool to_ok = validate_square(mv.to_sq);
+
+    bool move_type_ok = false;
+    switch (mv.move_type) {
+    case MV_TYPE_QUIET:
+    case MV_TYPE_DOUBLE_PAWN:
+    case MV_TYPE_KING_CASTLE:
+    case MV_TYPE_QUEEN_CASTLE:
+    case MV_TYPE_CAPTURE:
+    case MV_TYPE_EN_PASS:
+    case MV_TYPE_PROMOTE_KNIGHT:
+    case MV_TYPE_PROMOTE_BISHOP:
+    case MV_TYPE_PROMOTE_ROOK:
+    case MV_TYPE_PROMOTE_QUEEN:
+    case MV_TYPE_PROMOTE_KNIGHT_CAPTURE:
+    case MV_TYPE_PROMOTE_BISHOP_CAPTURE:
+    case MV_TYPE_PROMOTE_ROOK_CAPTURE:
+    case MV_TYPE_PROMOTE_QUEEN_CAPTURE:
+        move_type_ok = true;
+        break;
+    default:
+        move_type_ok = false;
+        break;
+    }
+
+    return from_ok && to_ok && move_type_ok;
 }
